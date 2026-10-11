@@ -26,12 +26,13 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-1 function.
+1 unit class, 2 functions.
 
 ## Functions
 
-<details><summary>1</summary>
+<details><summary>2</summary>
 
+- `jmfsb_acm_fnc_moduleEvacZone`
 - `jmfsb_acm_fnc_setDefault`
 
 </details>

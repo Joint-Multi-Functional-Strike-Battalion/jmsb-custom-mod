@@ -16,7 +16,7 @@ by default, ACM's kit when ACM is loaded (`jmfsb_acm` re-defaults them).
 
 ## Ships
 
-5 unit classes, 5 weapon/item classes, 14 functions.
+8 unit classes, 8 weapon/item classes, 16 functions.
 
 ## CBA settings
 
@@ -27,24 +27,27 @@ by default, ACM's kit when ACM is loaded (`jmfsb_acm` re-defaults them).
 | `jmfsb_medbags_contentsTrauma` | EDITBOX | Trauma Kit contents |
 | `jmfsb_medbags_contentsFluid` | EDITBOX | Fluid Kit contents |
 | `jmfsb_medbags_contentsDrugKit` | EDITBOX | Drug Kit contents |
+| `jmfsb_medbags_contentsMopp` | EDITBOX | MOPP Bag contents |
 | `jmfsb_medbags_fillOrder` | LIST | Fill order |
 | `jmfsb_medbags_fillOverflow` | CHECKBOX | Overflow to the ground |
 
 ## Functions
 
-<details><summary>14</summary>
+<details><summary>16</summary>
 
 - `jmfsb_medbags_fnc_canTake`
 - `jmfsb_medbags_fnc_canUnpackDrugKit`
 - `jmfsb_medbags_fnc_canUnpackFirstAid`
 - `jmfsb_medbags_fnc_canUnpackFluid`
 - `jmfsb_medbags_fnc_canUnpackMedicKit`
+- `jmfsb_medbags_fnc_canUnpackMopp`
 - `jmfsb_medbags_fnc_canUnpackTrauma`
 - `jmfsb_medbags_fnc_doTake`
 - `jmfsb_medbags_fnc_doUnpackDrugKit`
 - `jmfsb_medbags_fnc_doUnpackFirstAid`
 - `jmfsb_medbags_fnc_doUnpackFluid`
 - `jmfsb_medbags_fnc_doUnpackMedicKit`
+- `jmfsb_medbags_fnc_doUnpackMopp`
 - `jmfsb_medbags_fnc_doUnpackTrauma`
 - `jmfsb_medbags_fnc_issueContents`
 - `jmfsb_medbags_fnc_stripBag`

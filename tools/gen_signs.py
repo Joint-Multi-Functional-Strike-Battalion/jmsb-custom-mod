@@ -15,24 +15,29 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMG = os.path.join(ROOT, "addons", "media", "images")
 OUT = os.path.join(IMG, "signs_v2")
-LOGO = os.path.join(IMG, "newlogo_3_512.png")
+LOGO = os.path.join(ROOT, "art", "JMSB-crossed-arrows-G", "512", "jmsb-crossed-arrows-G-clean-512.png")
+ART = os.path.join(ROOT, "tools", "art", "signs")   # swatches lifted from the last good boards
 ORIG = os.environ.get("JMFSB_SIGN_ORIG", "")   # folder of old signs converted to PNG
 
 W, H = 2048, 1024
 
-# ---- palette (sign_style_guide.json) --------------------------------------
-BROWN_MARGIN = (0x42, 0x24, 0x14)
-BROWN_FACE   = (0x48, 0x29, 0x18)
-FRAME_PALE   = (0xE6, 0xE6, 0xE9)
-EMBER        = (0xDE, 0x5C, 0x30)
-AMBER        = (0xE9, 0xA6, 0x3C)
-BONE         = (0xEE, 0xE8, 0xDC)
-SLATE        = (0x9C, 0xAA, 0xBA)
-WOOD_RULE    = (0x78, 0x5A, 0x3C)
+# ---- palette: the unit's ranger green and tan (the G logo rebrand, 2026-10-08;
+# user, 2026-10-10: "all these signs need redone to fit the new unit and colour
+# scheme"). Names kept from the old brown board so the drawing code reads the same.
+BROWN_MARGIN = (0x15, 0x19, 0x12)   # outer edge, darker than the face
+BROWN_FACE   = (0x20, 0x26, 0x1C)   # dark green
+FRAME_PALE   = (0xC2, 0xA8, 0x78)   # tan frame and title rule
+EMBER        = (0xC2, 0xA8, 0x78)   # tan eyebrow / section headings
+AMBER        = (0xC2, 0xA8, 0x78)   # tan designations
+BONE         = (0xE9, 0xE4, 0xD3)   # paper - titles and body text
+SLATE        = (0xA9, 0xAE, 0x95)   # sage - sub-lines and footer
+WOOD_RULE    = (0x3A, 0x44, 0x33)   # ranger green footer rule
+WARN         = (0xD0, 0x6A, 0x4A)   # a bind still to be set
 
 F_BLACK = r"C:\Windows\Fonts\ariblk.ttf"
 F_BOLD  = r"C:\Windows\Fonts\arialbd.ttf"
 F_REG   = r"C:\Windows\Fonts\arial.ttf"
+F_MONO  = r"C:\Windows\Fonts\consolab.ttf"
 
 MARGIN = 96
 EYEBROW_Y, TITLE_Y, SUBLINE_Y = 88, 140, 262
@@ -68,7 +73,7 @@ def board():
     g = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gd = ImageDraw.Draw(g)
     rnd = random.Random(7)
-    cols = [(0, 0, 0, 10), (0, 0, 0, 14), (255, 220, 180, 8)]
+    cols = [(0, 0, 0, 10), (0, 0, 0, 14), (200, 210, 180, 6)]
     for _ in range(260):
         x = rnd.randint(40, W - 40)
         y = rnd.randint(40, H - 40)
@@ -120,6 +125,41 @@ def rows(im, d, items):
             x = MARGIN + tw(d, des, fd) + 36
             d.text((x, y + 8), "- " + desc, font=fr, fill=BONE)
         y += step
+
+
+def tracer_dots(d):
+    """The seven tracer colours, bottom right of the footer: what every load
+    in the arsenal also comes as."""
+    cols = [(0xD3, 0x3B, 0x2F), (0xE8, 0xD2, 0x3A), (0x4C, 0xAF, 0x50), (0xEE, 0xEE, 0xEE),
+            (0x3D, 0x7D, 0xE0), (0xEE, 0x82, 0x2C)]
+    r, gap = 14, 46
+    x = W - MARGIN - gap * 6 - r
+    y = FOOTER_Y + 22
+    for c in cols:
+        d.ellipse([x - r, y - r, x + r, y + r], fill=c, outline=BROWN_MARGIN, width=2)
+        x += gap
+    d.ellipse([x - r, y - r, x + r, y + r], outline=(0x7C, 0xD3, 0x7F), width=3)
+    f = font(F_BOLD, 13)
+    d.text((x - tw(d, "IR", f) / 2, y - 8), "IR", font=f, fill=(0x7C, 0xD3, 0x7F))
+
+
+def ammo_cols(im, d, columns):
+    """Two lists side by side under their own headings, a rule between them."""
+    gap = 72
+    col_w = (W - 2 * MARGIN - gap) // len(columns)
+    fh, fd, fr = font(F_BLACK, 44), font(F_BLACK, 32), font(F_REG, 29)
+    for c, (heading, items) in enumerate(columns):
+        x0 = MARGIN + c * (col_w + gap)
+        y = ROWS_Y
+        d.text((x0, y), heading, font=fh, fill=EMBER)
+        y += 74
+        step = min(56, (BODY_BOTTOM - y) / max(len(items), 1))
+        for des, desc in items:
+            d.text((x0, y), des, font=fd, fill=AMBER)
+            d.text((x0 + tw(d, des, fd) + 24, y + 4), "- " + desc, font=fr, fill=BONE)
+            y += step
+        if c:
+            d.line([(x0 - gap // 2, ROWS_Y), (x0 - gap // 2, BODY_BOTTOM - 20)], fill=WOOD_RULE, width=3)
 
 
 def figure(im, box, src):
@@ -176,6 +216,27 @@ def side_figure(im, d, src):
     y = by0 + ((by1 - by0) - fig.height) // 2
     im.paste(fig, (x, y))
     d.rectangle([x - 3, y - 3, x + fig.width + 2, y + fig.height + 2], outline=FRAME_PALE, width=3)
+
+
+def keycols(im, d, columns):
+    """Keybind board: side-by-side columns, each a heading over label / key rows,
+    the key right-aligned in a monospace face. A key starting with "!" is
+    drawn in WARN - a bind the player still has to set."""
+    gap = 72
+    col_w = (W - 2 * MARGIN - gap) // len(columns)
+    fh, fl, fk = font(F_BOLD, 48), font(F_REG, 40), font(F_MONO, 38)
+    for c, (heading, items) in enumerate(columns):
+        x0 = MARGIN + 24 + c * (col_w + gap)
+        x1 = x0 + col_w - 48
+        y = ROWS_Y + 4
+        d.text((x0, y), heading.upper(), font=fh, fill=EMBER)
+        y += 68
+        for label, key in items:
+            warn = key.startswith("!")
+            key = key.lstrip("!")
+            d.text((x0, y), label, font=fl, fill=BONE)
+            d.text((x1 - tw(d, key, fk), y + 2), key, font=fk, fill=WARN if warn else AMBER)
+            y += 58
 
 
 def sections(im, d, blocks):
@@ -240,9 +301,13 @@ def S(title, blocks, sub=None, foot=None, fig=None):
     return {"kind": "sections", "title": title, "blocks": blocks, "sub": sub, "foot": foot, "fig": fig}
 
 def U(name, src, box, foot=None, local=False):
-    """local=True reads src from addons/media/images (repo material) rather
-    than the JMFSB_SIGN_ORIG folder of old converted signs."""
+    """local=True reads src from addons/media/images (repo material), local="art"
+    from tools/art/signs (swatches lifted from the last good boards, the old
+    converted signs being gone), else the JMFSB_SIGN_ORIG folder."""
     return {"kind": "uniform", "name": name, "src": src, "box": box, "foot": foot, "local": local}
+
+def K(title, columns, foot=None):
+    return {"kind": "keys", "title": title, "columns": columns, "foot": foot}
 
 def FIG(title, src, box, sub=None, foot=None):
     return {"kind": "figure", "title": title, "src": src, "box": box, "sub": sub, "foot": foot}
@@ -294,12 +359,12 @@ SIGNS = {
     "gbbanner3":        T(["1st Joint Multi-Functional Strike Battalion"]),
 
     # ---- uniform of the day ----------------------------------------------
-    "mcw":  U("Multicam Woodland",     "tsigns/mcw.png",  (1509, 312, 1937, 741)),
+    "mcw":  U("Multicam Woodland",     "mcw.png",  None, local="art"),
     # swatch cut from the official pattern art the user supplied - same
     # 210px source width as every other cut so the pattern scale matches
     "mtp":  U("Multicam / MTP",        "mtp_swatch.png",  None, local=True),
-    "mtpa": U("Multicam Desert / Arid","jmfsb/mtpa.png",  (1476, 407, 1869, 801)),
-    "mypt": U("Multicam Tropic",       "jmfsb/mypt.png",  (1422, 358, 1896, 842)),
+    "mtpa": U("Multicam Desert / Arid","mtpa.png", None, local="art"),
+    "mypt": U("Multicam Tropic",       "mypt.png", None, local="art"),
     # swatch cut from the CTRG OCP uniform texture and kept in the repo -
     # there was never an old OCP sign to lift one from
     "ocp":  U("OCP",                   "ocp_swatch.png",  None, local=True),
@@ -420,7 +485,42 @@ SIGNS = {
     ], sub="Set it in staging - not mid-contact"),
 
     # the two Controls screenshots ARE the content here - keep them
-    "keybinds": FIG("Keybinds", "jmfsb/keybinds.png", (38, 128, 2012, 992)),
+    # both boards carry the same binds: keybinds.paa had been blank since its
+    # source screenshot went; jmfsbkeys was the hand-made brown board
+    "keybinds": K("Keybinds", [
+        ("1st JMSB", [
+            ("Send TIC  (whole side)", "Ctrl+Shift+T"),
+            ("Vector: Place Target Marker", "Ctrl+Shift+M"),
+            ("Signal Scanner", "Ctrl+U"),
+            ("Scanner Stopwatch", "Ctrl+Alt+U"),
+            ("Scanner Alarm", "Ctrl+Shift+U"),
+            ("Clear Scanner Alarms", "!UNBOUND - SET IT"),
+            ("Point Direction (vehicle)", "ACE finger key"),
+        ]),
+        ("View Distance", [
+            ("View Distance Menu", "\\"),
+            ("Preset 1 / 2 / 3", "Shift/Ctrl/Alt+\\"),
+            ("Raise View Distance", "Ctrl+]"),
+            ("Lower View Distance", "Ctrl+["),
+        ]),
+    ], foot="Set in: Options > Controls > Configure Addons (CBA)"),
+    "jmfsbkeys": K("Keybinds", [
+        ("1st JMSB", [
+            ("Send TIC  (whole side)", "Ctrl+Shift+T"),
+            ("Vector: Place Target Marker", "Ctrl+Shift+M"),
+            ("Signal Scanner", "Ctrl+U"),
+            ("Scanner Stopwatch", "Ctrl+Alt+U"),
+            ("Scanner Alarm", "Ctrl+Shift+U"),
+            ("Clear Scanner Alarms", "!UNBOUND - SET IT"),
+            ("Point Direction (vehicle)", "ACE finger key"),
+        ]),
+        ("View Distance", [
+            ("View Distance Menu", "\\"),
+            ("Preset 1 / 2 / 3", "Shift/Ctrl/Alt+\\"),
+            ("Raise View Distance", "Ctrl+]"),
+            ("Lower View Distance", "Ctrl+["),
+        ]),
+    ], foot="Set in: Options > Controls > Configure Addons (CBA)"),
 
     "markers": R("Marker Tree", [
         ["Enemy SALUTE", "infantry, motorised, armour, air, mine, IED"],
@@ -457,18 +557,97 @@ def render(name, spec):
     elif spec["kind"] == "uniform":
         header(im, d, "Uniform of the Day")
         uniform(im, d, spec["name"], (
-            os.path.join(IMG if spec.get("local") else ORIG, spec["src"]), spec["box"]
+            os.path.join({True: IMG, "art": ART}.get(spec.get("local"), ORIG), spec["src"]), spec["box"]
         ))
+        footer(im, d, spec.get("foot"))
+    elif spec["kind"] == "keys":
+        header(im, d, spec["title"])
+        keycols(im, d, spec["columns"])
         footer(im, d, spec.get("foot"))
     elif spec["kind"] == "rows":
         header(im, d, spec["title"], spec.get("sub"))
         rows(im, d, spec["items"])
+        footer(im, d, spec.get("foot"))
+        if spec.get("dots"):
+            tracer_dots(d)
+    elif spec["kind"] == "ammo2":
+        header(im, d, spec["title"], spec.get("sub"))
+        ammo_cols(im, d, spec["columns"])
         footer(im, d, spec.get("foot"))
     else:
         header(im, d, spec["title"], spec.get("sub"))
         figure(im, spec["box"], os.path.join(ORIG, spec["src"]))
         footer(im, d, spec.get("foot"))
     return im
+
+
+# THE FA AMMO BOARDS (fa_main/data/fa_sign_*.paa), placed at the ranges by the
+# missions. They were hand-made in the old brown Ghosts of Battle style; same
+# words now, on the unit board, the arsenal tag as it is today ([JMSB]).
+# PNG masters go to tools/art/signs/fa (never shipped), PAAs into fa_main.
+FA_OUT = os.path.join(ROOT, "tools", "art", "signs", "fa")
+FA_PAA = os.path.join(ROOT, "addons", "fa_main", "data")
+FA_SIGNS = {
+    "fa_sign_40mm": dict(R("40mm UGL - Smart Payloads", [
+        ["Mk364 PAB", "programmable airburst · counter-drone · HE on impact"],
+        ["Mk389 TBK", "tungsten buckshot (+ subsonic load)"],
+        ["Mk380 NR-P", "network relay · extends the squad data-link"],
+        ["Mk383 EMP-M", "soft-kill EW burst · drones, optics, comms"],
+        ["Mk384 M-SMK", "multispectral smoke · blocks visual + thermal"],
+        ["Mk385 DCOY", "IR / RF decoy · baits loitering munitions"],
+        ["Mk386 UGS", "unattended ground sensor · contact picket"],
+        ["Mk388 JAM", "area comms / GNSS jammer bubble"],
+    ], sub="any 40mm UGL · 3GL / EGLM / GL · range: ACE zeroing or PgUp / PgDn",
+        foot="Carriers pop a chute at apex and deploy on landing · Mk364 range: CBA keybind or ACE self-interact")),
+    "fa_sign_65_mx": dict(R("6.5x39 Caseless - MX Rifles", [
+        ["Mk330 EPR", "standard tungsten-core ball (2035)"],
+        ["Mk331 AP", "tungsten armor-piercing (2040)"],
+        ["Mk328 HV / Mk329 LR", "match and long-range DMR loads"],
+        ["XM892 / XM893 CTEP", "cased-telescoped 2-stage penetrator (2039)"],
+        ["Mk367 PAB", "proximity airburst · counter-drone"],
+    ], sub="MX  ·  MXC  ·  MX 3GL  ·  MX SW  ·  MXM",
+        foot="All loads plain + 7 tracer colours · look for the [JMSB] tag in the arsenal"), dots=True),
+    "fa_sign_jca_556": dict(R("JCA 5.56x45 - M4A4 / HK433", [
+        ["Mk327 HV", "hybrid-case hypervelocity ball (2033)"],
+        ["XM891 CTEP", "cased-telescoped tungsten EPR (2039)"],
+        ["Mk332 AP", "tungsten armor-piercing (2040)"],
+        ["Mk361 PAB", "proximity airburst · counter-drone"],
+        ["Mk368K AD", "8-pellet drone shot · eff. 100 m"],
+        ["Mk368L AD", "5-pellet drone shot · eff. 200 m"],
+    ], sub="EMAG & PMAG bodies · black · sand · green PMAG",
+        foot="Every JCA 5.56 magazine body carries all loads · [JMSB] tag in the arsenal"), dots=True),
+    "fa_sign_jca_762": dict(R("JCA 7.62x51 - SR-10", [
+        ["M80A2 HV", "hybrid-case 135gr tungsten EPR (2032)"],
+        ["XM751 CTEP", "cased-telescoped · long-range / anti-armor (2039)"],
+        ["Mk362 PAB", "proximity airburst · counter-drone"],
+        ["Mk369K AD", "12-pellet drone shot · eff. 150 m"],
+        ["Mk369L AD", "10-pellet drone shot · eff. 250 m"],
+    ], sub="20Rnd PMAG · black and sand bodies",
+        foot="All tracer colours on both bodies · [JMSB] tag in the arsenal"), dots=True),
+    "fa_sign_nato_rockets": {
+        "kind": "ammo2", "title": "NATO Rockets - MAAWS / Titan",
+        "sub": "MAAWS Mk4 (84mm recoilless)  ·  Titan MPRL (shoulder missiles)",
+        "foot": "Seekers need a lock tone · Copperhead loiters if fired unlocked · HE 448: Mk364 keybind",
+        "columns": [
+            ("MAAWS Mk4 - 84mm", [
+                ["HEAT 758 TT", "FnF top-attack tandem · 1.2 km"],
+                ["HEAT 665 CS", "heavy tandem · enclosure-safe"],
+                ["HE 448 AB", "prefrag HE · airburst · 1.5 km"],
+                ["GM 841", "laser-homing · lase and fire · 2 km"],
+                ["ADM 484 PROX", "C-UAS proximity frag · 600 m"],
+                ["ADM 486 CAN", "flechette canister · swarms · 150 m"],
+                ["ADM 487 SEEK", "IR FnF vs locked drone · 1 km"],
+                ["AAM 517 SR", "VSHORAD · lock tone · 1.75 km"],
+            ]),
+            ("Titan MPRL - shoulder", [
+                ["BGM-185 Broadsword", "FnF top-attack ATGM · 10 km"],
+                ["XM1200 Copperhead", "loitering munition · 40 km"],
+                ["MIM-165 Sentry", "dual-seeker SAM · jets to drones · 12 km"],
+                ["MIM-166 Roadrunner", "C-UAS hard-kill · 4 km"],
+            ]),
+        ],
+    },
+}
 
 
 # folder -> (eyebrow, drop the words "training area" from titles too)
@@ -512,6 +691,19 @@ def main():
                 subprocess.run(["hemtt", "utils", "paa", "convert", p, paa],
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             print("  converted to PAA")
+
+    EYEBROW = "1ST JOINT MULTI-FUNCTIONAL STRIKE BATTALION"
+    os.makedirs(FA_OUT, exist_ok=True)
+    for name, spec in sorted(FA_SIGNS.items()):
+        p = os.path.join(FA_OUT, name + ".png")
+        render(name, spec).save(p)
+        if "--paa" in sys.argv:
+            paa = os.path.join(FA_PAA, name + ".paa")
+            if os.path.exists(paa):
+                os.remove(paa)
+            subprocess.run(["hemtt", "utils", "paa", "convert", p, paa],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print("%d FA ammo boards -> %s" % (len(FA_SIGNS), FA_PAA if "--paa" in sys.argv else FA_OUT))
 
 
 if __name__ == "__main__":

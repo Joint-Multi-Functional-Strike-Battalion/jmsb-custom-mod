@@ -12,3 +12,5 @@ PREP(issueContents);
 PREP(canTake);
 PREP(doTake);
 PREP(stripBag);
+PREP(canUnpackMopp);
+PREP(doUnpackMopp);

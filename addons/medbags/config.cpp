@@ -14,14 +14,20 @@ class CfgPatches {
             QGVAR(Item_Fluid),
             QGVAR(Item_MedicKit),
             QGVAR(Item_DrugKit),
-            QGVAR(Item_Trauma)
+            QGVAR(Item_Trauma),
+            QGVAR(Item_Mopp_MTP),
+            QGVAR(Item_Mopp_Tropic),
+            QGVAR(Item_Mopp_Wdl)
         };
         weapons[] = {
             QGVAR(FirstAid),
             QGVAR(Fluid),
             QGVAR(MedicKit),
             QGVAR(DrugKit),
-            QGVAR(Trauma)
+            QGVAR(Trauma),
+            QGVAR(Mopp_MTP),
+            QGVAR(Mopp_Tropic),
+            QGVAR(Mopp_Wdl)
         };
         VERSION_CONFIG;
     };

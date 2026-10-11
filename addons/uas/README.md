@@ -63,16 +63,15 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 `jmfsb_moduleDronePatrol`, category jmfsb_modules
 
-One patrol. Resize it - the area is the ground the drones fly over.<br>Side - whose drones. A side friendly to the players is skipped Drones - how many airframes this patrol keeps up Drone Class - empty flies the side's own<br>Artillery On Detect - a drone that sees somebody shells where it saw them Rounds / Scatter (m) / Cooldown (s) - the size of that mission and its gap<br>A module never resized is one 800 m orbit. Nobody within 3.2 km, nothing flies.
+One patrol. Resize it - the area is the ground the drones fly over.<br>Side - whoever is hostile to the players, worked out from the mission's side relations Drones - how many airframes this patrol keeps up Drone Class - empty flies the enemy side's own<br>Artillery On Detect - a drone that sees somebody shells where it saw them Rounds / Scatter (m) / Cooldown (s) - the size of that mission and its gap<br>A module never resized is one 800 m orbit. Nobody within 3.2 km, nothing flies.
 
-<details><summary>6 attributes</summary>
+<details><summary>5 attributes</summary>
 
 - `artyCooldown`
 - `artyRounds`
 - `artyScatter`
 - `droneClass`
 - `droneCount`
-- `patrolSide`
 
 </details>
 

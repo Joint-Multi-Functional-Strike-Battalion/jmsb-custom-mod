@@ -76,8 +76,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -94,8 +94,8 @@ class CfgVehicles {
         faction = QUOTE(ADDON);
         identityTypes[] = {"LanguageENG_F","Head_Tanoan","G_NATO_default"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -116,8 +116,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","9Rnd_45ACP_Mag","9Rnd_45ACP_Mag","HandGrenade","SmokeShell","SmokeShellYellow"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","9Rnd_45ACP_Mag","9Rnd_45ACP_Mag","HandGrenade","SmokeShell","SmokeShellYellow"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -138,8 +138,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","9Rnd_45ACP_Mag","9Rnd_45ACP_Mag","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","HandGrenade","SmokeShell","SmokeShellYellow","1Rnd_Smoke_Grenade_shell","1Rnd_SmokeGreen_Grenade_shell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","9Rnd_45ACP_Mag","9Rnd_45ACP_Mag","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","HandGrenade","SmokeShell","SmokeShellYellow","1Rnd_Smoke_Grenade_shell","1Rnd_SmokeGreen_Grenade_shell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -160,8 +160,8 @@ class CfgVehicles {
         weapons[] = {"LMG_Zafir_F","Throw","Put"};
         respawnWeapons[] = {"LMG_Zafir_F","Throw","Put"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -182,8 +182,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -205,8 +205,8 @@ class CfgVehicles {
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","HandGrenade","SmokeShell","1Rnd_Smoke_Grenade_shell"};
         backpack = QGVAR(UAV_06_Bag);
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -227,8 +227,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","MRAWS_HEAT55_F","HandGrenade","SmokeShell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","MRAWS_HEAT55_F","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -249,8 +249,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -272,8 +272,8 @@ class CfgVehicles {
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
         backpack = "B_Carryall_oli";
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -292,8 +292,8 @@ class CfgVehicles {
         magazines[] = {"20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","HandGrenade","SmokeShell"};
         respawnMagazines[] = {"20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -314,8 +314,8 @@ class CfgVehicles {
         weapons[] = {"LMG_Zafir_F","Throw","Put"};
         respawnWeapons[] = {"LMG_Zafir_F","Throw","Put"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -336,8 +336,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell","SmokeShellRed","SmokeShellBlue","SmokeShellOrange"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell","SmokeShellRed","SmokeShellBlue","SmokeShellOrange"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -358,8 +358,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","SmokeShell","SmokeShellYellow"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","SmokeShell","SmokeShellYellow"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -380,8 +380,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","APERSMine_Range_Mag","APERSMine_Range_Mag","APERSMine_Range_Mag","SmokeShell","SmokeShellYellow"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","APERSMine_Range_Mag","APERSMine_Range_Mag","APERSMine_Range_Mag","SmokeShell","SmokeShellYellow"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -400,8 +400,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_9x21_Mag_SMG_02_Tracer_Red","30Rnd_9x21_Mag_SMG_02_Tracer_Red","30Rnd_9x21_Mag_SMG_02_Tracer_Red","30Rnd_9x21_Mag_SMG_02_Tracer_Red","9Rnd_45ACP_Mag","9Rnd_45ACP_Mag","SmokeShellYellow"};
         respawnMagazines[] = {"30Rnd_9x21_Mag_SMG_02_Tracer_Red","30Rnd_9x21_Mag_SMG_02_Tracer_Red","30Rnd_9x21_Mag_SMG_02_Tracer_Red","30Rnd_9x21_Mag_SMG_02_Tracer_Red","9Rnd_45ACP_Mag","9Rnd_45ACP_Mag","SmokeShellYellow"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -422,8 +422,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -445,8 +445,8 @@ class CfgVehicles {
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         backpack = "B_Mortar_01_weapon_F";
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -468,8 +468,8 @@ class CfgVehicles {
         respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         backpack = "B_Mortar_01_support_F";
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -534,8 +534,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -556,8 +556,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShellGreen","SmokeShellBlue","SmokeShellOrange","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShellGreen","SmokeShellBlue","SmokeShellOrange","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -578,8 +578,8 @@ class CfgVehicles {
         weapons[] = {"LMG_Zafir_F","Throw","Put"};
         respawnWeapons[] = {"LMG_Zafir_F","Throw","Put"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -600,8 +600,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green","1Rnd_Smoke_Grenade_shell","1Rnd_Smoke_Grenade_shell"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","1Rnd_HE_Grenade_shell","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green","1Rnd_Smoke_Grenade_shell","1Rnd_Smoke_Grenade_shell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -622,8 +622,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","NLAW_F","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","NLAW_F","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -642,8 +642,8 @@ class CfgVehicles {
         magazines[] = {"20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","20Rnd_762x51_Mag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -664,8 +664,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShellRed","SmokeShellBlue","SmokeShellOrange","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShellRed","SmokeShellBlue","SmokeShellOrange","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -686,8 +686,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","B_IR_Grenade","B_IR_Grenade","Laserbatteries","SmokeShell","SmokeShellGreen","SmokeShellBlue","SmokeShellOrange","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","MiniGrenade","MiniGrenade","B_IR_Grenade","B_IR_Grenade","Laserbatteries","SmokeShell","SmokeShellGreen","SmokeShellBlue","SmokeShellOrange","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
@@ -708,8 +708,8 @@ class CfgVehicles {
         magazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","APERSMine_Range_Mag","APERSMine_Range_Mag","APERSMine_Range_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         respawnMagazines[] = {"30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","30Rnd_556x45_Stanag","16Rnd_9x21_Mag","16Rnd_9x21_Mag","APERSMine_Range_Mag","APERSMine_Range_Mag","APERSMine_Range_Mag","MiniGrenade","MiniGrenade","SmokeShell","SmokeShell","Chemlight_green","Chemlight_green"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
-        linkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
-        respawnLinkedItems[] = {"JCA_V_CarrierRigKBT_01_combat_olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
+        respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {

@@ -43,14 +43,6 @@ class CfgVehicles {
         icon = "\a3\ui_f\data\map\markers\nato\o_air.paa";
 
         class Attributes: AttributesBase {
-            class patrolSide: Edit {
-                property = QGVAR(patrolSide);
-                displayName = "Side";
-                tooltip = "Whose drones patrol here: east, west, guer or civ. A side friendly to the players is skipped - this places ENEMY drones.";
-                typeName = "STRING";
-                defaultValue = "east";
-                expression = QUOTE(_this setVariable [ARR_2('patrolSide',_value)]);
-            };
             class droneCount: Edit {
                 property = QGVAR(droneCount);
                 displayName = "Drones";
@@ -62,7 +54,7 @@ class CfgVehicles {
             class droneClass: Edit {
                 property = QGVAR(droneClass);
                 displayName = "Drone Class";
-                tooltip = "The airframe, e.g. O_UAV_01_F. Empty flies a UAV belonging to the side, which is the ordinary case. A class that does not exist falls back the same way and says so in the RPT.";
+                tooltip = "The airframe, e.g. O_UAV_01_F. Empty flies a UAV belonging to the enemy side, which is the ordinary case. A class that does not exist falls back the same way and says so in the RPT.";
                 typeName = "STRING";
                 defaultValue = "";
                 expression = QUOTE(_this setVariable [ARR_2('droneClass',_value)]);
@@ -106,9 +98,9 @@ class CfgVehicles {
             description[] = {
                 "One patrol. Resize it - the area is the ground the drones fly over.",
                 "",
-                "Side - whose drones. A side friendly to the players is skipped",
+                "Side - whoever is hostile to the players, worked out from the mission's side relations",
                 "Drones - how many airframes this patrol keeps up",
-                "Drone Class - empty flies the side's own",
+                "Drone Class - empty flies the enemy side's own",
                 "",
                 "Artillery On Detect - a drone that sees somebody shells where it saw them",
                 "Rounds / Scatter (m) / Cooldown (s) - the size of that mission and its gap",

@@ -48,8 +48,9 @@ if !(_domain in [DOM_RADIO, DOM_DATA, DOM_GPS]) then {
     _domain = DOM_RADIO;
 };
 
-private _side = [_logic getVariable ["jamSide", "east"]] call EFUNC(common,sideFromText);
-if (isNil "_side" || {_side isEqualTo sideUnknown}) then { _side = east };
+// THE ENEMY'S, WORKED OUT (D59): no Side box on the module any more - the
+// site belongs to whoever is hostile to the players (EFUNC(common,enemySide)).
+private _side = call EFUNC(common,enemySide);
 
 private _pos = getPosATL _logic;
 

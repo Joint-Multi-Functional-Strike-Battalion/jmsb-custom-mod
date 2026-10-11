@@ -48,19 +48,26 @@ kit (`faction_jmsb`), so everyone carries the common items.
 
 ## The arsenals (TAC//PAC)
 
-ACE items ACM does not use are out of every list: its four bandages and
-QuikClot, untyped blood bags, its splint and painkillers, atropine, and the
-250 ml bags.
+Set from `docs/acm/items-by-level.md` (2026-10-09). Each level carries its own
+column plus every column to its left; the medic bags sit with the level that
+opens them.
 
-- `JMSB.arsenal` (everyone): tourniquet, pressure bandage, trauma dressing,
-  chest seal, SAM splint, pulse oximeter, naloxone, Penthrox, body bag,
-  paracetamol, the Boo Boo Bag.
-- `JMSB.arsenal.qual_CLS`: OPA, NPA, suction bag, NCD kit, AED, elastic wrap,
-  the autoinjectors, stethoscope, pressure cuff, ammonia inhalant, the Medic Bag.
-- `JMSB.arsenal.qual_MEDIC`: the lot - ACM's airway, breathing, circulation and
-  wound items, O- blood in three sizes, saline and plasma, every vial and
-  syringe, ACE's morphine, epinephrine, adenosine, sutures, surgical kit and
-  PAK, the four medic kits and the medic backpacks.
+- `JMSB.arsenal` (everyone): tourniquet, pressure bandage, elastic wrap,
+  paracetamol, body bag, the Boo Boo Bag.
+- `JMSB.arsenal.qual_CLS`: emergency trauma dressing, NPA, OPA, suction bag,
+  chest seal, NCD kit, pulse oximeter, AED, SAM splint, Penthrox, naloxone,
+  ammonia inhalant, the ATNA and midazolam autoinjectors, the Medic Bag.
+- `JMSB.arsenal.qual_MEDIC`: the CLS set plus i-gel, CricKit, ACCUVAC, BVM and
+  pocket BVM, oxygen, stethoscope, thoracostomy and chest tube kits, pressure
+  cuff, 14g/16g IVs, FAST1 and EZ-IO, the four syringes, O- blood in three
+  sizes, field transfusion kits, fentanyl lozenge, the thirteen vials; ACE's
+  saline, plasma and epinephrine autoinjector; the Trauma, Fluid and Drug kits.
+- Gone from every list, per the document: ACE field, packing and elastic
+  dressings, QuikClot, splint, morphine and adenosine autoinjectors,
+  painkillers, ACE blood bags, the personal aid kit, and ACM's pre-filled
+  syringes (the medic draws from vials).
+- Not decided there and left as they were: the ACE surgical kit and suture
+  (with the Medic).
 
 `ACM_Paracetamol` and `ACM_AmmoniaInhalant` are magazines in ACM's config, so
 they sit in the arsenals' `magazines` lists, not `itemsMedical`.

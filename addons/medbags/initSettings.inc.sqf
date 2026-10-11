@@ -59,6 +59,16 @@
     true
 ] call CBA_fnc_addSetting;
 
+// The suit is not in this list: each MOPP bag issues its own camo first
+// (its GVAR(suit) config value), then this.
+[
+    QGVAR(contentsMopp), "EDITBOX",
+    ["MOPP Bag contents", "class:count, comma separated, issued after the bag's own CBRN suit. Respirator and the ACM CBRN self-aid autoinjectors."],
+    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    "JCA_G_AirPurifyingRespirator_03_black_clear_F:1, ACM_Autoinjector_ATNA:2, ACM_Autoinjector_Midazolam:1",
+    true
+] call CBA_fnc_addSetting;
+
 // THESE ARE THE ACE-ONLY DEFAULTS. With ACM loaded, jmfsb_acm re-defaults all
 // five to ACM's kit at preInit (addons/acm/XEH_preInit.sqf) - one list per
 // bag, pitched at who opens it. Anyone opens the Boo Boo Bag, a Combat

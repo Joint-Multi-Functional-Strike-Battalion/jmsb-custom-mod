@@ -22,6 +22,8 @@
 params [["_vehicle", objNull, [objNull]]];
 
 private _textures = call jmfsb_vehicle_fnc_cosmeticEntries;
+// plus what the vehicle's own config can paint it, where the catalogue has nothing
+_textures = _textures + ([typeOf _vehicle, _textures] call FUNC(factoryPaints));
 
 {
     _x params ["_classname", "_displayName", "_textureCode"];

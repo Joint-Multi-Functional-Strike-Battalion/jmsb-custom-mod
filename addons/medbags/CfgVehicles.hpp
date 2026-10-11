@@ -49,14 +49,14 @@ class CfgVehicles {
                     icon = QPATHTOF(data\icons\medical_cross_ex_ca.paa);
                     showDisabled = 0;
                 };
-                // class GVAR(Medical_Supplies_Action_mopp) {
-                //     displayName = "Unpack MOPP Bag";
-                //     condition = "[_player] call jmfsb_medbags_fnc_canUnpackmopp";
-                //     statement = "[_player] call jmfsb_medbags_fnc_doUnpackmopp";
-                //     exceptions[] = {"isNotInside", "isNotSitting"};
-                //     icon = QPATHTOF(data\icons\medical_cross_ex_ca.paa);
-                //     showDisabled = 0;
-                // };
+                class GVAR(Medical_Supplies_Action_Mopp) {
+                    displayName = "Unpack MOPP Bag";
+                    condition = QUOTE([_player] call FUNC(canUnpackMopp));
+                    statement = QUOTE([_player] call FUNC(doUnpackMopp));
+                    exceptions[] = {"isNotInside", "isNotSitting"};
+                    icon = QPATHTOF(data\icons\medical_cross_ex_ca.paa);
+                    showDisabled = 0;
+                };
         };
         // ON THE CASUALTY, NOT ON YOURSELF. This is the one action here that
         // acts on somebody else, so it is a main action rather than a self
@@ -176,17 +176,49 @@ class CfgVehicles {
             };
         };
     };
-    // class GVAR(Item_mopp): Item_Base_F {
-    //     scope = 2;
-    //     scopeArsenal = 2;
-    //     scopeCurator = 2;
-    //     author = QAUTHOR;
-    //     displayName = "MOPP Bag";
-    //     editorPreview = QPATHTOF(data\previews\booboo_ca.paa);
-    //     vehicleClass = "Items";
-    //     class TransportItems {
-    //         name = QGVAR(mopp);
-    //         count = 1;
-    //     };
-    // };
+    class GVAR(Item_Mopp_MTP): Item_Base_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = QAUTHOR;
+        displayName = "MOPP Bag (MTP)";
+        editorPreview = QPATHTOF(data\previews\booboo_ca.paa);
+        vehicleClass = "Items";
+        class TransportItems {
+            class Item01 {
+                name = QGVAR(Mopp_MTP);
+                count = 1;
+            };
+        };
+    };
+    class GVAR(Item_Mopp_Tropic): Item_Base_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = QAUTHOR;
+        displayName = "MOPP Bag (Tropic)";
+        editorPreview = QPATHTOF(data\previews\booboo_ca.paa);
+        vehicleClass = "Items";
+        class TransportItems {
+            class Item01 {
+                name = QGVAR(Mopp_Tropic);
+                count = 1;
+            };
+        };
+    };
+    class GVAR(Item_Mopp_Wdl): Item_Base_F {
+        scope = 2;
+        scopeArsenal = 2;
+        scopeCurator = 2;
+        author = QAUTHOR;
+        displayName = "MOPP Bag (Woodland)";
+        editorPreview = QPATHTOF(data\previews\booboo_ca.paa);
+        vehicleClass = "Items";
+        class TransportItems {
+            class Item01 {
+                name = QGVAR(Mopp_Wdl);
+                count = 1;
+            };
+        };
+    };
 };

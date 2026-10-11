@@ -3,7 +3,7 @@
 class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;
-        units[] = {};
+        units[] = {QGVAR(moduleEvacZone)};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
         // ACM's own addons, so this preInit runs after theirs have registered
@@ -32,3 +32,4 @@ class CfgPatches {
 };
 
 #include "CfgEventHandlers.hpp"
+#include "CfgVehicles.hpp"

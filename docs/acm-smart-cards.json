@@ -1,0 +1,1507 @@
+{
+  "name": "JMSB ACM Smart Cards",
+  "organization": "Joint Multi-Functional Strike Battalion",
+  "version": "2026-10-09",
+  "source": "docs/acm in jmsb-custom-mod (wiki dose numbers)",
+  "page": {
+    "size": "Letter landscape",
+    "width_px": 1056,
+    "height_px": 816,
+    "margin_px": 40,
+    "png_scale": 2
+  },
+  "fonts": {
+    "heading": {
+      "family": "Barlow Condensed",
+      "weights": [
+        600,
+        700
+      ]
+    },
+    "body": {
+      "family": "Barlow",
+      "weights": [
+        400,
+        500,
+        600
+      ]
+    }
+  },
+  "brand": {
+    "dark_green": "#20261C",
+    "olive": "#3A4433",
+    "tan": "#C2A878",
+    "cream": "#E9E4D3",
+    "sage": "#A9AE95"
+  },
+  "themes": {
+    "light": {
+      "background": "#F4F1E6",
+      "text": "#20261C",
+      "section_heading_bg": "#3A4433",
+      "section_heading_text": "#E9E4D3",
+      "table_header_bg": "#20261C",
+      "table_header_text": "#E9E4D3",
+      "rule": "#A9AE95",
+      "header_bg": "#20261C",
+      "header_text": "#E9E4D3",
+      "accent": "#C2A878",
+      "banner_bg": "#C2A878",
+      "banner_text": "#20261C"
+    },
+    "dark": {
+      "background": "#20261C",
+      "text": "#E9E4D3",
+      "section_heading_bg": "#3A4433",
+      "section_heading_text": "#E9E4D3",
+      "table_header_bg": "#A9AE95",
+      "table_header_text": "#20261C",
+      "rule": "#55604B",
+      "header_bg": "#20261C",
+      "header_text": "#E9E4D3",
+      "accent": "#C2A878",
+      "banner_bg": "#C2A878",
+      "banner_text": "#20261C"
+    }
+  },
+  "assets": {
+    "logo": "art/JMSB-crossed-arrows-G/svg/jmsb-crossed-arrows-G-clean.svg",
+    "cycle-self-aid": "docs/acm/img/cycle-self-aid.png"
+  },
+  "cards": [
+    {
+      "id": "self-buddy-aid",
+      "level": 1,
+      "title": "ACM SMART CARD",
+      "role": "SELF AID · BUDDY AID",
+      "subtitle": "Level 1 · The 3 Bs",
+      "banner": "There is no first aid in a firefight. Win the fight, then provide aid.",
+      "files": {
+        "light": {
+          "png": "png/acm-smart-card-1-self-buddy-aid-light.png",
+          "pdf": "pdf/acm-smart-card-1-self-buddy-aid-light.pdf"
+        },
+        "dark": {
+          "png": "png/acm-smart-card-1-self-buddy-aid-dark.png",
+          "pdf": "pdf/acm-smart-card-1-self-buddy-aid-dark.pdf"
+        }
+      },
+      "print_layout": {
+        "columns": 3,
+        "areas": [
+          {
+            "span": "1-2",
+            "sections": [
+              {
+                "heading": null,
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "image",
+                    "asset": "cycle-self-aid",
+                    "alt": "Self aid cycle: 01 minimal self aid, 02 communicate, 03 after the fight. Keep fighting."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": "1-2",
+            "sections": [
+              {
+                "heading": "Bleeding",
+                "letter": "1",
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "Limb with many wounds",
+                        "text": "tourniquet. High and tight, above the wounds."
+                      },
+                      {
+                        "label": "Every other wound",
+                        "text": "pressure bandage. One per wound."
+                      },
+                      {
+                        "label": "Bleeding stopped",
+                        "text": "elastic wrap, so wounds do not reopen."
+                      },
+                      {
+                        "label": null,
+                        "text": "Elastic wrap does not stop a bleeding wound on its own."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Breathing",
+                "letter": "2",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Check breathing",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Not breathing",
+                        "Head turn, check pulse, call CLS"
+                      ],
+                      [
+                        "Shallow",
+                        "Call CLS"
+                      ],
+                      [
+                        "Slow or rapid",
+                        "Tell CLS"
+                      ],
+                      [
+                        "Normal",
+                        "Recovery position"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Blue skin on the face and arms: short of oxygen. Tell CLS."
+                  }
+                ]
+              },
+              {
+                "heading": "Beating",
+                "letter": "3",
+                "blocks": [
+                  {
+                    "type": "ordered",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Check the pulse at the neck."
+                      },
+                      {
+                        "label": null,
+                        "text": "No pulse: CPR for 2 minutes."
+                      },
+                      {
+                        "label": null,
+                        "text": "Check the pulse again."
+                      },
+                      {
+                        "label": null,
+                        "text": "Repeat until the pulse returns or CLS takes over."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": "No pulse, no recovery position.",
+                    "text": "It blocks CPR."
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Weak or missing pulse at the arms or legs: heavy blood loss. Tell CLS."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Self aid",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "ordered",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Win the fight. Return fire, get to cover, then look at yourself."
+                      },
+                      {
+                        "label": null,
+                        "text": "Tourniquet any limb with many wounds."
+                      },
+                      {
+                        "label": null,
+                        "text": "Pressure bandage every other wound."
+                      },
+                      {
+                        "label": null,
+                        "text": "Elastic wrap once the bleeding has stopped."
+                      },
+                      {
+                        "label": null,
+                        "text": "Paracetamol for pain. 1 to 2 pills, works in about 4 minutes, lasts about 50."
+                      },
+                      {
+                        "label": null,
+                        "text": "Call CLS if you cannot stop the bleeding or a limb will not work."
+                      },
+                      {
+                        "label": null,
+                        "text": "Get back in the fight."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Call CLS for",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Any unconscious casualty"
+                      },
+                      {
+                        "label": null,
+                        "text": "Any chest wound"
+                      },
+                      {
+                        "label": null,
+                        "text": "Bleeding you cannot stop"
+                      },
+                      {
+                        "label": null,
+                        "text": "A limb that will not work"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Buddy aid",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "ordered",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Win the fight. Do not go to a casualty under fire."
+                      },
+                      {
+                        "label": null,
+                        "text": "Drag your buddy to cover. Treat behind cover."
+                      },
+                      {
+                        "label": null,
+                        "text": "Stop the bleeding. Head wounds first, then limbs, then the rest."
+                      },
+                      {
+                        "label": "Responsive?",
+                        "text": "Yes: finish bandaging, wrap, paracetamol, done. No: call CLS and keep going."
+                      },
+                      {
+                        "label": "Breathing?",
+                        "text": "No: turn the head to clear the mouth and check again."
+                      },
+                      {
+                        "label": "Pulse at the neck?",
+                        "text": "No: CPR. Yes: recovery position, stay with them."
+                      },
+                      {
+                        "label": null,
+                        "text": "Tell CLS what happened, how long they have been down, where the tourniquets are, pulse and breathing, and how many paracetamol."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "You do not",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Airway adjuncts, chest seals, needles, IVs, any medication other than paracetamol."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cls",
+      "level": 2,
+      "title": "ACM SMART CARD",
+      "role": "CLS",
+      "subtitle": "Level 2 · MARCH",
+      "banner": "Treat in MARCH order. Do not move to the next letter until the current one is controlled.",
+      "files": {
+        "light": {
+          "png": "png/acm-smart-card-2-cls-light.png",
+          "pdf": "pdf/acm-smart-card-2-cls-light.pdf"
+        },
+        "dark": {
+          "png": "png/acm-smart-card-2-cls-dark.png",
+          "pdf": "pdf/acm-smart-card-2-cls-dark.pdf"
+        }
+      },
+      "print_layout": {
+        "columns": 3,
+        "areas": [
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Massive hemorrhage",
+                "letter": "M",
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "Limb, many wounds",
+                        "text": "tourniquet."
+                      },
+                      {
+                        "label": "Body part, many wounds",
+                        "text": "emergency trauma dressing. Not on yourself."
+                      },
+                      {
+                        "label": "Single wound",
+                        "text": "pressure bandage."
+                      },
+                      {
+                        "label": "Once stable",
+                        "text": "elastic wrap over bandaged and clotted wounds."
+                      },
+                      {
+                        "label": "Bruising, or bleeding that will not stop",
+                        "text": "call the Medic for TXA."
+                      },
+                      {
+                        "label": null,
+                        "text": "Tourniquet off once the wounds under it are bandaged."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Airway",
+                "letter": "A",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Problem",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Tongue blocks airway",
+                        "NPA or OPA, head-tilt chin-lift, or recovery position"
+                      ],
+                      [
+                        "Vomit or blood",
+                        "Head turn if mild. Suction bag"
+                      ],
+                      [
+                        "Collapse, long unconscious",
+                        "Head-tilt chin-lift or recovery position. Medic for i-gel"
+                      ],
+                      [
+                        "Chemical inflammation or spasm",
+                        "Medic. Needs a surgical airway"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Suction first. NPA and OPA only go in a clear airway."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Respiration",
+                "letter": "R",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Inspect chest",
+                      "Means",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Sides uneven",
+                        "Pneumothorax",
+                        "Chest seal"
+                      ],
+                      [
+                        "Tracheal deviation",
+                        "Tension pneumothorax",
+                        "Chest seal, then NCD"
+                      ],
+                      [
+                        "Bruising on upper chest",
+                        "Hemothorax",
+                        "Chest seal, call Medic"
+                      ],
+                      [
+                        "No movement",
+                        "Not breathing",
+                        "Check airway and pulse"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Pulse oximeter",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Under 80",
+                      "Under 67",
+                      "Under 55"
+                    ],
+                    "rows": [
+                      [
+                        "Unconscious",
+                        "Cardiac arrest",
+                        "Death"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "With systolic under 90 the reading can be off by up to 30%."
+                  }
+                ]
+              },
+              {
+                "heading": "Circulation",
+                "letter": "C",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Check",
+                      "Result",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Carotid pulse",
+                        "None",
+                        "Cardiac arrest drill"
+                      ],
+                      [
+                        "Radial or femoral",
+                        "Weak or none",
+                        "Medic for fluids"
+                      ],
+                      [
+                        "Body parts",
+                        "Bruising",
+                        "Medic for TXA"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Cardiac arrest drill",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "ordered",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Fix what you can: tension pneumothorax (seal and decompress), blocked airway (clear it)."
+                      },
+                      {
+                        "label": null,
+                        "text": "Morphine or fentanyl on board: naloxone now."
+                      },
+                      {
+                        "label": null,
+                        "text": "Connect the AED, select AED mode."
+                      },
+                      {
+                        "label": null,
+                        "text": "CPR for 2 minutes or until the AED prompts. Let it re-analyze. Repeat."
+                      },
+                      {
+                        "label": null,
+                        "text": "No AED: CPR for 2 minutes, carotid pulse check, repeat."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Head and hypothermia",
+                "letter": "H",
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "Unconscious, stable vitals",
+                        "text": "ammonia inhalant."
+                      },
+                      {
+                        "label": "Still unconscious",
+                        "text": "go back through M, A, R, C."
+                      },
+                      {
+                        "label": "Conscious",
+                        "text": "pain, then fractures."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Fractures",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "SAM splint, then elastic wrap over it. Significant swelling is a complex fracture: evacuate. Realignment is the Medic's."
+                  }
+                ]
+              },
+              {
+                "heading": "Not CLS",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "IV or IO, fluids, blood, vial medications, i-gel, surgical airway, thoracostomy, manual AED, fracture realignment, casualty conversion."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": "full",
+            "sections": [
+              {
+                "heading": "Meds",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Med",
+                      "For",
+                      "Dose",
+                      "Onset",
+                      "Lasts",
+                      "Watch"
+                    ],
+                    "rows": [
+                      [
+                        "Paracetamol",
+                        "Mild to moderate pain",
+                        "1 to 2 pills",
+                        "Under 4 min",
+                        "About 50 min",
+                        ""
+                      ],
+                      [
+                        "Penthrox inhaler",
+                        "Moderate to severe pain, short term",
+                        "1 to 5 uses, 8 per inhaler",
+                        "Under 3 s",
+                        "About 4 min",
+                        "Not with chest injury, slow breathing, low blood volume or altered mental status"
+                      ],
+                      [
+                        "Naloxone spray",
+                        "Opioid overdose",
+                        "1 to 2 uses",
+                        "Under 3 s",
+                        "About 6 min",
+                        "Opioids last longer. Watch and re-dose"
+                      ],
+                      [
+                        "Ammonia inhalant",
+                        "Unconscious with stable vitals",
+                        "1 use, 8 per inhalant",
+                        "Under 3 s",
+                        "Under 40 s",
+                        ""
+                      ],
+                      [
+                        "ATNA autoinjector",
+                        "Nerve agent",
+                        "2 to 3 injections to start",
+                        "Under 15 s",
+                        "About 15 min",
+                        ""
+                      ],
+                      [
+                        "Midazolam autoinjector",
+                        "Seizures from nerve agent",
+                        "1 injection",
+                        "Under 30 s",
+                        "About 20 min",
+                        "Lowers heart rate and blood pressure"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "medic-treatment",
+      "level": 3,
+      "title": "ACM SMART CARD",
+      "role": "MEDIC · TREATMENT",
+      "subtitle": "Level 3 · MARCH · Card 1 of 2",
+      "banner": "Everything CLS does, plus anything that needs a vein, a scalpel or a rhythm decision.",
+      "files": {
+        "light": {
+          "png": "png/acm-smart-card-3-medic-treatment-light.png",
+          "pdf": "pdf/acm-smart-card-3-medic-treatment-light.pdf"
+        },
+        "dark": {
+          "png": "png/acm-smart-card-3-medic-treatment-dark.png",
+          "pdf": "pdf/acm-smart-card-3-medic-treatment-dark.pdf"
+        }
+      },
+      "print_layout": {
+        "columns": 3,
+        "areas": [
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Massive hemorrhage",
+                "letter": "M",
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "TXA 1 g IV",
+                        "text": "for severe bleeding, noticeable bruising or a bleeding hemothorax."
+                      },
+                      {
+                        "label": null,
+                        "text": "Bruising with a falling blood pressure is internal bleeding. TXA and fluids."
+                      },
+                      {
+                        "label": null,
+                        "text": "Clots are unstable. Wrap or stitch once stable."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Airway",
+                "letter": "A",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Tool",
+                      "Solves"
+                    ],
+                    "rows": [
+                      [
+                        "i-gel",
+                        "Open airway, collapse. Airway must be clear first"
+                      ],
+                      [
+                        "ACCUVAC, suction bag",
+                        "All obstructions"
+                      ],
+                      [
+                        "Surgical airway (CricKit)",
+                        "Collapse, obstruction, inflammation, spasm"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Use the least invasive airway that solves the problem."
+                  }
+                ]
+              },
+              {
+                "heading": "Respiration",
+                "letter": "R",
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "Stethoscope",
+                        "text": "muffled on one side is a pneumothorax."
+                      },
+                      {
+                        "label": "Tension pneumothorax",
+                        "text": "chest seal plus NCD, or thoracostomy."
+                      },
+                      {
+                        "label": "Hemothorax",
+                        "text": "TXA, then thoracostomy and chest tube."
+                      },
+                      {
+                        "label": null,
+                        "text": "Consider lidocaine IM before thoracostomy."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Finger thoracostomy",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Lung inflating normally",
+                        "Close incision"
+                      ],
+                      [
+                        "Lung not inflating or collapsed",
+                        "Close incision"
+                      ],
+                      [
+                        "Blood in pleural space",
+                        "Chest tube"
+                      ],
+                      [
+                        "Active bleeding",
+                        "TXA, then chest tube"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": "Chest tube",
+                    "text": "drain with the ACCUVAC or a suction bag, re-drain until no blood comes out, close the incision."
+                  }
+                ]
+              },
+              {
+                "heading": "Head, pain, fractures",
+                "letter": "H",
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "Unconscious, stable vitals",
+                        "text": "ammonia inhalant."
+                      },
+                      {
+                        "label": "Still unconscious",
+                        "text": "go back through M, A, R, C."
+                      },
+                      {
+                        "label": "Fracture",
+                        "text": "lidocaine 50 to 100 mg IM, realign, SAM splint, check mobility, wrap."
+                      },
+                      {
+                        "label": "Complex fracture",
+                        "text": "evacuate."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Access",
+                "letter": "C",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Access",
+                      "Site",
+                      "Flow"
+                    ],
+                    "rows": [
+                      [
+                        "16g IV",
+                        "Limbs",
+                        "Moderate"
+                      ],
+                      [
+                        "14g IV",
+                        "Limbs",
+                        "Fast. More complications"
+                      ],
+                      [
+                        "FAST1 IO",
+                        "Sternum",
+                        "Slow"
+                      ],
+                      [
+                        "EZ-IO",
+                        "Tibia or humerus",
+                        "Slow"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Crashing casualty: IO first, then move the bags to an IV. Tourniquets block IVs on that limb."
+                  }
+                ]
+              },
+              {
+                "heading": "Fluids",
+                "letter": "C",
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Fluid, best first",
+                      "Carries oxygen",
+                      "Flow",
+                      "Platelets"
+                    ],
+                    "rows": [
+                      [
+                        "Fresh whole blood",
+                        "Yes",
+                        "Fast",
+                        "Yes, with calcium"
+                      ],
+                      [
+                        "Whole blood",
+                        "Yes",
+                        "Slow",
+                        "Yes, with calcium"
+                      ],
+                      [
+                        "Plasma",
+                        "30%",
+                        "Moderate",
+                        "Yes"
+                      ],
+                      [
+                        "Saline",
+                        "No",
+                        "Fast",
+                        "No"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Blood",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Check the blood type on the dog tag. A mismatch can kill."
+                      },
+                      {
+                        "label": null,
+                        "text": "O- goes to anyone. AB+ receives from anyone. A negative recipient only takes negative blood."
+                      },
+                      {
+                        "label": "Calcium chloride 1 g IV",
+                        "text": "after the first unit (500 ml), then after every 4 units. Never IM."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Field transfusion",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "ordered",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Connect the kit to the donor's IV. It does not work on an IO."
+                      },
+                      {
+                        "label": null,
+                        "text": "Wait for it to fill."
+                      },
+                      {
+                        "label": null,
+                        "text": "Disconnect and use it as fresh whole blood, soon."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Casualty conversion",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "Casualty unconscious, alive and not bleeding externally."
+                      },
+                      {
+                        "label": null,
+                        "text": "If the mission requires it: in a medical facility or vehicle, and ertapenem 1 g given."
+                      },
+                      {
+                        "label": null,
+                        "text": "Keep treating the AI casualty until it is evacuated."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Cardiac arrest",
+                "letter": "C",
+                "blocks": [
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "Confirm with a carotid pulse check. Fix the reversible cause. Then rhythm, drug, shock, CPR."
+                  },
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Reversible cause",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Hypovolemia",
+                        "IO, push fluid, CPR"
+                      ],
+                      [
+                        "Hypoxia",
+                        "CPR with BVM"
+                      ],
+                      [
+                        "Tension pneumothorax",
+                        "NCD or thoracostomy"
+                      ],
+                      [
+                        "Hemothorax",
+                        "TXA, thoracostomy, chest tube"
+                      ],
+                      [
+                        "Opioids on board",
+                        "Naloxone"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Rhythm",
+                      "Shock",
+                      "Do"
+                    ],
+                    "rows": [
+                      [
+                        "Sinus",
+                        "No",
+                        "Re-assess"
+                      ],
+                      [
+                        "VT or VF",
+                        "Yes",
+                        "Amiodarone or lidocaine, shock, CPR"
+                      ],
+                      [
+                        "PEA",
+                        "No",
+                        "Re-check reversible causes, CPR"
+                      ],
+                      [
+                        "Asystole",
+                        "No",
+                        "Check for terminal injuries, epinephrine, CPR"
+                      ]
+                    ]
+                  },
+                  {
+                    "type": "note",
+                    "label": null,
+                    "text": "PEA looks like sinus on the EKG. Always confirm with a pulse check."
+                  }
+                ]
+              },
+              {
+                "heading": "Arrest drugs",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": "Epinephrine 1 mg IV.",
+                        "text": "The only drug that helps in asystole."
+                      },
+                      {
+                        "label": "Amiodarone 300 mg IV",
+                        "text": "for VT or VF. Two vials. Less does nothing."
+                      },
+                      {
+                        "label": "Lidocaine 100 mg IV",
+                        "text": "for VT or VF. One vial."
+                      },
+                      {
+                        "label": null,
+                        "text": "Never amiodarone and lidocaine together. Leave 5 to 10 minutes between them, and between amiodarone doses."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "CPR",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "2 minutes, or until the AED prompts. Re-analyze. Repeat."
+                      },
+                      {
+                        "label": "Short of oxygen, one medic or no i-gel",
+                        "text": "30 compressions, then 2 BVM breaths."
+                      },
+                      {
+                        "label": "Short of oxygen, two medics and an i-gel",
+                        "text": "continuous CPR and BVM."
+                      },
+                      {
+                        "label": "Pulse is back",
+                        "text": "EtCO2 jumps to 40 to 50, cyanosis fades, carotid pulse returns."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "medic-drugs",
+      "level": 3,
+      "title": "ACM SMART CARD",
+      "role": "MEDIC · DRUGS",
+      "subtitle": "Level 3 · Card 2 of 2",
+      "banner": "Draw = dose ÷ concentration. IV drugs need an IV or IO first. More than the range adds side effects, not benefit.",
+      "files": {
+        "light": {
+          "png": "png/acm-smart-card-3-medic-drugs-light.png",
+          "pdf": "pdf/acm-smart-card-3-medic-drugs-light.pdf"
+        },
+        "dark": {
+          "png": "png/acm-smart-card-3-medic-drugs-dark.png",
+          "pdf": "pdf/acm-smart-card-3-medic-drugs-dark.pdf"
+        }
+      },
+      "print_layout": {
+        "columns": 2,
+        "areas": [
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Fixed doses",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Drug",
+                      "For",
+                      "Dose",
+                      "Draw"
+                    ],
+                    "rows": [
+                      [
+                        "Epinephrine",
+                        "Cardiac arrest",
+                        "1 mg IV",
+                        "1 ml"
+                      ],
+                      [
+                        "Amiodarone",
+                        "VT or VF",
+                        "300 mg IV",
+                        "6 ml, two vials"
+                      ],
+                      [
+                        "Lidocaine",
+                        "VT or VF",
+                        "100 mg IV",
+                        "5 ml"
+                      ],
+                      [
+                        "Lidocaine",
+                        "Before realignment or thoracostomy",
+                        "50 to 100 mg IM",
+                        "2.5 to 5 ml"
+                      ],
+                      [
+                        "TXA",
+                        "Severe bleeding, bruising, bleeding hemothorax",
+                        "1 g IV, up to 2 g",
+                        "10 ml"
+                      ],
+                      [
+                        "Calcium chloride",
+                        "After the first unit of blood, then every 4 units",
+                        "1 g IV, never IM",
+                        "10 ml"
+                      ],
+                      [
+                        "Ondansetron",
+                        "Nausea, vomiting, after ketamine",
+                        "4 mg IV or IM, max 8 mg",
+                        "2 ml"
+                      ],
+                      [
+                        "Ertapenem",
+                        "Wound infection, before conversion if required",
+                        "1 g IV or IM",
+                        "3.2 ml"
+                      ],
+                      [
+                        "Atropine",
+                        "Nerve agent",
+                        "2 mg IV or IM, 2 to 4 mg to start",
+                        "2 ml, two vials"
+                      ],
+                      [
+                        "Atropine",
+                        "Slow heart rate after amiodarone",
+                        "1 mg IV or IM",
+                        "1 ml"
+                      ],
+                      [
+                        "Adenosine",
+                        "Lowers heart rate",
+                        "6 mg IV",
+                        "2 ml"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Weight doses, worked for 80 kg",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Drug",
+                      "Route",
+                      "Per kg",
+                      "At 80 kg",
+                      "Draw"
+                    ],
+                    "rows": [
+                      [
+                        "Morphine",
+                        "IV",
+                        "0.05 to 0.1 mg",
+                        "4 to 8 mg",
+                        "0.8 to 1.6 ml"
+                      ],
+                      [
+                        "Morphine",
+                        "IM",
+                        "0.07 to 0.1 mg",
+                        "5.6 to 8 mg",
+                        "1.1 to 1.6 ml"
+                      ],
+                      [
+                        "Fentanyl",
+                        "IV",
+                        "0.5 to 1 mcg",
+                        "40 to 80 mcg",
+                        "0.8 to 1.6 ml"
+                      ],
+                      [
+                        "Fentanyl",
+                        "IM",
+                        "0.7 to 1 mcg",
+                        "56 to 80 mcg",
+                        "1.1 to 1.6 ml"
+                      ],
+                      [
+                        "Ketamine",
+                        "IV",
+                        "0.1 to 0.2 mg",
+                        "8 to 16 mg",
+                        "0.16 to 0.32 ml"
+                      ],
+                      [
+                        "Ketamine",
+                        "IM",
+                        "0.4 to 0.8 mg",
+                        "32 to 64 mg",
+                        "0.64 to 1.28 ml"
+                      ],
+                      [
+                        "Lidocaine",
+                        "IV",
+                        "1 mg, max 3 mg",
+                        "80 mg, max 240 mg",
+                        "4 ml, max 12 ml"
+                      ],
+                      [
+                        "Esmolol",
+                        "IV",
+                        "0.25 to 0.5 mg",
+                        "20 to 40 mg",
+                        "2 to 4 ml"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "span": null,
+            "sections": [
+              {
+                "heading": "Timings and vitals",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Drug",
+                      "Onset IV / IM",
+                      "Lasts",
+                      "Vitals"
+                    ],
+                    "rows": [
+                      [
+                        "Morphine",
+                        "Under 25 s / 2 min",
+                        "21 / 30 min",
+                        "Lowers HR, BP, breathing"
+                      ],
+                      [
+                        "Fentanyl",
+                        "Under 10 s / 30 s",
+                        "16 / 20 min",
+                        "Lowers HR, BP, breathing"
+                      ],
+                      [
+                        "Ketamine",
+                        "Under 5 s / 20 s",
+                        "11 / 15 min",
+                        "None"
+                      ],
+                      [
+                        "Fentanyl lozenge",
+                        "Under 2 min",
+                        "15 min",
+                        "Lowers breathing most"
+                      ],
+                      [
+                        "Epinephrine",
+                        "Under 5 s / 30 s",
+                        "6 to 7 min",
+                        "Raises HR, BP, breathing"
+                      ],
+                      [
+                        "Amiodarone",
+                        "Under 10 s",
+                        "12 min",
+                        "Lowers HR, BP"
+                      ],
+                      [
+                        "Lidocaine",
+                        "Under 5 s",
+                        "10 min",
+                        "Lowers HR, BP"
+                      ],
+                      [
+                        "Atropine",
+                        "Under 5 s / 15 s",
+                        "15 min",
+                        "Raises HR"
+                      ],
+                      [
+                        "Esmolol",
+                        "Under 20 s",
+                        "5 min",
+                        "Lowers HR"
+                      ],
+                      [
+                        "Adenosine",
+                        "Under 1 min",
+                        "Under 2 min",
+                        "Lowers HR"
+                      ],
+                      [
+                        "TXA",
+                        "Under 15 s",
+                        "15 min",
+                        "Lowers BP slightly"
+                      ],
+                      [
+                        "Calcium chloride",
+                        "Under 15 s",
+                        "10 min",
+                        ""
+                      ],
+                      [
+                        "Ondansetron",
+                        "Under 15 s / 45 s",
+                        "12 to 15 min",
+                        ""
+                      ],
+                      [
+                        "Ertapenem",
+                        "Under 5 s / 30 s",
+                        "15 to 20 min",
+                        ""
+                      ]
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Do not mix",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "list",
+                    "items": [
+                      {
+                        "label": null,
+                        "text": "No amiodarone and lidocaine within 5 to 10 minutes of each other. No second amiodarone within 5 to 10 minutes."
+                      },
+                      {
+                        "label": null,
+                        "text": "No opioids with low blood volume, slow heart rate, slow breathing, chest injury or altered mental status."
+                      },
+                      {
+                        "label": null,
+                        "text": "Naloxone for any arrest with opioids on board."
+                      },
+                      {
+                        "label": null,
+                        "text": "Calcium chloride never IM, and not in ventricular fibrillation."
+                      },
+                      {
+                        "label": null,
+                        "text": "No epinephrine with a very fast heart rate or high blood pressure."
+                      },
+                      {
+                        "label": null,
+                        "text": "No esmolol, adenosine, amiodarone or midazolam with a slow heart rate."
+                      },
+                      {
+                        "label": null,
+                        "text": "Morphine autoinjector is not issued."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "heading": "Pain: which drug",
+                "letter": null,
+                "blocks": [
+                  {
+                    "type": "table",
+                    "columns": [
+                      "Situation",
+                      "Drug"
+                    ],
+                    "rows": [
+                      [
+                        "Breathing impaired or chest injury",
+                        "Ketamine. Consider ondansetron 4 mg after"
+                      ],
+                      [
+                        "No breathing problems",
+                        "Morphine. Fentanyl if severe"
+                      ],
+                      [
+                        "Conscious, lying down, no IV",
+                        "Fentanyl lozenge, 1"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

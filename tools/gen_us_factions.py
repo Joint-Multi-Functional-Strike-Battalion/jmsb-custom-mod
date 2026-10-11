@@ -2470,8 +2470,10 @@ SUPPRESS_PREFER = {
 
 def pick_can(fac, tier, compat):
     """The suppressor this faction fits from a weapon's MuzzleSlot, or None."""
+    # NO JCA (user, 2026-10-09: "remove jca arsenal from factions and logistics")
     cans = [x for x in compat
-            if _CAN.search(x) and not _NOT_CAN.search(x) and class_origin(x, None) != "dropped"]
+            if _CAN.search(x) and not _NOT_CAN.search(x) and class_origin(x, None) != "dropped"
+            and not x.lower().startswith("jca_")]
     if not cans:
         return None
     prefer = SUPPRESS_PREFER.get(fac, ())

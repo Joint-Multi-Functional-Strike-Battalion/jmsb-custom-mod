@@ -14,8 +14,9 @@ broken.
      broad (any ALiVE_/ALIVE_ prefixed symbol, plus OPCOM_instances) - a
      narrower list missed ALIVE_aaProfileBehaviour and ALIVE_gridData.
 
-  2. SIDES ARE TYPED ONCE (D59). A JMSB - Enemy module's Side plus Core's
-     Player Side derive every side any subsystem needs. Four subsystems used to
+  2. SIDES ARE TYPED ONCE (D59). The players' side comes from their slots
+     (fnc_playerSides) and the enemy's from the mission's side relations
+     (fnc_enemySide, 2026-10-09); those derive every side any subsystem needs. Four subsystems used to
      ask for a side five times between them, and every one of those fields was a
      chance to say something different by accident. A new module attribute
      asking for a side is a regression, not a feature.
@@ -54,6 +55,10 @@ SIDE_ATTRS_ALLOWED = {
     "sideOnly",         # Boarding: "presser's side" or "everyone in range".
                         #   Relative to whoever pressed at the time - it never
                         #   asks anybody to name a side, so D59 does not apply
+    "swarmSide",        # Drone swarm: the crew of an airframe that SPAWNS
+                        #   EMPTY - the airframe's own config decides the
+                        #   side of one that crews itself. Same kind as
+                        #   crew_side (2026-10-09)
 }
 SIDE_ATTR = re.compile(r"^\s*(?:AEDIT|ABOOL|APICK)\((\w*[Ss]ide\w*)\s*,", re.M)
 SIDE_CLASS = re.compile(r"^\s*class (\w*[Ss]ide\w*)\s*:\s*(?:Combo|Edit)\b", re.M)
@@ -118,8 +123,9 @@ def main():
     if sides:
         ok = False
         print("SIDE TYPED MORE THAN ONCE (D59) - %d attribute(s)" % len(sides))
-        print("  A JMSB - Enemy Side plus Core's Player Side derive every side a")
-        print("  subsystem needs. Derive it in fnc_moduleEnemy rather than asking again.")
+        print("  The players' side comes from their slots (jmfsb_common_fnc_playerSides)")
+        print("  and the enemy from the side relations (jmfsb_common_fnc_enemySide).")
+        print("  Call those rather than asking for a side again.")
         for s in sides:
             print("    " + s)
         print("")

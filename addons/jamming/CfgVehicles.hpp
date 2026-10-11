@@ -194,14 +194,6 @@ class CfgVehicles {
                 defaultValue = "0";
                 expression = QUOTE(_this setVariable [ARR_2('radius',_value)]);
             };
-            class jamSide: Edit {
-                property = QGVAR(jamSide);
-                displayName = "Side";
-                tooltip = "Who owns it: east, west, guer or civ. Decides who the field is aimed at, and who the artillery answers for.";
-                typeName = "STRING";
-                defaultValue = "east";
-                expression = QUOTE(_this setVariable [ARR_2('jamSide',_value)]);
-            };
 
             // ---- the reply ---------------------------------------------------
             class artyReply: Checkbox {
@@ -251,7 +243,7 @@ class CfgVehicles {
                 "",
                 "Spectrum - radio, data or gps. One per site",
                 "Radius (m) - 0 rolls one from the Jamming module's bounds",
-                "Side - who owns the emitter",
+                "Owner - whoever is hostile to the players, worked out from the mission's side relations",
                 "",
                 "Artillery Reply - the site shells whoever loiters in its field",
                 "Reply Delay (s) - how long a hostile must stay inside before it fires",

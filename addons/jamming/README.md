@@ -97,16 +97,15 @@ Placing this module turns on jamming. Without it, the system is off. It places n
 
 `jmfsb_moduleJammerSite`, category jmfsb_modules
 
-One jammer site, where you place it. Needs the JMSB - Jamming module on the map to arm.<br>Spectrum - radio, data or gps. One per site Radius (m) - 0 rolls one from the Jamming module's bounds Side - who owns the emitter<br>Artillery Reply - the site shells whoever loiters in its field Reply Delay (s) - how long a hostile must stay inside before it fires Reply Rounds / Scatter (m) - the size of the mission and how wide it falls Reply Cooldown (s) - minimum gap between two missions from this site
+One jammer site, where you place it. Needs the JMSB - Jamming module on the map to arm.<br>Spectrum - radio, data or gps. One per site Radius (m) - 0 rolls one from the Jamming module's bounds Owner - whoever is hostile to the players, worked out from the mission's side relations<br>Artillery Reply - the site shells whoever loiters in its field Reply Delay (s) - how long a hostile must stay inside before it fires Reply Rounds / Scatter (m) - the size of the mission and how wide it falls Reply Cooldown (s) - minimum gap between two missions from this site
 
-<details><summary>7 attributes</summary>
+<details><summary>6 attributes</summary>
 
 - `artyCooldown`
 - `artyDelay`
 - `artyRounds`
 - `artyScatter`
 - `domain`
-- `jamSide`
 - `radius`
 
 </details>

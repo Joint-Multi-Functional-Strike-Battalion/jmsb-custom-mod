@@ -54,15 +54,17 @@ ADDON = false;
 // with no room keeps), ACM's items in place of ACE's. Each bag is pitched at
 // who opens it: the Boo Boo Bag is anyone's self-aid, the Medic Bag a CLS
 // load, the Trauma Kit, Fluid Kit and Drug Kit the Medic's. O- is the
-// universal donor, so the blood is O-.
+// universal donor, so the blood is O-. The levels follow docs/acm/items-by-level.md
+// (2026-10-09): the Boo Boo Bag is the self-aid column, the Medic Bag the CLS
+// column, and the morphine autoinjector is not issued at all.
 {
     _x params ["_setting", "_contents"];
     [_setting, _contents] call FUNC(setDefault);
 } forEach [
     ["jmfsb_medbags_contentsFirstAid",
-        "ACM_PressureBandage:6, ACM_EmergencyTraumaDressing:2, ACE_tourniquet:2, ACM_ChestSeal:1, ACM_NPA:1, ACM_Paracetamol:1, ACE_EarPlugs:1"],
+        "ACM_PressureBandage:6, ACM_ElasticWrap:2, ACE_tourniquet:2, ACM_Paracetamol:1, ACE_EarPlugs:1"],
     ["jmfsb_medbags_contentsMedicKit",
-        "ACM_PressureBandage:18, ACM_EmergencyTraumaDressing:8, ACM_ElasticWrap:14, ACE_tourniquet:8, ACM_ChestSeal:4, ACM_NCDKit:2, ACM_NPA:4, ACM_OPA:4, ACM_SuctionBag:2, ACM_SAMSplint:6, ACM_PulseOximeter:1, ACE_morphine:4, ACM_Inhaler_Penthrox:2, ACM_Paracetamol:4, ACM_Spray_Naloxone:2, ACM_AmmoniaInhalant:2, ACM_Autoinjector_ATNA:3, ACM_Autoinjector_Midazolam:1, ACE_EarPlugs:2"],
+        "ACM_PressureBandage:18, ACM_EmergencyTraumaDressing:8, ACM_ElasticWrap:14, ACE_tourniquet:8, ACM_ChestSeal:4, ACM_NCDKit:2, ACM_NPA:4, ACM_OPA:4, ACM_SuctionBag:2, ACM_SAMSplint:6, ACM_PulseOximeter:1, ACM_AED:1, ACM_Inhaler_Penthrox:2, ACM_Paracetamol:4, ACM_Spray_Naloxone:2, ACM_AmmoniaInhalant:2, ACM_Autoinjector_ATNA:3, ACM_Autoinjector_Midazolam:1, ACE_EarPlugs:2"],
     ["jmfsb_medbags_contentsTrauma",
         "ACM_PressureBandage:28, ACM_EmergencyTraumaDressing:12, ACM_ElasticWrap:24, ACE_tourniquet:12, ACM_ChestSeal:8, ACM_NCDKit:4, ACM_ThoracostomyKit:2, ACM_ChestTubeKit:2, ACM_IGel:4, ACM_CricKit:2, ACM_SuctionBag:4, ACM_SAMSplint:12, ACM_IV_16g:8, ACM_IV_14g:4, ACM_IO_FAST:4, ACM_IO_EZ:2, ACM_Stethoscope:1, ACM_PulseOximeter:1, ACM_PocketBVM:1, ACE_surgicalKit:1, ACE_EarPlugs:2"],
     ["jmfsb_medbags_contentsFluid",

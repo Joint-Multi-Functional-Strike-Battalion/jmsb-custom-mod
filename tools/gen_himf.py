@@ -118,6 +118,12 @@ HEADGEAR = []      # moved out to backup/himf_frce_2026-08-29 (user, 2026-08-29)
 
 FACEWEAR = []      # moved out to backup/himf_frce_2026-08-29 (user, 2026-08-29)
 
+# NO JCA (user, 2026-10-09: "remove jca arsenal from factions and logistics").
+# The Atlas parents wear JCA's KBT rig; the base game has the same rig.
+NO_JCA = {
+    "JCA_V_CarrierRigKBT_01_combat_olive_F": "V_CarrierRigKBT_01_light_Olive_F",
+}
+
 VESTS = []      # moved out to backup/himf_frce_2026-08-29 (user, 2026-08-29)
 
 # Backpacks are CfgVehicles, not CfgWeapons: a rucksack is a vehicle that
@@ -679,8 +685,9 @@ def main():
         if kit.get("uniform"):
             B.append('        uniformClass = "%s";' % kit["uniform"])
         if kit.get("linked"):
-            B.append("        linkedItems[] = %s;" % arr(kit["linked"]))
-            B.append("        respawnLinkedItems[] = %s;" % arr(kit["linked"]))
+            linked = [NO_JCA.get(x, x) for x in kit["linked"]]
+            B.append("        linkedItems[] = %s;" % arr(linked))
+            B.append("        respawnLinkedItems[] = %s;" % arr(linked))
         if kit.get("weapons"):
             B.append("        weapons[] = %s;" % arr(kit["weapons"]))
             B.append("        respawnWeapons[] = %s;" % arr(kit["weapons"]))

@@ -13,7 +13,7 @@ class CfgWeapons {
         class LinkedItems {
             class LinkedItemsMuzzle {
                 slot = "MuzzleSlot";
-                item = "JCA_muzzle_snds_45_tactical_olive";
+                item = "muzzle_snds_acp";
             };
         };
     };

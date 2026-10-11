@@ -8,7 +8,7 @@ A dependency in **bold** is an external mod.
 | Addon | Name | units | weapons | fns | Requires |
 |---|---|--:|--:|--:|---|
 | `cba_settings` | CBA Settings |  |  |  | **cba_settings**, **ace_hearing** |
-| `common` | Common |  |  | 53 | - |
+| `common` | Common |  |  | 54 | - |
 | `compatibility` | Compatibility |  |  |  | A3_Data_F_Decade_Loadorder |
 | `main` | Main |  |  |  | **cba_main**, **diwako_dui_main**, A3_Weapons_F |
 | `media` | Media |  |  |  | - |
@@ -79,7 +79,7 @@ A dependency in **bold** is an external mod.
 
 | Addon | Name | units | weapons | fns | Requires |
 |---|---|--:|--:|--:|---|
-| `acm` | ACM |  |  | 1 | jmfsb_medbags, **cba_settings**, **ace_medical_treatment**, **ACM_main**, **ACM_core**, **ACM_airway** ... |
+| `acm` | ACM | 1 |  | 2 | jmfsb_medbags, **cba_settings**, **ace_medical_treatment**, **ACM_main**, **ACM_core**, **ACM_airway** ... |
 | `ai_disembark` | Ai Disembark |  |  | 1 | jmfsb_common |
 | `ballistics` | Ballistics |  |  |  | - |
 | `difficulty` | Difficulty |  |  |  | - |
@@ -218,7 +218,7 @@ A dependency in **bold** is an external mod.
 | `uas` | UAS | 4 |  | 19 | jmfsb_common, **cba_xeh** |
 | `uniform_pla` | uniform_pla | 114 | 54 |  | A3_Characters_F, A3_Characters_F_Exp, A3_Characters_F_Enoch, A3_Characters_F_Tank |
 | `uniform_ru` | Russian Uniforms | 173 | 57 | 1 | A3_Characters_F, A3_Characters_F_Enoch_Vests, A3_Characters_F_Exp_Vests, A3_Data_F_Decade_Loadorder, A3_Weapons_F, A3_Weapons_F_Machineguns_M200 ... |
-| `vehicle` | Vehicle | 242 | 10 | 30 | jmfsb_weapons, A3_Data_F_Decade_Loadorder, jmfsb_diag, jmfsb_notify, **cba_xeh** |
+| `vehicle` | Vehicle | 242 | 10 | 31 | jmfsb_weapons, A3_Data_F_Decade_Loadorder, jmfsb_diag, jmfsb_notify, **cba_xeh** |
 | `zenmodules` | Zenmodules |  |  | 12 | jmfsb_diag, **cba_xeh** |
 
 ## Optionals

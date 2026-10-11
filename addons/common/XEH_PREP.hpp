@@ -42,6 +42,7 @@ PREP(setDatalink);
 PREP(fireBarrage);
 PREP(findSite);
 PREP(taorGate);
+PREP(enemySide);
 PREP(playerSides);
 PREP(lambsOff);
 PREP(sideToText);

@@ -85,23 +85,33 @@ class CfgWeapons {
             mass = 12;
         };
     };
-    // MOPP IS OUT (2026-08-31): the crate left the mission's logistics table
-    // and the Zeus supply-crate module, and fnc_canUnpackmopp /
-    // fnc_doUnpackmopp went with it. Putting this back needs both of them
-    // again - build 0.1.0.933's PBO is the last copy that carries them.
-    // class GVAR(mopp): ACE_ItemCore {
-    //     scope = 2;
-    //     author = QAUTHOR;
-    //     displayName = "MOPP Bag";
-    //     ACE_isMedicalItem = 1;
-    //     descriptionShort = "MOPP !!!!!!";
-    //     editorPreview = QPATHTOF(data\previews\booboo_ca.paa);
-    //     picture = QPATHTOF(data\previews\booboo_ca.paa);
-    //     model = "\a3\props_f_orange\humanitarian\camps\firstaidkit_01_closed_f.p3d";
-    //     icon = "iconObject_1x1";
-    //     mapSize = 0.015;
-    //     class ItemInfo: CBA_MiscItem_ItemInfo {
-    //         mass = 18;
-    //     };
-    // };
+    // MOPP BAGS (user, 2026-10-10: "3 mopp bags based on camo and acm cbrn self
+    // drugs"). One per CBRN suit camo; unpacking gives that suit (GVAR(suit))
+    // plus the shared GVAR(contentsMopp) list - respirator and the ACM CBRN
+    // self-aid autoinjectors. One self-action unpacks whichever bag is carried.
+    class GVAR(Mopp_MTP): ACE_ItemCore {
+        scope = 2;
+        author = QAUTHOR;
+        displayName = "MOPP Bag (MTP)";
+        descriptionShort = "CBRN suit (MTP), respirator and CBRN autoinjectors";
+        editorPreview = QPATHTOF(data\previews\booboo_ca.paa);
+        picture = QPATHTOF(data\previews\booboo_ca.paa);
+        model = "\a3\props_f_orange\humanitarian\camps\firstaidkit_01_closed_f.p3d";
+        icon = "iconObject_1x1";
+        mapSize = 0.015;
+        GVAR(suit) = "U_B_CBRN_Suit_01_MTP_F";
+        class ItemInfo: CBA_MiscItem_ItemInfo {
+            mass = 60;
+        };
+    };
+    class GVAR(Mopp_Tropic): GVAR(Mopp_MTP) {
+        displayName = "MOPP Bag (Tropic)";
+        descriptionShort = "CBRN suit (Tropic), respirator and CBRN autoinjectors";
+        GVAR(suit) = "U_B_CBRN_Suit_01_Tropic_F";
+    };
+    class GVAR(Mopp_Wdl): GVAR(Mopp_MTP) {
+        displayName = "MOPP Bag (Woodland)";
+        descriptionShort = "CBRN suit (Woodland), respirator and CBRN autoinjectors";
+        GVAR(suit) = "U_B_CBRN_Suit_01_Wdl_F";
+    };
 };

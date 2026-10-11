@@ -66,7 +66,7 @@ whose ground is whose starts there.
 
 ## Ships
 
-53 functions.
+54 functions.
 
 ## CBA settings
 
@@ -77,7 +77,7 @@ whose ground is whose starts there.
 
 ## Functions
 
-<details><summary>53</summary>
+<details><summary>54</summary>
 
 - `jmfsb_common_fnc_addDebugCommand`
 - `jmfsb_common_fnc_addItem`
@@ -97,6 +97,7 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_edenClassPickSave`
 - `jmfsb_common_fnc_edenDroneFactionLoad`
 - `jmfsb_common_fnc_edenDroneFactionSave`
+- `jmfsb_common_fnc_enemySide`
 - `jmfsb_common_fnc_ensureSafeLanding`
 - `jmfsb_common_fnc_findSite`
 - `jmfsb_common_fnc_fireBarrage`

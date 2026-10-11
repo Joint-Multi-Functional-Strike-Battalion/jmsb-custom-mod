@@ -13,6 +13,7 @@ PREP(applyClassTextures);
 PREP(applyLoadout);
 PREP(applyTextures);
 PREP(cosmeticEntries);
+PREP(factoryPaints);
 PREP(getPylonIcon);
 PREP(getPylonLoadout);
 PREP(getPylonName);

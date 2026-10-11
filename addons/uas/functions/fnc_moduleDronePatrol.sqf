@@ -43,8 +43,9 @@ params [["_logic", objNull, [objNull]], ["_units", [], [[]]], ["_activated", tru
 if (!_activated || {isNull _logic}) exitWith {};
 if (!isServer) exitWith {};
 
-private _side = [_logic getVariable ["patrolSide", "east"]] call EFUNC(common,sideFromText);
-if (isNil "_side" || {_side isEqualTo sideUnknown}) then { _side = east };
+// THE ENEMY'S, WORKED OUT (D59): no Side box on the module any more - the
+// patrol flies for whoever is hostile to the players (EFUNC(common,enemySide)).
+private _side = call EFUNC(common,enemySide);
 
 // EDEN'S OWN AREA, the same [a, b, angle, isRectangle, height] every other area
 // module in this mod reads - see EFUNC(modules,moduleHealArea). A module never

@@ -72,9 +72,11 @@ private _issued = 0;
             };
             // CfgMagazines as well as CfgWeapons: ACE issues some of its
             // medical kit as one and some as the other, and addItem takes both.
+            // CfgGlasses too - the MOPP bag's respirator is facewear.
             case (
                 !isClass (configFile >> "CfgWeapons" >> _item) &&
-                {!isClass (configFile >> "CfgMagazines" >> _item)}
+                {!isClass (configFile >> "CfgMagazines" >> _item)} &&
+                {!isClass (configFile >> "CfgGlasses" >> _item)}
             ): {
                 WARNING_1("medbag contents names '%1', which no loaded mod defines - skipped",_item);
             };

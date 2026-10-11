@@ -121,7 +121,7 @@ private _fits = [];
             _paints pushBack [_label, _iconCode param [1, {}]];
         };
     };
-} forEach (call jmfsb_vehicle_fnc_cosmeticEntries);
+} forEach ((call jmfsb_vehicle_fnc_cosmeticEntries) + ([_data, call jmfsb_vehicle_fnc_cosmeticEntries] call jmfsb_vehicle_fnc_factoryPaints));   // the config's own paints fill the gaps
 
 uiNamespace setVariable ["YMF_motorpool_paints", _paints];
 uiNamespace setVariable ["YMF_motorpool_fits", _fits];

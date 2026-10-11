@@ -9,7 +9,7 @@ changing an addon; do not hand-edit these files.
 | Optional addons | 3 |
 | CBA settings | 237 |
 | Eden modules | 22 |
-| Functions | 1085 |
+| Functions | 1088 |
 
 ## Contents
 
