@@ -1,0 +1,1206 @@
+{
+  "spec": "TAC//NET",
+  "version": "0.3.0",
+  "date": "2026-10-18",
+  "status": "draft - strike what is wrong before code",
+  "summary": "Net-based radio, mesh, EW, drones, data and device suite for Arma 3. One RF base mod; everything else is a consumer. Voice phase 1: TFAR standalone as shipped (DLL + relay untouched) with our override layer - nets over its frequencies, its UI hidden, our tablet shows state, jamming/mesh per unit via its multipliers. Phase 2: trim the DLL for per-pair hearing, relay audio, voice notes. Nets, not frequencies.",
+  "decisions": [
+    {
+      "id": "D1",
+      "decision": "Voice phase 1 = TFAR standalone unmodified (DLL, relay, SQF, radio items) plus our override layer gfa_voice_tfrs: nets mapped to hidden frequencies, TFAR UI/hints/keybinds suppressed and replaced, state shown on our devices, RF link quality fed to TFAR's per-unit multipliers. No C++.",
+      "why": "everything VON lacks (unlimited nets, two radios, static/fade, speaking indicators, our PTT) for SQF only; relay already proven"
+    },
+    {
+      "id": "D1b",
+      "decision": "Voice phase 2 = trim the standalone DLL: delete State/TFAR parser, add FEED contract (per-sender quality/position/effect), RECORD/NOTE for voice notes. Same relay. Alternative transport LiveKit if browser participants wanted. EOS hosted backup. No TeamSpeak, Mumble, Vivox, Agora, Gryt, VON.",
+      "why": "per-pair hearing and relay-direction audio need the DLL; it is a trim not a port (applyAudibility already takes the list)"
+    },
+    {
+      "id": "D11",
+      "decision": "Build order: RF -> voice override layer -> data -> devices -> EW -> drones/fires -> play test -> DLL trim -> hardware/hacking/AUGUR -> DIVINER swap.",
+      "why": "all SQF until the DLL trim; gameplay and cost proven first"
+    },
+    {
+      "id": "D2",
+      "decision": "Nets, not frequencies. The set manages frequencies (spread-spectrum MANET). Operator sees nets only.",
+      "why": "matches MPU5-class hardware; removes clutter"
+    },
+    {
+      "id": "D3",
+      "decision": "RF is a base mod with no UI and no items. All other mods register nodes with it.",
+      "why": "one link budget, one graph, one store"
+    },
+    {
+      "id": "D4",
+      "decision": "Own radio family (MPU5 model) and own device family (vehicle set, tablet, phone, mini). No TFAR/ACRE radio classes.",
+      "why": "fork keeps only the audio pipe"
+    },
+    {
+      "id": "D5",
+      "decision": "No EWDJ dependency. Its detail level is the target; implementation is ours.",
+      "why": "user"
+    },
+    {
+      "id": "D6",
+      "decision": "Key in fill = net membership. Captured fill = enemy can despread, DF, listen, jam that net. Rekey from admin panel.",
+      "why": "whole crypto model in one rule"
+    },
+    {
+      "id": "D7",
+      "decision": "Display mode is a CBA setting: fullscreen (today's widgets/map) or device (tablet/phone/mini/vehicle shells). Same apps on both.",
+      "why": "user"
+    },
+    {
+      "id": "D8",
+      "decision": "Hardware keys: F1-F4 (app soft keys), left/right (cycle apps). No PTT key (PTT unit is separate). TIC on screen or mapped to F4.",
+      "why": "user"
+    },
+    {
+      "id": "D9",
+      "decision": "AI->player hacking and enemy jamming are off until a module is placed.",
+      "why": "matches DIVINER convention"
+    },
+    {
+      "id": "D10",
+      "decision": "Assistant name AUGUR, scoped: 'your AUGUR' / 'squad AUGUR'. Suggests one action at a time, never acts alone.",
+      "why": "fits DIVINER"
+    },
+    {
+      "id": "D12",
+      "decision": "Jamming has three domains: voice, data, GPS. A jammer picks domains; RF applies them by band.",
+      "why": "user"
+    }
+  ],
+  "mods": {
+    "rf": {
+      "prefix": "gfa_rf",
+      "deps": [
+        "cba"
+      ],
+      "owns": [
+        "registry",
+        "link budget",
+        "mesh",
+        "DF",
+        "tracks",
+        "net state",
+        "public API",
+        "settings"
+      ]
+    },
+    "voice": {
+      "prefix": "gfa_voice",
+      "deps": [
+        "cba",
+        "rf"
+      ],
+      "owns": [
+        "trimmed DLL",
+        "relay server",
+        "FEED contract",
+        "voice notes RECORD/NOTE"
+      ],
+      "phase": 2,
+      "replaces": "voice_tfrs"
+    },
+    "radios": {
+      "prefix": "gfa_radios",
+      "deps": [
+        "cba",
+        "ace",
+        "rf",
+        "voice"
+      ],
+      "owns": [
+        "MPU5 family items",
+        "fills",
+        "PACE",
+        "gateway",
+        "RADIO app pages"
+      ]
+    },
+    "ewkit": {
+      "prefix": "gfa_ewkit",
+      "deps": [
+        "cba",
+        "ace",
+        "rf"
+      ],
+      "owns": [
+        "emitters",
+        "modular hardware",
+        "drone video links",
+        "EW app pages"
+      ]
+    },
+    "tacapp": {
+      "prefix": "gfa_tacapp",
+      "deps": [
+        "cba",
+        "rf"
+      ],
+      "optional": [
+        "voice",
+        "radios",
+        "ewkit"
+      ],
+      "owns": [
+        "fabric store",
+        "device shells",
+        "display-mode setting",
+        "apps",
+        "HUD",
+        "squad interface",
+        "AUGUR"
+      ]
+    },
+    "diviner": {
+      "prefix": "ghostD",
+      "deps": [
+        "all above"
+      ],
+      "replaces_over_time": [
+        "radio_mesh",
+        "jamming",
+        "uas",
+        "tacpad",
+        "tacpad_apps",
+        "hud",
+        "bft",
+        "messaging"
+      ]
+    },
+    "voice_tfrs": {
+      "prefix": "gfa_voice_tfrs",
+      "deps": [
+        "cba",
+        "rf",
+        "task_force_radio (standalone)"
+      ],
+      "owns": [
+        "net->frequency map from signal plan",
+        "fill programmer via TFAR API",
+        "TFAR UI/hint/notification suppressor",
+        "our keybinds: PTT active, PTT monitor, net up/down",
+        "per-unit multipliers from rf link quality",
+        "speaking state from IS_SPEAKING_BULK",
+        "typed missed-call notes"
+      ],
+      "phase": 1
+    }
+  },
+  "rf": {
+    "runs_on": {
+      "server": [
+        "registry",
+        "mesh",
+        "DF",
+        "tracks",
+        "slices"
+      ],
+      "client": [
+        "reads own slice only; no computation"
+      ]
+    },
+    "tick": {
+      "players_s": 1,
+      "static_nodes_s": 5,
+      "slice_push": "on change via publicVariableClient, never per tick"
+    },
+    "objects": {
+      "Node": {
+        "id": "string, unique",
+        "object": "objNull|unit|vehicle|prop",
+        "side": "WEST|EAST|GUER|CIV",
+        "profile": "profile id",
+        "nets": [
+          {
+            "net": "net id",
+            "key": "sha-ish string"
+          }
+        ],
+        "state": {
+          "on": "bool",
+          "tx": "bool",
+          "relay": "bool",
+          "activeNet": "net id",
+          "monitorNet": "net id|''"
+        },
+        "battery": "0..1",
+        "pos": "read live from object",
+        "owner": "mod that registered it"
+      },
+      "Profile": {
+        "id": "string",
+        "bands": [
+          "VHF|UHF|SAT|VIDEO"
+        ],
+        "txPowerDbm": "number",
+        "rxSensDbm": "number",
+        "antennaGainDb": "number",
+        "pattern": "omni|sector",
+        "sectorDeg": "number",
+        "hopLimit": "int",
+        "relayCapable": "bool",
+        "spreadGainDb": "0 legacy .. 30 MANET",
+        "dataRate": "low|med|high",
+        "batteryWh": "number",
+        "idleW": "number",
+        "txW": "number"
+      },
+      "Net": {
+        "id": "string (e.g. C2, BANSHEE 1-1)",
+        "name": "string",
+        "band": "VHF|UHF|SAT|VIDEO",
+        "key": "string",
+        "spreadGainDb": "from profile family",
+        "pace": {
+          "P": "net id",
+          "A": "net id",
+          "C": "net id",
+          "E": "net id"
+        },
+        "state": {
+          "cut": "bool",
+          "held": "bool",
+          "patchedTo": "net id|''"
+        },
+        "source": "signal plan (DIVINER OPORD)"
+      },
+      "Link": {
+        "a": "node id",
+        "b": "node id",
+        "net": "net id",
+        "snr": "dB",
+        "quality": "0..1",
+        "hops": "int",
+        "lastHop": "node id|''"
+      },
+      "Emitter": {
+        "node": "node id",
+        "band": "band",
+        "powerDbm": "number",
+        "pattern": "omni|sector",
+        "azimuth": "deg",
+        "intent": "comms|jam|video",
+        "exposure": "0..1"
+      },
+      "Track": {
+        "id": "string",
+        "side": "observer side",
+        "emitter": "node id|unknown",
+        "band": "band",
+        "dbm": "number",
+        "bearing": "deg|null",
+        "bearingErrDeg": "number",
+        "fix": "[x,y]|null",
+        "fixErrM": "number|null",
+        "named": "bool (key held)",
+        "t": "time",
+        "cuts": "int"
+      }
+    },
+    "link_budget": {
+      "formula": "rx = tx + gTx + gRx - pathloss(d,band) - terrain - clutter - body; noise = floor(band) + sum(jammers in band, each - spread unless key held); snr = rx - noise; quality = clamp((snr - thr)/span)",
+      "pathloss": {
+        "model": "log-distance",
+        "exponent": {
+          "VHF": 2.6,
+          "UHF": 2.9,
+          "SAT": 2.0,
+          "VIDEO": 3.2
+        },
+        "ref_1m_dB": {
+          "VHF": 32,
+          "UHF": 40,
+          "SAT": 45,
+          "VIDEO": 48
+        }
+      },
+      "terrain": {
+        "samples": 3,
+        "dB_per_blocked_sample": 12,
+        "cmd": "terrainIntersectASL"
+      },
+      "clutter": {
+        "wall_dB": 18,
+        "tree_dB": 5,
+        "cmd": "lineIntersectsSurfaces, count"
+      },
+      "body": {
+        "prone_dB": 3,
+        "inVehicle_dB": 6
+      },
+      "noise_floor_dBm": {
+        "VHF": -110,
+        "UHF": -105,
+        "SAT": -115,
+        "VIDEO": -95
+      },
+      "thresholds": {
+        "thr_dB": 6,
+        "span_dB": 20
+      },
+      "detection_without_key": "rx - spreadGain",
+      "jamming_without_key": "jammerNoise - spreadGain",
+      "targets_to_tune": {
+        "5W VHF open": "~5 km",
+        "5W VHF town": "~1 km",
+        "0.5W handheld": "~1.5 km open"
+      }
+    },
+    "mesh": {
+      "per": "net, per tick",
+      "vertices": "nodes on net, on, relayCapable or endpoint",
+      "prefilter": "distance < maxRange(band, maxPower)",
+      "edges": "link budget per pair, cached per tick",
+      "search": "widest path (max-min quality), from radio_mesh",
+      "hop_limit": "min(profile.hopLimit) along path",
+      "output": "Link per receiver: quality, hops, lastHop",
+      "relay_cost": "relaying node drains battery at txW while carrying traffic",
+      "gateway": "node with two nets and relay=true creates edges between graphs",
+      "ai_nodes": "only if profile.aiCounts or node flagged"
+    },
+    "df": {
+      "rule": "every enemy receiver in band with rx > rxSens gets a bearing; bearingErr = k / snr",
+      "fusion": "2+ cuts within window -> fix with error ellipse",
+      "named": "true only if observer side holds net key",
+      "exposure": "own emitter: fraction of enemy receivers currently above threshold; shown on EW app and radio app"
+    },
+    "api": {
+      "rf_register": {
+        "in": [
+          "node",
+          "profile",
+          "nets"
+        ],
+        "out": "id"
+      },
+      "rf_unregister": {
+        "in": [
+          "id"
+        ]
+      },
+      "rf_setState": {
+        "in": [
+          "id",
+          {
+            "on": "?",
+            "tx": "?",
+            "relay": "?",
+            "activeNet": "?",
+            "monitorNet": "?",
+            "keys": "?"
+          }
+        ]
+      },
+      "rf_link": {
+        "in": [
+          "idA",
+          "idB",
+          "net"
+        ],
+        "out": [
+          "quality",
+          "hops",
+          "lastHop"
+        ],
+        "scope": "client slice"
+      },
+      "rf_reach": {
+        "in": [
+          "id",
+          "net"
+        ],
+        "out": [
+          "ids"
+        ],
+        "scope": "client slice"
+      },
+      "rf_tracks": {
+        "in": [
+          "side"
+        ],
+        "out": [
+          "Track"
+        ]
+      },
+      "rf_emitters": {
+        "in": [
+          "side"
+        ],
+        "out": [
+          "Emitter"
+        ]
+      },
+      "rf_noise": {
+        "in": [
+          "pos",
+          "band"
+        ],
+        "out": "dBm"
+      },
+      "rf_budget": {
+        "in": [
+          "txNode",
+          "rxNode"
+        ],
+        "out": [
+          "rxDbm",
+          "snr",
+          "quality"
+        ],
+        "scope": "server"
+      },
+      "rf_netSet": {
+        "in": [
+          "net",
+          {
+            "cut": "?",
+            "held": "?",
+            "patchedTo": "?",
+            "key": "?"
+          }
+        ],
+        "scope": "server/admin"
+      },
+      "rf_rekey": {
+        "in": [
+          "net",
+          "newKey",
+          "sideOrGroup"
+        ],
+        "scope": "server/admin"
+      }
+    },
+    "events": [
+      "rf_linkChanged",
+      "rf_trackNew",
+      "rf_trackLost",
+      "rf_netCut",
+      "rf_exposureHigh",
+      "rf_rekeyed"
+    ],
+    "settings": [
+      "tick rates",
+      "band table",
+      "terrain/clutter dB",
+      "aiNodesCount",
+      "maxNodesPerNet",
+      "debugOverlay"
+    ]
+  },
+  "voice": {
+    "base": "ltsammy/task-force-radio-standalone",
+    "keep": [
+      "DLL: mic, Opus, UDP, mixer, DSP, 3D",
+      "voice-server: UDP relay (MIT)"
+    ],
+    "remove": [
+      "all TFAR SQF",
+      "TFAR text protocol in DLL",
+      "frequency strings",
+      "tf_* variables"
+    ],
+    "licence": {
+      "voice-server": "MIT",
+      "dll+addon": "APL-SA (fork stays APL-SA)"
+    },
+    "sqf_to_dll": {
+      "rate_hz": 5,
+      "per_sender": {
+        "id": "session id",
+        "mode": "direct|radio",
+        "pos": "[x,y,z] (direct: real; radio: lastHop node)",
+        "quality": "0..1",
+        "effect": "clean|static|relay|satcom",
+        "volume": "0..1"
+      },
+      "absent": "not heard"
+    },
+    "dll_to_sqf": {
+      "keyed": [
+        "session ids transmitting"
+      ],
+      "mic": "bool",
+      "rtt_ms": "number"
+    },
+    "relay_metadata": {
+      "packet": "RadioTxUpdate reused",
+      "fields": {
+        "active": "0/1",
+        "netId": "<=16 bytes",
+        "keyHash": "uint16",
+        "nodeId": "string"
+      },
+      "use": "speaking indicators before audio arrives"
+    },
+    "ptt": {
+      "sources": [
+        "MPU5 PTT item (keybind)",
+        "tablet PTT button"
+      ],
+      "rule": "PTT keys the active net; second PTT keys monitor net"
+    },
+    "effects": {
+      "static": "quality < 0.6",
+      "relay": "hops > 0",
+      "satcom": "net.band == SAT",
+      "clean": "else"
+    },
+    "milestone_1": "fork compiles; two players talk direct with 3D audio; no TeamSpeak",
+    "phase2_transports": {
+      "fork_relay": {
+        "server": "ltsammy voice-server, UDP relay, ~20MB Docker",
+        "dll": "fork, keep Voice/ audio core, replace State+CommandProcessor with FEED contract",
+        "pros": [
+          "least work",
+          "already proven with the DLL"
+        ],
+        "cons": [
+          "no browser clients",
+          "password-only auth"
+        ]
+      },
+      "livekit": {
+        "server": "LiveKit SFU + TURN + token service, Docker Compose",
+        "dll": "embed LiveKit Rust/C++ client; mixing and DSP ours; per-track PCM available",
+        "pros": [
+          "selective subscription scales",
+          "standard WebRTC/NAT/TLS",
+          "browser participants (Element Call / web) on nets without Arma"
+        ],
+        "cons": [
+          "libwebrtc in the DLL, Rust toolchain",
+          "heavier server"
+        ]
+      },
+      "eos": {
+        "note": "hosted backup; AudioBeforeRender callback allows DSP; Epic terms to read"
+      }
+    },
+    "notes": {
+      "what": "voice note: record while unreachable or on missed call; delivered when a path exists; played from the MSG thread",
+      "dll": {
+        "RECORD": "start|stop - buffer mic Opus frames",
+        "NOTE send <id>": "ship buffered frames",
+        "NOTE play <id>": "feed into mixer with radio effect"
+      },
+      "server": "either new store/fetch packet type keyed by note id, or send frames as flagged voice packets to the recipient when both online (no storage)",
+      "data": "Note record on DATA: id, from, to, net, length, status; delivery gated by rf_reach; thread entry with PLAY/DELETE",
+      "ui": "hold key on MSG/CALL screen to record, level meter, missed-call -> leave a note",
+      "phase": 2
+    }
+  },
+  "radios": {
+    "models": [
+      {
+        "id": "mpu5_handheld",
+        "role": "rifleman",
+        "fillSlots": 4,
+        "txPowerDbm": 27,
+        "relay": false,
+        "hopLimit": 0,
+        "batteryWh": 20
+      },
+      {
+        "id": "mpu5_leader",
+        "role": "leader",
+        "fillSlots": 8,
+        "txPowerDbm": 30,
+        "relay": true,
+        "hopLimit": 3,
+        "batteryWh": 30
+      },
+      {
+        "id": "mpu5_manpack",
+        "role": "RTO/JFO",
+        "fillSlots": 8,
+        "txPowerDbm": 37,
+        "relay": true,
+        "hopLimit": 6,
+        "batteryWh": 80,
+        "antennas": [
+          "whip",
+          "blade",
+          "yagi"
+        ],
+        "gateway": true
+      },
+      {
+        "id": "mpu5_vehicle",
+        "role": "vehicle",
+        "fillSlots": 8,
+        "txPowerDbm": 40,
+        "relay": true,
+        "hopLimit": 8,
+        "battery": "vehicle",
+        "gateway": true
+      },
+      {
+        "id": "relay_node",
+        "role": "unattended",
+        "fillSlots": 2,
+        "txPowerDbm": 37,
+        "relay": true,
+        "hopLimit": 8,
+        "batteryWh": 200
+      }
+    ],
+    "fill": {
+      "from": "PAC role -> nets[] + signal plan keys",
+      "ops": [
+        "load",
+        "share (radio to radio, ACE)",
+        "zeroize",
+        "rekey (admin push)"
+      ]
+    },
+    "pace": {
+      "auto_fall": "quality on P < thr for N s -> A; notify; manual override",
+      "shown": "radio app + status bar letter"
+    },
+    "gateway": {
+      "who": "manpack, vehicle",
+      "what": "bridges two nets in the fill; RTO or leader enables"
+    },
+    "lore_line": "Frequencies are managed by the set. Operator selects nets. Spread spectrum, low probability of detection. Keep the fill."
+  },
+  "ewkit": {
+    "emitter_models": [
+      {
+        "id": "ew_handheld",
+        "bands": [
+          "VIDEO"
+        ],
+        "powerDbm": 30,
+        "reach_m": 100,
+        "battery": "4x D",
+        "heat": false
+      },
+      {
+        "id": "ew_ground",
+        "bands": [
+          "VHF",
+          "UHF",
+          "VIDEO"
+        ],
+        "powerDbm": [
+          40,
+          43,
+          45
+        ],
+        "reach_m": [
+          100,
+          200,
+          300
+        ],
+        "yagi_x": 2,
+        "battery": "pack 145Wh",
+        "heat": true,
+        "burnout": "permanent at 100%"
+      },
+      {
+        "id": "ew_vehicle",
+        "bands": [
+          "VHF",
+          "UHF",
+          "VIDEO"
+        ],
+        "powerDbm": 48,
+        "reach_m": 600,
+        "battery": "vehicle",
+        "heat": true
+      },
+      {
+        "id": "ew_drone",
+        "bands": [
+          "VIDEO"
+        ],
+        "powerDbm": 33,
+        "reach_m": 150,
+        "battery": "airframe",
+        "heat": false
+      }
+    ],
+    "controls": [
+      "reach (power step)",
+      "effect soft|hard",
+      "target broadband|one net/band",
+      "pattern 360|120 sector + azimuth",
+      "duty continuous|on-contact 15s"
+    ],
+    "hardware": [
+      "battery pack",
+      "whip",
+      "yagi + tripod + antenna cable",
+      "generator + power cable",
+      "solar + power cable",
+      "fuel can",
+      "camo net"
+    ],
+    "hardware_rules": {
+      "cables": "ground objects between endpoints, ACE plug each end",
+      "yagi": "doubles reach, directional, emits from yagi position",
+      "generator": "+600W, loud, thermal",
+      "solar": "<=150W daylight",
+      "camo": "reduces visual/thermal detect of the object"
+    },
+    "drone_video": {
+      "node_pair": "drone <-> controller on VIDEO band",
+      "soft_kill": "AI loses waypoints/targets; player feed static",
+      "hard_kill": "link cut; AI RTB or falls per setting",
+      "detect": "isUav flag"
+    },
+    "ew_app": {
+      "tabs": [
+        "EMITTERS",
+        "DF",
+        "OWN NODES",
+        "HISTORY"
+      ],
+      "spectrum": "4 band strips from rf_noise",
+      "contact_row": "emitter, band, dBm, bearing, id, status, actions: track|task|hack|fires",
+      "selected_node_tiles": [
+        "REACH",
+        "EFFECT",
+        "TARGET",
+        "SECTOR",
+        "DUTY",
+        "HEAT",
+        "ENDURANCE",
+        "FITTED",
+        "EXPOSURE"
+      ]
+    }
+  },
+  "tacapp": {
+    "fabric": {
+      "Track": "see rf.Track plus source app and ttl",
+      "Task": {
+        "id": "T0001",
+        "type": "CAS|ARTY|TRANS|MEDEVAC|DRONE|HACK|JAM|XLINE",
+        "thread": "messaging thread id",
+        "state": "OPEN|ACCEPTED|EXEC|DONE|CANCEL",
+        "requester": "node",
+        "assignee": "node",
+        "target": "track id|grid",
+        "tot": "time"
+      },
+      "rule": "apps read tracks and write tasks; no app owns its own data path; delivery via rf_reach, delay hops*step, jammed = dropped"
+    },
+    "display_mode": {
+      "setting": "gfa_tacapp_displayMode",
+      "values": [
+        "fullscreen",
+        "device"
+      ],
+      "device_choice": "per player: tablet|phone|mini; vehicle set when in a vehicle seat with one"
+    },
+    "devices": [
+      {
+        "id": "vehicle",
+        "screen": "16:10",
+        "px": "1920x1200",
+        "frame": "vehicle_body_cut.png",
+        "content_rect": [
+          286,
+          483,
+          1797,
+          1591
+        ],
+        "keys": "F1-F4, left, right"
+      },
+      {
+        "id": "tablet",
+        "screen": "16:10",
+        "px": "1920x1200",
+        "inch": 12.2,
+        "frame": "tablet_fixed_cut.png",
+        "content_rect": [
+          286,
+          483,
+          1797,
+          1591
+        ],
+        "keys": "F1-F4, left, right"
+      },
+      {
+        "id": "phone",
+        "screen": "16:9",
+        "px": "1920x1080",
+        "frame": "phone_body_cut.png",
+        "content_rect": [
+          286,
+          483,
+          1797,
+          1316
+        ],
+        "keys": "F1-F4, left, right",
+        "home": "map"
+      },
+      {
+        "id": "mini",
+        "screen": "3:5",
+        "px": "480x800",
+        "frame": "mini2_body_cut.png",
+        "content_rect": [
+          456,
+          285,
+          1358,
+          1797
+        ],
+        "keys": "F1-F4, left, right (bottom)",
+        "home": "map"
+      }
+    ],
+    "keys": {
+      "F1-F4": "per-app soft keys, labelled on screen next to the key",
+      "left/right": "cycle apps",
+      "TIC": "on screen, or F4 in MAP"
+    },
+    "apps": [
+      "MAP",
+      "MSG",
+      "RADIO",
+      "EW",
+      "DRONES",
+      "FIRES",
+      "HACK",
+      "PAC",
+      "TIMER",
+      "SQUAD",
+      "INTEL",
+      "TOOLS",
+      "SETTINGS",
+      "ADMIN",
+      "CONSOLE (RTO)"
+    ],
+    "tiles": [
+      "NET",
+      "MESH",
+      "EW",
+      "DRONES",
+      "FIRES",
+      "HACK",
+      "TIMER",
+      "PAC",
+      "AUGUR"
+    ],
+    "status_bar": "symbols with value; tap opens tile",
+    "map_home": {
+      "centre": "player",
+      "follow": "default on; drag pans; FOLLOW snaps back",
+      "layers": [
+        "BFT",
+        "tracks",
+        "DF cuts",
+        "jam fields",
+        "net cover"
+      ],
+      "orientation": "N-up|heading-up"
+    },
+    "main_screen": {
+      "panel": "phone-size, bottom centre, replaces DUI radar and the two HUD slots",
+      "contents": [
+        "squad radar",
+        "squad list with speaking+link",
+        "net/PACE/mesh",
+        "UAV/JAM/DF/DRONE/FIRES/MSG/HACK/APS readouts",
+        "AUGUR line"
+      ]
+    },
+    "squad_interface": {
+      "replaces": "DUI Squad Radar",
+      "elements": [
+        "radar",
+        "compass bar",
+        "name tags (PAC rank)",
+        "indicators",
+        "buddy",
+        "group list",
+        "track any node on your net"
+      ],
+      "data": "net where it exists (speaking, reachable), engine elsewhere",
+      "layout": "Arma layout editor"
+    },
+    "augur": {
+      "scope": [
+        "personal",
+        "squad"
+      ],
+      "reads": [
+        "tracks",
+        "tasks",
+        "net state",
+        "exposure"
+      ],
+      "writes": "one suggestion with an action; DO IT | LATER",
+      "never": "acts on its own"
+    }
+  },
+  "hacking": {
+    "reach": "rf_reach from attacker node to target node, or cable",
+    "players_to_ai": [
+      "listen net",
+      "inject false track/message",
+      "take drone",
+      "jammer off/on",
+      "pull intel (hint system)"
+    ],
+    "ai_to_players": [
+      "tablet lockout",
+      "fake BFT contacts",
+      "forged message",
+      "drone link loss",
+      "fill compromise"
+    ],
+    "counters": [
+      "go dark",
+      "rekey",
+      "kill node"
+    ],
+    "gate": "module placed; off by default",
+    "roll": "existing hacking fail roll -> reaction"
+  },
+  "fires": {
+    "style": "Simplex-like",
+    "app": "FIRES",
+    "pending": "Simplex link from user",
+    "task_types": [
+      "CAS 9-line",
+      "arty CFF",
+      "transport",
+      "medevac 9-line"
+    ],
+    "state": "in thread"
+  },
+  "diviner_integration": {
+    "signal_plan": "OPORD Command/Signal -> nets with keys + PACE; PAC role -> fill",
+    "radioApply": "replaces ACRE preset programming",
+    "nets_config": "GHOST_Nets unchanged; gains band + pace per net",
+    "replaced_addons": {
+      "radio_mesh": "rf",
+      "jamming": "rf + ewkit (zones -> emitters; jamFactor shim = 1-quality)",
+      "uas": "ewkit drone links + drones app",
+      "tacpad/tacpad_apps/hud/bft/messaging": "tacapp"
+    },
+    "contract_globals_keep": [
+      "ghost_missionConfig_*",
+      "ghost_radio_* (reduced)",
+      "GHOST_Nets"
+    ]
+  },
+  "milestones": [
+    {
+      "n": 0,
+      "name": "toolchain",
+      "done": "HEMTT builds rf; TFAR standalone installed; relay in Docker; test server with two clients"
+    },
+    {
+      "n": 1,
+      "name": "rf core",
+      "done": "registry, budget, mesh, rf_link, debug overlay, SQF range-table tests"
+    },
+    {
+      "n": 2,
+      "name": "voice override",
+      "done": "nets over freqs, fill programmed, TFAR UI hidden, our PTT keys, multipliers from rf: relay keeps valley talking, kill relay fades it, jam silences it"
+    },
+    {
+      "n": 3,
+      "name": "radio on net",
+      "done": "MPU5 item classes wrapping TFAR radios, fill TEAM+C2+A2G, active/monitor, speaking dots"
+    },
+    {
+      "n": 4,
+      "name": "data on graph",
+      "done": "BFT incl health, messaging, CAS tasks, typed notes via rf_reach; GPS domain applied"
+    },
+    {
+      "n": 5,
+      "name": "tablet shell",
+      "done": "device dialog, display-mode setting, status bar, MAP+MSG+RADIO apps, F-keys, calls UI"
+    },
+    {
+      "n": 6,
+      "name": "ew",
+      "done": "emitters, DF tracks, spectrum, exposure, one jammer with battery/heat, three jam domains, drone video node"
+    },
+    {
+      "n": 7,
+      "name": "drones + fires",
+      "done": "DRONES app on own drones, FIRES app (Simplex-style) posting tasks"
+    },
+    {
+      "n": 8,
+      "name": "phone mini vehicle",
+      "done": "three shells on the same apps"
+    },
+    {
+      "n": 9,
+      "name": "play test",
+      "done": "2-3 ops; record what per-unit voice costs the gameplay"
+    },
+    {
+      "n": 10,
+      "name": "dll trim",
+      "done": "delete State+parser, FEED contract, RECORD/NOTE; per-pair hearing, relay audio, voice notes; replaces voice_tfrs",
+      "gate": "after milestone 9"
+    },
+    {
+      "n": 11,
+      "name": "hardware, hacking, augur, diviner swap",
+      "done": "modular jammer kit, PACE/gateway, hacking both ways, AUGUR, old DIVINER addons replaced"
+    }
+  ],
+  "open": [
+    "Simplex link for FIRES",
+    "Mini device: keep or drop",
+    "RTO console: player job or admin-only",
+    "Tacpad item becomes tablet, or new item",
+    "Pathloss/terrain numbers tuned in play",
+    "Cost of per-pair terrain checks at 60 players x nets - measure at milestone 2",
+    "MPU5/KAGWERKS asset licence tier for a free mod; pack currently out of stock",
+    "Teams = Arma groups? (assumed yes)",
+    "C2 membership: everyone or leaders+specialists",
+    "A2G: who is air",
+    "calls: open to all on side, or signal-plan restricted (assumed open)",
+    "vanilla UAV terminal: keep gated or remove"
+  ],
+  "nets": {
+    "plan": [
+      {
+        "id": "TEAM n",
+        "count": 5,
+        "who": "that team (Arma group)",
+        "band": "VHF",
+        "von": "Group channel (automatic)"
+      },
+      {
+        "id": "C2",
+        "who": "everyone, all-call",
+        "band": "VHF",
+        "von": "custom channel, membership by signal plan"
+      },
+      {
+        "id": "A2G",
+        "who": "everyone, all-call, air-to-ground",
+        "band": "UHF",
+        "von": "custom channel"
+      },
+      {
+        "id": "DATA",
+        "who": "everyone",
+        "band": "UHF data",
+        "von": "n/a - data only"
+      },
+      {
+        "id": "CALL x",
+        "who": "two or more nodes, temporary",
+        "band": "UHF data",
+        "von": "custom channel created on dial, deleted on hang-up"
+      }
+    ],
+    "fill": {
+      "rifleman": [
+        "TEAM",
+        "C2",
+        "A2G"
+      ],
+      "leader": [
+        "TEAM",
+        "C2",
+        "A2G"
+      ],
+      "note": "PACE and gateway deferred; add when nets grow"
+    },
+    "calls": {
+      "dial": "tablet SQUAD/PAC app -> name -> CALL",
+      "connect": "only if rf_reach on DATA; drops when link drops",
+      "limit_von": "10 custom channels shared by C2, A2G and live calls -> max 8 concurrent calls; slot manager gives busy tone",
+      "conference": "call with >2 members; RTO console can pull people in",
+      "ui": "status bar shows call, F4 hang up, ring + accept/decline, call log in MSG"
+    }
+  },
+  "jamming": {
+    "domains": {
+      "voice": {
+        "band": "VHF/UHF per net",
+        "effect": "VON: unit pulled from channel below threshold (hysteresis 3 s); fork: quality -> static -> silence"
+      },
+      "data": {
+        "band": "UHF data",
+        "effect": "BFT stale, messages queued, CAS tasks do not post, drone control link lost, calls drop"
+      },
+      "gps": {
+        "band": "GPS",
+        "effect": "own position and grid gone from map; own BFT dot goes stale for others; drone navigation degraded"
+      }
+    },
+    "source": "emitters in rf (player jammers from ewkit, placed enemy jammers from DIVINER module); zones model retired, jamFactor shim = 1 - quality",
+    "gate": "enemy jamming off until module placed"
+  },
+  "data": {
+    "net": "DATA (UHF)",
+    "rides": [
+      "player data incl. health (BFT)",
+      "messaging (TAC//MSG)",
+      "CAS / fires tasks",
+      "drone control and video"
+    ],
+    "rule": "delivery via rf_reach on DATA; delay = hops * 0.5 s; unreachable = queued, retry on rf_linkChanged; jammed = dropped",
+    "bft": {
+      "fields": [
+        "pos",
+        "heading",
+        "health (ACE or engine damage)",
+        "speaking",
+        "link state",
+        "battery"
+      ],
+      "rate": "1 s; stale marker after 10 s"
+    },
+    "gps": "own fix requires GPS domain clear; without it the map self-icon and grid readout go, BFT of others still shows if DATA is up",
+    "notes": "typed note phase 1, voice note phase 2; both store-and-forward on DATA, same thread model"
+  },
+  "drones": {
+    "control": "own drones via DRONES app; vanilla UAV terminal link gated by rf (control + video = node pair on VIDEO/DATA)",
+    "enemy": "uas patrols register as nodes; video link detectable and jammable",
+    "lost_link": "RTB or loiter per setting; GPS-jammed drones drift/hold",
+    "open": [
+      "vanilla terminal kept as a fallback or removed",
+      "A2G: pilots, drone operators, or both"
+    ]
+  },
+  "voice_tfrs": {
+    "nets_over_freqs": "each net in the signal plan is assigned a frequency string TFAR uses internally and never displays; radio channels programmed from the fill at spawn and on rekey; player sees net names only",
+    "radios": "TFAR standalone's own radio items for now (SR handheld = team, LR = leaders/RTO); MPU5 model and our classes replace them in radios mod",
+    "ui_suppression": [
+      "TFAR radio dialogs",
+      "hints and notifications",
+      "'unable to use radio'",
+      "channel-change toasts",
+      "its keybinds unbound"
+    ],
+    "keybinds": {
+      "ptt_active": "TFAR SR/LR PTT mapped to active net",
+      "ptt_monitor": "second radio PTT",
+      "net_up_down": "cycle fill on active radio"
+    },
+    "state_shown": [
+      "NET tile active/monitor",
+      "RADIO app fill list",
+      "status bar traffic per net",
+      "squad list speaking dot (IS_SPEAKING_BULK)",
+      "TX line"
+    ],
+    "jam_and_mesh": "per unit: rf best-path quality for the unit on its active net -> tf_receivingDistanceMultiplicator / tf_sendingDistanceMultiplicator; relay present raises effective range, relay lost lowers it; jam below threshold -> multiplier ~0",
+    "limits": [
+      "per-unit not per-pair",
+      "no relay-direction audio",
+      "TFAR's own range/terrain model under the multipliers"
+    ],
+    "notes_phase1": "missed call -> typed note in the MSG thread, delivered store-and-forward via rf_reach"
+  }
+}

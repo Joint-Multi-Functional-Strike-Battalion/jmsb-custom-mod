@@ -43,3 +43,4 @@ class CfgPatches {
 
 #include "gui.hpp"
 #include "imported_config.hpp"
+#include "effects.hpp"

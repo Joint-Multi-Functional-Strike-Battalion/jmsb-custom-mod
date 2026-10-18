@@ -39,6 +39,14 @@ private _inkHex = _ink call BIS_fnc_colorRGBAtoHTML;
 private _accentHex = _accent call BIS_fnc_colorRGBAtoHTML;
 private _muteHex = [_ink#0, _ink#1, _ink#2, 0.62] call BIS_fnc_colorRGBAtoHTML;
 
+// NOTHING SELECTED. The tree fires this with an empty path when its selection
+// clears (a refresh of the list), and an undefined group index made the param
+// below throw "Type Any, expected Number" (2026-10-17 RPT). No card, no button.
+if (_selectionPath isEqualTo []) exitWith {
+    _button ctrlEnable false;
+    _textBox ctrlSetStructuredText parseText "";
+};
+
 _selectionPath params ["_groupIndex",["_unitIndex",-1]];
 
 // A group heading rather than a role: the card names the group and says to pick

@@ -132,6 +132,17 @@ if (EGVAR(patches,usesACRE)) exitWith {
         private _numChannels = 100;
         { if (_radioClass == _x#0) exitWith {_numChannels = _x#1}; } forEach jmfsbFR_radio_acreChannelCount;
 
+        // NEVER PAST WHAT THE PRESET HOLDS. With no count in the plan the default
+        // is 100, and the 148's preset has 64: both sweeps below wrote channels
+        // 65-100 and ACRE logged a warning for every one of them, twice
+        // (2026-10-17 RPT). The preset - grown above if the plan needed it - is
+        // the radio's real channel count.
+        private _presetNow = [_radioClass, "default"] call acre_api_fnc_getPresetData;
+        if (!isNil "_presetNow") then {
+            private _have = count (_presetNow getVariable ["channels", []]);
+            if (_have > 0) then {_numChannels = _numChannels min _have};
+        };
+
         // TRANSMIT POWER IS SWEPT ACROSS EVERY CHANNEL (2026-09-01), not only
         // the ones the plan names. Power is a per-channel preset field, and
         // writing it inside the plan loop left two holes: a man who turned to
