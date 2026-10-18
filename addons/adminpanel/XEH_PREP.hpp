@@ -24,3 +24,13 @@ PREP(execCopy);
 PREP(execLog);
 PREP(confirmEnd);
 PREP(infoRow);
+
+// TIME / WEATHER - the dialog over the console, and the two events it raises
+PREP(envLoad);
+PREP(envReadout);
+PREP(envSelect);
+PREP(envTimeOf);
+PREP(envPreset);
+PREP(envApply);
+PREP(envTime);
+PREP(envWeather);

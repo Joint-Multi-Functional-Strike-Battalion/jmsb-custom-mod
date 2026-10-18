@@ -1,44 +1,63 @@
 #include "..\script_component.hpp"
 /*
  * Author: JMSB
- * The beat. Every Site refreshes its picture; Sites that share a link are one
- * group with ONE set of commitments, so two batteries never fire at one target
- * (F8); each group's threats are handed out (F3) while its automation is on;
- * radars are run (F5) and notices given (F9).
+ * The one engagement pass, every ADS_TICK seconds while threats are in the
+ * air. Server only.
  *
- * Arguments: None
+ *   1. an engaged threat whose intercept time has come is rolled
+ *      (FUNC(resolve)); a threat past its impact time landed - a leak
+ *   2. free units are given open threats (FUNC(assign)), under ADS_EVAL_CAP
+ *      feasibility tests and ADS_ASSIGN_CAP engagements per pass
+ *   3. no threat left: the PFH removes itself
+ *
+ * The pass is timed (diag_tickTime); one over ADS_WARN_MS logs a WARNING at
+ * most once per ADS_WARN_GAP seconds. `#jmfsb adsite` shows the last and the
+ * worst.
+ *
+ * Arguments:
+ * 0: Unused <ANY>
+ * 1: PFH handle <NUMBER>
  *
  * Return Value: None
+ *
+ * Example:
+ * (CBA per-frame handler)
  *
  * Public: No
  */
 
-if (!isServer) exitWith {};
+params ["", "_handle"];
 
-// dead Sites leave
+private _t0 = diag_tickTime;
+private _now = CBA_missionTime;
+GVAR(pass) = GVAR(pass) + 1;
+
+private _keep = [];
 {
-    private _site = GVAR(sites) get _x;
-    if (((_site get "members") findIf {!isNull _x && {alive _x}}) < 0) then {
-        INFO_1("Site %1 has no living members - removed",_x);
-        GVAR(sites) deleteAt _x;
+    private _threat = _x;
+    private _unitKey = _threat select T_UNIT;
+    if (_unitKey isNotEqualTo "" && {_now >= (_threat select T_RESOLVE)}) then {
+        if ([_threat] call FUNC(resolve)) then { continue };
     };
-} forEach (keys GVAR(sites));
+    if (_now >= (_threat select T_TIMPACT)) then {
+        GVAR(stats) set ["leaks", (GVAR(stats) get "leaks") + 1];
+        continue;
+    };
+    _keep pushBack _threat;
+} forEach GVAR(threats);
+GVAR(threats) = _keep;
 
-// the groups: a link name joins Sites, no link is a Site on its own
-private _groups = createHashMap;
-{
-    private _key = [_y get "link", _x] select ((_y get "link") isEqualTo "");
-    (_groups getOrDefault [_key, [], true]) pushBack _y;
-} forEach GVAR(sites);
+if (_keep isEqualTo []) then {
+    [_handle] call CBA_fnc_removePerFrameHandler;
+    GVAR(pfh) = -1;
+} else {
+    [_now] call FUNC(assign);
+};
 
-{
-    private _sites = _y;
-    // ONE coordinator: the first Site's commitment maps are every member's
-    private _lead = _sites # 0;
-    { _x set ["committed", _lead get "committed"]; _x set ["busy", _lead get "busy"] } forEach _sites;
-
-    { [_x] call FUNC(picture) } forEach _sites;
-    { [_x, _sites] call FUNC(emcon) } forEach _sites;
-    [_sites] call FUNC(assign);
-    { [_x] call FUNC(notice) } forEach _sites;
-} forEach _groups;
+private _ms = (diag_tickTime - _t0) * 1000;
+GVAR(lastMs) = _ms;
+GVAR(maxMs) = GVAR(maxMs) max _ms;
+if (_ms > ADS_WARN_MS && {_now - GVAR(lastWarn) > ADS_WARN_GAP}) then {
+    GVAR(lastWarn) = _now;
+    WARNING_3("engagement pass took %1 ms (%2 threats, %3 units) - over budget",_ms toFixed 2,count _keep,count GVAR(units));
+};

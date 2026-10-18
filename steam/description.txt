@@ -1,0 +1,75 @@
+[img]https://jmsb.info/steam/banner.png[/img]
+
+[h1]1st Joint Multi-Functional Strike Battalion - Custom Mod[/h1]
+
+The custom mod of the [b]1st Joint Multi-Functional Strike Battalion (1st JMSB)[/b], a near-future (2040) milsim unit. Built for our operations, public for everyone.
+
+[b]Unit site:[/b] [url=https://jmsb.info/]jmsb.info[/url]
+
+It is modular: parts that build on another mod switch off quietly when that mod is not loaded.
+
+[b]Requires[/b] CBA_A3, ACE and DUI - Squad Radar.
+
+[b]Note:[/b] it ships the unit's server-forced CBA settings - review them before running it on your own server.
+
+[img]https://jmsb.info/steam/header_features.png[/img]
+
+[h2]Factions[/h2]
+[list]
+[*]1st JMSB, US Army JTF (Woodland, Desert, OCP, Tropical) and Marines (Woodland, Desert)
+[*]Russia (with Arctic and Arid), China (with Desert), Iran (with Tropical), Turkey, HIMF, EUDF (with Arctic and Desert), ADF, Delhi Accord and Gendarmerie
+[/list]
+
+[h2]Future Ammunition (2040)[/h2]
+[list]
+[*]Tiered near-future ammunition for small arms, launchers, vehicle cannons and missiles, across the base game and supported mods
+[/list]
+
+[h2]Night vision and AiTR[/h2]
+[list]
+[*]Full-screen NVGs with night vision and thermal built in
+[*]ECOTI / AiTR - aided target recognition: line-of-sight boxes coloured by side, with labels (PERSON | ARMED | 240 m)
+[*]Friendly players on the net show a card: name, role, squad, health, radio channel and ACE report
+[*]Day and NVG mode, off per player, hidden while the map is open
+[*]Goggles see through every scope, including CBA picture-in-picture scopes
+[/list]
+
+[h2]TAC//PAD and TAC//PAC[/h2]
+[list]
+[*]TAC//PAD tablet: live status tiles, squad table, messaging, radio tuning, support and report forms
+[*]Blue Force Tracking (ported from TCA)
+[*]TAC//PAC: roles, ORBAT, arsenals and radio plan from the unit's database
+[/list]
+
+[h2]Systems[/h2]
+[list]
+[*]ACRE2 radio mesh relaying, jamming and electronic warfare, SatCom
+[*]Hacking, drones and UAS, close air support, QRF, logistics, repair, towing and boarding
+[*]Medical: Advanced Combat Medicine integration, med bags, CASEVAC
+[*]ALiVE adapter, Zeus modules, safe start, spectator, respawn
+[*]TAC//ADMIN admin panel
+[/list]
+
+[h2]Gear[/h2]
+[list]
+[*]Uniforms, vests, helmets and backpacks for every faction
+[*]Optics, including XM157 fire-control versions of SPS Equipment's Vortex Spitfire
+[*]ACE Arsenal Extended configs for attachments, ammunition, NVGs and gear
+[/list]
+
+[img]https://jmsb.info/steam/header_credits.png[/img]
+
+[list]
+[*][url=https://ace3.acemod.org/]ACE3 Team[/url] - thanks for their open-source work and permission
+[*][url=https://github.com/quies-in-proelium/qipTPL]qipTPL[/url] (CC BY-NC-SA 4.0) and [url=https://github.com/SzwedzikPL/SimpleSuppress]SimpleSuppress[/url] (MIT)
+[*]Aegis, Atlas and OpF by the [url=https://github.com/senicluxus/A3_Aegis_Public_Releases]Aegis team[/url] (APL-SA) - imported vehicles, weapons and gear keep their original authors
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2869453820]Ample Camo Pack Lite[/url] (APL-SA)
+[*]Team Collaboration Aides by Jacco Douma and Hightower - Blue Force Tracking
+[*]GOB Admin Panel by JohnnyShootos, edited by TheTimidShade - TAC//ADMIN (GPL-3)
+[*]Fat_Lurch - [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1623498241]Turret Enhanced[/url] and [url=https://steamcommunity.com/sharedfiles/filedetails/?id=1543390130]MS_IFF_Strobe[/url] (with permission)
+[/list]
+
+[h2]License[/h2]
+[url=https://www.bohemia.net/community/licenses/arma-public-license-share-alike]Arma Public License Share Alike (APL-SA)[/url]. The admin panel addon (adminpanel) is GPL-3 and ships as its own PBO with its own licence.
+
+Source: [url=https://github.com/Joint-Multi-Functional-Strike-Battalion/jmfs-custom-mod]github.com/Joint-Multi-Functional-Strike-Battalion/jmfs-custom-mod[/url]

@@ -33,7 +33,7 @@ GVAR(openGround) = _logic getVariable ["openGround", 35];
 // NO profileSites ANY MORE. The attribute offered battery hardware to ALiVE's
 // runtime profiler, which deletes what it profiles - that is what left the
 // sites standing empty. Air defence is a handful of statics; it stays live.
-GVAR(rearmEvery) = _logic getVariable ["rearmEvery", 10];
+GVAR(rearmEvery) = _logic getVariable ["rearmEvery", AD_REARM_DEFAULT];
 // Per side, keyed the way FUNC(sideKit) asks for it. The three commanders are
 // three different armies; one class list for the whole map could not express
 // Patriots on BLUFOR and Russian hardware on OPFOR.

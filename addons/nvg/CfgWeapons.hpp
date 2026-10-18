@@ -50,15 +50,21 @@ class CfgWeapons {
     class NVGoggles_INDEP;
     class NVGogglesB_grn_F;
     class NVGogglesB_gry_F;
+    class NVGoggles_tna_F;
+    class O_NVGoggles_urb_F;
+    class ACE_NVG_Wide;
 
     class GVAR(anvgTI_blk): NVGogglesB_blk_F {
         displayName = "[JMSB] ADV NVG TI";
         visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -66,11 +72,14 @@ class CfgWeapons {
     class GVAR(anvgTI_gry): NVGogglesB_gry_F {
         displayName = "[JMSB] ADV NVG TI (Grey)";
         visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -78,11 +87,14 @@ class CfgWeapons {
     class GVAR(anvgTI_grn): NVGogglesB_grn_F {
         displayName = "[JMSB] ADV NVG TI (green)";
         visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -90,11 +102,14 @@ class CfgWeapons {
     class GVAR(nvg5TI_blk): NVGoggles_OPFOR {
         displayName = "[JMSB] NVG v5 TI";
         visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -102,11 +117,14 @@ class CfgWeapons {
     class GVAR(nvg5TI_brn): NVGoggles {
         displayName = "[JMSB] NVG v5 TI (Brown)";
         visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -114,102 +132,222 @@ class CfgWeapons {
     class GVAR(nvg5TI_grn): NVGoggles_INDEP {
         displayName = "[JMSB] NVG v5 TI (Green)";
         visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class GVAR(anvg_blk): NVGogglesB_blk_F {
         displayName = "[JMSB] ADV NVG";
-        visionMode[]= {"Normal","NVG"};
+        visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class GVAR(anvg_gry): NVGogglesB_gry_F {
         displayName = "[JMSB] ADV NVG (Grey)";
-        visionMode[]= {"Normal","NVG"};
+        visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class GVAR(anvg_grn): NVGogglesB_grn_F {
         displayName = "[JMSB] ADV NVG (green)";
-        visionMode[]= {"Normal","NVG"};
+        visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class GVAR(nvg5_blk): NVGoggles_OPFOR {
         displayName = "[JMSB] NVG v5";
-        visionMode[]= {"Normal","NVG"};
+        visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class GVAR(nvg5_brn): NVGoggles {
         displayName = "[JMSB] NVG v5 (Brown)";
-        visionMode[]= {"Normal","NVG"};
+        visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class GVAR(nvg5_grn): NVGoggles_INDEP {
         displayName = "[JMSB] NVG v5 (Green)";
-        visionMode[]= {"Normal","NVG"};
+        visionMode[]= {"Normal","NVG","TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
 
-    // --- EF LOW PROFILE NVG -------------------------------------------------
+    // --- JMSB VERSIONS OF EVERY OTHER NVG IN THE ARSENAL ----------------------
     //
-    // FULL SCREEN, which is the whole reason these exist. The EF sets ship with
-    // a modelled optic and ACE draws a four-tube mask over it, so what a player
-    // gets is a picture of goggles rather than a view through them. Blanking
-    // modelOptics to the empty reticle and clearing every ACE mask value gives
-    // the edge-to-edge image the rest of the jmfsb NVGs already have.
+    // (user, 2026-10-15: "every NVG in the arsenal needs a JMSB version that is
+    // full screen and has ECOTI".) Each inherits the original - same model, same
+    // picture, same generation and phosphor - and changes only what the wearer
+    // sees:
     //
-    // The MODEL is still EF's - these inherit the real thing, so a man wearing
-    // one still looks like he is wearing one. Only what he sees changes.
+    //   FULL SCREEN  modelOptics is the empty reticle, so neither the engine's
+    //                tube picture nor ACE's mask is drawn (ACE only draws its
+    //                border/eyecups when modelOptics is ""); border and eyecups
+    //                are cleared as well so nothing can bring them back.
+    //   ECOTI        a thermal channel (NVG key: Normal > NVG > TI white-hot >
+    //                black-hot) and jmfsb_ecoti's clip-on overlay in NVG mode.
     //
-    // The T variants keep their thermal channel. Losing it would make the pair
-    // pointless: TI is the only reason to carry the heavier set.
+    // Named jmfsb_nvg_<original>. The Reaction Forces Ti Goggles are moved out to
+    // compatibility/cdlc_rf by tools/cdlc_split.py; the Aegis ones live in
+    // compatibility/aegis_nvg. The EF LP NVGs (lpnvg*) are in compatibility/cdlc_ef.
 
+    class GVAR(NVGoggles): NVGoggles {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] NV Goggles (Gen3, Brown)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class GVAR(NVGoggles_OPFOR): NVGoggles_OPFOR {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] NV Goggles (Gen3, Black)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class GVAR(NVGoggles_INDEP): NVGoggles_INDEP {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] NV Goggles (Gen3, Green)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class GVAR(NVGoggles_tna_F): NVGoggles_tna_F {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] NV Goggles (Tropic)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class GVAR(O_NVGoggles_hex_F): O_NVGoggles_hex_F {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] Compact NVG (Hex)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class GVAR(O_NVGoggles_urb_F): O_NVGoggles_urb_F {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] Compact NVG (Urban)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class GVAR(ACE_NVG_Wide): ACE_NVG_Wide {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] NV Goggles (Wide, Brown)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        GVAR(fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+
+    // The Reaction Forces Ti Goggles (jmfsb_nvg_TiGoggles_RF, _grn_RF, _tan_RF)
+    // were written here the same way; tools/cdlc_split.py moved them to
+    // compatibility/cdlc_rf and keeps them in tools/cdlc_split.json from now on.
 };
 
 

@@ -162,6 +162,32 @@ def ammo_cols(im, d, columns):
             d.line([(x0 - gap // 2, ROWS_Y), (x0 - gap // 2, BODY_BOTTOM - 20)], fill=WOOD_RULE, width=3)
 
 
+def steps(im, d, items):
+    """Numbered steps side by side, each a caption over a screenshot. items =
+    [(caption, file in tools/art/signs)]; the shots keep their shape, all at one
+    height, spread across the body."""
+    fn_, fc = font(F_BLACK, 60), font(F_BOLD, 30)
+    top, bottom = ROWS_Y + 62, BODY_BOTTOM - 4
+    shots = [Image.open(os.path.join(ART, f)).convert("RGB") for _, f in items]
+    h = bottom - top
+    shots = [sh.resize((int(sh.width * h / sh.height), h), Image.LANCZOS) for sh in shots]
+    gap = (W - 2 * MARGIN - sum(sh.width for sh in shots)) / max(len(shots) - 1, 1)
+    x = MARGIN
+    for i, ((caption, _), sh) in enumerate(zip(items, shots)):
+        d.text((x, ROWS_Y - 6), str(i + 1), font=fn_, fill=AMBER)
+        cap, room = caption.upper(), sh.width - 52
+        if tw(d, cap, fc) <= room:
+            d.text((x + 52, ROWS_Y + 12), cap, font=fc, fill=BONE)
+        else:   # too wide for its shot: two lines, a size down
+            words, f2 = cap.split(), font(F_BOLD, 26)
+            cut = max(range(1, len(words)), key=lambda k: -abs(len(" ".join(words[:k])) - len(" ".join(words[k:]))))
+            d.text((x + 52, ROWS_Y - 2), " ".join(words[:cut]), font=f2, fill=BONE)
+            d.text((x + 52, ROWS_Y + 28), " ".join(words[cut:]), font=f2, fill=BONE)
+        im.paste(sh, (int(x), top))
+        d.rectangle([x - 3, top - 3, x + sh.width + 2, top + h + 2], outline=FRAME_PALE, width=3)
+        x += sh.width + gap
+
+
 def figure(im, box, src):
     """Paste a crop of the original sign into the body area, letterboxed."""
     if not (ORIG and os.path.exists(src)):
@@ -315,6 +341,15 @@ def FIG(title, src, box, sub=None, foot=None):
 RANGE_FOOT = "Fire only on a hot range - check your lane before you go loud"
 
 SIGNS = {
+    # the mission's own "Group & Arsenal System" board (data\fa_sign_group_arsenal.paa
+    # in Task_Force_Roomba), brought into the set: the three game screenshots are
+    # cut from it into tools/art/signs, the board around them is the unit's
+    "group_arsenal": {"kind": "steps", "title": "Group & Arsenal System",
+        "sub": "self interact → group menu  ·  pick your role  ·  self interact → arsenal",
+        "items": [("ACE self interact", "group_arsenal_1.png"),
+                  ("Open Group Menu, select a role", "group_arsenal_2.png"),
+                  ("Arsenal now available", "group_arsenal_3.png")],
+        "foot": "No role, no arsenal  ·  re-open self interact after you pick  ·  swap roles any time at the staging zone"},
     # ---- distance markers -------------------------------------------------
     "200":  T(["200", "Meters"]),
     "400":  T(["400", "Meters"]),
@@ -563,6 +598,10 @@ def render(name, spec):
     elif spec["kind"] == "keys":
         header(im, d, spec["title"])
         keycols(im, d, spec["columns"])
+        footer(im, d, spec.get("foot"))
+    elif spec["kind"] == "steps":
+        header(im, d, spec["title"], spec.get("sub"))
+        steps(im, d, spec["items"])
         footer(im, d, spec.get("foot"))
     elif spec["kind"] == "rows":
         header(im, d, spec["title"], spec.get("sub"))

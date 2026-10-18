@@ -8,11 +8,14 @@ Description:
     since they enlisted, how many they were on for, how many absences an
     admin excused (the record's "excused" window ids), and what is left -
     unexcused. Server only. An operation is a closed op window
-    (GVAR(windows) with an end) that started on or after the enlistment
-    date; "on for" is any session filed under that window.
+    (GVAR(windows) with an end) of kind "operation" that started on or after
+    the enlistment date; "on for" is any session filed under that window.
+    Pass another kind to count those instead - FUNC(promotionPoints) asks for
+    "training". A window from before kinds counts as an operation.
 
 Parameters:
     0: UID <STRING>
+    1: Kind <STRING> - "operation" (default) | "training" | "special"
 
 Returns:
     [scheduled, attended, excused, unexcused, percentage] <ARRAY>
@@ -21,7 +24,7 @@ Author:
     YonV
 ---------------------------------------------------------------------------- */
 
-params [["_uid", "", [""]]];
+params [["_uid", "", [""]], ["_kind", "operation", [""]]];
 
 if (!isServer || _uid isEqualTo "") exitWith {[0, 0, 0, 0, 0]};
 
@@ -32,7 +35,7 @@ private _sinceMin = if (_since isEqualTo "") then {0} else {([_since + " 00:00"]
 private _ids = [];
 {
     _x params ["_id", "", "_start", "_end"];
-    if (_end isEqualTo "") then {continue};
+    if (_end isEqualTo "" || {(_x param [5, "operation"]) isNotEqualTo _kind}) then {continue};
     if ((([_start] call FUNC(stampMinutes)) # 0) >= _sinceMin) then {_ids pushBack _id};
 } forEach GVAR(windows);
 

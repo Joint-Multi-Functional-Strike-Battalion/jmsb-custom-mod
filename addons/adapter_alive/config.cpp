@@ -13,7 +13,9 @@ class CfgPatches {
             "jmfsb_main",
             "jmfsb_common",
             "cba_xeh",
-            "ALiVE_main"
+            "jmfsb_notify",
+            "ALiVE_main",
+            "ALiVE_x_lib"
         };
         skipWhenMissingDependencies = 1;
         author = QAUTHOR;
@@ -22,3 +24,4 @@ class CfgPatches {
 };
 
 #include "CfgEventHandlers.hpp"
+#include "CfgFunctions.hpp"

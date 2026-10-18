@@ -94,7 +94,7 @@ private _fnc_load = {
 // count their members, so the bar moves one document at a time.
 GVAR(bootDocs) = [];
 {["" + (_x # 0), "wait"] call FUNC(bootDoc)} forEach ([] call FUNC(svcSections));
-{[_x, "wait"] call FUNC(bootDoc)} forEach ["orbat", "orbat versions", "welcome", "arsenal versions", "motorpool versions", "roles", "orders"];
+{[_x, "wait"] call FUNC(bootDoc)} forEach ["orbat", "orbat versions", "welcome", "arsenal versions", "motorpool", "roles", "orders"];
 
 // SETTINGS AND THE ORBAT BEFORE THE REST. The version settings live in the
 // settings document, and the ORDER OF BATTLE names two of them itself - its
@@ -277,12 +277,12 @@ if (_wstatus isEqualTo "ok") then {
 // nobody. <unit>.motorpool.<name> is one pool, and the variant id IS the class
 // name the mission used ("MotorPool_Nomad"), the same rule as the arsenal.
 private _mpVariants = createHashMap;
-["motorpool versions", "run", 0, 1, _unit + ".motorpool.*"] call FUNC(bootDoc);
+["motorpool", "run", 0, 1, _unit + ".motorpool.*"] call FUNC(bootDoc);
 ([_unit + ".motorpool.", "list"] call FUNC(svcLoad)) params ["_mpKeys", "_mpStatus"];
 if (_mpStatus isNotEqualTo "error" && _mpKeys isEqualType []) then {
-    ["motorpool versions", "run", 0, (count _mpKeys) max 1, format ["%1 listed", count _mpKeys]] call FUNC(bootDoc);
+    ["motorpool", "run", 0, (count _mpKeys) max 1, format ["%1 listed", count _mpKeys]] call FUNC(bootDoc);
     {
-        ["motorpool versions", "run", _forEachIndex, (count _mpKeys) max 1, _x] call FUNC(bootDoc);
+        ["motorpool", "run", _forEachIndex, (count _mpKeys) max 1, _x] call FUNC(bootDoc);
         ([_x] call FUNC(svcLoad)) params ["_vdoc", "_vst"];
         if (_vst isEqualTo "ok") then {
             private _vitems = _vdoc getOrDefault ["items", createHashMap];
@@ -296,7 +296,7 @@ if (_mpStatus isNotEqualTo "error" && _mpKeys isEqualType []) then {
         };
     } forEach _mpKeys;
 };
-["motorpool versions", ["ok", "error"] select (_mpStatus isEqualTo "error"), count _mpVariants, (count _mpVariants) max 1, format ["%1 read", count _mpVariants]] call FUNC(bootDoc);
+["motorpool", ["ok", "error"] select (_mpStatus isEqualTo "error"), count _mpVariants, (count _mpVariants) max 1, format ["%1 read", count _mpVariants]] call FUNC(bootDoc);
 if (count _mpVariants > 0) then {
     _structure set ["motorpoolVariants", _mpVariants];
     _found = _found + 1;

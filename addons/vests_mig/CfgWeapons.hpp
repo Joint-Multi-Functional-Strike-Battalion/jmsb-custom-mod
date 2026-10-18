@@ -6,31 +6,42 @@ class CfgWeapons {
     class MIG_Ferro_FCPC_MG_AOR1;
     class MIG_Ferro_FCPC_MG_CB;
     class MIG_Ferro_FCPC_MG_OCP;
+    class MIG_Ferro_FCPC_MG_OD;
     class MIG_Ferro_FCPC_Rifleman_AOR1;
     class MIG_Ferro_FCPC_Rifleman_CB;
     class MIG_Ferro_FCPC_Rifleman_OCP;
+    class MIG_Ferro_FCPC_Rifleman_OD;
     class MIG_Ferro_FCPC_SL_AOR1;
     class MIG_Ferro_FCPC_SL_CB;
     class MIG_Ferro_FCPC_SL_OCP;
+    class MIG_Ferro_FCPC_SL_OD;
     class MIG_Ferro_FCPC_Slick_AOR1;
     class MIG_Ferro_FCPC_Slick_CB;
     class MIG_Ferro_FCPC_Slick_OCP;
+    class MIG_Ferro_FCPC_Slick_OD;
     class MIG_Ferro_FCPC_TL_AOR1;
     class MIG_Ferro_FCPC_TL_CB;
     class MIG_Ferro_FCPC_TL_OCP;
+    class MIG_Ferro_FCPC_TL_OD;
     class MIG_Ferro_FCPC_slick_nb_AOR1;
     class MIG_Ferro_FCPC_slick_nb_CB;
     class MIG_Ferro_FCPC_slick_nb_OCP;
+    class MIG_Ferro_FCPC_slick_nb_OD;
     class MIG_JPC_JTAC_CB;
     class MIG_JPC_JTAC_OCP;
+    class MIG_JPC_JTAC_OD;
     class MIG_JPC_MG_CB;
     class MIG_JPC_MG_OCP;
+    class MIG_JPC_MG_OD;
     class MIG_JPC_Rifleman_CB;
     class MIG_JPC_Rifleman_OCP;
+    class MIG_JPC_Rifleman_OD;
     class MIG_JPC_SL_CB;
     class MIG_JPC_SL_OCP;
+    class MIG_JPC_SL_OD;
     class MIG_JPC_Slick_CB;
     class MIG_JPC_Slick_OCP;
+    class MIG_JPC_Slick_OD;
     class MIG_TYR_Gunfighter_MAB_MC;
     class MIG_TYR_MG_BLK;
     class MIG_TYR_MG_CB;
@@ -80,6 +91,16 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_Ferro_FCPC_TL_OD): MIG_Ferro_FCPC_TL_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] Ferro FCPC TL (OD)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_Ferro_FCPC_TL_AOR1): MIG_Ferro_FCPC_TL_AOR1 {
         author = QAUTHOR;
         scope = 2;
@@ -105,6 +126,16 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] Ferro FCPC SL (OCP)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_Ferro_FCPC_SL_OD): MIG_Ferro_FCPC_SL_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] Ferro FCPC SL (OD)";
         class ItemInfo: ItemInfo {
             JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
         };
@@ -140,6 +171,16 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_Ferro_FCPC_Slick_OD): MIG_Ferro_FCPC_Slick_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] Ferro FCPC Slick (OD)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_Ferro_FCPC_Slick_AOR1): MIG_Ferro_FCPC_Slick_AOR1 {
         author = QAUTHOR;
         scope = 2;
@@ -165,6 +206,16 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] Ferro FCPC Slick (No Belt)(OCP)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_Ferro_FCPC_slick_nb_OD): MIG_Ferro_FCPC_slick_nb_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] Ferro FCPC Slick (No Belt)(OD)";
         class ItemInfo: ItemInfo {
             JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
         };
@@ -200,6 +251,16 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_Ferro_FCPC_Rifleman_OD): MIG_Ferro_FCPC_Rifleman_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] Ferro FCPC Rifleman (OD)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_Ferro_FCPC_Rifleman_AOR1): MIG_Ferro_FCPC_Rifleman_AOR1 {
         author = QAUTHOR;
         scope = 2;
@@ -225,6 +286,16 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] Ferro FCPC MG (OCP)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_Ferro_FCPC_MG_OD): MIG_Ferro_FCPC_MG_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] Ferro FCPC MG (OD)";
         class ItemInfo: ItemInfo {
             JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
         };
@@ -260,6 +331,16 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_JPC_Rifleman_OD): MIG_JPC_Rifleman_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] JPC Rifleman (OD)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_JPC_Slick_CB): MIG_JPC_Slick_CB {
         author = QAUTHOR;
         scope = 2;
@@ -275,6 +356,16 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] JPC Slick (OCP)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_JPC_Slick_OD): MIG_JPC_Slick_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] JPC Slick (OD)";
         class ItemInfo: ItemInfo {
             JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
         };
@@ -300,6 +391,16 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_JPC_MG_OD): MIG_JPC_MG_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] JPC MG (OD)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_JPC_SL_CB): MIG_JPC_SL_CB {
         author = QAUTHOR;
         scope = 2;
@@ -320,6 +421,16 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_JPC_SL_OD): MIG_JPC_SL_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] JPC SL (OD)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_JPC_JTAC_CB): MIG_JPC_JTAC_CB {
         author = QAUTHOR;
         scope = 2;
@@ -335,6 +446,16 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] JPC JTAC (OCP)";
+        class ItemInfo: ItemInfo {
+            JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_JPC_JTAC_OD): MIG_JPC_JTAC_OD {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] JPC JTAC (OD)";
         class ItemInfo: ItemInfo {
             JMFSB_PLATE_CARRIER_STANDARD_PROTECTION
         };

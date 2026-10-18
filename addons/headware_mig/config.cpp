@@ -75,10 +75,16 @@ class CfgPatches {
             QGVAR(MIG_PVS31_DayOps_STD),
             QGVAR(MIG_SFHC_TAN_CLEAN),
             QGVAR(MIG_SFHC_BLK_CLEAN),
+            QGVAR(MIG_SFHC_OCP_CLEAN),
+            QGVAR(MIG_SFHC_RG_CLEAN),
             QGVAR(MIG_SFHC_TAN_Peltor),
             QGVAR(MIG_SFHC_BLK_Peltor),
+            QGVAR(MIG_SFHC_OCP_Peltor),
+            QGVAR(MIG_SFHC_RG_Peltor),
             QGVAR(MIG_SFHC_TAN_FULL_KIT),
-            QGVAR(MIG_SFHC_BLK_FULL_KIT)
+            QGVAR(MIG_SFHC_BLK_FULL_KIT),
+            QGVAR(MIG_SFHC_OCP_FULL_KIT),
+            QGVAR(MIG_SFHC_RG_FULL_KIT)
         };
         requiredVersion = REQUIRED_VERSION;
         // MIG's own patches: every jmfsb class here inherits one of their classes, so this addon

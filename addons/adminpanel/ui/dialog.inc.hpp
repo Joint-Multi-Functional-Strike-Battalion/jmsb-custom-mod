@@ -124,6 +124,19 @@ class GVAR(console) {
             onButtonClick = "closeDialog 2;";
         };
 
+        // TIME / WEATHER opens its own small dialog over the console, as ADMIN
+        // MESSAGE does - the console has no free rail for a dozen more controls.
+        class HEADER_ENVIRONMENT: RscADMPButton {
+            idc = IDC_ADMINPANEL_HEADER_ENVIRONMENT;
+            text = "TIME / WEATHER";
+            tooltip = "Set the time of day, the speed of time and the weather for everybody.";
+            x = "0.590 * safezoneW + safezoneX";
+            y = "0.012 * safezoneH + safezoneY";
+            w = "0.100 * safezoneW";
+            h = "0.028 * safezoneH";
+            onButtonClick = QUOTE(createDialog QQGVAR(environment););
+        };
+
         // ------------------------------------------------------- player list --
         class PLAYERLIST_TITLE: RscADMPStructuredText {
             idc = IDC_ADMINPANEL_PLAYERLIST_TITLE;
@@ -1454,6 +1467,320 @@ class GVAR(message) {
             y = "0.556 * safezoneH + safezoneY";
             w = "0.196 * safezoneW";
             h = "0.160 * safezoneH";
+        };
+    };
+};
+
+// TIME / WEATHER. A small dialog over the console, like the message box: the
+// time of day and how fast it runs, and the weather - set for everybody
+// (user, 2026-10-16). FUNC(envLoad) fills the combos from the current values and
+// paints it; FUNC(envApply) sends what is picked to the server.
+class GVAR(environment) {
+    idd = IDD_ADMINPANEL_ENVIRONMENT;
+    movingEnable = 0;
+    enableSimulation = 1;
+
+    onLoad = QUOTE([_this select 0] call FUNC(envLoad););
+
+    class controlsBackground {
+        class BACKGROUND: RscADMPText {
+            idc = IDC_ADMINENV_BACKGROUND;
+            text = "";
+            x = "0.330 * safezoneW + safezoneX";
+            y = "0.230 * safezoneH + safezoneY";
+            w = "0.340 * safezoneW";
+            h = "0.500 * safezoneH";
+            colorBackground[] = {0.05, 0.05, 0.05, 0.96};
+        };
+    };
+
+    class controls {
+        class TITLE: RscADMPStructuredText {
+            idc = IDC_ADMINENV_TITLE;
+            text = ""; // written at runtime - see FUNC(envLoad)
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.238 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.036 * safezoneH";
+        };
+
+        class READOUT: RscADMPStructuredText {
+            idc = IDC_ADMINENV_READOUT;
+            text = ""; // kept current by FUNC(envReadout)
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.278 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.050 * safezoneH";
+        };
+
+        class TIME_HEAD: RscADMPStructuredText {
+            idc = IDC_ADMINENV_TIME_HEAD;
+            text = "<t font='RobotoCondensedBold' size='0.7'>T I M E</t>";
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.336 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.026 * safezoneH";
+        };
+
+        class HOUR_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_HOUR_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>HOUR</t>";
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.364 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class MINUTE_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_MINUTE_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>MINUTE</t>";
+            x = "0.420 * safezoneW + safezoneX";
+            y = "0.364 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class SPEED_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_SPEED_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>SPEED</t>";
+            x = "0.502 * safezoneW + safezoneX";
+            y = "0.364 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class HOUR: RscADMPCombo {
+            idc = IDC_ADMINENV_HOUR;
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.388 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class MINUTE: RscADMPCombo {
+            idc = IDC_ADMINENV_MINUTE;
+            x = "0.420 * safezoneW + safezoneX";
+            y = "0.388 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class SPEED: RscADMPCombo {
+            idc = IDC_ADMINENV_SPEED;
+            x = "0.502 * safezoneW + safezoneX";
+            y = "0.388 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class TIME_APPLY: RscADMPButton {
+            idc = IDC_ADMINENV_TIME_APPLY;
+            text = "SET TIME";
+            tooltip = "Sets the clock and the speed of time for everybody.";
+            colorBackground[] = {0.761, 0.659, 0.471, 1};
+            colorText[] = {0.05, 0.05, 0.05, 1};
+            onButtonClick = QUOTE(['time'] call FUNC(envApply););
+            x = "0.584 * safezoneW + safezoneX";
+            y = "0.388 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class DAWN: RscADMPButton {
+            idc = IDC_ADMINENV_DAWN;
+            text = "DAWN";
+            tooltip = "Puts this time in the combos - SET TIME applies it.";
+            onButtonClick = QUOTE(['dawn'] call FUNC(envTimeOf););
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.424 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class NOON: RscADMPButton {
+            idc = IDC_ADMINENV_NOON;
+            text = "NOON";
+            tooltip = "Puts this time in the combos - SET TIME applies it.";
+            onButtonClick = QUOTE(['noon'] call FUNC(envTimeOf););
+            x = "0.420 * safezoneW + safezoneX";
+            y = "0.424 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class DUSK: RscADMPButton {
+            idc = IDC_ADMINENV_DUSK;
+            text = "DUSK";
+            tooltip = "Puts this time in the combos - SET TIME applies it.";
+            onButtonClick = QUOTE(['dusk'] call FUNC(envTimeOf););
+            x = "0.502 * safezoneW + safezoneX";
+            y = "0.424 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class MIDNIGHT: RscADMPButton {
+            idc = IDC_ADMINENV_MIDNIGHT;
+            text = "MIDNIGHT";
+            tooltip = "Puts this time in the combos - SET TIME applies it.";
+            onButtonClick = QUOTE(['midnight'] call FUNC(envTimeOf););
+            x = "0.584 * safezoneW + safezoneX";
+            y = "0.424 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class WEATHER_HEAD: RscADMPStructuredText {
+            idc = IDC_ADMINENV_WEATHER_HEAD;
+            text = "<t font='RobotoCondensedBold' size='0.7'>W E A T H E R</t>";
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.466 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.026 * safezoneH";
+        };
+
+        class OVERCAST_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_OVERCAST_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>OVERCAST</t>";
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.494 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class RAIN_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_RAIN_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>RAIN</t>";
+            x = "0.420 * safezoneW + safezoneX";
+            y = "0.494 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class FOG_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_FOG_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>FOG</t>";
+            x = "0.502 * safezoneW + safezoneX";
+            y = "0.494 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class WIND_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINENV_WIND_LABEL;
+            text = "<t font='RobotoCondensed' size='0.75'>WIND</t>";
+            x = "0.584 * safezoneW + safezoneX";
+            y = "0.494 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.022 * safezoneH";
+        };
+
+        class OVERCAST: RscADMPCombo {
+            idc = IDC_ADMINENV_OVERCAST;
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.518 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class RAIN: RscADMPCombo {
+            idc = IDC_ADMINENV_RAIN;
+            x = "0.420 * safezoneW + safezoneX";
+            y = "0.518 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class FOG: RscADMPCombo {
+            idc = IDC_ADMINENV_FOG;
+            x = "0.502 * safezoneW + safezoneX";
+            y = "0.518 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class WIND: RscADMPCombo {
+            idc = IDC_ADMINENV_WIND;
+            x = "0.584 * safezoneW + safezoneX";
+            y = "0.518 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class CLEAR: RscADMPButton {
+            idc = IDC_ADMINENV_CLEAR;
+            text = "CLEAR";
+            tooltip = "Puts this weather in the combos - SET WEATHER applies it.";
+            onButtonClick = QUOTE(['clear'] call FUNC(envPreset););
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.556 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class CLOUDY: RscADMPButton {
+            idc = IDC_ADMINENV_CLOUDY;
+            text = "CLOUDY";
+            tooltip = "Puts this weather in the combos - SET WEATHER applies it.";
+            onButtonClick = QUOTE(['cloudy'] call FUNC(envPreset););
+            x = "0.420 * safezoneW + safezoneX";
+            y = "0.556 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class STORM: RscADMPButton {
+            idc = IDC_ADMINENV_STORM;
+            text = "STORM";
+            tooltip = "Puts this weather in the combos - SET WEATHER applies it.";
+            onButtonClick = QUOTE(['storm'] call FUNC(envPreset););
+            x = "0.502 * safezoneW + safezoneX";
+            y = "0.556 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class FOGGY: RscADMPButton {
+            idc = IDC_ADMINENV_FOGGY;
+            text = "FOG";
+            tooltip = "Puts this weather in the combos - SET WEATHER applies it.";
+            onButtonClick = QUOTE(['foggy'] call FUNC(envPreset););
+            x = "0.584 * safezoneW + safezoneX";
+            y = "0.556 * safezoneH + safezoneY";
+            w = "0.078 * safezoneW";
+            h = "0.030 * safezoneH";
+        };
+
+        class WEATHER_APPLY: RscADMPButton {
+            idc = IDC_ADMINENV_WEATHER_APPLY;
+            text = "SET WEATHER";
+            tooltip = "Changes the weather for everybody, at once. Rain needs heavy overcast to fall.";
+            colorBackground[] = {0.761, 0.659, 0.471, 1};
+            colorText[] = {0.05, 0.05, 0.05, 1};
+            onButtonClick = QUOTE(['weather'] call FUNC(envApply););
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.596 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.032 * safezoneH";
+        };
+
+        class NOTE: RscADMPStructuredText {
+            idc = IDC_ADMINENV_NOTE;
+            text = "<t font='RobotoCondensed' size='0.7'>A weather module in the mission may move the weather on again at its next cycle.</t>";
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.636 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.046 * safezoneH";
+        };
+
+        class CLOSE: RscADMPButton {
+            idc = IDC_ADMINENV_CLOSE;
+            text = "CLOSE";
+            onButtonClick = QUOTE(closeDialog 2;);
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.690 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.032 * safezoneH";
         };
     };
 };

@@ -1,0 +1,10 @@
+Initial release - 0.1.0
+
+- 1st JMSB custom mod, first public Workshop release.
+- Factions: 1st JMSB, US Army JTF, Marines, Russia, China, Iran, Turkey, HIMF, EUDF, ADF, Delhi Accord and Gendarmerie, with camo variants.
+- Future Ammunition (2040): tiered ammunition for small arms, launchers, vehicles and missiles.
+- AiTR goggles: full-screen NVG and thermal with aided target recognition (line-of-sight boxes, labels, friendly net cards).
+- Every scope now works with night vision goggles.
+- TAC//PAD tablet, TAC//PAC unit database, Blue Force Tracking, TAC//ADMIN.
+- ACRE2 radio mesh, jamming and EW, hacking, drones, CAS, QRF, logistics and medical systems.
+- Requires CBA_A3, ACE and DUI - Squad Radar. Other supported mods are optional.

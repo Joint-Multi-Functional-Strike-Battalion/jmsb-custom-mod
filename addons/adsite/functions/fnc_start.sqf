@@ -1,9 +1,9 @@
 #include "..\script_component.hpp"
 /*
  * Author: JMSB
- * Starts the three handlers the system runs on, once: the beat (every Site
- * looks, decides and engages), the fuse (every interceptor in flight, every
- * frame) and the board (what the tacpad panels draw).
+ * Starts the one engagement PFH if it is not running. It runs only while a
+ * threat is in the air - FUNC(tick) removes it when the queue empties - so an
+ * idle server carries no handler of this addon's at all.
  *
  * Arguments: None
  *
@@ -15,11 +15,5 @@
  * Public: No
  */
 
-if (!isServer || GVAR(running)) exitWith {};
-GVAR(running) = true;
-
-[{ [] call FUNC(tick) }, ADS_BEAT, []] call CBA_fnc_addPerFrameHandler;
-[{ [] call FUNC(fuze) }, 0, []] call CBA_fnc_addPerFrameHandler;
-[{ [] call FUNC(board) }, ADS_BOARD_EVERY, []] call CBA_fnc_addPerFrameHandler;
-
-INFO("air defence running");
+if (GVAR(pfh) >= 0) exitWith {};
+GVAR(pfh) = [LINKFUNC(tick), ADS_TICK, []] call CBA_fnc_addPerFrameHandler;

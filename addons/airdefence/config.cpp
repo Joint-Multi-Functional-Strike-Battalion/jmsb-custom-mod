@@ -3,7 +3,7 @@
 class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;
-        units[] = {"jmfsb_moduleAirDefence"};
+        units[] = {"jmfsb_moduleAirDefence", "jmfsb_moduleAABase"};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
         // No hardware of its own: every launcher, radar and MANPAD is a class

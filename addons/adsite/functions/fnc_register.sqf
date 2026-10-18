@@ -1,87 +1,67 @@
 #include "..\script_component.hpp"
 /*
  * Author: JMSB
- * Makes a Site out of vehicles and starts the system if it is not running.
+ * Makes a vehicle an AD unit on the server, or moves it to a new alarm area.
+ * Called on its creation (FUNC(vehicleInit)), by a Site module
+ * (FUNC(moduleSite)) and for a jmfsb_airdefence battery (batteryUp). A unit
+ * already known is re-filed only when the caller CLAIMS it - a module or a
+ * battery wins over its automatic area, never the other way round.
  *
- * A Site is a hashmap on the server:
- *   id, name, side, centre (ASL), radius, link,
- *   members      [vehicle, ...] - alive ones; the dead are pruned each beat
- *   tracks       hashValue -> [object, kind ("air"|"munition"), class, impact/position ASL, time to impact, first seen]
- *   committed    hashValue of the target -> [vehicle, ...] already engaging it
- *   busy         hashValue of the vehicle -> the object it is engaging
- *   (an object cannot be a hashmap key - hashValue is its key, and the object rides in the value)
- *   automation, engageAir, engageMunitions, emcon, burstSeconds, shotsPerThreat,
- *   reserveLong, reaction, fumble, notices, access   (the module's operation values)
- *   live         radiating notice given
- *   lastIncoming time of the last incoming notice
- *   cuedUntil    silent-mode radars lit until
+ * Unit record (U_* in script_component.hpp):
+ *   [vehicle, gun entry, missile entry, protect radius, intercept chance
+ *    (-1: the setting), area key, busy until]
  *
  * Arguments:
- * 0: Member vehicles <ARRAY>
- * 1: Side <SIDE>
- * 2: Centre, ASL <ARRAY>
- * 3: Operation values from the module <HASHMAP> (missing keys take the defaults)
+ * 0: Vehicle <OBJECT>
+ * 1: Alarm area key <STRING>
+ * 2: Protect radius, -1 for its own reach under the cap <NUMBER>
+ * 3: Intercept chance, -1 for the setting <NUMBER>
+ * 4: Claim a unit already registered <BOOL>
  *
  * Return Value:
- * Site id <STRING>
+ * Registered <BOOL>
  *
  * Example:
- * [[_radar, _launcher], east, getPosASL _radar, createHashMap] call jmfsb_adsite_fnc_register
+ * [_vehicle, "site_1", 1500, -1, true] call jmfsb_adsite_fnc_register
  *
- * Public: Yes
+ * Public: No
  */
 
-params [["_members", [], [[]]], ["_side", sideUnknown, [sideUnknown]], ["_centre", [], [[]]], ["_opts", createHashMap, [createHashMap]]];
+params [["_veh", objNull, [objNull]], ["_areaKey", "", [""]], ["_radius", -1, [0]],
+        ["_chance", -1, [0]], ["_claim", false, [false]]];
 
-if (!isServer) exitWith {""};
-_members = _members select {!isNull _x && {alive _x}};
-if (_members isEqualTo []) exitWith {""};
+if (!isServer || {!alive _veh}) exitWith {false};
 
-GVAR(nextSite) = GVAR(nextSite) + 1;
-private _id = format ["S%1", GVAR(nextSite)];
-private _name = _opts getOrDefault ["siteName", ""];
-if (_name isEqualTo "") then { _name = format ["SITE %1", mapGridPosition ASLToAGL _centre] };
+([_veh] call FUNC(profile)) params ["_gun", "_missile"];
+if (_gun isEqualTo [] && {_missile isEqualTo []}) exitWith {false};
 
-private _site = createHashMapFromArray [
-    ["id", _id], ["name", toUpper _name], ["side", _side], ["centre", _centre],
-    ["radius", _opts getOrDefault ["radius", 800]],
-    ["link", _opts getOrDefault ["link", ""]],
-    ["members", _members],
-    ["tracks", createHashMap], ["committed", createHashMap], ["busy", createHashMap],
-    ["automation", _opts getOrDefault ["automation", true]],
-    ["engageAir", _opts getOrDefault ["engageAir", true]],
-    ["engageMunitions", _opts getOrDefault ["engageMunitions", true]],
-    ["emcon", _opts getOrDefault ["emcon", "auto"]],
-    ["burstSeconds", _opts getOrDefault ["burstSeconds", 20]],
-    ["shotsPerThreat", (_opts getOrDefault ["shotsPerThreat", 2]) max 1],
-    ["reserveLong", ((_opts getOrDefault ["reserveLong", 0.5]) max 0) min 1],
-    ["reaction", (_opts getOrDefault ["reaction", 2]) max 0],
-    ["fumble", ((_opts getOrDefault ["fumble", 0.1]) max 0) min 1],
-    ["notices", _opts getOrDefault ["notices", true]],
-    ["access", _opts getOrDefault ["access", "near"]],
-    ["live", false], ["lastIncoming", -1e9], ["cuedUntil", -1e9], ["burstAt", -1e9], ["burstIndex", 0]
-];
+private _key = hashValue _veh;
+private _old = GVAR(units) get _key;
+if (!isNil "_old" && {!_claim}) exitWith {true};
 
-{
-    private _veh = _x;
-    // the long-range reserve is a fraction of what each launcher STARTED with
-    {
-        _x params ["_path", "", "_mag", "", "", "", "", "_role"];
-        if (_role isEqualTo ROLE_LONG) then {
-            _veh setVariable [format ["%1_%2", QGVAR(full), _mag], {_x isEqualTo _mag} count (_veh magazinesTurret _path)];
-        };
-    } forEach (([_veh] call FUNC(profile)) # 0);
-    // public: Zeus's context action and the tacpad look it up on the client
-    _veh setVariable [QGVAR(site), _id, true];
-    // The interceptor is caught as it leaves the tube (FUNC(fired)). Server-side:
-    // the Site's vehicles are server AI.
-    if (isNil {_x getVariable QGVAR(firedEh)}) then {
-        _x setVariable [QGVAR(firedEh), _x addEventHandler ["Fired", {_this call FUNC(fired)}]];
-    };
-} forEach _members;
+if (_radius <= 0) then {
+    _radius = ((_gun param [5, 0]) max (_missile param [5, 0]) max ADS_RADIUS_MIN) min GVAR(radiusCap);
+};
 
-GVAR(sites) set [_id, _site];
-INFO_4("Site %1 (%2) up for %3 with %4 member(s)",_id,_site get "name",_side,count _members);
+// out of its old area, into the new one
+if (!isNil "_old") then {
+    private _was = GVAR(areas) get (_old select U_AREA);
+    if (!isNil "_was") then { _was set [0, (_was select 0) - [_key]] };
+};
+private _area = [_areaKey, getPosASL _veh] call FUNC(area);
+(_area select 0) pushBackUnique _key;
 
-[] call FUNC(start);
-_id
+GVAR(units) set [_key, [_veh, _gun, _missile, _radius, _chance, _areaKey, -1]];
+
+if (isNil "_old") then {
+    _veh addEventHandler ["Deleted", { [_this select 0] call FUNC(unregister) }];
+    _veh addEventHandler ["Killed", { [_this select 0] call FUNC(unregister) }];
+    // public: the players' actions and the server's assignment read them
+    if (isNil {_veh getVariable QGVAR(mode)}) then { _veh setVariable [QGVAR(mode), ADS_MODE_DEFAULT, true] };
+};
+
+// tell every firing machine there is something to defend with (FUNC(fired))
+if !(missionNamespace getVariable [QGVAR(armed), false]) then {
+    missionNamespace setVariable [QGVAR(armed), true, true];
+};
+true

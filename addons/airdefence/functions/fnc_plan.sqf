@@ -29,17 +29,24 @@ if (_cmds isEqualTo []) exitWith {
 
 private _placed = [];
 
-// AIR DEFENCE IS SOMETHING PLAYERS FIND AND KILL. It was built for every
-// commander ALiVE reported, so a BLUFOR mission got BLUFOR SAM sites standing
-// beside BLUFOR squads - photographed, and rightly reported as wrong. A side
-// friendly to the players gets none.
+// EVERY INVADING OR DEFENDING SIDE GETS ITS AIR DEFENCE (user, 2026-10-13:
+// "be for all invade or defend sides"). It used to be built only for sides
+// hostile to the players, after BLUFOR SAMs beside BLUFOR squads were reported
+// as wrong; now a conventional commander - invasion or occupation - gets its
+// batteries whoever it fights for, and the players' own side is defended too.
+// An asymmetric commander friendly to the players still gets no MANPAD teams:
+// it is neither invading nor defending.
 private _mine = call EFUNC(common,playerSides);
 
 {
     _x params ["_side", "_ctype", "_faction"];
 
-    if (_mine isNotEqualTo [] && {(_mine findIf {_side getFriend _x >= 0.6}) > -1}) then {
-        INFO_1("side %1 is friendly to the players - no air defence built for it",_side);
+    if (
+        !(_ctype in AD_CONVENTIONAL)
+        && {_mine isNotEqualTo []}
+        && {(_mine findIf {_side getFriend _x >= 0.6}) > -1}
+    ) then {
+        INFO_1("side %1 is asymmetric and friendly to the players - no MANPAD teams built for it",_side);
         continue;
     };
 

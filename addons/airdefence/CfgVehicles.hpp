@@ -246,4 +246,107 @@ class CfgVehicles {
             };
         };
     };
+
+    // AN AA BASE WHERE THE MISSION MAKER PUTS IT (user, 2026-10-14). Not part
+    // of the temporary commander system above and not dependent on it: no
+    // Air Defence module, no ALiVE commander, no TAOR marker needed - the
+    // module's position and area ARE the site.
+    //
+    // NO SIDE ON IT (D59). The base belongs to whoever owns its hardware - the
+    // radar class's own config side, else the first launcher's, else the
+    // first gun's.
+    //
+    // Hardware and crews stay live and out of ALiVE (profiling static AA
+    // deletes it); only the guards are ALiVE-profiled.
+    class jmfsb_moduleAABase: Module_F {
+        scope = 2;
+        scopeCurator = 0;
+        displayName = "JMSB - AA Base";
+        author = QAUTHOR;
+        category = "jmfsb_modules";
+        function = QUOTE(DFUNC(moduleAABase));
+        functionPriority = 1;
+        isGlobal = 0;
+        isTriggerActivated = 0;
+        isDisposable = 1;
+        is3DEN = 0;
+        canSetArea = 1;
+        icon = "\a3\ui_f\data\map\markers\nato\o_antiair.paa";
+
+        class AttributeValues {
+            size3[] = {300, 300, -1};
+            isRectangle = 0;
+        };
+
+        class Attributes: AttributesBase {
+            class radarClass: Edit {
+                property = QGVAR(radarClass);
+                displayName = "Radar Class";
+                tooltip = "One search radar vehicle class, placed at the module. Its own side is the base's side. BLANK builds no radar - the side then comes from the first missile class, else the first gun class.";
+                typeName = "STRING";
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('radarClass',_value)]);
+            };
+            class missileClass: Edit {
+                property = QGVAR(missileClass);
+                displayName = "Missile Classes";
+                tooltip = "SAM launcher classes, comma-separated - one is drawn at random per launcher. They stand on the outer ring, set back from the radar. Classes that do not exist are skipped and named in the RPT.";
+                typeName = "STRING";
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('missileClass',_value)]);
+            };
+            class missileCount: Edit {
+                property = QGVAR(missileCount);
+                displayName = "Missile Launchers";
+                tooltip = "How many SAM launchers. Fewer stand up when the area has too little open, level ground, and the RPT says so.";
+                typeName = "NUMBER";
+                defaultValue = "3";
+                expression = QUOTE(_this setVariable [ARR_2('missileCount',_value)]);
+            };
+            class gunClass: Edit {
+                property = QGVAR(gunClass);
+                displayName = "Gun Classes";
+                tooltip = "AA gun or CIWS classes, comma-separated - one is drawn at random per gun. They stand on an inner ring close to the radar, as its point defence.";
+                typeName = "STRING";
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('gunClass',_value)]);
+            };
+            class gunCount: Edit {
+                property = QGVAR(gunCount);
+                displayName = "Guns";
+                tooltip = "How many AA guns on the inner ring.";
+                typeName = "NUMBER";
+                defaultValue = "2";
+                expression = QUOTE(_this setVariable [ARR_2('gunCount',_value)]);
+            };
+            class guards: Edit {
+                property = QGVAR(guards);
+                displayName = "Guard Groups";
+                tooltip = "Infantry groups guarding the base - 0, 1 or 2. They stand off the hardware inside the area and are handed to ALiVE as profiles once ALiVE is up, so they cost nothing while nobody is near. Without ALiVE they stay live.";
+                typeName = "NUMBER";
+                defaultValue = "1";
+                expression = QUOTE(_this setVariable [ARR_2('guards',_value)]);
+            };
+            class guardClasses: Edit {
+                property = QGVAR(guardClasses);
+                displayName = "Guard Classes";
+                tooltip = "Soldier classes for the guards and for any manned gun, comma-separated. BLANK draws from the radar's own faction (else the first missile or gun class's), falling back to the side's basic rifleman.";
+                typeName = "STRING";
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('guardClasses',_value)]);
+            };
+        };
+
+        class ModuleDescription: ModuleDescription {
+            description[] = {
+                "Builds an AA base inside the module's area: a radar at the module, SAM launchers on a ring around it, AA guns close in as point defence, and guards standing off the hardware.",
+                "",
+                "Works on its own - no Air Defence module, ALiVE commander or TAOR marker needed. The area's radius sets the spread.",
+                "",
+                "The base's side is the radar class's own side, else the first missile class's, else the first gun class's.",
+                "",
+                "Radar, launchers, guns and their crews stay live and out of ALiVE. Only the guards are ALiVE-profiled."
+            };
+        };
+    };
 };

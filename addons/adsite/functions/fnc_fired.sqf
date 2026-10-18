@@ -1,38 +1,53 @@
 #include "..\script_component.hpp"
 /*
  * Author: JMSB
- * A Site member's Fired event: the interceptor is caught as it leaves.
+ * The fired class event, on every machine, for every shot of every unit.
  *
- * A missile fired at a munition is steered onto it (setMissileTarget - A0-1 of
- * the design: whether the engine flies a SAM at a shell is what the probe
- * answers; if it does not, the fuse still catches the round on the predicted
- * course). Every interceptor goes to the fuse (FUNC(fuze)) with its target, so
- * it detonates by proximity, and is marked so no Site ever tracks its own shot
- * as a threat.
+ * THE HOT PATH. An ignored ammo type - every bullet and grenade - costs one
+ * hashmap lookup and returns. A relevant one goes on only on the machine where
+ * the shooter (the gunner, for a vehicle) is LOCAL: that machine owns the
+ * round, so exactly one machine reports each shot and the kill can later be
+ * done where it counts. A missile is reported a frame later, once the engine
+ * has given it its target.
  *
- * Arguments: the Fired event's own
+ * Arguments: the fired event's own
+ * 0: Unit or vehicle <OBJECT>
+ * 4: Ammo <STRING>
+ * 6: Projectile <OBJECT>
+ * 7: Gunner <OBJECT>
  *
  * Return Value: None
+ *
+ * Example:
+ * (CBA "fired" class event handler)
  *
  * Public: No
  */
 
-params ["_veh", "_weapon", "", "", "_ammo", "", "_proj"];
+params ["_unit", "", "", "", "_ammo", "", "_proj", ["_gunner", objNull]];
 
-private _pending = _veh getVariable QGVAR(pending);
-if (isNil "_pending" || {isNull _proj}) exitWith {};
-_pending params ["_target", "_fuse", "_siteId", "_kind"];
-if (!alive _target) exitWith {};
+private _info = GVAR(families) get _ammo;
+if (isNil "_info") then { _info = [_ammo] call FUNC(family) };
+private _family = _info select 0;
+if (_family == FAM_NONE || {!GVAR(enabled)}) exitWith {};
 
-_proj setVariable [QGVAR(interceptor), true];
-private _sim = toLower getText (configFile >> "CfgAmmo" >> _ammo >> "simulation");
-
-if (_sim in ["shotmissile", "shotrocket"]) then {
-    if (_kind isEqualTo "munition") then { _proj setMissileTarget _target };
-    GVAR(inFlight) pushBack [_proj, _target, _fuse, time, _siteId, _veh, false];
-    // one missile per order
-    _veh setVariable [QGVAR(pending), nil];
-} else {
-    // a gun round: measured for the CIWS correction, and a kill only on a near pass
-    GVAR(inFlight) pushBack [_proj, _target, _fuse, time, _siteId, _veh, true, 1e9, [0, 0, 0]];
+private _on = switch (_family) do {
+    case FAM_ARTILLERY: { GVAR(threatArtillery) };
+    case FAM_ROCKET: { GVAR(threatRockets) };
+    case FAM_MISSILE: { GVAR(threatMissiles) };
+    case FAM_BOMB: { GVAR(threatBombs) };
+    default { false };
 };
+// nothing on the map to defend with - published by FUNC(register)
+if (!_on || {!(missionNamespace getVariable [QGVAR(armed), false])}) exitWith {};
+
+private _owner = [_gunner, _unit] select (isNull _gunner);
+if (!local _owner || {isNull _proj}) exitWith {};
+
+GVAR(nextShot) = GVAR(nextShot) + 1;
+private _id = format ["%1:%2", clientOwner, GVAR(nextShot)];
+
+if (_family == FAM_MISSILE) exitWith {
+    [LINKFUNC(shot), [_id, _owner, _proj, _info]] call CBA_fnc_execNextFrame;
+};
+[_id, _owner, _proj, _info] call FUNC(shot);

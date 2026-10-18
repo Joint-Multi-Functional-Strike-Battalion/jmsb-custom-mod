@@ -392,7 +392,7 @@ class XtdGearModels {
             options[] = {"camo","kit"};
             class camo
             {
-                values[] = {"TAN","BLK"};
+                values[] = {"TAN","BLK","RG","OCP"};
                 class TAN
                 {
                     label = "TAN";
@@ -402,6 +402,16 @@ class XtdGearModels {
                 {
                     label = "BLK";
                     image = "MIG\MIG_Core\data\Gear_MCC_BLK"; 
+                };
+                class RG
+                {
+                    label = "RG";
+                    image = "MIG\MIG_Core\data\Gear_MCC_OD"; 
+                };
+                class OCP
+                {
+                    label = "OCP";
+                    image = "MIG\MIG_Core\data\Gear_MCC_OCP"; 
                 };
             };
             class kit
@@ -802,6 +812,36 @@ class XtdGearInfos {
         class GVAR(MIG_SFHC_BLK_Peltor) {
             model = QGVAR(MIG_SFHC);
             camo = "BLK";
+            kit = "PELTOR";
+        };
+        class GVAR(MIG_SFHC_OCP_CLEAN) {
+            model = QGVAR(MIG_SFHC);
+            camo = "OCP";
+            kit = "CLEAN";
+        };
+        class GVAR(MIG_SFHC_OCP_FULL_KIT) {
+            model = QGVAR(MIG_SFHC);
+            camo = "OCP";
+            kit = "FULL";
+        };
+        class GVAR(MIG_SFHC_OCP_Peltor) {
+            model = QGVAR(MIG_SFHC);
+            camo = "OCP";
+            kit = "PELTOR";
+        };
+        class GVAR(MIG_SFHC_RG_CLEAN) {
+            model = QGVAR(MIG_SFHC);
+            camo = "RG";
+            kit = "CLEAN";
+        };
+        class GVAR(MIG_SFHC_RG_FULL_KIT) {
+            model = QGVAR(MIG_SFHC);
+            camo = "RG";
+            kit = "FULL";
+        };
+        class GVAR(MIG_SFHC_RG_Peltor) {
+            model = QGVAR(MIG_SFHC);
+            camo = "RG";
             kit = "PELTOR";
         };
         class GVAR(MIG_SFHC_TAN_CLEAN) {

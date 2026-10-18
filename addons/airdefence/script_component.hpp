@@ -50,3 +50,35 @@
 #define AD_SEC_MAX      6
 #define AD_SEC_MIN_R    60
 #define AD_SEC_MAX_R    200
+// Two security groups at most, on a battery or a base - a site is defended
+// enough that walking on is not free, not a garrison a section must assault.
+#define AD_SEC_GROUPS_MAX 2
+
+// THE AA BASE (FUNC(moduleAABase)) - a site the mission maker put down by hand,
+// laid out inside the module's own area. Every ring is a FRACTION of the area's
+// radius, so a 300 m area and a 1 km area both read as one site.
+//
+// Below this the rings collapse onto the radar - the floor a tiny or unset
+// area is lifted to.
+#define AB_RADIUS_MIN       100
+// Launchers on the outer ring: set back from the radar so killing the radar
+// and killing the launchers are separate jobs.
+#define AB_LAUNCH_INNER     0.5
+// Guns on the inner ring, close in - they are point defence for the radar.
+#define AB_GUN_INNER        0.15
+#define AB_GUN_OUTER        0.4
+// Guards stand off the hardware, across the whole area.
+#define AB_GUARD_INNER      0.3
+// Launcher and gun spacing - apart enough that one hit does not take two.
+#define AB_LAUNCH_SEP       40
+#define AB_GUN_SEP          25
+// Footprints and clear ground: a SAM is a few metres across, a gun less.
+#define AB_LAUNCH_FOOT      10
+#define AB_GUN_FOOT         6
+#define AB_CLEAR            12
+#define AB_SLOPE            0.12
+// CfgVehicles >> side, as the engine numbers it.
+#define AB_SIDES            [east, west, independent]
+
+// minutes between rearms when no Air Defence module set Rearm Every
+#define AD_REARM_DEFAULT 10

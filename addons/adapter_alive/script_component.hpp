@@ -57,3 +57,9 @@
 // Long enough for a 24-round mission at a staggered rate to finish; the
 // handlers come off whether or not anything fired.
 #define ARTY_WATCH_WINDOW   180
+
+// ALiVE's hints, rerouted to jmfsb_notify (FUNC(sendHint)): the lines of a
+// message are joined with this, and the notification takes ALiVE's own
+// title yellow.
+#define HINT_LINE_JOIN " - "
+#define HINT_NOTIFY_COLOUR [1, 0.85, 0.2, 1]

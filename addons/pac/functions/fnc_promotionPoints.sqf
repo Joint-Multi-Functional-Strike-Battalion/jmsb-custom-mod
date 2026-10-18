@@ -12,9 +12,16 @@ Description:
     THE FORMULA IS DATA, NOT CODE. Every item in the promotion section is
     {name, value}; the id says what the value means:
 
-        hour          points per hour on the server (all sessions)
-        op            points per op attended (closed op windows, see
+        hour          points per hour on an operation (sessions filed under
+                      an "operation" window - nothing else counts; user,
+                      2026-10-11: "only operation missions count toward
+                      promotion")
+        op            points per op attended (closed operation windows, see
                       FUNC(attendanceOf))
+        trainingSession  points per training window attended
+        trainingHour     points per hour in a training window
+                      (the user's "option for training time"; 0 or absent
+                      = off)
         serviceMonth  points per 30 days since enlistedAt
         gradeMonth    points per 30 days since promotedAt (enlistedAt when
                       never promoted)
@@ -28,7 +35,11 @@ Description:
 
     points = round(hours*hour + ops*op + serviceMonths*serviceMonth
                    + gradeMonths*gradeMonth + training*training
-                   + awards*award)
+                   + awards*award + trainingSessions*trainingSession
+                   + trainingHours*trainingHour)
+
+    A "special" window counts for nothing, and neither does time on the
+    server with no window open.
 
     The NEXT rank is the lowest rank_<id> threshold strictly above the
     player's current rank's threshold (0 when the current rank has none);
@@ -78,18 +89,27 @@ private _fnc_days = {
 };
 
 // ---- the quantities ----------------------------------------------------------
-// hours: every session, open rows to lastSeenAt - the way FUNC(publish) totals
+// hours: sessions filed under a window, split by the window's kind, open rows
+// to lastSeenAt - the way FUNC(publish) totals. Time under no window, or under
+// a special one, is not counted.
+private _kindOf = createHashMap;
+{_kindOf set [_x # 0, _x param [5, "operation"]]} forEach GVAR(windows);
 private _minutes = 0;
+private _trainingMinutes = 0;
 {
     _x params ["_sUid", "", "_joined", "_seen", "_left"];
     if (_sUid isNotEqualTo _uid) then {continue};
+    private _kind = _kindOf getOrDefault [_x param [5, ""], ""];
+    if !(_kind in ["operation", "training"]) then {continue};
     private _end = [_left, _seen] select (_left isEqualTo "");
-    private _m = (([_end] call FUNC(stampMinutes)) # 0) - (([_joined] call FUNC(stampMinutes)) # 0);
-    _minutes = _minutes + (_m max 0);
+    private _m = ((([_end] call FUNC(stampMinutes)) # 0) - (([_joined] call FUNC(stampMinutes)) # 0)) max 0;
+    if (_kind isEqualTo "operation") then {_minutes = _minutes + _m} else {_trainingMinutes = _trainingMinutes + _m};
 } forEach GVAR(sessions);
 private _hours = _minutes / 60;
+private _trainingHours = _trainingMinutes / 60;
 
 private _ops = ([_uid] call FUNC(attendanceOf)) # 1;
+private _trainingSessions = ([_uid, "training"] call FUNC(attendanceOf)) # 1;
 
 private _enlisted = _rec getOrDefault ["enlistedAt", ""];
 private _promoted = _rec getOrDefault ["promotedAt", ""];
@@ -115,7 +135,9 @@ private _points = 0;
     ["service months", _serviceMonths, "serviceMonth"],
     ["grade months", _gradeMonths, "gradeMonth"],
     ["training", _training, "training"],
-    ["awards", _awards, "award"]
+    ["awards", _awards, "award"],
+    ["training sessions", _trainingSessions, "trainingSession"],
+    ["training hours", _trainingHours, "trainingHour"]
 ];
 _points = round _points;
 

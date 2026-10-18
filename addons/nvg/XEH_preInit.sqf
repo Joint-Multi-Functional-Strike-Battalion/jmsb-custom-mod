@@ -6,6 +6,13 @@ PREP_RECOMPILE_START;
 #include "XEH_PREP.hpp"
 PREP_RECOMPILE_END;
 
+// hmd class -> [mask texture, eye cups] or [] (not a JMSB full-screen goggle),
+// so each goggle's config is walked once. See FUNC(maskTexture).
+GVAR(maskCache) = createHashMap;
+
+// After the cache: the full-screen setting's change script reads it.
+#include "initSettings.inc.sqf"
+
 [
     QGVAR(ACE),
     "CHECKBOX",

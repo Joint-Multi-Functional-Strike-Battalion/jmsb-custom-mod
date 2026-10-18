@@ -1,11 +1,17 @@
+PREP(buildAABase);
 PREP(buildBattery);
 PREP(buildSecurity);
 PREP(buildTeam);
+PREP(crewSite);
 PREP(factionMen);
 PREP(aaKind);
+PREP(moduleAABase);
 PREP(moduleController);
+PREP(placeGuards);
 PREP(plan);
 PREP(planBatteries);
 PREP(planManpads);
+PREP(profileGuards);
 PREP(sideKit);
 PREP(start);
+PREP(rearmLoop);

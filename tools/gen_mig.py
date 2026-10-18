@@ -139,6 +139,28 @@ PROTECTION = {
 }
 
 
+# ECOTI ON EVERY MIG NVG (user, 2026-10-12: "ECOTI can we make our nvgs have this feature"). The real thing
+# is a clip-on thermal fused over the image intensifier; Arma cannot blend two vision modes, so the goggle
+# gets a third mode instead - the NVG key cycles Normal > NVG > TI, white-hot then black-hot - the same way
+# jmfsb_nvg's anvgTI / nvg5TI goggles already do it.
+NVG_THERMAL = ['        visionMode[] = {"Normal", "NVG", "TI"};',
+               "        thermalMode[] = {0, 1};",
+               # Opts the goggle into jmfsb_ecoti's clip-on thermal overlay. The literal name, not a
+               # GVAR: ecoti reads it off the hmd class with getNumber.
+               "        jmfsb_ecoti_enabled = 1;",
+               # FULL SCREEN (user, 2026-10-15: "every NVG the players use must render full screen"). The empty
+               # reticle as modelOptics draws no tube picture, and ACE draws its border/eyecups only when
+               # modelOptics is "" - both are cleared too so nothing brings them back. Generation and phosphor
+               # stay the goggle's own.
+               '        modelOptics = "\\A3\\weapons_f\\reticle\\optics_empty.p3d";',
+               '        ACE_nightvision_border = "";',
+               "        ACE_nightvision_eyeCups = 0;",
+               # Marks it a JMSB full-screen goggle: jmfsb_nvg's "NVG full screen" client setting, when off,
+               # puts a tube mask back over exactly these. The literal name, read with getNumber, like
+               # jmfsb_ecoti_enabled above.
+               "        jmfsb_nvg_fullScreen = 1;"]
+
+
 def weapons(rows, beaut):
     L = [GEN, "", "class CfgWeapons {", "    class ItemInfo; // defined for real in jmfsb_main (see its CfgWeapons.hpp)"]
     L += ["    class %s;" % p for p in sorted({r[2] for r in rows})]
@@ -151,6 +173,8 @@ def weapons(rows, beaut):
         if kind in ("helmet", "bump") and "ace_hearing_protection" in body:
             L += ["        MACRO_ACE_HEARING"]
         L += PROTECTION.get(kind, [])
+        if kind == "nvg":
+            L += NVG_THERMAL
         L += ["    };"]
     L += ["};"]
     return L

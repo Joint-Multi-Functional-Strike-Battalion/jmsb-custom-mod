@@ -247,6 +247,16 @@ class CfgGroups {
                     faction = QUOTE(ADDON);
                     icon = "\A3\UI_F\Data\Map\Markers\NATO\b_mech_inf.paa";
 
+                    // THE STAND-IN (user, 2026-10-17: "himf mech has no vechicle"). The Gyra
+                    // is EF's and went to compatibility/cdlc_ef in the DLC split, which left
+                    // these squads with no carrier. Without EF they ride our Pandur; with it,
+                    // cdlc_ef's Unit0 overrides this one and they ride the Gyra HMG again.
+                    class Unit0 {
+                        side = 1;
+                        vehicle = QGVAR(APC_Pandur);
+                        rank = "SERGEANT";
+                        position[] = {0,0,0};
+                    };
 
                     class Unit1 {
                         side = 1;
@@ -318,6 +328,16 @@ class CfgGroups {
                     faction = QUOTE(ADDON);
                     icon = "\A3\UI_F\Data\Map\Markers\NATO\b_mech_inf.paa";
 
+                    // THE STAND-IN (user, 2026-10-17: "himf mech has no vechicle"). The Gyra
+                    // is EF's and went to compatibility/cdlc_ef in the DLC split, which left
+                    // these squads with no carrier. Without EF they ride our Pandur; with it,
+                    // cdlc_ef's Unit0 overrides this one and they ride the Gyra HMG again.
+                    class Unit0 {
+                        side = 1;
+                        vehicle = QGVAR(APC_Pandur);
+                        rank = "SERGEANT";
+                        position[] = {0,0,0};
+                    };
 
                     class Unit1 {
                         side = 1;

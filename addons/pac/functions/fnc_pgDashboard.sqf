@@ -30,7 +30,7 @@ private _open = _sum getOrDefault ["ticketsOpen", -1];
 private _y = [[
     [count _roster, "on the roster"],
     [_sum getOrDefault ["sessions", 0], "sessions recorded"],
-    [_sum getOrDefault ["windows", 0], "operation windows"],
+    [_sum getOrDefault ["windows", 0], "windows"],
     [count _roles, "roles"],
     [count (_structure getOrDefault ["opords", createHashMap]), "orders"],
     [[_open, "-"] select (_open < 0), "PAC actions open"]
@@ -111,7 +111,7 @@ private _kv = [
     ["Store schema", str PAC_SCHEMA],
     ["Game last wrote the store", [_savedAt, "never this mission"] select (_savedAt isEqualTo "")],
     ["Read only", ["no", "YES"] select (_sum getOrDefault ["readOnly", false])],
-    ["Operation window", [_sum getOrDefault ["windowName", ""], "none open"] select ((_sum getOrDefault ["window", ""]) isEqualTo "")],
+    ["Window", [_sum getOrDefault ["windowName", ""], "none open"] select ((_sum getOrDefault ["window", ""]) isEqualTo "")],
     ["Structure hash", _hash],
     ["Mongo docs", [str (_sum getOrDefault ["docs", 0]), "-"] select (!_svc)]
 ];
@@ -152,7 +152,7 @@ private _windowOpen = ((_sum getOrDefault ["window", ""]) select [0, 1]) isEqual
     }],
     [["START A WINDOW", "STOP THE WINDOW"] select _windowOpen, {
         if (((((missionNamespace getVariable [QGVAR(summary), createHashMap]) getOrDefault ["window", ""]) select [0, 1])) isEqualTo "w") then {
-            ["Stop the open operation window? Attendance for it closes now.", {
+            ["Stop the open window? Attendance for it closes now.", {
                 [player, "stop", ""] remoteExec [QFUNC(windowSet), 2];
             }] call FUNC(uiConfirm);
         } else {

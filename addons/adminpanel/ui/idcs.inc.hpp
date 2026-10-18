@@ -217,3 +217,39 @@
 #define IDC_ADMINPANEL_PLAYER_GROUP_COMBO  26270
 #define IDC_ADMINPANEL_PLAYER_GROUP_GROUPNAME 26271
 #define IDC_ADMINPANEL_ADMIN_PAC        27918
+
+// TIME / WEATHER - the header button on the console and the small dialog it
+// opens over it (user, 2026-10-16). See FUNC(envLoad).
+#define IDD_ADMINPANEL_ENVIRONMENT            6971
+#define IDC_ADMINPANEL_HEADER_ENVIRONMENT     26300
+#define IDC_ADMINENV_BACKGROUND               26301
+#define IDC_ADMINENV_TITLE                    26302
+#define IDC_ADMINENV_READOUT                  26303
+#define IDC_ADMINENV_TIME_HEAD                26304
+#define IDC_ADMINENV_HOUR_LABEL               26305
+#define IDC_ADMINENV_MINUTE_LABEL             26306
+#define IDC_ADMINENV_SPEED_LABEL              26307
+#define IDC_ADMINENV_HOUR                     26308
+#define IDC_ADMINENV_MINUTE                   26309
+#define IDC_ADMINENV_SPEED                    26310
+#define IDC_ADMINENV_TIME_APPLY               26311
+#define IDC_ADMINENV_DAWN                     26312
+#define IDC_ADMINENV_NOON                     26313
+#define IDC_ADMINENV_DUSK                     26314
+#define IDC_ADMINENV_MIDNIGHT                 26315
+#define IDC_ADMINENV_WEATHER_HEAD             26316
+#define IDC_ADMINENV_OVERCAST_LABEL           26317
+#define IDC_ADMINENV_RAIN_LABEL               26318
+#define IDC_ADMINENV_FOG_LABEL                26319
+#define IDC_ADMINENV_WIND_LABEL               26320
+#define IDC_ADMINENV_OVERCAST                 26321
+#define IDC_ADMINENV_RAIN                     26322
+#define IDC_ADMINENV_FOG                      26323
+#define IDC_ADMINENV_WIND                     26324
+#define IDC_ADMINENV_CLEAR                    26325
+#define IDC_ADMINENV_CLOUDY                   26326
+#define IDC_ADMINENV_STORM                    26327
+#define IDC_ADMINENV_FOGGY                    26328
+#define IDC_ADMINENV_WEATHER_APPLY            26329
+#define IDC_ADMINENV_NOTE                     26330
+#define IDC_ADMINENV_CLOSE                    26331

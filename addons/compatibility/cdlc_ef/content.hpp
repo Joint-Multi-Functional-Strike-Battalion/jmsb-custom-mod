@@ -5966,24 +5966,30 @@ class CfgWeapons {
     };
     class EGVAR(nvg,lpnvg_blk): EF_LPNVG {
         displayName = "[JMSB] LP NVG";
-        visionMode[] = {"Normal", "NVG"};
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
     };
     class EGVAR(nvg,lpnvg_tan): EF_LPNVG_Tan {
         displayName = "[JMSB] LP NVG (Tan)";
-        visionMode[] = {"Normal", "NVG"};
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -5991,11 +5997,14 @@ class CfgWeapons {
     class EGVAR(nvg,lpnvgTI_blk): EF_LPNVG_T {
         displayName = "[JMSB] LP NVG TI";
         visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;
@@ -6003,11 +6012,14 @@ class CfgWeapons {
     class EGVAR(nvg,lpnvgTI_tan): EF_LPNVG_T_Tan {
         displayName = "[JMSB] LP NVG TI (Tan)";
         visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
         modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
         ACE_nightVision_blur = 0;
         ACE_nightvision_bluRadius = 0;
         ACE_nightvision_border = "";
         ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
         ACE_nightVision_grain = 0;
         ACE_nightvision_generation = 4;
         ACE_nightVision_radBlur = 0;

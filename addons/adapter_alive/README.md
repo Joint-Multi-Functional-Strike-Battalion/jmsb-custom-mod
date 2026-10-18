@@ -51,17 +51,19 @@ mission's wiring in ten seconds.
 - `jmfsb_main`
 - `jmfsb_common`
 - `cba_xeh` _(external)_
+- `jmfsb_notify`
 - `ALiVE_main` _(external)_
+- `ALiVE_x_lib` _(external)_
 
 Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking the load order when something above is absent.
 
 ## Ships
 
-38 functions.
+39 functions.
 
 ## Functions
 
-<details><summary>38</summary>
+<details><summary>39</summary>
 
 - `jmfsb_adapter_alive_fnc_aaTargets`
 - `jmfsb_adapter_alive_fnc_artyTargets`
@@ -95,6 +97,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_adapter_alive_fnc_requestFire`
 - `jmfsb_adapter_alive_fnc_requestSupply`
 - `jmfsb_adapter_alive_fnc_respawnGearManaged`
+- `jmfsb_adapter_alive_fnc_sendHint`
 - `jmfsb_adapter_alive_fnc_setData`
 - `jmfsb_adapter_alive_fnc_supportAssets`
 - `jmfsb_adapter_alive_fnc_supportSitrep`

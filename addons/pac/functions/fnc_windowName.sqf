@@ -45,7 +45,11 @@ switch (_parts # 0) do {
     default {
         private _name = _id;
         {
-            if ((_x # 0) isEqualTo _id) exitWith {_name = _x # 1};
+            // the kind rides along unless it is the usual one - "Range day (training)"
+            if ((_x # 0) isEqualTo _id) exitWith {
+                private _kind = _x param [5, "operation"];
+                _name = [format ["%1 (%2)", _x # 1, _kind], _x # 1] select (_kind isEqualTo "operation");
+            };
         } forEach GVAR(windows);
         _name
     };

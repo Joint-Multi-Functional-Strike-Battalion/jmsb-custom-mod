@@ -7,9 +7,9 @@ changing an addon; do not hand-edit these files.
 |---|---|
 | Addons | 183 |
 | Optional addons | 3 |
-| CBA settings | 237 |
+| CBA settings | 260 |
 | Eden modules | 22 |
-| Functions | 1088 |
+| Functions | 1113 |
 
 ## Contents
 

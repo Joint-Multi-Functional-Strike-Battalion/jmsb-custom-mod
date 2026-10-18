@@ -35,3 +35,9 @@
         getPlayerUID _caller, _listed, _flag
     ]
 }] call EFUNC(common,addDebugCommand);
+
+// --- Time / weather ---------------------------------------------------------
+// Raised by FUNC(envApply) from the TIME / WEATHER dialog. Every machine listens
+// for weather (overcast is set everywhere); only the server acts on time.
+[QGVAR(envTime), {_this call FUNC(envTime)}] call CBA_fnc_addEventHandler;
+[QGVAR(envWeather), {_this call FUNC(envWeather)}] call CBA_fnc_addEventHandler;

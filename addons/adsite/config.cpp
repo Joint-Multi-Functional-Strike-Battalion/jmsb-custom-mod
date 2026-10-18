@@ -5,16 +5,15 @@ class CfgPatches {
         name = COMPONENT_NAME;
         units[] = {"jmfsb_moduleADSite"};
         weapons[] = {};
+        ammo[] = {QGVAR(blast)};
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
             "jmfsb_common",
-            "jmfsb_iads",
-            "jmfsb_notify",
-            "jmfsb_tacpad",
-            "cba_xeh"
+            "cba_xeh",
+            "cba_settings"
         };
-        authorUrl = "https://github.com/Joint-Multi-Functional-Strike-Battalion/";
+        skipWhenMissingDependencies = 1;
         author = QAUTHOR;
         authors[] = {"JMSB"};
         VERSION_CONFIG;
@@ -22,4 +21,5 @@ class CfgPatches {
 };
 
 #include "CfgEventHandlers.hpp"
+#include "CfgAmmo.hpp"
 #include "CfgVehicles.hpp"

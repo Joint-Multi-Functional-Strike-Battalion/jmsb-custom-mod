@@ -44,7 +44,7 @@ class XtdGearModels {
             class camo
             {
                 label = "Camouflage";
-                values[] = {"cb", "ocp", "aor1"};
+                values[] = {"cb", "ocp", "aor1","od"};
                 class cb
                 {
                     label = "TAN";
@@ -59,6 +59,11 @@ class XtdGearModels {
                 {
                     label = "AOR1";
                     image = "MIG\MIG_Core\data\Gear_MCC_AOR1"; 
+                };
+                class od
+                {
+                    label = "OD";
+                    image = "MIG\MIG_Core\data\Gear_MCC_OD"; 
                 };
             };
         };
@@ -97,7 +102,7 @@ class XtdGearModels {
             class camo
             {
                 label = "Camouflage";
-                values[] = {"cb", "ocp"};
+                values[] = {"cb", "ocp","od"};
                 class cb
                 {
                     label = "TAN";
@@ -107,6 +112,11 @@ class XtdGearModels {
                 {
                     label = "OCP";
                     image = "MIG\MIG_Core\data\Gear_MCC_OCP"; 
+                };
+                class od
+                {
+                    label = "OD";
+                    image = "MIG\MIG_Core\data\Gear_MCC_Od"; 
                 };
             };
         };
@@ -174,10 +184,6 @@ class XtdGearModels {
 
 class XtdGearInfos {
     class CfgWeapons {
-        class GVAR(MIG_FERRO_BISON_MC) {
-            model = QGVAR(MIG_Ferro_Bison_Model);
-            camo = "mc";
-        };
         class GVAR(MIG_Ferro_FCPC_MG_AOR1) {
             model = QGVAR(MIG_Ferro_FCPC_Model);
             variant = "mg";
@@ -192,6 +198,11 @@ class XtdGearInfos {
             model = QGVAR(MIG_Ferro_FCPC_Model);
             variant = "mg";
             camo = "ocp";
+        };
+        class GVAR(MIG_Ferro_FCPC_MG_OD) {
+            model = QGVAR(MIG_Ferro_FCPC_Model);
+            variant = "mg";
+            camo = "od";
         };
         class GVAR(MIG_Ferro_FCPC_Rifleman_AOR1) {
             model = QGVAR(MIG_Ferro_FCPC_Model);
@@ -208,6 +219,11 @@ class XtdGearInfos {
             variant = "rifleman";
             camo = "ocp";
         };
+        class GVAR(MIG_Ferro_FCPC_Rifleman_OD) {
+            model = QGVAR(MIG_Ferro_FCPC_Model);
+            variant = "rifleman";
+            camo = "od";
+        };
         class GVAR(MIG_Ferro_FCPC_SL_AOR1) {
             model = QGVAR(MIG_Ferro_FCPC_Model);
             variant = "sl";
@@ -222,6 +238,11 @@ class XtdGearInfos {
             model = QGVAR(MIG_Ferro_FCPC_Model);
             variant = "sl";
             camo = "ocp";
+        };
+        class GVAR(MIG_Ferro_FCPC_SL_OD) {
+            model = QGVAR(MIG_Ferro_FCPC_Model);
+            variant = "sl";
+            camo = "od";
         };
         class GVAR(MIG_Ferro_FCPC_Slick_AOR1) {
             model = QGVAR(MIG_Ferro_FCPC_Model);
@@ -238,6 +259,11 @@ class XtdGearInfos {
             variant = "slick";
             camo = "ocp";
         };
+        class GVAR(MIG_Ferro_FCPC_Slick_OD) {
+            model = QGVAR(MIG_Ferro_FCPC_Model);
+            variant = "slick";
+            camo = "od";
+        };
         class GVAR(MIG_Ferro_FCPC_TL_AOR1) {
             model = QGVAR(MIG_Ferro_FCPC_Model);
             variant = "tl";
@@ -252,6 +278,11 @@ class XtdGearInfos {
             model = QGVAR(MIG_Ferro_FCPC_Model);
             variant = "tl";
             camo = "ocp";
+        };
+        class GVAR(MIG_Ferro_FCPC_TL_OD) {
+            model = QGVAR(MIG_Ferro_FCPC_Model);
+            variant = "tl";
+            camo = "od";
         };
         class GVAR(MIG_Ferro_FCPC_slick_nb_AOR1) {
             model = QGVAR(MIG_Ferro_FCPC_Model);
@@ -268,6 +299,11 @@ class XtdGearInfos {
             variant = "slick_nb";
             camo = "ocp";
         };
+        class GVAR(MIG_Ferro_FCPC_slick_nb_OD) {
+            model = QGVAR(MIG_Ferro_FCPC_Model);
+            variant = "slick_nb";
+            camo = "od";
+        };
         class GVAR(MIG_JPC_JTAC_CB) {
             model = QGVAR(MIG_Crye_JPC_Model);
             variant = "jtac";
@@ -277,6 +313,11 @@ class XtdGearInfos {
             model = QGVAR(MIG_Crye_JPC_Model);
             variant = "jtac";
             camo = "ocp";
+        };
+        class GVAR(MIG_JPC_JTAC_OD) {
+            model = QGVAR(MIG_Crye_JPC_Model);
+            variant = "jtac";
+            camo = "od";
         };
         class GVAR(MIG_JPC_MG_CB) {
             model = QGVAR(MIG_Crye_JPC_Model);
@@ -288,6 +329,11 @@ class XtdGearInfos {
             variant = "mg";
             camo = "ocp";
         };
+        class GVAR(MIG_JPC_MG_OD) {
+            model = QGVAR(MIG_Crye_JPC_Model);
+            variant = "mg";
+            camo = "od";
+        };
         class GVAR(MIG_JPC_Rifleman_CB) {
             model = QGVAR(MIG_Crye_JPC_Model);
             variant = "rifleman";
@@ -297,6 +343,11 @@ class XtdGearInfos {
             model = QGVAR(MIG_Crye_JPC_Model);
             variant = "rifleman";
             camo = "ocp";
+        };
+        class GVAR(MIG_JPC_Rifleman_OD) {
+            model = QGVAR(MIG_Crye_JPC_Model);
+            variant = "rifleman";
+            camo = "od";
         };
         class GVAR(MIG_JPC_SL_CB) {
             model = QGVAR(MIG_Crye_JPC_Model);
@@ -308,6 +359,11 @@ class XtdGearInfos {
             variant = "sl";
             camo = "ocp";
         };
+        class GVAR(MIG_JPC_SL_OD) {
+            model = QGVAR(MIG_Crye_JPC_Model);
+            variant = "sl";
+            camo = "od";
+        };
         class GVAR(MIG_JPC_Slick_CB) {
             model = QGVAR(MIG_Crye_JPC_Model);
             variant = "slick";
@@ -318,10 +374,10 @@ class XtdGearInfos {
             variant = "slick";
             camo = "ocp";
         };
-        class GVAR(MIG_TYR_Gunfighter_MAB_MC) {
-            model = QGVAR(MIG_TYR_Pico_Model);
-            variant = "Gunfighter MAB";
-            camo = "mc";
+        class GVAR(MIG_JPC_Slick_OD) {
+            model = QGVAR(MIG_Crye_JPC_Model);
+            variant = "slick";
+            camo = "od";
         };
         class GVAR(MIG_TYR_MG_BLK) {
             model = QGVAR(MIG_TYR_Pico_Model);

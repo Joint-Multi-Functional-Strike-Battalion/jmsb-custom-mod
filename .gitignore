@@ -91,3 +91,6 @@ releases/*
 
 # SpecStory chat exports
 .specstory/
+
+# the server's real CBA settings - carries the database password (template: server/cba_settings.example.sqf)
+server/cba_settings.sqf

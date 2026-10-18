@@ -1,0 +1,588 @@
+CLASS;optic_Arco;ItemCore;;A3_Weapons_F_Acc|A3_Weapons_F_Exp|ace_optics|ace_scopes|ace_realisticnames
+NEST;optic_Arco;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Arco;ItemInfo/OpticsModes;
+NEST;optic_Arco;ItemInfo/OpticsModes/ARCO2collimator;;1;
+NEST;optic_Arco;ItemInfo/OpticsModes/ARCO2scope;ARCO2collimator;0;
+CLASS;ItemCore;Default;;A3_Weapons_F|A3_Weapons_F_Items|switchblade
+CLASS;Default;;;Core|jmfsb_nvg
+CLASS;optic_Hamr;ItemCore;;A3_Weapons_F_Acc|A3_Weapons_F_Exp|ace_optics|ace_scopes|ace_realisticnames
+NEST;optic_Hamr;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Hamr;ItemInfo/OpticsModes;
+NEST;optic_Hamr;ItemInfo/OpticsModes/Hamr2Collimator;;1;
+NEST;optic_Hamr;ItemInfo/OpticsModes/Hamr2Scope;;0;
+CLASS;optic_Aco;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_Aco;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Aco;ItemInfo/OpticsModes;
+NEST;optic_Aco;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_ACO_grn;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_ACO_grn;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_ACO_grn;ItemInfo/OpticsModes;
+NEST;optic_ACO_grn;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_Aco_smg;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_Aco_smg;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Aco_smg;ItemInfo/OpticsModes;
+NEST;optic_Aco_smg;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_ACO_grn_smg;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_ACO_grn_smg;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_ACO_grn_smg;ItemInfo/OpticsModes;
+NEST;optic_ACO_grn_smg;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_Holosight;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_Holosight;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Holosight;ItemInfo/OpticsModes;
+NEST;optic_Holosight;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_Holosight_smg;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_Holosight_smg;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Holosight_smg;ItemInfo/OpticsModes;
+NEST;optic_Holosight_smg;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_SOS;ItemCore;;A3_Weapons_F_Acc|ace_optics|ace_scopes
+NEST;optic_SOS;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_SOS;ItemInfo/OpticsModes;
+NEST;optic_SOS;ItemInfo/OpticsModes/Snip;;1;Normal
+NEST;optic_SOS;ItemInfo/OpticsModes/Iron;;1;
+CLASS;optic_MRCO;ItemCore;;A3_Weapons_F_Acc|ace_fcs|ace_optics|ace_scopes|ace_realisticnames|jmfsb_weapons
+NEST;optic_MRCO;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_MRCO;ItemInfo/OpticsModes;
+NEST;optic_MRCO;ItemInfo/OpticsModes/MRCOcq;;1;
+NEST;optic_MRCO;ItemInfo/OpticsModes/MRCOscope;;1;
+CLASS;optic_NVS;ItemCore;;A3_Weapons_F_Acc|ace_scopes
+NEST;optic_NVS;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_NVS;ItemInfo/OpticsModes;
+NEST;optic_NVS;ItemInfo/OpticsModes/NVS;;1;NVG
+CLASS;optic_Nightstalker;ItemCore;;A3_Weapons_F_Acc|ace_scopes
+NEST;optic_Nightstalker;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Nightstalker;ItemInfo/OpticsModes;
+NEST;optic_Nightstalker;ItemInfo/OpticsModes/NCTALKEP;;1;Normal|NVG|Ti
+NEST;optic_Nightstalker;ItemInfo/OpticsModes/Iron;NCTALKEP;1;
+CLASS;optic_tws;ItemCore;;A3_Weapons_F_Acc|ace_scopes
+NEST;optic_tws;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_tws;ItemInfo/OpticsModes;
+NEST;optic_tws;ItemInfo/OpticsModes/TWS;;1;Ti|Normal
+CLASS;optic_tws_mg;ItemCore;;A3_Weapons_F_Acc|ace_scopes
+NEST;optic_tws_mg;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_tws_mg;ItemInfo/OpticsModes;
+NEST;optic_tws_mg;ItemInfo/OpticsModes/TWS;;1;Ti|Normal
+CLASS;optic_DMS;ItemCore;;A3_Weapons_F_Acc|A3_Weapons_F_Enoch_Acc|ace_scopes|ace_realisticnames
+NEST;optic_DMS;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_DMS;ItemInfo/OpticsModes;
+NEST;optic_DMS;ItemInfo/OpticsModes/Snip;;1;Normal
+NEST;optic_DMS;ItemInfo/OpticsModes/Iron;Snip;1;
+CLASS;optic_Yorris;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames
+NEST;optic_Yorris;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_Yorris;ItemInfo/OpticsModes;
+NEST;optic_Yorris;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_MRD;ItemCore;;A3_Weapons_F_Acc|ace_scopes|ace_realisticnames|SPS_SnB_Scopes|jmfsb_equipment
+NEST;optic_MRD;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_MRD;ItemInfo/OpticsModes;
+NEST;optic_MRD;ItemInfo/OpticsModes/ACO;;1;
+CLASS;optic_LRPS;ItemCore;;A3_Weapons_F_Acc|ace_optics|ace_scopes|ace_realisticnames
+NEST;optic_LRPS;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_LRPS;ItemInfo/OpticsModes;
+NEST;optic_LRPS;ItemInfo/OpticsModes/Snip;;1;Normal
+CLASS;optic_AMS_base;ItemCore;;A3_Weapons_F_Mark_Acc|ace_optics|ace_scopes
+NEST;optic_AMS_base;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_AMS_base;ItemInfo/OpticsModes;
+NEST;optic_AMS_base;ItemInfo/OpticsModes/AMS;;1;Normal
+NEST;optic_AMS_base;ItemInfo/OpticsModes/Iron;;1;
+CLASS;optic_AMS;optic_AMS_base;;A3_Weapons_F_Mark_Acc|ace_realisticnames
+CLASS;optic_AMS_khk;optic_AMS;;A3_Weapons_F_Mark_Acc|ace_realisticnames
+CLASS;optic_AMS_snd;optic_AMS;;A3_Weapons_F_Mark_Acc|ace_realisticnames
+CLASS;optic_KHS_base;ItemCore;;A3_Weapons_F_Mark_Acc|ace_optics|ace_scopes
+NEST;optic_KHS_base;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_KHS_base;ItemInfo/OpticsModes;
+NEST;optic_KHS_base;ItemInfo/OpticsModes/KHS;;1;Normal
+NEST;optic_KHS_base;ItemInfo/OpticsModes/Iron;;1;
+CLASS;optic_KHS_blk;optic_KHS_base;;A3_Weapons_F_Mark_Acc|ace_realisticnames
+CLASS;optic_KHS_hex;optic_KHS_blk;;A3_Weapons_F_Mark_Acc|ace_realisticnames
+CLASS;optic_KHS_old;ItemCore;;A3_Weapons_F_Mark_Acc|ace_optics|ace_scopes|ace_realisticnames
+NEST;optic_KHS_old;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_KHS_old;ItemInfo/OpticsModes;
+NEST;optic_KHS_old;ItemInfo/OpticsModes/KHS;;1;Normal
+CLASS;optic_KHS_tan;optic_KHS_blk;;A3_Weapons_F_Mark_Acc|ace_realisticnames
+CLASS;optic_Arco_blk_F;optic_Arco;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_Arco_ghex_F;optic_Arco;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_DMS_ghex_F;optic_DMS;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_Hamr_khk_F;optic_Hamr;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_ERCO_blk_F;optic_Arco;;A3_Weapons_F_Exp|ace_scopes|ace_realisticnames
+NEST;optic_ERCO_blk_F;ItemInfo;ItemInfo
+CLASS;optic_ERCO_khk_F;optic_ERCO_blk_f;;A3_Weapons_F_Exp|ace_realisticnames
+NEST;optic_ERCO_khk_F;ItemInfo;ItemInfo
+CLASS;optic_ERCO_snd_F;optic_ERCO_blk_f;;A3_Weapons_F_Exp|ace_realisticnames
+NEST;optic_ERCO_snd_F;ItemInfo;ItemInfo
+CLASS;optic_SOS_khk_F;optic_SOS;;A3_Weapons_F_Exp
+CLASS;optic_LRPS_tna_F;optic_LRPS;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_LRPS_ghex_F;optic_LRPS;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_Holosight_blk_F;optic_holosight;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_Holosight_khk_F;optic_holosight;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_Holosight_smg_blk_F;optic_Holosight_smg;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_Holosight_smg_khk_F;optic_Holosight_smg;;A3_Weapons_F_Exp|ace_realisticnames
+CLASS;optic_ico_01_base_f;ItemCore;;A3_Weapons_F_Enoch_Acc|ace_scopes
+NEST;optic_ico_01_base_f;ItemInfo;InventoryOpticsItem_Base_F
+NEST;optic_ico_01_base_f;ItemInfo/OpticsModes;
+NEST;optic_ico_01_base_f;ItemInfo/OpticsModes/Hamr2Scope;;0;
+NEST;optic_ico_01_base_f;ItemInfo/OpticsModes/Hamr2Collimator;;1;
+CLASS;optic_ico_01_f;optic_ico_01_base_f;;A3_Weapons_F_Enoch_Acc
+CLASS;optic_ico_01_black_f;optic_ico_01_base_f;;A3_Weapons_F_Enoch_Acc
+CLASS;optic_ico_01_sand_f;optic_ico_01_base_f;;A3_Weapons_F_Enoch_Acc
+CLASS;optic_ico_01_camo_f;optic_ico_01_base_f;;A3_Weapons_F_Enoch_Acc
+CLASS;optic_Holosight_lush_F;optic_holosight;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Holosight_arid_F;optic_holosight;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Arco_lush_F;optic_Arco;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Arco_arid_F;optic_Arco;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Arco_AK_blk_F;optic_Arco_blk_F;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Arco_AK_lush_F;optic_Arco_lush_F;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Arco_AK_arid_F;optic_Arco_arid_F;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_DMS_weathered_F;optic_DMS;;A3_Weapons_F_Enoch_Acc|ace_scopes|ace_realisticnames
+NEST;optic_DMS_weathered_F;ItemInfo;ItemInfo
+NEST;optic_DMS_weathered_F;ItemInfo/OpticsModes;OpticsModes
+NEST;optic_DMS_weathered_F;ItemInfo/OpticsModes/Snip;Snip;0;
+NEST;optic_DMS_weathered_F;ItemInfo/OpticsModes/Iron;Iron;0;
+CLASS;optic_DMS_weathered_Kir_F;optic_DMS_weathered_F;;A3_Weapons_F_Enoch_Acc|ace_scopes|ace_realisticnames
+NEST;optic_DMS_weathered_Kir_F;ItemInfo;ItemInfo
+NEST;optic_DMS_weathered_Kir_F;ItemInfo/OpticsModes;OpticsModes
+NEST;optic_DMS_weathered_Kir_F;ItemInfo/OpticsModes/Snip;Snip;0;
+NEST;optic_DMS_weathered_Kir_F;ItemInfo/OpticsModes/Iron;Iron;0;
+CLASS;optic_MRD_black;optic_MRD;;A3_Weapons_F_Enoch_Acc|ace_realisticnames
+CLASS;optic_Aco_broken;optic_Aco;CBA_A3;cba_jr
+CLASS;optic_Hamr_broken;optic_Hamr;CBA_A3;cba_jr
+CLASS;optic_MRCO_broken;optic_MRCO;CBA_A3;cba_jr
+CLASS;ACE_optic_Hamr_2D;optic_Hamr;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_Hamr_2D;ItemInfo;ItemInfo
+NEST;ACE_optic_Hamr_2D;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_Hamr_2D;ItemInfo/OpticsModes/Hamr2Scope;Hamr2Scope;0;
+NEST;ACE_optic_Hamr_2D;ItemInfo/OpticsModes/Hamr2Collimator;Hamr2Collimator;0;
+CLASS;ACE_optic_Hamr_PIP;ACE_optic_Hamr_2D;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_Hamr_PIP;ItemInfo;ItemInfo
+CLASS;ACE_optic_Arco_2D;optic_Arco;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_Arco_2D;ItemInfo;ItemInfo
+NEST;ACE_optic_Arco_2D;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_Arco_2D;ItemInfo/OpticsModes/ARCO2scope;ARCO2scope;0;
+NEST;ACE_optic_Arco_2D;ItemInfo/OpticsModes/ARCO2collimator;ARCO2collimator;0;
+CLASS;ACE_optic_Arco_PIP;ACE_optic_Arco_2D;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_Arco_PIP;ItemInfo;ItemInfo
+CLASS;ACE_optic_MRCO_2D;optic_MRCO;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_MRCO_2D;ItemInfo;ItemInfo
+NEST;ACE_optic_MRCO_2D;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_MRCO_2D;ItemInfo/OpticsModes/MRCOscope;MRCOscope;0;
+NEST;ACE_optic_MRCO_2D;ItemInfo/OpticsModes/MRCOcq;MRCOcq;0;
+CLASS;ACE_optic_MRCO_PIP;ACE_optic_MRCO_2D;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_MRCO_PIP;ItemInfo;ItemInfo
+CLASS;ACE_optic_SOS_2D;optic_SOS;ace;ace_optics
+NEST;ACE_optic_SOS_2D;ItemInfo;ItemInfo
+NEST;ACE_optic_SOS_2D;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_SOS_2D;ItemInfo/OpticsModes/Snip;Snip;0;
+NEST;ACE_optic_SOS_2D;ItemInfo/OpticsModes/Iron;Iron;0;
+CLASS;ACE_optic_SOS_PIP;ACE_optic_SOS_2D;ace;ace_optics
+NEST;ACE_optic_SOS_PIP;ItemInfo;ItemInfo
+NEST;ACE_optic_SOS_PIP;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_SOS_PIP;ItemInfo/OpticsModes/Snip;Snip;0;
+NEST;ACE_optic_SOS_PIP;ItemInfo/OpticsModes/Iron;Iron;0;
+CLASS;ACE_optic_LRPS_2D;optic_LRPS;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_LRPS_2D;ItemInfo;ItemInfo
+NEST;ACE_optic_LRPS_2D;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_LRPS_2D;ItemInfo/OpticsModes/Snip;Snip;0;
+CLASS;ACE_optic_LRPS_PIP;ACE_optic_LRPS_2D;ace;ace_optics|ace_realisticnames_optics
+NEST;ACE_optic_LRPS_PIP;ItemInfo;ItemInfo
+NEST;ACE_optic_LRPS_PIP;ItemInfo/OpticsModes;OpticsModes
+NEST;ACE_optic_LRPS_PIP;ItemInfo/OpticsModes/Snip;Snip;0;
+CLASS;ace_xm157_prototype;ItemCore;ace;ace_xm157
+NEST;ace_xm157_prototype;ItemInfo;InventoryOpticsItem_Base_F
+NEST;ace_xm157_prototype;ItemInfo/OpticsModes;
+NEST;ace_xm157_prototype;ItemInfo/OpticsModes/lpvo;;1;Normal
+CLASS;EG_ACCO_VortexM157;ItemCore;XM157;EG_weapons_EG_ACCO_VortexM157_FCS
+NEST;EG_ACCO_VortexM157;ItemInfo;InventoryOpticsItem_Base_F
+NEST;EG_ACCO_VortexM157;ItemInfo/OpticsModes;
+NEST;EG_ACCO_VortexM157;ItemInfo/OpticsModes/lpvo;;1;Normal
+CLASS;EG_ACCO_VortexM157_m250;ItemCore;XM157;EG_weapons_EG_ACCO_VortexM157_FCS
+NEST;EG_ACCO_VortexM157_m250;ItemInfo;InventoryOpticsItem_Base_F
+NEST;EG_ACCO_VortexM157_m250;ItemInfo/OpticsModes;
+NEST;EG_ACCO_VortexM157_m250;ItemInfo/OpticsModes/lpvo;;1;Normal
+NEST;EG_ACCO_VortexM157_m250;ItemInfo/OpticsModes/iron;;1;Normal
+CLASS;EG_ACCO_VortexM157_NF_pip;ItemCore;XM157;EG_weapons_EG_ACCO_VortexM157
+NEST;EG_ACCO_VortexM157_NF_pip;ItemInfo;InventoryOpticsItem_Base_F
+NEST;EG_ACCO_VortexM157_NF_pip;ItemInfo/OpticsModes;
+NEST;EG_ACCO_VortexM157_NF_pip;ItemInfo/OpticsModes/lpvo;;1;Normal
+CLASS;EG_ACCO_VortexM157_m250_NF_pip;ItemCore;XM157;EG_weapons_EG_ACCO_VortexM157
+NEST;EG_ACCO_VortexM157_m250_NF_pip;ItemInfo;InventoryOpticsItem_Base_F
+NEST;EG_ACCO_VortexM157_m250_NF_pip;ItemInfo/OpticsModes;
+NEST;EG_ACCO_VortexM157_m250_NF_pip;ItemInfo/OpticsModes/lpvo;;1;Normal
+NEST;EG_ACCO_VortexM157_m250_NF_pip;ItemInfo/OpticsModes/iron;;1;Normal
+CLASS;EG_ACCO_VortexM157_NF_2D;ItemCore;XM157;EG_weapons_EG_ACCO_VortexM157
+NEST;EG_ACCO_VortexM157_NF_2D;ItemInfo;InventoryOpticsItem_Base_F
+NEST;EG_ACCO_VortexM157_NF_2D;ItemInfo/OpticsModes;
+NEST;EG_ACCO_VortexM157_NF_2D;ItemInfo/OpticsModes/lpvo;;1;Normal
+CLASS;EG_ACCO_VortexM157_m250_NF_2D;ItemCore;XM157;EG_weapons_EG_ACCO_VortexM157
+NEST;EG_ACCO_VortexM157_m250_NF_2D;ItemInfo;InventoryOpticsItem_Base_F
+NEST;EG_ACCO_VortexM157_m250_NF_2D;ItemInfo/OpticsModes;
+NEST;EG_ACCO_VortexM157_m250_NF_2D;ItemInfo/OpticsModes/lpvo;;1;Normal
+NEST;EG_ACCO_VortexM157_m250_NF_2D;ItemInfo/OpticsModes/iron;;1;Normal
+CLASS;SPS_Optic_SnB_HP_1_8_RAL8000;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_1_8_RAL8000_PVS24LR;SPS_Optic_SnB_HP_1_8_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_1_8_RAL8000_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_1_8_FDE;SPS_Optic_SnB_HP_1_8_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_1_8_FDE;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_1_8_FDE;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_1_8_FDE;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_1_8_FDE;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_1_8_FDE_PVS24LR;SPS_Optic_SnB_HP_1_8_FDE;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_1_8_FDE_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_1_8_FDE_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_1_8_FDE_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_1_8_FDE_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_1_8_Black;SPS_Optic_SnB_HP_1_8_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_1_8_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_1_8_Black;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_1_8_Black;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_1_8_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_1_8_Black_PVS24LR;SPS_Optic_SnB_HP_1_8_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_1_8_Black_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_1_8_Black_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_1_8_Black_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_1_8_Black_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_RAL8000;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2;SPS_Optic_SnB_HP_3_27_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_RAL8000_PVS24LR;SPS_Optic_SnB_HP_3_27_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2_PVS24LR;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_RAL8000_solo_PVS24LR;SPS_Optic_SnB_HP_3_27_RAL8000_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_3_27_RAL8000_solo_MSR2_PVS24LR;SPS_Optic_SnB_HP_3_27_RAL8000_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_3_27_FDE;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_FDE;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_FDE;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_FDE;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_FDE;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_FDE_MSR2;SPS_Optic_SnB_HP_3_27_FDE;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_FDE_PVS24LR;SPS_Optic_SnB_HP_3_27_FDE;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_FDE_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_FDE_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_FDE_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_3_27_FDE_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_FDE_MSR2_PVS24LR;SPS_Optic_SnB_HP_3_27_FDE;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_3_27_FDE_MSR2_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_FDE_solo_PVS24LR;SPS_Optic_SnB_HP_3_27_FDE_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_3_27_FDE_solo_MSR2_PVS24LR;SPS_Optic_SnB_HP_3_27_FDE_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_3_27_Black;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_Black;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_Black;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_Black_MSR2;SPS_Optic_SnB_HP_3_27_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_Black_PVS24LR;SPS_Optic_SnB_HP_3_27_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_Black_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_Black_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_Black_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_3_27_Black_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_Black_MSR2_PVS24LR;SPS_Optic_SnB_HP_3_27_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_3_27_Black_MSR2_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_Black_solo_PVS24LR;SPS_Optic_SnB_HP_3_27_Black_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_3_27_Black_solo_MSR2_PVS24LR;SPS_Optic_SnB_HP_3_27_Black_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_3_27_solo_Black;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_solo_Black_MSR2;SPS_Optic_SnB_HP_3_27_solo_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_solo_Black_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_solo_RAL8000;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_solo_RAL8000_MSR2;SPS_Optic_SnB_HP_3_27_solo_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_solo_RAL8000_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_solo_FDE;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_3_27_solo_FDE_MSR2;SPS_Optic_SnB_HP_3_27_solo_FDE;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_3_27_solo_FDE_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_US_3_20_RMR_Black;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;ItemInfo;ItemInfo
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_US_3_20_Black_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_Black;SPS_Optic_SnB_US_3_20_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_FDE;SPS_Optic_SnB_US_3_20_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_RAL8000;SPS_Optic_SnB_US_3_20_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_FDE_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_RAL8000_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_FDE_PVS24LR;SPS_Optic_SnB_US_3_20_Black_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RAL8000_PVS24LR;SPS_Optic_SnB_US_3_20_Black_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_FDE;SPS_Optic_SnB_US_3_20_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RAL8000;SPS_Optic_SnB_US_3_20_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Trijicon_RMR_Black;optic_MRD;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Trijicon_RMR_Black;ItemInfo;ItemInfo
+CLASS;SPS_Trijicon_RMR_FDE;SPS_Trijicon_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Trijicon_RMR_ODG;SPS_Trijicon_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Trijicon_RMR_Grey;SPS_Trijicon_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_SnB_shortdot_b;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_SnB_shortdot_b;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_SnB_shortdot_b;ItemInfo/OpticsModes;
+NEST;SPS_SnB_shortdot_b;ItemInfo/OpticsModes/ZoomedOptics2;;1;
+NEST;SPS_SnB_shortdot_b;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_SnB_shortdot_p;SPS_SnB_shortdot_b;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_SnB_shortdot_r;SPS_SnB_shortdot_b;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;SPS_Optic_SnB_US_3_20_RMR_Black;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;ItemInfo;ItemInfo
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_US_3_20_Black_MSR2_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_Black_MSR2;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_FDE_MSR2;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_RAL8000_MSR2;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_FDE_MSR2_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RMR_RAL8000_MSR2_PVS24LR;SPS_Optic_SnB_US_3_20_RMR_Black_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_FDE_MSR2_PVS24LR;SPS_Optic_SnB_US_3_20_Black_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RAL8000_MSR2_PVS24LR;SPS_Optic_SnB_US_3_20_Black_MSR2_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_FDE_MSR2;SPS_Optic_SnB_US_3_20_Black_MSR2;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_US_3_20_RAL8000_MSR2;SPS_Optic_SnB_US_3_20_Black_MSR2;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_5_45_RAL8000;ItemCore;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_5_45_FDE;SPS_Optic_SnB_HP_5_45_RAL8000;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_5_45_Black;SPS_Optic_SnB_HP_5_45_RAL8000;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;SPS_Optic_SnB_HP_5_45_RAL8000;SPS Equipment;SPS_SnB_Scopes
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_Optic_SnB_HP_5_45_FDE_PVS24LR;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;SPS_Optic_SnB_HP_5_45_Black_PVS24LR;SPS_Optic_SnB_HP_5_45_RAL8000_PVS24LR;SPS Equipment;SPS_SnB_Scopes
+CLASS;sps_aimpoint_T1_Black;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_Black;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;sps_aimpoint_T1_Black50;sps_aimpoint_T1_Black;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_Black50;ItemInfo;ItemInfo
+NEST;sps_aimpoint_T1_Black50;ItemInfo/OpticsModes;OpticsModes
+NEST;sps_aimpoint_T1_Black50;ItemInfo/OpticsModes/RedDotSight;RedDotSight;0;
+CLASS;sps_aimpoint_T1_Sand;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_Sand;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_Sand;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_Sand;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;sps_aimpoint_T1_Sand50;sps_aimpoint_T1_Sand;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_Sand50;ItemInfo;ItemInfo
+NEST;sps_aimpoint_T1_Sand50;ItemInfo/OpticsModes;OpticsModes
+NEST;sps_aimpoint_T1_Sand50;ItemInfo/OpticsModes/RedDotSight;RedDotSight;0;
+CLASS;sps_aimpoint_T1_Black_High;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_Black_High;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_Black_High;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_Black_High;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;sps_aimpoint_T1_Black_High50;sps_aimpoint_T1_Black_High;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_Black_High50;ItemInfo;ItemInfo
+NEST;sps_aimpoint_T1_Black_High50;ItemInfo/OpticsModes;OpticsModes
+NEST;sps_aimpoint_T1_Black_High50;ItemInfo/OpticsModes/RedDotSight;RedDotSight;0;
+CLASS;sps_aimpoint_T1_High;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_High;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_High;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_High;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;sps_aimpoint_T1_High50;sps_aimpoint_T1_High;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_High50;ItemInfo;ItemInfo
+NEST;sps_aimpoint_T1_High50;ItemInfo/OpticsModes;OpticsModes
+NEST;sps_aimpoint_T1_High50;ItemInfo/OpticsModes/RedDotSight;RedDotSight;0;
+CLASS;sps_aimpoint_T1_3xMAG_up_Black;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_3xMAG_up_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_3xMAG_up_Black;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_3xMAG_up_Black;ItemInfo/OpticsModes/ZoomedOptics;;1;
+CLASS;sps_aimpoint_T1_3xMAG_down_Black;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_3xMAG_down_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_3xMAG_down_Black;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_3xMAG_down_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;sps_aimpoint_T1_3xMAG_up;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_3xMAG_up;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_3xMAG_up;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_3xMAG_up;ItemInfo/OpticsModes/ZoomedOptics;;1;
+CLASS;sps_aimpoint_T1_3xMAG_down;ItemCore;SPS Equipment;sps_aimpoints
+NEST;sps_aimpoint_T1_3xMAG_down;ItemInfo;InventoryOpticsItem_Base_F
+NEST;sps_aimpoint_T1_3xMAG_down;ItemInfo/OpticsModes;
+NEST;sps_aimpoint_T1_3xMAG_down;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Tan;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Tan;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Tan;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Tan;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Tan50;SPS_EOTech_Tan;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Tan50;ItemInfo;ItemInfo
+NEST;SPS_EOTech_Tan50;ItemInfo/OpticsModes;OpticsModes
+NEST;SPS_EOTech_Tan50;ItemInfo/OpticsModes/RedDotSight;RedDotSight;0;
+CLASS;SPS_EOTech_Black;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Black;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Black50;SPS_EOTech_Black;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Black50;ItemInfo;ItemInfo
+NEST;SPS_EOTech_Black50;ItemInfo/OpticsModes;OpticsModes
+NEST;SPS_EOTech_Black50;ItemInfo/OpticsModes/RedDotSight;RedDotSight;0;
+CLASS;SPS_EOTech_Tan_3xMAG_up;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Tan_3xMAG_up;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Tan_3xMAG_up;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Tan_3xMAG_up;ItemInfo/OpticsModes/ZoomedOptics;;1;
+CLASS;SPS_EOTech_Black_3xMAG_up;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Black_3xMAG_up;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Black_3xMAG_up;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Black_3xMAG_up;ItemInfo/OpticsModes/ZoomedOptics;;1;
+CLASS;SPS_EOTech_Tan_3xMAG_down;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Tan_3xMAG_down;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Tan_3xMAG_down;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Tan_3xMAG_down;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Black_3xMAG_down;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Black_3xMAG_down;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Black_3xMAG_down;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Black_3xMAG_down;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Tan_5xMAG_up;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Tan_5xMAG_up;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Tan_5xMAG_up;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Tan_5xMAG_up;ItemInfo/OpticsModes/ZoomedOptics;;1;
+CLASS;SPS_EOTech_Black_5xMAG_up;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Black_5xMAG_up;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Black_5xMAG_up;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Black_5xMAG_up;ItemInfo/OpticsModes/ZoomedOptics;;1;
+CLASS;SPS_EOTech_Tan_5xMAG_down;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Tan_5xMAG_down;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Tan_5xMAG_down;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Tan_5xMAG_down;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Black_5xMAG_down;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Black_5xMAG_down;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Black_5xMAG_down;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Black_5xMAG_down;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Black;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Black;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Black;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Black;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_EOTech_Vudu_Black;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Black_RMR;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Black_RMR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Black_RMR;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Black_RMR;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_EOTech_Vudu_Black_RMR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Tan;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Tan;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Tan;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Tan;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_EOTech_Vudu_Tan;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Tan_RMR;ItemCore;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Tan_RMR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Tan_RMR;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Tan_RMR;ItemInfo/OpticsModes/ZoomedOptics2;;1;Normal
+NEST;SPS_EOTech_Vudu_Tan_RMR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Black_PVS24LR;SPS_EOTech_Vudu_Black;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Black_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Black_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Black_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_EOTech_Vudu_Black_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Black_RMR_PVS24LR;SPS_EOTech_Vudu_Black;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Black_RMR_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Black_RMR_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Black_RMR_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_EOTech_Vudu_Black_RMR_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Tan_PVS24LR;SPS_EOTech_Vudu_Black;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Tan_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Tan_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Tan_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_EOTech_Vudu_Tan_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;SPS_EOTech_Vudu_Tan_RMR_PVS24LR;SPS_EOTech_Vudu_Black;SPS Equipment;sps_eotech
+NEST;SPS_EOTech_Vudu_Tan_RMR_PVS24LR;ItemInfo;InventoryOpticsItem_Base_F
+NEST;SPS_EOTech_Vudu_Tan_RMR_PVS24LR;ItemInfo/OpticsModes;
+NEST;SPS_EOTech_Vudu_Tan_RMR_PVS24LR;ItemInfo/OpticsModes/ZoomedOptics2;;1;NVG
+NEST;SPS_EOTech_Vudu_Tan_RMR_PVS24LR;ItemInfo/OpticsModes/RedDotSight;;1;
+CLASS;jmfsb_weapons_acc_o_FMS;ItemCore;jmsb;jmfsb_weapons
+NEST;jmfsb_weapons_acc_o_FMS;ItemInfo;InventoryOpticsItem_Base_F
+NEST;jmfsb_weapons_acc_o_FMS;ItemInfo/OpticsModes;
+NEST;jmfsb_weapons_acc_o_FMS;ItemInfo/OpticsModes/FMSScope;;1;
+NEST;jmfsb_weapons_acc_o_FMS;ItemInfo/OpticsModes/FMSIronsights;;1;
+CLASS;jmfsb_weapons_optic_ROS;optic_Aco;jmsb;jmfsb_weapons
+CLASS;jmfsb_weapons_optic_ROS_SMG;optic_Aco_smg;jmsb;jmfsb_weapons
+CLASS;jmfsb_weapons_optic_LRCO_blk_F;optic_MRCO;jmsb;jmfsb_weapons
+NEST;jmfsb_weapons_optic_LRCO_blk_F;ItemInfo;ItemInfo
+CLASS;jmfsb_weapons_optic_LRCO_snd_F;jmfsb_weapons_optic_LRCO_blk_F;jmsb;jmfsb_weapons
+NEST;jmfsb_weapons_optic_LRCO_snd_F;ItemInfo;ItemInfo
+CLASS;jmfsb_weapons_optic_ACO_grn_AK_F;optic_ACO_grn;jmsb;jmfsb_weapons
+CLASS;jmfsb_weapons_optic_tws_sniper;ItemCore;jmsb;jmfsb_weapons
+NEST;jmfsb_weapons_optic_tws_sniper;ItemInfo;InventoryOpticsItem_Base_F
+NEST;jmfsb_weapons_optic_tws_sniper;ItemInfo/OpticsModes;
+NEST;jmfsb_weapons_optic_tws_sniper;ItemInfo/OpticsModes/TWS;;1;Ti|Normal
+CLASS;jmfsb_optics_xm157_prototype;ace_xm157_prototype;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_Nightstalker;optic_Nightstalker;jmsb;jmfsb_optics
+NEST;jmfsb_optics_optic_Nightstalker;ItemInfo;InventoryOpticsItem_Base_F
+NEST;jmfsb_optics_optic_Nightstalker;ItemInfo/OpticsModes;
+NEST;jmfsb_optics_optic_Nightstalker;ItemInfo/OpticsModes/NCTALKEP;;1;Normal|NVG|Ti
+NEST;jmfsb_optics_optic_Nightstalker;ItemInfo/OpticsModes/Iron;NCTALKEP;1;
+CLASS;jmfsb_optics_optic_AMS_base;ItemCore;jmsb;jmfsb_optics
+NEST;jmfsb_optics_optic_AMS_base;ItemInfo;InventoryOpticsItem_Base_F
+NEST;jmfsb_optics_optic_AMS_base;ItemInfo/OpticsModes;
+NEST;jmfsb_optics_optic_AMS_base;ItemInfo/OpticsModes/AMS;;1;Normal|NVG
+NEST;jmfsb_optics_optic_AMS_base;ItemInfo/OpticsModes/Iron;;1;
+CLASS;jmfsb_optics_optic_AMS;jmfsb_optics_optic_AMS_base;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_AMS_khk;jmfsb_optics_optic_AMS;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_AMS_snd;jmfsb_optics_optic_AMS;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_AMSTI_base;ItemCore;jmsb;jmfsb_optics
+NEST;jmfsb_optics_optic_AMSTI_base;ItemInfo;InventoryOpticsItem_Base_F
+NEST;jmfsb_optics_optic_AMSTI_base;ItemInfo/OpticsModes;
+NEST;jmfsb_optics_optic_AMSTI_base;ItemInfo/OpticsModes/AMS;;1;Normal|NVG|Ti
+NEST;jmfsb_optics_optic_AMSTI_base;ItemInfo/OpticsModes/Iron;;1;
+CLASS;jmfsb_optics_optic_AMSTI;jmfsb_optics_optic_AMSTI_base;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_AMSTI_khk;jmfsb_optics_optic_AMSTI;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_AMSTI_snd;jmfsb_optics_optic_AMSTI;jmsb;jmfsb_optics
+CLASS;jmfsb_optics_optic_DMS;ace_xm157_prototype;jmsb;jmfsb_optics
+NEST;jmfsb_optics_optic_DMS;ItemInfo;InventoryOpticsItem_Base_F
+NEST;jmfsb_optics_optic_DMS;ItemInfo/OpticsModes;
+NEST;jmfsb_optics_optic_DMS;ItemInfo/OpticsModes/lpvo;;1;
+NEST;jmfsb_optics_optic_DMS;ItemInfo/OpticsModes/Iron;;1;

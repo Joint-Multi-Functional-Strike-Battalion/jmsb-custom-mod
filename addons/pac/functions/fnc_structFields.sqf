@@ -93,7 +93,7 @@ private _out = switch (_section) do {
         ["value", "t", "VALUE", "autoSlot 1 or 0 - slotMatch role or slot - arsenalMode role, skills or both - savedLoadouts a count, 0 for off"]
     ]};
     case "promotion": {[
-        ["value", "n", "VALUE", "points per unit for a weight (hour, op, serviceMonth, gradeMonth, training, award); points required for a rank_<rankId> rung"]
+        ["value", "n", "VALUE", "points per unit for a weight (hour and op = operations only, trainingSession, trainingHour, serviceMonth, gradeMonth, training, award); points required for a rank_<rankId> rung"]
     ]};
     // THE TRAINING CATALOGUE (2026-09-05): the courses a unit runs, one item
     // each, keyed by course id. The player page's TRAINING dropdown lists them;

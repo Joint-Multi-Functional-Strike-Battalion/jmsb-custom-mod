@@ -127,15 +127,15 @@ force ace_common_checkExtensions = false;
 force force ace_common_checkPBOsAction = 2;
 force ace_common_checkPBOsCheckAll = false;
 force ace_common_checkPBOsWhitelist = "[]";
-force ace_common_deployedSwayFactor = 1;
+force ace_common_deployedSwayFactor = 0.25;
 force ace_common_enableSway = true;
 ace_common_epilepsyFriendlyMode = false;
 force ace_common_magneticDeclination = false;
 ace_common_progressBarInfo = 2;
-force ace_common_restedSwayFactor = 1;
+force ace_common_restedSwayFactor = 0.5;
 ace_common_settingFeedbackIcons = 1;
 ace_common_settingProgressBarLocation = 0;
-force ace_common_swayFactor = 1;
+force ace_common_swayFactor = 0.4;
 
 // ACE Cook-off
 force force ace_cookoff_ammoCookoffDuration = 0.5;

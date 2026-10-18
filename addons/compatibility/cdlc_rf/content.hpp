@@ -92,6 +92,18 @@ class XtdGearInfos {
             type = "Auto";
             camo = "Khaki";
         };
+        class EGVAR(nvg,TiGoggles_RF) {
+            model = QEGVAR(nvg,tigoggles);
+            camo = "blk";
+        };
+        class EGVAR(nvg,TiGoggles_grn_RF) {
+            model = QEGVAR(nvg,tigoggles);
+            camo = "grn";
+        };
+        class EGVAR(nvg,TiGoggles_tan_RF) {
+            model = QEGVAR(nvg,tigoggles);
+            camo = "tan";
+        };
     };
     class CfgMagazines {
         class 1Rnd_RC40_SmokeBlue_shell_RF {
@@ -2701,6 +2713,52 @@ class CfgGroups {
                 };
             };
         };
+    };
+};
+
+class CfgWeapons {
+    class TiGoggles_grn_RF;
+    class TiGoggles_RF;
+    class TiGoggles_tan_RF;
+
+    class EGVAR(nvg,TiGoggles_RF): TiGoggles_RF {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] Ti Goggles";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class EGVAR(nvg,TiGoggles_grn_RF): TiGoggles_grn_RF {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] Ti Goggles (Green)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
+    };
+    class EGVAR(nvg,TiGoggles_tan_RF): TiGoggles_tan_RF {
+        scope = 2;
+        scopeArsenal = 2;
+        author = QAUTHOR;
+        displayName = "[JMSB] Ti Goggles (Tan)";
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        EGVAR(nvg,fullScreen) = 1;
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        EGVAR(ecoti,enabled) = 1;
     };
 };
 

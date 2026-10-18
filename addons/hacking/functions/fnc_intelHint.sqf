@@ -66,13 +66,6 @@ if (!isNil "jmfsb_adapter_alive_fnc_aaTargets") then {
     } forEach (call jmfsb_adapter_alive_fnc_aaTargets);
 };
 
-{
-    _x params ["_at", "_aSide"];
-    if (_aSide getFriend _side < 0.6) then {
-        _pool pushBack [format ["ad_%1", mapGridPosition _at], _at, "air defence", "conv"];
-    };
-} forEach (missionNamespace getVariable [QEGVAR(airdefence,sites), []]);
-
 if (!isNil "jmfsb_adapter_alive_fnc_artyTargets") then {
     {
         _x params ["_id", "_at", "_aSide"];

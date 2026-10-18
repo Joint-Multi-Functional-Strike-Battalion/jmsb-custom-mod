@@ -182,3 +182,48 @@ records). So these are a `#jmfsb airdefence.probe`, as `iads.probe` is:
 7. **Zeus attributes** - F11.
 
 Each phase lands with its README, its `docs/TESTS.md` section and a green `check_all.py`.
+
+## 2026-10-13 - automatic air defence (user: "our integrated air should work like" Air Defenses PLUS, "for all invade or defend sides")
+
+Built into `adsite`, not beside it - the same Sites, picture, assignment, fuse, notices, tacpad and ZEN:
+
+- **Automatic Sites.** A server class init on `LandVehicle` / `Ship` queues every new vehicle; `fnc_autoScan` (a PFH
+  that exists only while the queue is non-empty) asks `fnc_isAD` (cached per class, from `fnc_profile`: a CIWS or a
+  radar-carrying AA gun with a round of hit 40 or more, a missile with airLock 2, a weaponless air radar, or an
+  Extra Classes match) and, once crewed, `fnc_autoJoin` puts it into an `AUTO` Site of its crew's side within the
+  link distance. A module or battery that claims it later wins (`fnc_addMember`). Automatic Sites do not engage
+  manned aircraft unless a setting says so - the crews' own AI does, as ever.
+- **Threat settings** (families, drones, intercept chance per attempt, range cap, ignore sides) apply to every Site;
+  no module attribute is overridden, since none covers them.
+- **Targeting mode per vehicle** (off / random / closest / highest = soonest impact) - assignment became
+  member-centric: free members, inner layer first, each pick one reachable threat under its Site's shots per
+  threat, unengaged threats first, then by the member's mode.
+- **Alarms (supersedes F9's "no sounds")**: a per-side CBA setting picks a base-game alarm, played with
+  `playSound3D` on un-muted members and nearby loudspeakers once per salvo. Notices stay the written warning.
+
+
+## 2026-10-14 - performance redesign (user: "redo the integrated AA, this time without the lag")
+
+The game ran at about 4 FPS with air defence in, and at a normal rate with it out. `adsite`, `iads` and
+`airdefence` were removed (backup: `D:\Git\_jmsb_airdefence_removed_2026-10-14`). The likely cause: `fnc_picture`
+ran every 0.25 s **per Site**. Each run did a `nearObjects` for each munition family over the Site's whole weapon
+reach plus 1.5 km, plus an `Air` `nearEntities`. A 0-delay `fnc_fuze` PFH ran on top. Automatic mode made one Site
+per AD cluster on every side, which multiplied all of it.
+
+- **`airdefence` restored as it was.** It only places hardware, and its one timer is the 10-minute rearm PFH. There
+  is no per-frame or area-scan work, apart from a one-off `waitUntil time > 0` before an AA Base builds.
+  `batteryUp` now feeds the new `adsite`.
+- **`iads` (EMCON blinking) stays removed.**
+- **`adsite` rewritten**, keeping its name and the `jmfsb_moduleADSite` class. Nothing in it scans:
+  - Units are registered once, on vehicle creation (cached per-class test).
+  - Munitions are detected from the `fired` class event on the machine where the shooter is local. An ignored shot
+    costs one hashmap lookup. A relevant one is predicted once on the server and matched against the protect radii.
+  - One engagement PFH (0.15 s) exists only while threats are in the air. It is capped at 16 threats, 64
+    feasibility tests and 8 new engagements per pass, and it times itself (WARNING above 2 ms).
+  - The kill is a timed roll, as in Air Defenses PLUS. The firing machine deletes the round and leaves a harmless
+    blast. There is no proximity-fuse loop.
+  - Aircraft and drones are left to the crews' AI.
+- **Dropped with the old internals:** Sites with link and coordinators, the air picture, EMCON modes, the crew
+  temperament model, CIWS aim learning, notices, the tacpad panel, ZEN attributes, Extra Classes and the probe
+  command. The module keeps only Protected Radius and Intercept Chance.
+- **The budget is in `addons/adsite/README.md`.**

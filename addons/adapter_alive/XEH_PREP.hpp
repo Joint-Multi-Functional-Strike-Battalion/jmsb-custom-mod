@@ -43,3 +43,6 @@ PREP(postReport);
 
 // ALiVE's own opt-out, so no other addon has to name it - see the function.
 PREP(profileIgnore);
+
+// ALiVE's hints into jmfsb_notify - CfgFunctions.hpp points ALIVE_fnc_sendHint here.
+PREP(sendHint);

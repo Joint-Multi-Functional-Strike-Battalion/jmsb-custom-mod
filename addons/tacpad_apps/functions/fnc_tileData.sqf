@@ -57,12 +57,13 @@ if (_scan isEqualTo []) then {
     // scanner's own contract - not a drone count. The tile printed the raw
     // number as its big value, so one drone inside a kilometre read
     // "DETECT 2". The word is the value now, like every consumer of this
-    // read draws it.
+    // read draws it. No qualifier: "DETECT" ran into the kicker, and the big
+    // CLR / WARN / ALERT already says it (user, 2026-10-17).
     private _state = [0, _droneState] select (_droneState isEqualType 0);
     _out pushBack [
         "drones",
         "DRONES",
-        ["CLEAR", "DETECT"] select (_state > 0),
+        "",
         ["CLR", "WARN", "ALERT"] param [_state, "CLR"],
         if (_state > 0) then {
             format ["BRG %1 - %2 KM", round _droneDir, (round (_nearest / 100)) / 10]

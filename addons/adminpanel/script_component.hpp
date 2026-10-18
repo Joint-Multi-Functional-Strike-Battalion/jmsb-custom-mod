@@ -31,3 +31,23 @@
 // the top, which is forty-five places for a number to fall out of step with the
 // dialog. They are declared here and the copies are gone.
 #include "ui\idcs.inc.hpp"
+
+// --- Time / weather (FUNC(envLoad) and friends) -----------------------------
+// What the combos offer. Weather is in tens of percent, wind in m/s.
+#define ENV_MINUTE_STEP     5
+#define ENV_SPEEDS          [1, 2, 4, 6, 12, 24, 60, 120]
+#define ENV_PERCENT_STEP    10
+#define ENV_WIND_STEP       2
+#define ENV_WIND_MAX        20
+// Presets as [overcast %, rain %, fog %, wind m/s]. Rain only falls under heavy
+// overcast - the engine's rule - so STORM carries full cloud with it.
+#define ENV_PRESET_CLEAR    [0, 0, 0, 2]
+#define ENV_PRESET_CLOUDY   [60, 0, 0, 4]
+#define ENV_PRESET_STORM    [100, 100, 10, 14]
+#define ENV_PRESET_FOGGY    [40, 0, 60, 0]
+#define ENV_NOON            12
+#define ENV_READOUT_TICK    1
+// Below this the wind has no direction worth keeping; a set wind blows north.
+#define ENV_WIND_CALM       0.1
+#define ENV_PERCENT         100
+#define ENV_MINUTES_PER_HOUR 60

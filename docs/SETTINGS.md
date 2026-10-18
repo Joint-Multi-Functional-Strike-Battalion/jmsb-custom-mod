@@ -10,6 +10,26 @@ ships with, which a mission or the forced list below can override.
 | Enable admin console | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Admin Console | `true` | Registers the admin console keybinds and the #jmfsb admin commands. Off leaves the addon loaded and inert - it does not grant or revoke anybody's admi |
 | JMSB admins may open it | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Admin Console | `true` | Lets anyone carrying jmfsb's own admin flag open the console, as well as the uids in the mission's list. Off means the mission's list is the only way  |
 
+## Air Defence Intercept (`adsite`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| CHECKBOX | Air Defence"]
+
+[
+    QGVAR(enabled) | Intercept incoming munitions > On: every air defence vehicle - a CIWS, an AA gun with a radar, a SAM launcher - shoots down artillery, rockets, missiles and bombs predicted to land inside its protected radius. Aircraft and drones are always left to the crews' own AI. | `ADS_CATEGORY` |  |
+| Intercept chance | SLIDER | ADS_CATEGORY | `[0, 1, 0.75, 0, true]` | Rolled once per intercept attempt. A failed roll lets that round through that attempt; another unit may still try if there is time. |
+| Intercept artillery and mortar | CHECKBOX | ADS_CATEGORY | `true` | Artillery and mortar shells, and the submunition carriers MLRS rockets are made of. |
+| Intercept rockets | CHECKBOX | ADS_CATEGORY | `true` | Unguided rockets. |
+| Intercept missiles | CHECKBOX | ADS_CATEGORY | `true` | Guided and cruise missiles other than anti-air ones. |
+| Intercept bombs | CHECKBOX | ADS_CATEGORY | `true` | Free-fall and guided bombs. |
+| Protect radius cap (m) | SLIDER | ADS_CATEGORY | `[500, 15000, 4000, 0]` | A unit protects the ground within its own weapon reach, but never further than this. A Site module's Protected Radius overrides it for that Site's veh |
+| Ignore sides | CHECKBOX | ADS_CATEGORY | `false` | On: any round coming down inside a protected radius is intercepted, whoever fired it - friendly artillery too. Off: only rounds fired by a side hostil |
+| Alarm - BLUFOR | LIST | ADS_CATEGORY | `[ADS_ALARM_INDICES, ADS_ALARM_NAMES, 2]` | Played on BLUFOR air defence and the loudspeakers near it when munitions are incoming. |
+| Alarm - OPFOR | LIST | ADS_CATEGORY | `[ADS_ALARM_INDICES, ADS_ALARM_NAMES, 3]` | As BLUFOR's, for OPFOR air defence. |
+| Alarm - Independent | LIST | ADS_CATEGORY | `[ADS_ALARM_INDICES, ADS_ALARM_NAMES, 4]` | As BLUFOR's, for Independent air defence. |
+| Alarm repeat (s) | SLIDER | ADS_CATEGORY | `[5, 120, 20, 0]` | An area's alarm sounds once per salvo, and again only after this long. |
+
 ## Ai Disembark (`ai_disembark`)
 
 | Setting | Type | Category | Default | What it does |
@@ -108,6 +128,20 @@ ships with, which a mission or the forced list below can override.
 |---|---|---|---|---|
 | ISR unit variable | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Common | `"isISR"` | Name of the unit variable marking someone as an ISR operator. Gates the hacking tablet and Intel Hunt processing. Set it on a unit with: this setVaria |
 | Threat Board Debug | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Common | `false` | Log every contact jmfsb's sensors file on a side's threat board - what that side knows, where, how wrong it might be, and which sensor said so. |
+
+## ECOTI (`ecoti`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Enable AiTR | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > ECOTI | `true` | Off: no AiTR boxes, labels or net cards for you, on any goggle. Your goggles' night vision and thermal are unaffected. |
+| Sensor range (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[50, 1500, 600, 0]` | How far the clip-on picks up heat. Nothing beyond it is drawn. |
+| Thermal window size | SLIDER | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[0.1, 0.5, 0.375, 3]` | Radius of the round thermal window, as a fraction of the screen height. Nothing is drawn outside it. A JMSB goggle set to NVG full screen has no windo |
+| Full contrast distance (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[10, 300, 75, 0]` | Inside this a box is drawn at full contrast. Past it, out to the sensor range, it fades. |
+| Box line width (px) | SLIDER | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[1, 8, 3, 0]` | How thick box lines are drawn, in screen pixels. |
+| Own faction colour | COLOR | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[0.2, 0.45, 1]` | Anyone of your own faction, and vehicles they crew. |
+| Same side colour | COLOR | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[0.2, 0.9, 0.3]` | Another faction on your side or a friendly one, and vehicles they crew. |
+| Armed colour | COLOR | 1st Joint Multi-Functional Strike Battalion > ECOTI | `[1, 0.3, 0.25]` | Anyone hostile to your side, a civilian carrying a weapon, and vehicles they crew. Unarmed civilians are white; empty vehicles, animals and anyone of  |
+| AiTR labels | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > ECOTI | `true` | Under each box, what it is, one thing about it and its range - PERSON \| ARMED \| 240 m. |
 
 ## Equipment (`equipment`)
 
@@ -264,6 +298,7 @@ ships with, which a mission or the forced list below can override.
 | Trauma Kit contents | EDITBOX | 1st Joint Multi-Functional Strike Battalion > MedBags | `"ACE_fieldDressing:28, ACE_elasticBandag` | class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps. |
 | Fluid Kit contents | EDITBOX | 1st Joint Multi-Functional Strike Battalion > MedBags | `"ACE_salineIV:24, ACE_plasmaIV:12, ACE_b` | class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps. |
 | Drug Kit contents | EDITBOX | 1st Joint Multi-Functional Strike Battalion > MedBags | `"ACE_morphine:16, ACE_adenosine:8, ACE_e` | class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps. |
+| MOPP Bag contents | EDITBOX | 1st Joint Multi-Functional Strike Battalion > MedBags | `"JCA_G_AirPurifyingRespirator_03_black_c` | class:count, comma separated, issued after the bag's own CBRN suit. Respirator and the ACM CBRN self-aid autoinjectors. |
 | Fill order | LIST | 1st Joint Multi-Functional Strike Battalion > MedBags | `[ ["3,2,1", "1,2,3", "2,3,1", "2,1,3"], ` | Which container an unpacked item goes in first. The rest are tried in turn as each fills up. Applies to every bag, and to bags taken off a casualty. |
 | Overflow to the ground | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > MedBags | `true` | What will not fit is dropped at the unit's feet. Off: the surplus is not issued at all. Never drops anything in a vehicle or in deep water. |
 
@@ -302,6 +337,12 @@ ships with, which a mission or the forced list below can override.
 | Width | SLIDER | 1st Joint Multi-Functional Strike Battalion > Notifications | `[0.1, 0.5, 0.22, 2, true]` | Width of the stack as a fraction of the safe zone. |
 | Text size | SLIDER | 1st Joint Multi-Functional Strike Battalion > Notifications | `[0.5, 3, 1, 2, true]` | Scales the notification text. The panel grows with it, so a larger size means taller notifications rather than cramped ones. |
 | Font | LIST | 1st Joint Multi-Functional Strike Battalion > Notifications | `[ ["RobotoCondensed", "RobotoCondensedBo` | Typeface for notifications. The monospace and console faces suit a technical readout; the Purista faces are what Arma's own UI uses. |
+
+## Nvg (`nvg`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| NVG full screen | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > NVG | `true` | On: JMSB goggles fill the whole screen in NVG mode. Off: the view is seen through the tubes - ACE's mask for the goggle the JMSB one was made from. |
 
 ## TAC//PAC (`pac`)
 
@@ -510,11 +551,11 @@ A forced setting cannot be changed in-game, and overrides the defaults above.
 | `ace_common_checkPBOsAction` | `2` |
 | `ace_common_checkPBOsCheckAll` | `false` |
 | `ace_common_checkPBOsWhitelist` | `"[]"` |
-| `ace_common_deployedSwayFactor` | `1` |
+| `ace_common_deployedSwayFactor` | `0.25` |
 | `ace_common_enableSway` | `true` |
 | `ace_common_magneticDeclination` | `false` |
-| `ace_common_restedSwayFactor` | `1` |
-| `ace_common_swayFactor` | `1` |
+| `ace_common_restedSwayFactor` | `0.5` |
+| `ace_common_swayFactor` | `0.4` |
 | `ace_cookoff_ammoCookoffDuration` | `0.5` |
 | `ace_cookoff_cookoffDuration` | `1` |
 | `ace_cookoff_cookoffEnableProjectiles` | `true` |

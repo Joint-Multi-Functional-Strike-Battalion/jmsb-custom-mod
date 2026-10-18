@@ -73,6 +73,12 @@ class CfgWeapons {
     class MIG_SFHC_BLK_CLEAN;
     class MIG_SFHC_BLK_FULL_KIT;
     class MIG_SFHC_BLK_Peltor;
+    class MIG_SFHC_OCP_CLEAN;
+    class MIG_SFHC_OCP_FULL_KIT;
+    class MIG_SFHC_OCP_Peltor;
+    class MIG_SFHC_RG_CLEAN;
+    class MIG_SFHC_RG_FULL_KIT;
+    class MIG_SFHC_RG_Peltor;
     class MIG_SFHC_TAN_CLEAN;
     class MIG_SFHC_TAN_FULL_KIT;
     class MIG_SFHC_TAN_Peltor;
@@ -146,6 +152,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (BLK)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_BLK_LOW): MIG_FBINO_BLK_LOW {
@@ -153,6 +166,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (BLK) (LOW READY)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_BLK_LOW_Up): MIG_FBINO_BLK_LOW_Up {
@@ -160,6 +180,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (BLK) (Wide)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_BLK_DayOps_STD): MIG_FBINO_BLK_DayOps_STD {
@@ -167,6 +194,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (BLK) (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_FDE_STD): MIG_FBINO_FDE_STD {
@@ -174,6 +208,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (FDE)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_FDE_LOW): MIG_FBINO_FDE_LOW {
@@ -181,6 +222,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (FDE) (LOW READY)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_FDE_LOW_Up): MIG_FBINO_FDE_LOW_Up {
@@ -188,6 +236,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (FDE) (Wide)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FBINO_FDE_DayOps_STD): MIG_FBINO_FDE_DayOps_STD {
@@ -195,6 +250,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-BINO (FDE) (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FPANO_BLK): MIG_FPANO_BLK {
@@ -202,6 +264,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-PANO (BLK)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FPANO_FDE): MIG_FPANO_FDE {
@@ -209,6 +278,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-PANO (FDE)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FPANO_DayOps_BLK): MIG_FPANO_DayOps_BLK {
@@ -216,6 +292,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-PANO (BLK) (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FPANO_DayOps_FDE): MIG_FPANO_DayOps_FDE {
@@ -223,6 +306,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris F-PANO (FDE) (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_FTHS_TAN_CLEAN): MIG_FTHS_TAN_CLEAN {
@@ -550,6 +640,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] Galvion Riot Visor";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_Galvion_Visor_DOWN): MIG_Galvion_Visor_DOWN {
@@ -557,6 +654,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] Galvion Riot Visor";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_GPNVG18_BLK): MIG_GPNVG18_BLK {
@@ -564,6 +668,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris GPNVG-18 (BLK)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_GPNVG18_FDE): MIG_GPNVG18_FDE {
@@ -571,6 +682,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris GPNVG-18 (FDE)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_GPNVG18_DayOps_BLK): MIG_GPNVG18_DayOps_BLK {
@@ -578,6 +696,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris GPNVG-18 (BLK) (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_GPNVG18_DayOps_FDE): MIG_GPNVG18_DayOps_FDE {
@@ -585,6 +710,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris GPNVG-18 (FDE) (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_L): MIG_PVS14_L {
@@ -592,6 +724,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 MNVD (Left Eye)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_DayOps_L): MIG_PVS14_DayOps_L {
@@ -599,6 +738,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 MNVD (Left Eye - Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_R): MIG_PVS14_R {
@@ -606,6 +752,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 MNVD (Right Eye)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_DayOps_R): MIG_PVS14_DayOps_R {
@@ -613,6 +766,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 MNVD (Right Eye - Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_B): MIG_PVS14_B {
@@ -620,6 +780,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 NPBM-D-WP";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_DayOps_B): MIG_PVS14_DayOps_B {
@@ -627,6 +794,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 NPBM-D-WP (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_B_TAN): MIG_PVS14_B_TAN {
@@ -634,6 +808,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 NPBM-D-WP (TAN)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS14_DayOps_B_TAN): MIG_PVS14_DayOps_B_TAN {
@@ -641,6 +822,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-14 NPBM-D-WP (Day Ops)(FDE)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS31_STD): MIG_PVS31_STD {
@@ -648,6 +836,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-31A BNVD";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS31_LOW): MIG_PVS31_LOW {
@@ -655,6 +850,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-31A BNVD (LOW READY)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS31_LOW_Up): MIG_PVS31_LOW_Up {
@@ -662,6 +864,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-31A BNVD (Wide)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_PVS31_DayOps_STD): MIG_PVS31_DayOps_STD {
@@ -669,6 +878,13 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] L3Harris AN/PVS-31A BNVD (Day Ops)";
+        visionMode[] = {"Normal", "NVG", "TI"};
+        thermalMode[] = {0, 1};
+        jmfsb_ecoti_enabled = 1;
+        modelOptics = "\A3\weapons_f\reticle\optics_empty.p3d";
+        ACE_nightvision_border = "";
+        ACE_nightvision_eyeCups = 0;
+        jmfsb_nvg_fullScreen = 1;
     };
 
     class GVAR(MIG_SFHC_TAN_CLEAN): MIG_SFHC_TAN_CLEAN {
@@ -686,6 +902,26 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] SFHC (BLK)";
+        class ItemInfo: ItemInfo {
+            JMFSB_HELMET_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_SFHC_OCP_CLEAN): MIG_SFHC_OCP_CLEAN {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] SFHC (OCP)";
+        class ItemInfo: ItemInfo {
+            JMFSB_HELMET_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_SFHC_RG_CLEAN): MIG_SFHC_RG_CLEAN {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] SFHC (RG)";
         class ItemInfo: ItemInfo {
             JMFSB_HELMET_STANDARD_PROTECTION
         };
@@ -713,6 +949,28 @@ class CfgWeapons {
         };
     };
 
+    class GVAR(MIG_SFHC_OCP_Peltor): MIG_SFHC_OCP_Peltor {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] SFHC (AMPs)(OCP)";
+        MACRO_ACE_HEARING
+        class ItemInfo: ItemInfo {
+            JMFSB_HELMET_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_SFHC_RG_Peltor): MIG_SFHC_RG_Peltor {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] SFHC (AMPs)(RG)";
+        MACRO_ACE_HEARING
+        class ItemInfo: ItemInfo {
+            JMFSB_HELMET_STANDARD_PROTECTION
+        };
+    };
+
     class GVAR(MIG_SFHC_TAN_FULL_KIT): MIG_SFHC_TAN_FULL_KIT {
         author = QAUTHOR;
         scope = 2;
@@ -729,6 +987,28 @@ class CfgWeapons {
         scope = 2;
         scopeArsenal = 2;
         displayName = "[JMSB] SFHC (Full Kit)(BLK)";
+        MACRO_ACE_HEARING
+        class ItemInfo: ItemInfo {
+            JMFSB_HELMET_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_SFHC_OCP_FULL_KIT): MIG_SFHC_OCP_FULL_KIT {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] SFHC (Full Kit)(OCP)";
+        MACRO_ACE_HEARING
+        class ItemInfo: ItemInfo {
+            JMFSB_HELMET_STANDARD_PROTECTION
+        };
+    };
+
+    class GVAR(MIG_SFHC_RG_FULL_KIT): MIG_SFHC_RG_FULL_KIT {
+        author = QAUTHOR;
+        scope = 2;
+        scopeArsenal = 2;
+        displayName = "[JMSB] SFHC (Full Kit)(RG)";
         MACRO_ACE_HEARING
         class ItemInfo: ItemInfo {
             JMFSB_HELMET_STANDARD_PROTECTION

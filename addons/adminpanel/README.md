@@ -85,6 +85,15 @@ players, vehicles, AI, or nothing but the mission's own markers. Teleport combos
 are on the MAP label's tooltip. Underneath, the code box: a target strip
 (SERVER / LOCAL / REMOTE - name), RUN, and a **RETURN** log.
 
+**Header** - **TIME / WEATHER** opens a small dialog over the console: the
+current date, time, speed of time and weather at the top; hour, minute and time
+speed combos with DAWN / NOON / DUSK / MIDNIGHT shortcuts and **SET TIME**;
+overcast, rain, fog and wind combos with CLEAR / CLOUDY / STORM / FOG presets and
+**SET WEATHER**. Both go out as CBA events - time to the server, weather to every
+machine with the server forcing the change through, ZEN's split - so no
+`CfgRemoteExec` entry is needed. A weather module running in the mission (ALiVE's,
+for one) moves the weather on again at its own next cycle.
+
 **Right rail** - the live camera feed on the selected man with his grid, height
 and heading under it; his info and skills; his vehicle and his medical state.
 
@@ -158,7 +167,7 @@ See [LICENSE](LICENSE) for the full text.
 
 ## Ships
 
-19 functions.
+27 functions.
 
 ## CBA settings
 
@@ -169,10 +178,18 @@ See [LICENSE](LICENSE) for the full text.
 
 ## Functions
 
-<details><summary>19</summary>
+<details><summary>27</summary>
 
 - `jmfsb_adminpanel_fnc_adminList`
 - `jmfsb_adminpanel_fnc_confirmEnd`
+- `jmfsb_adminpanel_fnc_envApply`
+- `jmfsb_adminpanel_fnc_envLoad`
+- `jmfsb_adminpanel_fnc_envPreset`
+- `jmfsb_adminpanel_fnc_envReadout`
+- `jmfsb_adminpanel_fnc_envSelect`
+- `jmfsb_adminpanel_fnc_envTime`
+- `jmfsb_adminpanel_fnc_envTimeOf`
+- `jmfsb_adminpanel_fnc_envWeather`
 - `jmfsb_adminpanel_fnc_execClear`
 - `jmfsb_adminpanel_fnc_execCopy`
 - `jmfsb_adminpanel_fnc_execLog`

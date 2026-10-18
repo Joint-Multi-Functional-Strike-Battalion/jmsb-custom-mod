@@ -8,7 +8,7 @@ Description:
 
     A WINDOW IS ONE ROW, APPEND-ONLY:
 
-        [id, name, startedAt, endedAt, source]
+        [id, name, startedAt, endedAt, source, kind]
 
     source is "manual" for these; FUNC(windowCurrent) also answers windows
     that come from the config's opWindows and from the current OPORD, but
@@ -20,6 +20,14 @@ Description:
     first, at the same stamp, so there is never a gap or an overlap to argue
     about in a report.
 
+    KIND says what the window was (user, 2026-10-11: "define what is an
+    operation and what's training or special ... only operation missions
+    count toward promotion and an option for training time"):
+    "operation", "training" or "special". FUNC(attendanceOf) and
+    FUNC(promotionPoints) count operations as ops; training has its own
+    promotion weights; special counts for nothing. A row from before kinds
+    has no 6th element and reads as an operation.
+
     STOP IS A FORCED SAVE, per the handoff: the window closing is one of the
     moments where losing the last thirty seconds would actually cost.
 
@@ -27,6 +35,7 @@ Parameters:
     0: Caller <OBJECT>
     1: Mode <STRING> - "start" | "stop"
     2: Name <STRING> (start only; "" gets a name from the stamp)
+    3: Kind <STRING> (start only) - "operation" (default) | "training" | "special"
 
 Returns:
     The id of the window started or stopped, "" if nothing happened <STRING>
@@ -35,7 +44,9 @@ Author:
     YonV
 ---------------------------------------------------------------------------- */
 
-params [["_caller", objNull, [objNull]], ["_mode", "", [""]], ["_name", "", [""]]];
+params [["_caller", objNull, [objNull]], ["_mode", "", [""]], ["_name", "", [""]], ["_kind", "operation", [""]]];
+
+if !(_kind in ["operation", "training", "special"]) then {_kind = "operation"};
 
 if (!isServer) exitWith {""};
 if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
@@ -63,10 +74,10 @@ switch (_mode) do {
         _id = "w" + ((_now splitString "-: ") joinString "");
         if (_name isEqualTo "") then {_name = "Op window " + _now};
 
-        GVAR(windows) pushBack [_id, _name, _now, "", "manual"];
+        GVAR(windows) pushBack [_id, _name, _now, "", "manual", _kind];
         GVAR(windowOpen) = _id;
-        INFO_3("%1 started op window %2 (%3)",name _caller,_name,_id);
-        [getPlayerUID _caller, name _caller, "window", "", format ["started op window '%1' (%2)", _name, _id]] call FUNC(logAction);
+        INFO_4("%1 started %4 window %2 (%3)",name _caller,_name,_id,_kind);
+        [getPlayerUID _caller, name _caller, "window", "", format ["started %3 window '%1' (%2)", _name, _id, _kind]] call FUNC(logAction);
         [] call FUNC(storeSave);
     };
     case "stop": {

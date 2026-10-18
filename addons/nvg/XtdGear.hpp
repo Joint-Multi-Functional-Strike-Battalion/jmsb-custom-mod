@@ -132,6 +132,72 @@ class XtdGearModels {
                 };
             };
         };
+
+        // The JMSB full-screen ECOTI versions of the vanilla, ACE and Reaction
+        // Forces goggles (see CfgWeapons.hpp), grouped the way ACE3 Arsenal
+        // Extended groups their originals - in models of their own, so the
+        // arsenal's camo switch moves between JMSB versions and never back to an
+        // original.
+        class GVAR(gen3) {
+            options[] = {"camo"};
+            label = "[JMSB] NVG (Gen3)";
+            class camo {
+                alwaysSelectable = 1;
+                values[] = {"BLK", "SND", "OLI", "TRP"};
+                class BLK {
+                    label = "Black";
+                    image = "z\aceax\addons\gearinfo\data\camo\blk.paa";
+                };
+                class SND {
+                    label = "Brown";
+                    image = "z\aceax\addons\gearinfo\data\camo\khk.paa";
+                };
+                class OLI {
+                    label = "Green";
+                    image = "z\aceax\addons\gearinfo\data\camo\sage.paa";
+                };
+                class TRP {
+                    label = "Tropic";
+                    image = "z\aceax\addons\gearinfo\data\camo\tropic.paa";
+                };
+            };
+        };
+        class GVAR(compact) {
+            options[] = {"camo"};
+            label = "[JMSB] Compact NVG";
+            class camo {
+                alwaysSelectable = 1;
+                values[] = {"HEX", "UHEX"};
+                class HEX {
+                    label = "Hex";
+                    image = "z\aceax\addons\gearinfo\data\camo\csat.paa";
+                };
+                class UHEX {
+                    label = "Urban Hex";
+                    image = "z\aceax\addons\gearinfo\data\camo\csat_ou.paa";
+                };
+            };
+        };
+        class GVAR(tigoggles) {
+            options[] = {"camo"};
+            label = "[JMSB] Ti Goggles";
+            class camo {
+                alwaysSelectable = 1;
+                values[] = {"blk", "grn", "tan"};
+                class blk {
+                    label = "Black";
+                    image = "z\aceax\addons\gearinfo\data\camo\blk.paa";
+                };
+                class grn {
+                    label = "Green";
+                    image = "z\aceax\addons\gearinfo\data\camo\sage.paa";
+                };
+                class tan {
+                    label = "Tan";
+                    image = "z\aceax\addons\gearinfo\data\camo\khk.paa";
+                };
+            };
+        };
     };
 };
 
@@ -167,10 +233,6 @@ class XtdGearInfos {
             camo = "grn";
             ti = "no";
         };
-
-        // The jmfsb LP NVGs sort beside EF's own - same model key, so the
-        // arsenal's camo and thermal switches move between the pair rather than
-        // listing them as two unrelated sets.
 
         class GVAR(anvgTI_blk) {
             model = "anvg";
@@ -281,8 +343,36 @@ class XtdGearInfos {
             ti = "no";
         };
 
-        // LP NVG (EF)
+        // LP NVG (EF): the jmfsb ones and EF's own are in compatibility/cdlc_ef.
+        // Ti Goggles (RF): RF's own are in compatibility/cdlc_rf.
 
-        // Ti Goggles
+        // JMSB full-screen ECOTI versions (CfgWeapons.hpp)
+        class GVAR(NVGoggles_OPFOR) {
+            model = QGVAR(gen3);
+            camo = "BLK";
+        };
+        class GVAR(NVGoggles) {
+            model = QGVAR(gen3);
+            camo = "SND";
+        };
+        class GVAR(NVGoggles_INDEP) {
+            model = QGVAR(gen3);
+            camo = "OLI";
+        };
+        class GVAR(NVGoggles_tna_F) {
+            model = QGVAR(gen3);
+            camo = "TRP";
+        };
+        class GVAR(O_NVGoggles_hex_F) {
+            model = QGVAR(compact);
+            camo = "HEX";
+        };
+        class GVAR(O_NVGoggles_urb_F) {
+            model = QGVAR(compact);
+            camo = "UHEX";
+        };
+
+        // The JMSB Ti Goggles' entries (model GVAR(tigoggles)) are in
+        // compatibility/cdlc_rf with the goggles - see CfgWeapons.hpp.
     };
 };
