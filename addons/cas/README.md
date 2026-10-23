@@ -28,6 +28,14 @@ the caller's side of the target, **egress** carries straight on through.
 Requiring three map picks before anything could be called in would make the
 fast case slow.
 
+**It leaves off the map, not in front of anyone.** Once it is past the egress
+point the run is over and the asset reads idle (rearming) again, but the
+aircraft does not vanish there: it flies on along the egress heading to just
+past the map edge and is deleted once it is outside the map. A recall or a
+released loiter leaves the same way. One that has not made the edge in twenty
+minutes is deleted where it is, and it can still be shot down on the way out -
+that loss counts like any other.
+
 The module's **Ingress Distance** is a floor, not a fixed range - a point
 dropped two hundred metres off the target is an aircraft with no room to line
 up, so anything closer is pushed back along its own bearing. The player still
@@ -111,7 +119,7 @@ left, which is neither of the things the word means.
 
 Now the aircraft flies the same ingress, holds an orbit over the task point,
 and releases nothing. **On station, the gunner's seat goes to the drone
-controller** — the terminal is connected and the seat handed over, so the
+controller** — the drone is linked and the seat handed over, so the
 optics, the sensors and whatever the airframe is hung with belong to a man
 rather than to a script with a target list. The AI keeps flying the orbit; the
 driver's seat stays locked, so a controller cannot fly the aircraft into the
@@ -121,25 +129,35 @@ Who gets it:
 
 | | |
 |---|---|
-| **The man who asked, if he is ISR** | Terminal connected, gunner's seat taken, told so. The ISR flag is the mission's own `isISR` variable — the same one the hacking tablet gates on. |
+| **The man who asked, if he is ISR** | Drone linked, gunner's seat taken, told so. The ISR flag is the mission's own `isISR` variable — the same one the hacking tablet gates on. The link itself is `jmfsb_devices_fnc_uavControl`'s, so he also needs the UAV operator trait and a DATA link; without them he is told he cannot take it and the aircraft holds. |
 | **The man who asked, if he is not** | The aircraft holds overhead and he is told his ISR operator can take the feed. A rifleman may call a loiter; he does not fly it. |
-| **Everyone else on the side** | Told it is on station. It is on their terminal list and they can take it themselves when the man who called it is finished. |
+| **Everyone else on the side** | Told it is on station. It is on their DRONES board and a UAV operator can take it himself when the man who called it is finished. |
 
-A terminal connection is exclusive — it drops whatever else that player was
-flying — so only the man who asked is connected automatically. Nobody else's
+There is no UAV terminal (2026-10-20: out of the arsenal): the link and the seat
+are the devices' own (`jmfsb_devices_fnc_uavControl` - remoteControl, no
+terminal item). A link is exclusive — it drops whatever else that player was
+flying — so only the man who asked is linked automatically. Nobody else's
 drone is taken out from under them.
 
 It holds for an hour, or until **RTB** on the support page, or until it is shot
-down. Whatever ends it, the seat is given back before the airframe is removed:
+down. Whatever ends it, the seat is given back first - and again before the
+airframe is deleted off the map edge, in case someone took it on the way out:
 a controller left in the turret of a vehicle that is deleted under him is a
 black screen he cannot get out of.
 
 ## Tasking
 
-Assets reach TAC//SUPPORT through the support **provider registry** rather than
-by name: this addon publishes three pieces of code under the `jmfsbcas` prefix,
-the adapter merges whatever is registered, and neither learns the other's name.
-The ids handed out carry that prefix, so an order routes itself back here.
+Assets reach TAC//SUPPORT through the support core (`jmfsb_support`) rather than
+by name: this addon registers as provider `cas` - rows, task, sitrep,
+availability and its one asset type with its three tasks - the core merges
+whatever is registered, and neither learns the other's name. The ids handed out
+carry the `cas:` prefix, so an order routes itself back here. The contract is
+in `addons/support/README.md`.
+
+Its three tasks declare their INGRESS and EGRESS as point declarations (task
+declaration field 7, slots 8 and 9 - the same points support_air's CAS reads),
+and its rows carry the airframe while it is out and the run it is flying
+(row fields 7 and 8), so the board's map shows the drone and its run.
 
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
@@ -147,10 +165,11 @@ The ids handed out carry that prefix, so an order routes itself back here.
 
 - `jmfsb_main`
 - `jmfsb_common`
+- `jmfsb_support`
 
 ## Ships
 
-1 unit class, 12 functions.
+1 unit class, 17 functions.
 
 ## Eden modules
 
@@ -158,7 +177,7 @@ The ids handed out carry that prefix, so an order routes itself back here.
 
 `jmfsb_moduleCAS`, category jmfsb_modules
 
-One taskable CAS drone on the support page. Place one module per airframe - many are allowed, and each is its own asset with its own losses.<br>The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing.<br>ORDNANCE on the support page lists what THIS airframe is carrying, by name - the run uses the heaviest thing aboard unless one is picked.<br>LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs a UAV terminal and the isISR variable. RTB ends it.<br>Airframe Class - Classname of the fixed-wing drone; blank for the side's vanilla UCAV Callsign - What the support page and the radio call it Airframes Available - How many times it may be shot down before the asset is expended; 0 for unlimited Ingress Distance (m) - How far out it appears, and how far it runs before despawning Attack Altitude (m) - Height above the terrain (ATL) the run is flown at Run Speed (km/h) - Capped at the airframe's own maximum Response Delay (sec) - Time from accepted request to the aircraft appearing Cooldown (sec) - Time after a run before this asset can be tasked again Terminal Search (m) - How far from the grid a laser spot or smoke is accepted as the real target; 0 for none
+One taskable CAS drone on the support page. Place one module per airframe - many are allowed, and each is its own asset with its own losses.<br>The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing - off the map edge, where it despawns.<br>ORDNANCE on the support page lists what THIS airframe is carrying, by name - the run uses the heaviest thing aboard unless one is picked.<br>LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs the UAV operator trait and the isISR variable, no UAV terminal. RTB ends it.<br>Airframe Class - Classname of the fixed-wing drone; blank for the side's vanilla UCAV Callsign - What the support page and the radio call it Airframes Available - How many times it may be shot down before the asset is expended; 0 for unlimited Ingress Distance (m) - How far out it appears, and how far past the target it runs before the asset is free again Attack Altitude (m) - Height above the terrain (ATL) the run is flown at Run Speed (km/h) - Capped at the airframe's own maximum Response Delay (sec) - Time from accepted request to the aircraft appearing Cooldown (sec) - Time after a run before this asset can be tasked again Terminal Search (m) - How far from the grid a laser spot or smoke is accepted as the real target; 0 for none
 
 <details><summary>9 attributes</summary>
 
@@ -176,16 +195,21 @@ One taskable CAS drone on the support page. Place one module per airframe - many
 
 ## Functions
 
-<details><summary>12</summary>
+<details><summary>17</summary>
 
 - `jmfsb_cas_fnc_acquire`
+- `jmfsb_cas_fnc_assetAvailable`
 - `jmfsb_cas_fnc_assets`
 - `jmfsb_cas_fnc_available`
+- `jmfsb_cas_fnc_egress`
 - `jmfsb_cas_fnc_entityRow`
 - `jmfsb_cas_fnc_fireAt`
+- `jmfsb_cas_fnc_fmtEta`
 - `jmfsb_cas_fnc_killed`
 - `jmfsb_cas_fnc_moduleController`
 - `jmfsb_cas_fnc_nearestTo`
+- `jmfsb_cas_fnc_overlay`
+- `jmfsb_cas_fnc_preview`
 - `jmfsb_cas_fnc_request`
 - `jmfsb_cas_fnc_sitrep`
 - `jmfsb_cas_fnc_stores`

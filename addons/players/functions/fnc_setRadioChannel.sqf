@@ -17,6 +17,8 @@
 
 params [["_player", objNull, [objNull]]];
 
+// ACRE or TFAR. Game voice (jmfsb_voice) tunes nothing: a squad's nets come
+// off the PAC net plan (jmfsb_pac_fnc_netPlan) and his Arma group.
 if (!EGVAR(Patches,usesACRE) && !EGVAR(Patches,usesTFAR)) exitWith {};
 if (!EGVAR(Settings,enableRadios)) exitWith {};
 if (!EGVAR(init,isPlayer)) exitWith {};
@@ -45,53 +47,35 @@ if (EGVAR(patches,usesACRE)) exitWith {
     } forEach _playerRadios;
 };
 
+// TFAR - his sets loaded from the PAC NET PLAN and put on his squad's nets
+// (jmfsb_adapter_tfar_fnc_tune: each net's frequency comes off the plan, the
+// same plan game voice reads). His TEAM net and long range net are the
+// squad's (jmfsb_pac_fnc_netPlanSquad).
+if (isNil QEFUNC(adapter_tfar,tune) || {isNil QEFUNC(pac,netPlanSquad)}) exitWith {
+    SHOW_SERVER_WARNING_1("Radio","TFAR tuning for %1 needs jmfsb_adapter_tfar and jmfsb_pac",_player);
+};
+private _squad = toUpper ([_player] call EFUNC(players,unit_getSquadName));
+private _srNet = [_squad, PLAN_KIND_SR] call EFUNC(pac,netPlanSquad);
+private _lrNet = [_squad, PLAN_KIND_LR] call EFUNC(pac,netPlanSquad);
 
-// TFAR - write the SW/LR channel plans into the player's radios and tune each to their squad net.
-// SW (pnr1000a) everyone carries; LR only if the player has a backpack radio. Frequencies are set
-// per channel (1-based); the active channel is selected 0-based (matches TFAR_fnc_set*Channel).
-if (EGVAR(patches,usesTFAR)) exitWith {
-    private _squad = toUpper ([_player] call EFUNC(players,unit_getSquadName));
-    private _swIdx = jmfsbFR_radio_tfarSwFallback;
-    private _lrIdx = jmfsbFR_radio_tfarLrFallback;
-    private _hadRow = false;
+// HIS PLATOON'S LONG RANGE, when the squad has no row of its own in the
+// slotted plan (2026-09-09). Same table as ACRE - lrPlatoonChannel, keyed by
+// platoon id - so the two radio systems are told the same thing once: the
+// plan's long range net on that slot.
+private _rows = missionNamespace getVariable ["jmfsbFR_radio_tfarNets", []];
+if !(_rows isEqualType []) then {_rows = []};
+private _hadRow = (_rows findIf {_x isEqualType [] && {toUpper (_x param [0, "", [""]]) isEqualTo _squad}}) >= 0;
+private _plt = if (_hadRow) then {""} else {[_squad] call FUNC(platoonOf)};
+if (_plt isNotEqualTo "") then {
+    private _slot = PLAN_NO_SLOT;
     {
-        _x params ["_name","_sw","_lr"];
-        if (toUpper _name isEqualTo _squad) exitWith { _swIdx = _sw; _lrIdx = _lr; _hadRow = true; };
-    } forEach jmfsbFR_radio_tfarNets;
-
-    // HIS PLATOON'S LONG RANGE, when the squad has no row of its own
-    // (2026-09-09). Same table as ACRE - lrPlatoonChannel, keyed by platoon id -
-    // so the two radio systems are told the same thing once. A squad that names
-    // its own LR keeps it; nothing changes for a plan that sets them per squad.
-    if (!_hadRow) then {
-        private _plt = [_squad] call FUNC(platoonOf);
-        if (_plt isNotEqualTo "") then {
-            {
-                if (!(_x isEqualType [])) then {continue};
-                if (toUpper (_x param [0, ""]) isEqualTo toUpper _plt) exitWith {
-                    _lrIdx = _x param [1, _lrIdx];
-                };
-            } forEach (missionNamespace getVariable ["jmfsbFR_radio_lrPlatoonChannel", []]);
-        };
-    };
-
-    // SW handheld
-    private _sw = call TFAR_fnc_activeSwRadio;
-    if (!isNil "_sw" && {_sw isEqualType "" && _sw isNotEqualTo ""}) then {
-        { [_sw, _forEachIndex + 1, _x] call TFAR_fnc_setChannelFrequency; } forEach jmfsbFR_radio_tfarSrFreqs;
-        [_sw, _swIdx] call TFAR_fnc_setSwChannel;
-        INFO_3("Radio","%1 SW radio (%2) tuned to net index %3",_player,_sw,_swIdx);
-    };
-
-    // LR backpack (only if carried)
-    if (call TFAR_fnc_haveLRRadio) then {
-        private _lr = call TFAR_fnc_activeLrRadio;
-        if (!isNil "_lr" && {_lr isEqualType "" && _lr isNotEqualTo ""}) then {
-            { [_lr, _forEachIndex + 1, _x] call TFAR_fnc_setChannelFrequency; } forEach jmfsbFR_radio_tfarLrFreqs;
-            [_lr, _lrIdx] call TFAR_fnc_setLrChannel;
-            INFO_3("Radio","%1 LR radio (%2) tuned to net index %3",_player,_lr,_lrIdx);
-        };
-    };
+        if (!(_x isEqualType [])) then {continue};
+        if (toUpper (_x param [0, ""]) isEqualTo toUpper _plt) exitWith {_slot = _x param [1, PLAN_NO_SLOT]};
+    } forEach (missionNamespace getVariable ["jmfsbFR_radio_lrPlatoonChannel", []]);
+    private _plan = ([] call EFUNC(pac,netPlan)) select {(_x select 2) isEqualTo PLAN_KIND_LR && (_x select 3) isEqualTo _slot};
+    if (_plan isNotEqualTo []) then {_lrNet = (_plan select 0) select 0};
 };
 
-SHOW_CHAT_ERROR("Radio","Fatal");
+[_srNet, _lrNet] call EFUNC(adapter_tfar,tune);
+INFO_3("Radio","%1 tuned from the net plan: %2 / %3",_player,_srNet,_lrNet);
+

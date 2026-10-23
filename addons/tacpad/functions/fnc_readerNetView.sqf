@@ -52,12 +52,12 @@ if (isNull _root) exitWith {};
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _h = (ctrlPosition _root) # 3;
-private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _btnH = ([0.8] call FUNC(textH)) + 2 * _padY;
-private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
-private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
+private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _btnH = ([TEXT_TITLE] call FUNC(textH)) + 2 * _padY;
+private _mute = ["muted"] call FUNC(theme);
+private _dim = ["dim"] call FUNC(theme);
 
 private _net = GVAR(readerNet);
 private _title = [_net, "ALL NETS"] select (_net isEqualTo "ALL");
@@ -65,7 +65,7 @@ private _title = [_net, "ALL NETS"] select (_net isEqualTo "ALL");
 private _y = _padY;
 // The title stops short of the CLOSE button FUNC(readerDraw) puts in the
 // pane's top-right corner (user, 2026-09-05).
-[_root, [_dx + _pad, _y, _dw - _dw * 0.15 - 3 * _pad, _rowH * 1.2], toUpper _title, _ink, 1.2, true] call FUNC(drawText);
+[_root, [_dx + _pad, _y, _dw - _dw * 0.15 - 3 * _pad, _rowH * 1.2], toUpper _title, _ink, TEXT_TITLE, true] call FUNC(drawText);
 _y = _y + _rowH * 1.3;
 
 [
@@ -75,7 +75,7 @@ _y = _y + _rowH * 1.3;
     } else {
         format ["%1 MESSAGE(S)", count _stream]
     },
-    _mute, 0.62, true, "left", true
+    _mute, TEXT_LABEL, true, "left", true
 ] call FUNC(drawText);
 _y = _y + _rowH;
 
@@ -92,7 +92,7 @@ if (_stream isEqualTo []) exitWith {
     [
         _root, [_dx + _pad, _h * 0.4, _dw - 2 * _pad, _rowH],
         ["NOTHING ON THIS NET", "FETCHING..."] select (_pending > 0),
-        _dim, 1, true, "center"
+        _dim, TEXT_TITLE, true, "center"
     ] call FUNC(drawText);
 
     // NOTHING TO ANSWER, so a quick phrase opens a thread - which is the only
@@ -120,7 +120,7 @@ if (count _shown > _room) then {
     _shown = _shown select [count _shown - _room, _room];
     [
         _root, [_dx + _pad, _y, _dw - 2 * _pad, _rowH * 0.8],
-        format ["%1 EARLIER", count _stream - _room], _dim, 0.6, true, "center", true
+        format ["%1 EARLIER", count _stream - _room], _dim, TEXT_LABEL, true, "center", true
     ] call FUNC(drawText);
     _y = _y + _rowH * 0.8;
 };
@@ -179,13 +179,13 @@ private _myUid = getPlayerUID player;
     [
         _root, [_tx, _y, _tw, _rowH * 0.8],
         format ["%1  %2", toUpper (_msg getOrDefault ["fromCallsign", "?"]), _tags joinString "  "],
-        ([_mute, _accent] select _urgent), 0.62, true, _align, true
+        ([_mute, _accent] select _urgent), TEXT_LABEL, true, _align, true
     ] call FUNC(drawText);
 
     [
         _root, [_tx, _y, _tw, _rowH * 0.8],
         [_msg getOrDefault ["sentTime", 0]] call FUNC(clock),
-        _dim, 0.58, false, ["left", "right"] select _mine
+        _dim, TEXT_LABEL, false, ["left", "right"] select _mine
     ] call FUNC(drawText);
 
     // --- the subject, not the words ---------------------------------------
@@ -199,7 +199,7 @@ private _myUid = getPlayerUID player;
 
     [
         _root, [_tx, _y + _rowH * 0.8, _tw, _rowH],
-        _subject, ([_ink, _accent] select _urgent), 0.85, true, _align
+        _subject, ([_ink, _accent] select _urgent), TEXT_TITLE, true, _align
     ] call FUNC(drawText);
 
     _y = _y + _lineH;

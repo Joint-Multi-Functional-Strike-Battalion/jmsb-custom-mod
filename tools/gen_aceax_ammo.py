@@ -70,6 +70,8 @@ COLOURS = OrderedDict([
     ("dim", ("dim", "Dim")),
 ])
 # finish token (lowercase) -> (value key, label): the magazine body's paint
+# SPS PMAG bodies, only straight after the calibre of a PMAG class (classify)
+PMAG_BODY = {"b": ("black", "Black"), "s": ("sand", "Sand")}
 FINISHES = OrderedDict([
     ("black", ("black", "Black")),
     ("blk", ("black", "Black")),
@@ -167,8 +169,15 @@ def classify(name):
     # same word is a finish on a magazine and THE colour on a smoke grenade
     pyro = bool(PYRO.search("_".join(stem)))
     kept = []
+    prev = ""
     for t in stem:
         low = t.lower()
+        # SPS's PMAG body: _B black, _S sand, straight after the form (FA_SPS_pmag40rnd_556x45_S_...)
+        if prev == "556x45" and low in PMAG_BODY and any(x.lower().startswith("pmag") for x in stem):
+            vals["finish"] = PMAG_BODY[low]
+            prev = low
+            continue
+        prev = low
         if low in COLOURS and pyro:
             vals["colour"] = COLOURS[low]
             continue
@@ -193,9 +202,9 @@ def classify(name):
 # the runtime puts it on the row; the option panel's title keeps the variant's
 # own displayName.
 SOURCE_TOKENS = {"fa", "b", "o", "i", "f", "mcc", "rearma", "aegis", "adf", "adfrc", "tmt", "tni", "mpp",
-                 "rf", "ef", "lxws", "ace", "gx", "lot"}
+                 "rf", "ef", "lxws", "ace", "gx", "lot", "sps"}
 SOURCE_TAG = {"rf": "RF", "ef": "EF", "aegis": "Aegis", "mcc": "MCC", "rearma": "Rearma", "adf": "ADF",
-              "adfrc": "ADF", "tmt": "TMT", "tni": "TNI", "mpp": "MPP", "lxws": "WS"}
+              "adfrc": "ADF", "tmt": "TMT", "tni": "TNI", "mpp": "MPP", "lxws": "WS", "sps": "SPS"}
 # FA's own side letter, the tie-break when no mod source tells two rows apart
 SIDE_TAG = {"b": "BLUFOR", "o": "OPFOR", "i": "INDEP"}
 CALIBRE = OrderedDict([
@@ -211,7 +220,7 @@ CALIBRE = OrderedDict([
     ("12gauge", "12ga"),
 ])
 # what the round sits in - kept as the bracketed tail, in the class's own order
-FORMS = {"pmag": "PMAG", "emag": "EMAG", "stanag": "STANAG", "msbs": "MSBS", "box": "Box", "belt": "Belt",
+FORMS = {"surefire": "Surefire 60", "pmag": "PMAG", "emag": "EMAG", "stanag": "STANAG", "msbs": "MSBS", "box": "Box", "belt": "Belt",
          "usgi": "USGI", "tti": "TTI", "d60": "D60", "hk": "HK", "l5awm": "L5 AWM", "l54awm": "L5 AWM",
          "ak": "AK", "ak12": "AK-12", "svd": "SVD", "g1": "Gen 1", "icar": "ICAR", "lancer": "Lancer",
          "minimi": "Minimi", "maximi": "Maximi", "saw": "SAW", "usp": "USP", "g19": "G19", "f9": "F9",
@@ -220,13 +229,16 @@ FORMS = {"pmag": "PMAG", "emag": "EMAG", "stanag": "STANAG", "msbs": "MSBS", "bo
          "pdp": "PDP", "p320": "P320"}
 # magazine-name filler, and the MCC donor rounds its class names repeat before FA's own load
 FILLER = {"mag", "magazine", "caseless", "cased", "shell", "m855", "125otm", "123hp", "110vmax", "185fmj", "115fmj",
-          "103rrlp", "rnd", "rd", "pylonweapon", "deployable"}
+          "103rrlp", "rnd", "rd", "pylonweapon", "deployable", "p"}
 CAPACITY = re.compile(r"(?i)^(\d+)(?:rnd|rd)$")
 
 
 def split_compound(t):
-    """StanagTan / PMAGTan: a form with its finish run on."""
+    """StanagTan / PMAGTan: a form with its finish run on; SPS's pmag40rnd: a form with its capacity."""
     m = re.match(r"(?i)^(stanag|pmag|emag)(tan|black|khaki|sand)$", t)
+    if m:
+        return [m.group(1), m.group(2)]
+    m = re.match(r"(?i)^(pmag)(\d+rnd)$", t)
     return [m.group(1), m.group(2)] if m else [t]
 
 
@@ -281,11 +293,14 @@ def slug(stem_key):
 # rows beside the folded ones (user, 2026-10-06: "some grouped, some not"). Read from every addon's CfgMagazines,
 # less the FA sources whose mods left (gen_fa_tiers.py's DEAD) and the vehicle-only rounds no arsenal lists.
 ADDONS = os.path.join(REPO, "addons")
-SKIP_ADDONS = {"fa_rhs", "fa_sps", "fa_jca", "fa_jca_mk153", "fa_antidrone_rhs", "fa_antidrone_jca",
+# fa_sps is back in (user, 2026-10-21): SPS Weapons is in the load order again and its
+# PMAG 40 / Surefire 60 families need their ACEAX rows.
+SKIP_ADDONS = {"fa_rhs", "fa_jca", "fa_jca_mk153", "fa_antidrone_rhs", "fa_antidrone_jca",
                "fa_maincaliber", "fa_mediumcaliber", "fa_vehicles", "fa_missiles", "vehicle"}
 # the weapon packs that left the load order: their magazines are still named in the mission's list
 GONE_MODS = re.compile(r"(?i)^(?:FA_)?JCA_")
-TOP_CLASS = re.compile(r"(?m)^    class (\w+)\s*(?::\s*\w+)?\s*\{")
+# the parent may be a macro - EGVAR(weapons,60Rnd_545x39_Mag_F) - so anything up to the brace
+TOP_CLASS = re.compile(r"(?m)^    class (\w+)\s*(?::\s*[^{;\n]+)?\{")
 
 
 def mod_mags():

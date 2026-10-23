@@ -86,7 +86,7 @@ while {!(missionNamespace getVariable [QGVAR(ready), false])} do {
         private _elapsed = round (diag_tickTime - _t0);
         private _clock = format ["%1:%2", floor (_elapsed / 60), [str (_elapsed mod 60), "0" + str (_elapsed mod 60)] select ((_elapsed mod 60) < 10)];
         (_disp displayCtrl PAC_IDC_BS_TITLE) ctrlSetStructuredText parseText format [
-            "<t align='center' font='RobotoCondensedBold' size='1.9' color='%1'>TAC//PAC</t><br/><t align='center' size='0.9' color='%2'>I N I T I A L I S I N G   T H E   U N I T</t><br/><t align='center' size='0.8' color='%3'>%4</t>",
+            "<t align='center' font='RobotoCondensedBold' size='1.6' color='%1'>TAC//PAC</t><br/><t align='center' size='0.85' color='%2'>I N I T I A L I S I N G   T H E   U N I T</t><br/><t align='center' size='0.85' color='%3'>%4</t>",
             _inkHex, _muteHex, _dimHex, _clock
         ];
 
@@ -152,7 +152,7 @@ while {!(missionNamespace getVariable [QGVAR(ready), false])} do {
             };
             private _colour = switch (_state) do {case "done": {_muteHex}; case "run": {_inkHex}; default {_dimHex}};
             _rows pushBack format [
-                "<t size='0.9'>%1  <t color='%2'>%3  %4</t></t>",
+                "<t size='0.85'>%1  <t color='%2'>%3  %4</t></t>",
                 [_state] call _fnc_box, _colour, _n, [_x] call _fnc_esc
             ];
 
@@ -166,7 +166,7 @@ while {!(missionNamespace getVariable [QGVAR(ready), false])} do {
                 {
                     private _said = _x;
                     if (count _said > 150) then {_said = (_said select [0, 147]) + "..."};
-                    _rows pushBack format ["<t size='0.72' color='%1'>          %2</t>", [_muteHex, _dimHex] select (_state isEqualTo "done"), [_said] call _fnc_esc];
+                    _rows pushBack format ["<t size='0.7' color='%1'>          %2</t>", [_muteHex, _dimHex] select (_state isEqualTo "done"), [_said] call _fnc_esc];
                 } forEach _lines;
             };
 
@@ -202,11 +202,11 @@ while {!(missionNamespace getVariable [QGVAR(ready), false])} do {
                 _landed = _landed + ([_d2, _t2] select (_s2 in ["ok", "empty", "error", "skip"]));
                 _planned2 = _planned2 + _t2;
             } forEach _docs;
-            _docLine = format ["<t size='0.72' color='%1'>%2 of %3 documents landed</t>", _muteHex, _landed, _planned2];
+            _docLine = format ["<t size='0.7' color='%1'>%2 of %3 documents landed</t>", _muteHex, _landed, _planned2];
             private _running = _docs select {(_x # 1) isEqualTo "run"};
             if (_running isNotEqualTo []) then {
                 (_running # 0) params ["_rl", "", ["_rd", 0], ["_rt", 1], ["_rk", ""]];
-                _docLine = _docLine + format ["<t size='0.72' color='%1'>   -   reading %2%3</t>", _inkHex,
+                _docLine = _docLine + format ["<t size='0.7' color='%1'>   -   reading %2%3</t>", _inkHex,
                     [[_rk] call _fnc_esc, _rl] select (_rk isEqualTo ""),
                     ["", format ["  (%1 of %2)", _rd + 1, _rt]] select (_rt > 1)];
             };
@@ -232,10 +232,10 @@ if (!isNull _disp) then {
     _bar ctrlCommit 0.2;
     private _elapsed = round (diag_tickTime - _t0);
     (_disp displayCtrl PAC_IDC_BS_STEP) ctrlSetStructuredText parseText format [
-        "<t align='center' font='RobotoCondensedBold' size='0.95' color='%1'>READY</t>", _accentHex
+        "<t align='center' font='RobotoCondensedBold' size='0.85' color='%1'>READY</t>", _accentHex
     ];
     (_disp displayCtrl PAC_IDC_BS_TITLE) ctrlSetStructuredText parseText format [
-        "<t align='center' font='RobotoCondensedBold' size='1.9' color='%1'>TAC//PAC</t><br/><t align='center' size='0.9' color='%2'>I N I T I A L I S I N G   T H E   U N I T</t><br/><t align='center' size='0.8' color='%3'>%4:%5</t>",
+        "<t align='center' font='RobotoCondensedBold' size='1.6' color='%1'>TAC//PAC</t><br/><t align='center' size='0.85' color='%2'>I N I T I A L I S I N G   T H E   U N I T</t><br/><t align='center' size='0.85' color='%3'>%4:%5</t>",
         _inkHex, _muteHex, _dimHex, floor (_elapsed / 60), [str (_elapsed mod 60), "0" + str (_elapsed mod 60)] select ((_elapsed mod 60) < 10)
     ];
     for "_i" from 0 to 29 do {(_disp displayCtrl (PAC_IDC_BS_DOC0 + _i)) ctrlSetStructuredText parseText ""};

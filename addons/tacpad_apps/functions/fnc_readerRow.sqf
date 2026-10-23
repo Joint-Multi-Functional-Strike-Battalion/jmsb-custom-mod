@@ -41,9 +41,9 @@ if (isNull _body) exitWith {0};
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * safeZoneH;
+private _rowH = ROW_H * _scale * HOST_H;
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
+private _pad = PAD * HOST_W;
 private _y = _index * _rowH;
 
 private _rows = 3;
@@ -82,8 +82,8 @@ private _left = _pad + ([0, 4 * pixelW] select _flash);
 // as 2n-1 glyphs, and RobotoCondensedBold advances about 0.46 of its height per
 // glyph - converted through the pixel scales because the height is in Y units
 // and the width it has to become is in X units.
-private _chipSize = 0.62;
-private _chipFontH = TEXT_BASE * pixelH * pixelGrid * _scale * _chipSize;
+private _chipSize = TEXT_LABEL;
+private _chipFontH = TEXT_BASE * pixelH * pixelGrid * HOST_K * _scale * _chipSize;
 private _chipTextW = (2 * count (toArray _badge) - 1) * 0.46 * _chipFontH * pixelW / pixelH;
 private _chipPad = 3 * pixelW;
 private _chipW = _chipTextW + 4 * _chipPad;
@@ -116,7 +116,7 @@ private _type = ([_entry getOrDefault ["templateId", ""]] call EFUNC(messaging,t
 ] call EFUNC(tacpad,drawText);
 
 // The subject carries the weight - it is what the reader is actually for.
-[_body, [_left, _y + _rowH * 0.9, _w - _left - _pad, _rowH], _entry get "subject", _bodyInk, 1.05, true] call EFUNC(tacpad,drawText);
+[_body, [_left, _y + _rowH * 0.9, _w - _left - _pad, _rowH], _entry get "subject", _bodyInk, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 
 // The reply meta. The index carries no preview text, so this is the design's
 // "6 REPLIES - 3 UNREAD" line rather than an invented first line of the report.
@@ -134,7 +134,7 @@ if (_closed) then {_meta pushBack "CLOSED"};
     [_left, _y + 2 * _rowH * 0.95, _w - _left - _pad, _rowH],
     _meta joinString " - ",
     ([_mute, _accent] select (_unread > 0)),
-    0.62, true, "left", true
+    TEXT_LABEL, true, "left", true
 ] call EFUNC(tacpad,drawText);
 
 // 1px between entries. A row boundary, not a region boundary - the design

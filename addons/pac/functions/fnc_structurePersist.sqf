@@ -154,7 +154,7 @@ switch (true) do {
                 ["side", _items getOrDefault ["side", ""]],
                 ["groups", _items getOrDefault ["groups", []]],
                 // NO radioNets. "Shared radio nets" are not a thing (user,
-                // 2026-09-09): radio channels are the ACRE and TFAR plans and
+                // 2026-09-09): radio channels are the ACRE plan and the net plan, and
                 // messaging nets are mailboxes. The key is not written, so a
                 // document that still carries one loses it on the next save.
                 ["platoons", _items getOrDefault ["platoons", []]]

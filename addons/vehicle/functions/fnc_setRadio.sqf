@@ -21,7 +21,7 @@ params [
     ["_radioChannel", [], [[]]]
 ];
 
-if (!EGVAR(Patches,usesACRE) && !EGVAR(Patches,usesTFAR)) exitWith {};
+if (!EGVAR(Patches,usesACRE)) exitWith {};
 if (!EGVAR(Settings,enableRadios)) exitWith {};
 if (!EGVAR(Settings,enableVehicleRadios)) exitWith {};
 if (isNull _vehicle) exitWith {};
@@ -117,10 +117,3 @@ if (EGVAR(patches,usesACRE)) exitWith {
     } forEach _racks;
 };
 
-
-// TFAR
-if (EGVAR(patches,usesTFAR)) exitWith {
-    /** TODO: Code goes here */
-};
-
-SHOW_CHAT_ERROR("VehicleRadio","Fatal");

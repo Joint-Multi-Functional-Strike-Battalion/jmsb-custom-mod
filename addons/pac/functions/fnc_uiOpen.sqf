@@ -9,6 +9,11 @@
         admin pages; a player's own record, the roster and PAC requests are
         on the tacpad's PAC tile (FUNC(app)).
 
+        INSIDE THE TABLET when the tacpad's host is a device that is open
+        (user, 2026-10-20: "all apps need to be inside the tablet") - the same
+        controls, drawn on the device dialog as its open app (FUNC(uiHost)).
+        Everywhere else, the dialog.
+
     Parameters:
         0: Page to open on <STRING> (optional, default "dashboard")
         1: Page arguments <HASHMAP> (optional)
@@ -29,5 +34,7 @@ GVAR(uiHistory) = [];
 GVAR(uiPage) = _page;
 GVAR(uiArgs) = _args;
 GVAR(uiData) = createHashMap;
+
+if (HOST_DEVICE && {!isNull (HOST_DISPLAY)}) exitWith {[] call FUNC(uiHost)};
 
 createDialog QGVAR(pac)

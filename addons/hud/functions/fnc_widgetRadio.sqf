@@ -1,12 +1,15 @@
 #include "script_component.hpp"
 /*
  * Author: JMSB
- * RADIO: the set in your hand and the channel it is on.
+ * RADIO: the active voice net and what is happening on it - game voice (VON)
+ * through jmfsb_voice's API (docs/DESIGN_VOICE.md). Never a frequency.
  *
- * IT DOES NOT IMPLEMENT A RADIO. EFUNC(tacpad_apps,radioState) asks ACRE or TFAR,
- * whichever the mission is running, and answers a string - so this reads whatever
- * the reader panel reads and cannot disagree with it. With neither mod loaded
- * there is no set and the tile says so, rather than inventing a channel.
+ * IT DOES NOT IMPLEMENT A RADIO. It reads jmfsb_voice_fnc_netState: the active
+ * net's name, TX while the player transmits on it (he is in the API's talking
+ * list), NO ROUTE when the net is out of reach (never hidden), MUTED, the ear
+ * the net's beeps pan to, and who is talking on it now. A call's state rides
+ * on the second line - RINGING, CALL and its people. Without the voice addon
+ * there is no net, and the tile says so rather than inventing one.
  *
  * THE JAMMING IS ON IT because a channel is only worth reading next to whether
  * anyone will hear it. That is the one number from the other tile that belongs
@@ -23,6 +26,10 @@
  *
  * Public: No
  */
+
+// A call's states, as jmfsb_voice_fnc_calls names them.
+#define WIDGET_CALL_RINGING "ringing"
+#define WIDGET_CALL_LIVE "live"
 
 params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
@@ -47,16 +54,59 @@ private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 private _amber = [0.85, 0.65, 0.15, 1];
 
+// THE NET, from the voice API: [netId, name, kind, active, muted, ear,
+// reachable, talkers] per net the player is on; the active one is shown.
 private _channel = "";
-if (!isNil QEFUNC(tacpad_apps,radioState)) then {
-    _channel = [] call EFUNC(tacpad_apps,radioState);
+private _alternate = "";
+private _link = "";
+private _main = _ink;
+private _linkColour = _mute;
+if (!isNil QEFUNC(voice,netState)) then {
+    private _nets = [] call EFUNC(voice,netState);
+    private _i = _nets findIf {_x param [3, false]};
+    if (_i >= 0) then {
+        (_nets select _i) params ["_netId", ["_name", "", [""]], "", "", ["_muted", false, [false]], ["_ear", "", [""]], ["_reach", false, [false]], ["_talkers", [], [[]]]];
+        _channel = toUpper _name;
+        private _me = call CBA_fnc_currentUnit;
+        // His own transmission: the voice API's talking list if it carries
+        // him, else what the device layer kept off the voice talk event.
+        private _tx = _netId isNotEqualTo "" && {(missionNamespace getVariable [QEGVAR(devices,talkSelf), ""]) isEqualTo _netId
+            || {(([] call EFUNC(voice,talking)) findIf {(_x param [0, objNull]) isEqualTo _me && {(_x param [1, ""]) isEqualTo _netId}}) >= 0}};
+        if (_tx) then {
+            _channel = "TX  " + _channel;
+            _main = _accent;
+        };
+        if (_muted) then {_main = _dim};
+        _link = switch (true) do {
+            case (!_reach): {"NO ROUTE"};
+            case (_muted): {"MUTED"};
+            default {["", "EAR " + _ear] select (_ear isNotEqualTo "")};
+        };
+        if (!_reach) then {_linkColour = _accent};
+        private _who = (_talkers apply {_x param [0, objNull]}) select {!isNull _x && _x isNotEqualTo _me};
+        if (_who isNotEqualTo []) then {_alternate = toUpper ((_who apply {name _x}) joinString ", ")};
+    };
+    // A call outranks who is talking on the second line.
+    private _calls = [] call EFUNC(voice,calls);
+    private _ring = _calls findIf {(_x param [1, ""]) isEqualTo WIDGET_CALL_RINGING};
+    private _live = _calls findIf {(_x param [1, ""]) isEqualTo WIDGET_CALL_LIVE};
+    if (_ring >= 0) then {_alternate = "CALL RINGING"};
+    if (_ring < 0 && _live >= 0) then {_alternate = format ["CALL %1 ON", count ((_calls select _live) param [2, []])]};
 };
 
 if (_channel isEqualTo "") exitWith {
-    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], "NO SET IN HAND", _dim, (0.85 * _k), true] call EFUNC(tacpad,drawText);
+    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], (switch (true) do {case (isNil QEFUNC(voice,netState)): {"NO VOICE ADDON"}; case !(missionNamespace getVariable [QEGVAR(voice,active), true]): {format ["%1: NO NET", toUpper (missionNamespace getVariable [QEGVAR(voice,system), ""])]}; default {"NO VOICE NET"}}), _dim, (0.85 * _k), true] call EFUNC(tacpad,drawText);
 };
 
-[_ctrl, [_pad, _y, _w - 2 * _pad, _rowH * 1.4], _channel, _ink, (1.3 * _k), true] call EFUNC(tacpad,drawText);
+// The link reading takes the right quarter of the line; the net the rest.
+private _nameW = [_w - 2 * _pad, _w * 0.75 - _pad] select (_link isNotEqualTo "");
+[_ctrl, [_pad, _y, _nameW, _rowH * 1.4], _channel, _main, (1.3 * _k), true] call EFUNC(tacpad,drawText);
+if (_link isNotEqualTo "") then {
+    [_ctrl, [_w * 0.75, _y, _w * 0.25 - _pad, _rowH * 1.4], _link, _linkColour, (0.8 * _k), true, "right"] call EFUNC(tacpad,drawText);
+};
+if (_alternate isNotEqualTo "") then {
+    [_ctrl, [_pad, _y + _rowH * 1.6, _w * 0.6, _rowH], _alternate, _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+};
 
 private _sweep = [] call FUNC(sweep);
 if (_sweep isEqualTo []) exitWith {};
@@ -70,8 +120,11 @@ private _colour = switch (true) do {
     default {_ink};
 };
 
-[_ctrl, [_pad, _y + _rowH * 1.6, _w * 0.5, _rowH], "JAM", _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+// JAM sits right; on its own when there is no alternate net on the left.
+if (_alternate isEqualTo "") then {
+    [_ctrl, [_pad, _y + _rowH * 1.6, _w * 0.5, _rowH], "JAM", _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+};
 [
     _ctrl, [_w * 0.5, _y + _rowH * 1.6, _w * 0.5 - _pad, _rowH],
-    format ["%1%2", _pct, "%"], _colour, (0.9 * _k), true, "right"
+    format ["%1%2%3", ["JAM ", ""] select (_alternate isEqualTo ""), _pct, "%"], _colour, (0.9 * _k), true, "right"
 ] call EFUNC(tacpad,drawText);

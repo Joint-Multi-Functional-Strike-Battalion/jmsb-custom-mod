@@ -53,12 +53,12 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
 private _h = _pos # 3;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
@@ -227,7 +227,7 @@ private _aceCol = _cols findIf {(_x # 0) isEqualTo "ACE"};
     private _next = (_cols param [_forEachIndex + 1, ["", 1]]) # 1;
     [
         _body, [_pad + _at * _tw, 0, (_next - _at) * _tw - _pad, _rowH],
-        _label, _mute, 0.65, true, _align, true
+        _label, _mute, TEXT_BODY, true, _align, true
     ] call EFUNC(tacpad,drawText);
 } forEach _cols;
 
@@ -247,7 +247,7 @@ private _fnc_cell = {
 // A platoon with everything opened is taller than the window; rows past the
 // line are counted rather than drawn over the buttons, and the count replaces
 // the hint in the foot.
-private _footH = ([0.8] call EFUNC(tacpad,textH)) + 2 * _padY;
+private _footH = ([TEXT_TITLE] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _footY = _h - _footH - _padY;
 private _limitY = _footY - _padY;
 
@@ -274,16 +274,16 @@ private _hidden = 0;
 
         [
             _body, [_pad, _y, _tw * 0.4 - _pad, _rowH],
-            format ["%1  %2", ["+", "-"] select _open, groupId _grp], _ink, 0.9, true
+            format ["%1  %2", ["+", "-"] select _open, groupId _grp], _ink, TEXT_TITLE, true
         ] call EFUNC(tacpad,drawText);
         [
             _body, [_pad + _tw * 0.4, _y, _tw * 0.3 - _pad, _rowH],
-            _gSummary, _mute, 0.65, true
+            _gSummary, _mute, TEXT_BODY, true
         ] call EFUNC(tacpad,drawText);
         if (_gFlags isNotEqualTo "") then {
             [
                 _body, [_tw * 0.7, _y, _tw * 0.3 - _pad, _rowH],
-                _gFlags, _accent, 0.7, true, "right"
+                _gFlags, _accent, TEXT_BODY, true, "right"
             ] call EFUNC(tacpad,drawText);
         };
 
@@ -352,8 +352,8 @@ private _hidden = 0;
 
         private _self = _unit isEqualTo player;
 
-        [0, format ["%1 %2", [rank _unit] call EFUNC(tacpad,rankShort), name _unit], _rowInk, _y, 0.9] call _fnc_cell;
-        [1, [_unit] call EFUNC(tacpad,roleShort), ([_mute, _ground] select (_state == "out")), _y, 0.7] call _fnc_cell;
+        [0, format ["%1 %2", [rank _unit] call EFUNC(tacpad,rankShort), name _unit], _rowInk, _y, TEXT_TITLE] call _fnc_cell;
+        [1, [_unit] call EFUNC(tacpad,roleShort), ([_mute, _ground] select (_state == "out")), _y, TEXT_BODY] call _fnc_cell;
         // SKILLS, EACH IN ITS OWN COLOUR - medical green, leadership yellow,
         // the rest as the unit's skills config says (user, 2026-09-05). Drawn
         // one code at a time, stepping by the measured width, stopping at the
@@ -366,10 +366,10 @@ private _hidden = 0;
             _x params ["_ab", "_sid"];
             if (_skillX >= _skillEnd) exitWith {};
             private _c = if (_state == "out" || {isNil "jmfsb_pac_fnc_skillColor"}) then {_skillInk} else {[_sid, _skillInk] call jmfsb_pac_fnc_skillColor};
-            private _t = [_body, [_skillX, _y, _skillEnd - _skillX, _rowH], _ab, _c, 0.62, false] call EFUNC(tacpad,drawText);
+            private _t = [_body, [_skillX, _y, _skillEnd - _skillX, _rowH], _ab, _c, TEXT_LABEL, false] call EFUNC(tacpad,drawText);
             _skillX = _skillX + (ctrlTextWidth _t) + _pad * 0.5;
         } forEach (_skillsOf getOrDefault [getPlayerUID _unit, []]);
-        [3, _status, _statusInk, _y, 0.85] call _fnc_cell;
+        [3, _status, _statusInk, _y, TEXT_TITLE] call _fnc_cell;
 
         // ACE, three letters each with the swatch that man last reported. Drawn
         // rather than written out, because three colours read in one glance and
@@ -403,10 +403,10 @@ private _hidden = 0;
 
             private _cx = _aceX + _forEachIndex * (_tw * 0.05);
             [_body, [_cx, _y + (_rowH - _swatchH) * 0.5, _swatchH * pixelW / pixelH, _swatchH], _colour] call EFUNC(tacpad,drawFill);
-            [_body, [_cx + _swatchH * pixelW / pixelH + _pad * 0.4, _y, _tw * 0.04, _rowH], _x, _rowInk, 0.62, true] call EFUNC(tacpad,drawText);
+            [_body, [_cx + _swatchH * pixelW / pixelH + _pad * 0.4, _y, _tw * 0.04, _rowH], _x, _rowInk, TEXT_LABEL, true] call EFUNC(tacpad,drawText);
         } forEach ["A", "C", "E"];
 
-        [5, [mapGridPosition _unit, "-"] select (!alive _unit), _rowInk, _y, 0.85] call _fnc_cell;
+        [5, [mapGridPosition _unit, "-"] select (!alive _unit), _rowInk, _y, TEXT_TITLE] call _fnc_cell;
 
         // Column 6 - RADIO. It was 5, the GRID column, so the channel was drawn
         // through the grid ("text seems to be overlapping", user, 2026-09-05).
@@ -415,14 +415,14 @@ private _hidden = 0;
             6,
             [_radio, "NO SET"] select (_radio == ""),
             ([_mute, _ground] select (_state == "out")),
-            _y, 0.72
+            _y, TEXT_BODY
         ] call _fnc_cell;
 
-        [7, [format ["%1 M", round (player distance _unit)], "-"] select _self, ([_mute, _ground] select (_state == "out")), _y, 0.85] call _fnc_cell;
+        [7, [format ["%1 M", round (player distance _unit)], "-"] select _self, ([_mute, _ground] select (_state == "out")), _y, TEXT_TITLE] call _fnc_cell;
 
         [_body, [0, _y + _rowH - RULE_THIN * pixelH, _tw, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
-        // Pressing a man SELECTS him - for MESSAGE and TUNE in the foot. It used
+        // Pressing a man SELECTS him - for MESSAGE and CALL in the foot. It used
         // to try to centre the map on him as well, which never worked under the
         // app frame and was never wanted (user, 2026-09-05: "does not centre
         // the map, had never planned for it to centre, so remove").
@@ -447,7 +447,7 @@ private _hidden = 0;
 if (!isNull _worst) then {
     private _btnW = _tw * 0.32;
     [_body, [_pad, _footY, _btnW, _footH], _accent] call EFUNC(tacpad,drawFill);
-    [_body, [_pad * 2, _footY, _btnW - 2 * _pad, _footH], format ["FILE CASEVAC FOR %1", name _worst], _ground, 0.72, true] call EFUNC(tacpad,drawText);
+    [_body, [_pad * 2, _footY, _btnW - 2 * _pad, _footH], format ["FILE CASEVAC FOR %1", name _worst], _ground, TEXT_BODY, true] call EFUNC(tacpad,drawText);
 
     // It opens the CASEVAC card with the pick-up site set to where the casualty
     // is - the one place in the suite a location is filled in for you, because
@@ -477,7 +477,7 @@ if (!isNull _selected && {_selected in _units} && {isPlayer _selected}) then {
     private _msgX = _tw * 0.34;
 
     [_body, [_msgX, _footY, _msgW, _footH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-    [_body, [_msgX + _pad, _footY, _msgW - 2 * _pad, _footH], format ["MESSAGE %1", name _selected], _ink, 0.72, true] call EFUNC(tacpad,drawText);
+    [_body, [_msgX + _pad, _footY, _msgW - 2 * _pad, _footH], format ["MESSAGE %1", name _selected], _ink, TEXT_BODY, true] call EFUNC(tacpad,drawText);
 
     [_body, [_msgX, _footY, _msgW, _footH], {
         private _to = GVAR(squadSelected);
@@ -486,31 +486,22 @@ if (!isNull _selected && {_selected in _units} && {isPlayer _selected}) then {
         ["", "", false, format ["P:%1", getPlayerUID _to]] call EFUNC(tacpad,composeOpen);
     }] call EFUNC(tacpad,drawHit);
 
-    // TUNE TO HIM - the screenshot's ask. The channel on his roster row is
-    // what his own set published; this dials YOURS to it through
-    // FUNC(radioTune). Not drawn for a man whose set has published nothing.
-    private _raw = _selected getVariable [QGVAR(radioRaw), []];
-    if (_raw isNotEqualTo []) then {
-        private _tuneX = _msgX + _msgW + _pad;
-        private _tuneW = _tw * 0.11;
+    // CALL HIM (user, 2026-10-21: "change tune to a call function"). Rings him
+    // through FUNC(radioDial) - a new call, or into the live one you own - so
+    // the roster and the RADIO app cannot disagree about what a press rings.
+    // Voice says why when it cannot (no route, busy, not the owner).
+    if (!isNil QEFUNC(voice,call)) then {
+        private _callX = _msgX + _msgW + _pad;
+        private _callW = _tw * 0.11;
 
-        [_body, [_tuneX, _footY, _tuneW, _footH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-        [_body, [_tuneX + _pad, _footY, _tuneW - 2 * _pad, _footH], "TUNE", _ink, 0.72, true, "center"] call EFUNC(tacpad,drawText);
+        [_body, [_callX, _footY, _callW, _footH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
+        [_body, [_callX + _pad, _footY, _callW - 2 * _pad, _footH], "CALL", _ink, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
 
-        [_body, [_tuneX, _footY, _tuneW, _footH], {
+        [_body, [_callX, _footY, _callW, _footH], {
             private _to = GVAR(squadSelected);
             if (isNull _to) exitWith {};
 
-            private _ok = [_to] call FUNC(radioTune);
-            [
-                "RADIO",
-                [
-                    format ["Could not tune - no matching set for %1.", name _to],
-                    format ["Tuned to %1 - %2.", _to getVariable [QGVAR(radio), "their channel"], name _to]
-                ] select _ok,
-                ["high", "normal"] select _ok
-            ] call EFUNC(messaging,notify);
-
+            [[_to]] call FUNC(radioDial);
             {["squad"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
         }] call EFUNC(tacpad,drawHit);
     };
@@ -525,7 +516,7 @@ if (_hidden > 0) then {
 };
 [
     _body, [_tw * 0.64, _footY, _tw * 0.36 - _pad, _footH],
-    _hint, _mute, 0.6, true, "right", true
+    _hint, _mute, TEXT_LABEL, true, "right", true
 ] call EFUNC(tacpad,drawText);
 
 // ------------------------------------------------------------- the rail -----
@@ -533,10 +524,10 @@ private _rx = _tw + RULE_THICK * pixelW + _pad;
 private _rw = _railW - 2 * _pad;
 private _ry = 0;
 
-[_body, [_rx, _ry, _rw * 0.5, _rowH], ["STRENGTH", "PLATOON"] select _platoon, _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_rx, _ry, _rw * 0.5, _rowH], ["STRENGTH", "PLATOON"] select _platoon, _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 [
     _body, [_rx + _rw * 0.5, _ry, _rw * 0.5, _rowH],
-    format ["%1 EFFECTIVE / %2", _alive - _wia - _uncon, count _units], _mute, 0.6, true, "right", true
+    format ["%1 EFFECTIVE / %2", _alive - _wia - _uncon, count _units], _mute, TEXT_LABEL, true, "right", true
 ] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH;
 [_body, [_rx, _ry, _rw, RULE_THICK * pixelH], _ink] call EFUNC(tacpad,drawFill);
@@ -558,8 +549,8 @@ private _statH = _rowH * 2.4;
     private _sy = _ry + floor (_forEachIndex / 2) * _statH;
 
     [_body, [_sx, _sy, _statW - _pad, _statH - _padY], _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
-    [_body, [_sx + _pad, _sy + _padY, _statW - 2 * _pad, _rowH * 0.6], _label, _mute, 0.6, true, "left", true] call EFUNC(tacpad,drawText);
-    [_body, [_sx + _pad, _sy + _rowH * 0.95, _statW - 2 * _pad, _rowH * 1.3], ([str _value, _value] select (_value isEqualType "")), ([_ink, _accent] select _hot), 1.4, true] call EFUNC(tacpad,drawText);
+    [_body, [_sx + _pad, _sy + _padY, _statW - 2 * _pad, _rowH * 0.6], _label, _mute, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_sx + _pad, _sy + _rowH * 0.95, _statW - 2 * _pad, _rowH * 1.3], ([str _value, _value] select (_value isEqualType "")), ([_ink, _accent] select _hot), TEXT_DISPLAY, true] call EFUNC(tacpad,drawText);
 } forEach [
     ["WIA", _wia, _wia > 0],
     ["UNRESPONSIVE", _uncon, _uncon > 0],
@@ -584,31 +575,31 @@ private _farDist = 0;
     if (_d > _farDist) then {_farDist = _d; _far = _x};
 } forEach _units;
 
-[_body, [_rx, _ry, _rw, _rowH], "DISPERSION", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_rx, _ry, _rw, _rowH], "DISPERSION", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH;
 [
     _body, [_rx, _ry, _rw, _rowH],
     if (isNull _far) then {"-"} else {format ["WIDEST %1 M - %2", round _farDist, name _far]},
-    _ink, 0.78, false
+    _ink, TEXT_TITLE, false
 ] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH + _padY;
 [_body, [_rx, _ry, _rw, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 _ry = _ry + _padY;
 
 // ------------------------------------------------------- my ACE report ------
-[_body, [_rx, _ry, _rw * 0.6, _rowH], "MY ACE REPORT", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
-[_body, [_rx + _rw * 0.6, _ry, _rw * 0.4, _rowH], [player] call EFUNC(tacpad,roleShort), _mute, 0.6, true, "right", true] call EFUNC(tacpad,drawText);
+[_body, [_rx, _ry, _rw * 0.6, _rowH], "MY ACE REPORT", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_rx + _rw * 0.6, _ry, _rw * 0.4, _rowH], [player] call EFUNC(tacpad,roleShort), _mute, TEXT_LABEL, true, "right", true] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH;
 
 private _draft = GVAR(aceDraft);
-private _segH = ([0.62] call EFUNC(tacpad,textH)) + 1.2 * _padY;
+private _segH = ([TEXT_LABEL] call EFUNC(tacpad,textH)) + 1.2 * _padY;
 
 {
     // _aceLine, NOT _line. The theme's divider colour is called _line in every
     // function in this suite, and naming the ACE line index the same thing
     // handed drawFrame the number 0 where a colour goes.
     _x params ["_aceLine", "_label", "_options"];
-    [_body, [_rx, _ry, _rw, _rowH * 0.8], _label, _mute, 0.6, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_rx, _ry, _rw, _rowH * 0.8], _label, _mute, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
     _ry = _ry + _rowH * 0.8;
 
     private _segW = _rw / 4;
@@ -624,7 +615,7 @@ private _segH = ([0.62] call EFUNC(tacpad,textH)) + 1.2 * _padY;
             [_body, [_sx, _ry, _segW - _pad * 0.5, _segH], _dim, RULE_THIN] call EFUNC(tacpad,drawFrame);
             [
                 _body, [_sx + _pad * 0.6, _ry, _segW - _pad * 1.2, _segH],
-                "KIA - AUTO", _dim, 0.55, true
+                "KIA - AUTO", _dim, TEXT_LABEL, true
             ] call EFUNC(tacpad,drawText);
             continue;
         };
@@ -639,7 +630,7 @@ private _segH = ([0.62] call EFUNC(tacpad,textH)) + 1.2 * _padY;
         [_body, [_sx + _pad * 0.6, _ry + (_segH - _dot) * 0.5, _dot * pixelW / pixelH, _dot], [HEALTH_OK, HEALTH_WIA, [0.85, 0.20, 0.10, 1], HEALTH_KIA] select _forEachIndex] call EFUNC(tacpad,drawFill);
         [
             _body, [_sx + _pad * 1.2 + _dot * pixelW / pixelH, _ry, _segW - _dot - _pad * 2, _segH],
-            _x, ([_ink, _ground] select _on), 0.58, true
+            _x, ([_ink, _ground] select _on), TEXT_LABEL, true
         ] call EFUNC(tacpad,drawText);
 
         private _hit = [_body, [_sx, _ry, _segW - _pad * 0.5, _segH], {

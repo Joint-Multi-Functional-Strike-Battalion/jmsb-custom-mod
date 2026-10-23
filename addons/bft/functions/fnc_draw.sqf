@@ -183,6 +183,34 @@ if (GVAR(memberMarkers) > 0) then {
     };
 };
 
+// WHO IS TALKING, for the member rings - read here, on the slow tick, so the
+// per-frame draw only looks it up. Game voice (jmfsb_voice_fnc_talking) names
+// every man the local player hears and the net; a net of kind "direct" is
+// direct voice, any other a radio net. The local player's own speech is the
+// engine's getPlayerChannel (the Direct channel = direct voice). Radio wins
+// over direct. No jmfsb_voice, or the rings off: an empty table, every man
+// silent.
+// KEYED BY hashValue, NOT BY THE UNIT. An object cannot be a hashmap key: every
+// lookup threw "Type Object" - over five thousand errors in one session's RPT
+// (2026-10-20), from the map draw and the walking view. Each entry is
+// [unit, state] so a reader that walks the table still has the man.
+GVAR(memberVoice) = createHashMap;
+if (GVAR(memberVoiceRings) && {!isNil QEFUNC(voice,talking)}) then {
+    private _kinds = createHashMap;
+    {_kinds set [_x param [0, ""], _x param [2, ""]]} forEach ([ACE_player] call EFUNC(voice,nets));
+    {
+        _x params [["_unit", objNull, [objNull]], ["_net", "", [""]]];
+        if (isNull _unit) then {continue};
+        private _state = [VOICE_RADIO, VOICE_DIRECT] select ((_kinds getOrDefault [_net, ""]) isEqualTo VOICE_KIND_DIRECT);
+        private _had = (GVAR(memberVoice) getOrDefault [hashValue _unit, [objNull, VOICE_NONE]]) select 1;
+        GVAR(memberVoice) set [hashValue _unit, [_unit, _state max _had]];
+    } forEach ([] call EFUNC(voice,talking));
+    private _own = getPlayerChannel ACE_player;
+    if (_own >= 0) then {
+        GVAR(memberVoice) set [hashValue ACE_player, [ACE_player, [VOICE_RADIO, VOICE_DIRECT] select (_own isEqualTo VON_CHANNEL_DIRECT)]];
+    };
+};
+
 // Fewer marks than the last pass leaves orphans under the higher index
 // names - the delete-first at creation only ever covers names this pass
 // reuses. Swept every pass; this also closes the latent leak when groups

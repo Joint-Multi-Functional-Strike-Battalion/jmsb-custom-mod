@@ -16,10 +16,9 @@
 params [["_text", "", [""]], ["_bad", false, [false]]];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
-private _c = _display displayCtrl PAC_IDC_HINT;
+private _c = [PAC_IDC_HINT] call FUNC(uiCtrl);
 if (_text isEqualTo "") exitWith {_c ctrlSetStructuredText parseText ""};
 _c ctrlSetStructuredText parseText format [
     "<t color='%1'>%2</t>", ["#93cf72", "#e4574a"] select _bad, [_text] call FUNC(uiEsc)

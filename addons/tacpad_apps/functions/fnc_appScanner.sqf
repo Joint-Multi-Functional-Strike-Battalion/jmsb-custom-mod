@@ -40,21 +40,21 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
 // A DENIED SCANNER IS A STATE, NOT AN EMPTY PAGE. A mission can take the
 // receiver off a man, and a page of dashes does not say that anybody did.
 if !([player] call EFUNC(hacking,hasScanner)) exitWith {
-    [_body, [_pad, _padY, _w - 2 * _pad, _rowH], "NO RECEIVER", _accent, 1.2, true] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _padY, _w - 2 * _pad, _rowH], "NO RECEIVER", _accent, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
     [
         _body, [_pad, _padY + _rowH * 1.2, _w - 2 * _pad, _rowH],
-        "This unit is not carrying a spectrum receiver.", _mute, 0.8
+        "This unit is not carrying a spectrum receiver.", _mute, TEXT_TITLE
     ] call EFUNC(tacpad,drawText);
 };
 
@@ -76,7 +76,7 @@ private _worst = _droneState max _jamState;
 private _band = ["SPECTRUM CLEAR", "SPECTRUM DEGRADED", "SPECTRUM CONTESTED"] select _worst;
 
 private _heroH = _rowH * 2.2;
-[_body, [_pad, _padY, _w - 2 * _pad, _heroH * 0.7], _band, (_states select _worst), 1.9, true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _padY, _w - 2 * _pad, _heroH * 0.7], _band, (_states select _worst), TEXT_DISPLAY, true] call EFUNC(tacpad,drawText);
 // The sub-line was your channel - radio information, which is the RADIO
 // app's. The sweep page speaks spectrum only now.
 
@@ -112,8 +112,8 @@ _rows pushBack ["JAMMING", ["CLEAR", format ["%1%2", round (_jam * 100), "%"]] s
     _x params ["_label", "_value", "_colour"];
     private _ry = _y + _forEachIndex * _rowH;
 
-    [_body, [_pad, _ry, _w * 0.34, _rowH], _label, _mute, 0.62, true, "left", true] call EFUNC(tacpad,drawText);
-    [_body, [_w * 0.36, _ry, _w * 0.64 - _pad, _rowH], _value, _colour, 0.85, true, "right"] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _ry, _w * 0.34, _rowH], _label, _mute, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_w * 0.36, _ry, _w * 0.64 - _pad, _rowH], _value, _colour, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
     [_body, [_pad, _ry + _rowH - RULE_THIN * pixelH, _w - 2 * _pad, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 } forEach _rows;
 
@@ -130,23 +130,23 @@ _y = _y + (count _rows) * _rowH + _padY;
 _y = _y + _padY;
 [_body, [_pad, _y, _w - 2 * _pad, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 _y = _y + _padY;
-[_body, [_pad, _y, _w - 2 * _pad, _rowH], "RECENT ALERTS", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w - 2 * _pad, _rowH], "RECENT ALERTS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 _y = _y + _rowH;
 
 private _alerts = (missionNamespace getVariable [QEGVAR(common,alerts), []]) select {(_x param [4, 0]) > CBA_missionTime};
 
 if (_alerts isEqualTo []) then {
-    [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NOTHING IN THE LAST FEW MINUTES", _dim, 0.8] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NOTHING IN THE LAST FEW MINUTES", _dim, TEXT_TITLE] call EFUNC(tacpad,drawText);
 } else {
     {
         _x params ["_src", "_txt", "_grid", ["_sev", 0]];
         private _ay = _y + _forEachIndex * _rowH;
 
-        [_body, [_pad, _ay, _w * 0.2, _rowH], toUpper _src, (_states select (_sev min 2)), 0.62, true, "left", true] call EFUNC(tacpad,drawText);
+        [_body, [_pad, _ay, _w * 0.2, _rowH], toUpper _src, (_states select (_sev min 2)), TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
         [
             _body, [_w * 0.22, _ay, _w * 0.78 - _pad, _rowH],
             [_txt, format ["%1 - %2", _txt, _grid]] select (_grid isNotEqualTo ""),
-            _ink, 0.75
+            _ink, TEXT_BODY
         ] call EFUNC(tacpad,drawText);
         if (_forEachIndex >= 3) exitWith {};
     } forEach _alerts;

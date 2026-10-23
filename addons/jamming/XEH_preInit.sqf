@@ -39,6 +39,12 @@ GVAR(detectorRange) = 1000;
 // script can flip back on, not a permanent fixture.
 GVAR(jamHudEnabled) = false;
 
+// The zones' noise at the core in the RF link budget (FUNC(rfNoise)), until
+// the module says otherwise; and the per-frame memo that keeps the hook cheap.
+GVAR(rfNoiseDbm) = JAM_RF_CORE_DBM;
+GVAR(rfNoiseFrame) = -1;
+GVAR(rfNoiseMemo) = createHashMap;
+
 // The uplink's own field. Small on purpose: it is the last hundred metres
 // of the assault on it, not a second sphere.
 GVAR(gpsUplinkRadius) = 400;

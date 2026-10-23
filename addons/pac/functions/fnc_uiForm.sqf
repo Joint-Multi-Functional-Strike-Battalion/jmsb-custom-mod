@@ -36,8 +36,7 @@ params [
 ];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {_y};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {_y};
 
 private _cx = _left + _labelW + PAC_UI_GAP;
 private _cw = _w - _labelW - PAC_UI_GAP;
@@ -57,12 +56,12 @@ GVAR(uiFilling) = true;
         _h = PAC_UI_ROW * _lines;
     };
 
-    private _lab = _display displayCtrl PAC_IDC_FORM_LABEL(_n);
+    private _lab = [PAC_IDC_FORM_LABEL(_n)] call FUNC(uiCtrl);
     [_lab, _left, _y, _labelW, PAC_UI_ROW] call FUNC(uiPlace);
     _lab ctrlSetText _label;
 
-    private _edit = _display displayCtrl PAC_IDC_FORM_EDIT(_n);
-    private _combo = _display displayCtrl PAC_IDC_FORM_COMBO(_n);
+    private _edit = [PAC_IDC_FORM_EDIT(_n)] call FUNC(uiCtrl);
+    private _combo = [PAC_IDC_FORM_COMBO(_n)] call FUNC(uiCtrl);
     _edit setVariable [QGVAR(onChange), nil];
     _combo setVariable [QGVAR(onChange), nil];
 

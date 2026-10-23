@@ -44,20 +44,19 @@ params [
 ];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {controlNull};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {controlNull};
 
-private _head = _display displayCtrl (_idc + 1);
+private _head = [_idc + 1] call FUNC(uiCtrl);
 if (_heading isNotEqualTo "") then {
     [_head, _left, _y, _w, 0.026] call FUNC(uiPlace);
-    _head ctrlSetStructuredText parseText format ["<t color='#93cf72' size='0.75'>%1</t>", [toUpper _heading] call FUNC(uiEsc)];
+    _head ctrlSetStructuredText parseText format ["<t color='#93cf72' size='0.7'>%1</t>", [toUpper _heading] call FUNC(uiEsc)];
     _y = _y + 0.028;
     _h = _h - 0.028;
 } else {
     _head ctrlShow false;
 };
 
-private _list = _display displayCtrl _idc;
+private _list = [_idc] call FUNC(uiCtrl);
 [_list, _left, _y, _w, _h max 0.03] call FUNC(uiPlace);
 
 GVAR(uiFilling) = true;

@@ -11,7 +11,6 @@
  *
  * Example:
  * ["ACRE_PRC343"] call ymf_fnc_getRadioBase
- * ["TFAR_anprc152"] call ymf_fnc_getRadioBase
  *
  */
 
@@ -22,11 +21,6 @@ if (!EGVAR(Settings,enableRadios)) exitWith {_radio};
 
 if (EGVAR(patches,usesACRE)) exitWith {[_radio] call acre_api_fnc_getBaseRadio};
 
-if (EGVAR(patches,usesTFAR)) exitWith {
-    private _radioBase = getText (configFile >> "CfgWeapons" >> _radio >> "tf_parent");
-    if (_radioBase isEqualTo "") exitWith {_radio};
-    _radioBase;
-};
-
-SHOW_CHAT_ERROR("RadioGetBase","Fatal");
-_radio
+// TFAR: an instance resolves to its arsenal class (tf_parent)
+private _radioBase = getText (configFile >> "CfgWeapons" >> _radio >> "tf_parent");
+[_radioBase, _radio] select (_radioBase isEqualTo "")

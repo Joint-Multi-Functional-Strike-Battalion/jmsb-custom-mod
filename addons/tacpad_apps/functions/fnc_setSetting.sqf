@@ -3,10 +3,12 @@
  * Author: JMSB
  * Changes one CBA setting from inside the game, then puts the change on screen.
  *
- * It writes the value straight into missionNamespace so it takes effect now,
- * and hands it to CBA's own setter as well so it survives the mission - CBA's
- * setter is used through an isNil guard because it is not part of the API CBA
- * documents, and a settings screen that throws is worse than one that forgets.
+ * THROUGH CBA'S OWN SETTER (CBA_settings_fnc_set, the client source, stored),
+ * so a change persists the way an Addon Options change does and CBA itself
+ * puts the value into missionNamespace and runs the setting's change script.
+ * A setting the server or mission forces is refused (FUNC(settingLocked)):
+ * writing it here would only be put straight back. Only without CBA's settings
+ * is the value written to missionNamespace by hand.
  *
  * Setting several at once is what `_apply` is for: writing a custom colour and
  * then switching the scheme to custom is one change from the player's side, and
@@ -31,12 +33,16 @@ params [["_name", "", [""]], ["_value", nil], ["_apply", true, [false]]];
 
 if (_name == "" || {isNil "_value"}) exitWith {};
 
-missionNamespace setVariable [_name, _value];
+if ([_name] call FUNC(settingLocked)) exitWith {
+    WARNING_1("setSetting: %1 is forced by the server or mission",_name);
+};
 
 // [setting, value, priority, source, store]. The store flag was being passed in
 // the source slot, which wants a string - so every press logged a params type
 // error and nothing was ever written back to the profile.
-if (!isNil "CBA_settings_fnc_set") then {
+if (isNil "CBA_settings_fnc_set") then {
+    missionNamespace setVariable [_name, _value];
+} else {
     [_name, _value, false, "client", true] call CBA_settings_fnc_set;
 };
 

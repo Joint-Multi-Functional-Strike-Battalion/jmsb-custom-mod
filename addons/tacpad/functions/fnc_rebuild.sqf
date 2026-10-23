@@ -25,7 +25,7 @@
 params [["_id", "", [""]]];
 
 if (!hasInterface) exitWith {};
-if (isNull (findDisplay IDD_MAP)) exitWith {};
+if (isNull (HOST_DISPLAY)) exitWith {};
 
 private _wanted = [GVAR(order), [_id]] select (_id != "");
 

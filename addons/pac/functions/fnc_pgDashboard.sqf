@@ -120,7 +120,7 @@ private _kvText = (_kv apply {
     format ["<t color='#8b97a3'>%1</t>   <t color='#e3e9ef'>%2</t>", [_x # 0] call FUNC(uiEsc), [_x # 1] call FUNC(uiEsc)]
 }) joinString "<br/>";
 private _th = [PAC_IDC_TEXT_HEAD, _rx, _y, _colW, 0.026] call FUNC(uiPlace);
-_th ctrlSetStructuredText parseText "<t color='#93cf72' size='0.75'>THE UNIT</t>";
+_th ctrlSetStructuredText parseText "<t color='#93cf72' size='0.7'>THE UNIT</t>";
 private _txt = [PAC_IDC_TEXT, _rx, _y + 0.028, _colW, _unitH - 0.028] call FUNC(uiPlace);
 _txt ctrlSetStructuredText parseText _kvText;
 

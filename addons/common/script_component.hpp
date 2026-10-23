@@ -75,3 +75,7 @@
 // claim to be - no sensor is truly metre-perfect and stacking near-duplicates
 // is how a board turns into noise.
 #define CONTACT_MERGE_MIN 75
+
+// The class picker hides classes from addons whose CfgPatches name holds one of
+// these (lower case) - Aegis and Atlas are not run by the unit (FUNC(listClasses)).
+#define LIST_HIDE_SOURCES ["aegis", "atlas"]

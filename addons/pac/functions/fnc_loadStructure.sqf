@@ -163,9 +163,9 @@ private _platoons = [];
     _platoons pushBack [configName _x, getText (_x >> "name"), getText (_x >> "callsign"), getText (_x >> "net"), getArray (_x >> "squads")];
 } forEach (configProperties [missionConfigFile >> "Dynamic_Groups" >> "Platoons", "isClass _x", true]);
 _orbat set ["platoons", _platoons];
-// NO RadioNets CLASS (user, 2026-09-09: "if there is acre use the fucking acre
-// tab to configure all radios, if there is tfar use tfar tab"). A squad's
-// channel is the radio plan's business and nothing else decides it.
+// NO RadioNets CLASS (user, 2026-09-09: ACRE's tab configures ACRE radios, the
+// radio plan's own tab everything else - today the net plan for game voice).
+// A squad's channel or net is the radio plan's business and nothing else decides it.
 _orbat set ["faction", getText (missionConfigFile >> "Dynamic_Groups" >> "faction_name")];
 GVAR(structure) set ["orbat", _orbat];
 

@@ -10,6 +10,17 @@
     false   // per-client
 ] call CBA_fnc_addSetting;
 
+// HIDDEN IS NOT DISABLED. Enabled-off still speaks, as a plain hint; this one
+// says nothing on screen at all. The reader's LOG view keeps the record either
+// way, so a player who hides the popups can still page back through them.
+[
+    QGVAR(hidden), "CHECKBOX",
+    ["Hide notifications", "Shows no popup and no hint. Notifications are still kept in the tacpad reader's LOG view."],
+    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    false,
+    false
+] call CBA_fnc_addSetting;
+
 [
     QGVAR(corner), "LIST",
     ["Corner", "Which corner the stack grows from."],

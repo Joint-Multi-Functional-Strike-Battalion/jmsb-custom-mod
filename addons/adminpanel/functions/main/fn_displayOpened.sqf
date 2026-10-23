@@ -16,7 +16,7 @@
 disableSerialization;
 
 // if they open the panel through debug but aren't in the admin list exit
-if (!(player call admp_fnc_isAdmin)) exitWith {closeDialog 2;};
+if (!(player call admp_fnc_isAdmin)) exitWith {(uiNamespace getVariable ['admp_displayVar', displayNull]) closeDisplay 2;};
 
 // update player list first so refresh can use selected unit
 [] call admp_fnc_updatePlayerList;

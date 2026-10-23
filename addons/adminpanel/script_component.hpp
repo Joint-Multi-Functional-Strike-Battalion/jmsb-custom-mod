@@ -32,6 +32,10 @@
 // dialog. They are declared here and the copies are gone.
 #include "ui\idcs.inc.hpp"
 
+// The one type height every control in the console, the message box and TIME /
+// WEATHER is set to; inline <t size> varies it (FUNC(style), FUNC(fitHost)).
+#define ADMIN_FONT_BASE (0.8 * (0.025 * safeZoneH))
+
 // --- Time / weather (FUNC(envLoad) and friends) -----------------------------
 // What the combos offer. Weather is in tens of percent, wind in m/s.
 #define ENV_MINUTE_STEP     5
@@ -51,3 +55,6 @@
 #define ENV_WIND_CALM       0.1
 #define ENV_PERCENT         100
 #define ENV_MINUTES_PER_HOUR 60
+
+// A picture showing a render-to-texture camera - PLAYER VIEW (FUNC(fitHost) keeps its shape).
+#define RENDER_TARGET_TAG "r2t("

@@ -121,7 +121,7 @@ class GVAR(console) {
             y = "0.012 * safezoneH + safezoneY";
             w = "0.078 * safezoneW";
             h = "0.028 * safezoneH";
-            onButtonClick = "closeDialog 2;";
+            onButtonClick = "(ctrlParent (_this select 0)) closeDisplay 2;";
         };
 
         // TIME / WEATHER opens its own small dialog over the console, as ADMIN
@@ -134,7 +134,7 @@ class GVAR(console) {
             y = "0.012 * safezoneH + safezoneY";
             w = "0.100 * safezoneW";
             h = "0.028 * safezoneH";
-            onButtonClick = QUOTE(createDialog QQGVAR(environment););
+            onButtonClick = QUOTE([ARR_2(QQGVAR(environment),ctrlParent (_this select 0))] call FUNC(openDisplay););
         };
 
         // ------------------------------------------------------- player list --
@@ -386,8 +386,9 @@ class GVAR(console) {
             w = "0.143 * safezoneW";
             h = "0.070 * safezoneH";
             // ONE DIALOG (2026-09-09), opening on the dashboard as the website
-            // does, with the website's nav bar along its top.
-            onButtonClick = "if (!isNil 'jmfsb_pac_fnc_uiOpen') then {[] call jmfsb_pac_fnc_uiOpen}";
+            // does, with the website's nav bar along its top. On a tablet it
+            // opens inside the device and the console closes - FUNC(openPac).
+            onButtonClick = QUOTE([] call FUNC(openPac));
         };
 
         class ADMIN_ROLEACCESS: RscADMPButton {
@@ -459,7 +460,7 @@ class GVAR(console) {
             y = "0.892 * safezoneH + safezoneY";
             w = "0.170 * safezoneW";
             h = "0.032 * safezoneH";
-            onButtonClick = QUOTE(createDialog QQGVAR(message););
+            onButtonClick = QUOTE([ARR_2(QQGVAR(message),ctrlParent (_this select 0))] call FUNC(openDisplay););
         };
 
         class ADMIN_PROMOTE_BACK: RscADMPText {
@@ -1068,6 +1069,23 @@ class GVAR(console) {
             x = "0.944 * safezoneW + safezoneX";
             y = "0.504 * safezoneH + safezoneY";
             w = "0.048 * safezoneW";
+            h = "0.024 * safezoneH";
+        };
+        // The RTO job (user, 2026-10-23: "does the rto trait exist on the pac
+        // for admins to check"): the eleventh skill, a sixth row on the left.
+        class PLAYER_SKILLS_RTO_CHECKBOX: RscADMPCheckbox {
+            idc = IDC_ADMINPANEL_PLAYER_SKILLS_RTO_CHECKBOX;
+            x = "0.853 * safezoneW + safezoneX";
+            y = "0.532 * safezoneH + safezoneY";
+            w = "0.018 * safezoneW";
+            h = "0.024 * safezoneH";
+        };
+        class PLAYER_SKILLS_RTO_LABEL: RscADMPStructuredText {
+            idc = IDC_ADMINPANEL_PLAYER_SKILLS_RTO_LABEL;
+            text = "<t font='RobotoCondensed' size='0.7'>RTO</t>";
+            x = "0.872 * safezoneW + safezoneX";
+            y = "0.532 * safezoneH + safezoneY";
+            w = "0.052 * safezoneW";
             h = "0.024 * safezoneH";
         };
         class PLAYER_SKILLS_APPLY_BUTTON: RscADMPButton {
@@ -1776,7 +1794,7 @@ class GVAR(environment) {
         class CLOSE: RscADMPButton {
             idc = IDC_ADMINENV_CLOSE;
             text = "CLOSE";
-            onButtonClick = QUOTE(closeDialog 2;);
+            onButtonClick = QUOTE((ctrlParent (_this select 0)) closeDisplay 2;);
             x = "0.338 * safezoneW + safezoneX";
             y = "0.690 * safezoneH + safezoneY";
             w = "0.324 * safezoneW";

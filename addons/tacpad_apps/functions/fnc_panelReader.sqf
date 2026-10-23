@@ -35,10 +35,10 @@ if (isNull _body) exitWith {};
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * safeZoneH;
+private _rowH = ROW_H * _scale * HOST_H;
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 // A row of air under the title bar. The tabs and the thread view both started
@@ -264,12 +264,12 @@ private _activeCount = [_active] call _netCount;
 [
     _body, [_pad, _tabY, _w * 0.12, _tabH],
     ([">", "v"] select (uiNamespace getVariable [QGVAR(readerNetOpen), false])),
-    _ground, 0.9, true, "center"
+    _ground, TEXT_TITLE, true, "center"
 ] call EFUNC(tacpad,drawText);
 [
     _body, [_w * 0.12, _tabY, _w * 0.88 - _pad, _tabH],
     toUpper (format ["%1%2", _activeLabel, [format [" (%1)", _activeCount], ""] select (_activeCount == 0)]),
-    _ground, 0.9, true, "left"
+    _ground, TEXT_TITLE, true, "left"
 ] call EFUNC(tacpad,drawText);
 [_body, [0, _tabY, _w, _tabH], {
     uiNamespace setVariable [QGVAR(readerNetOpen), !(uiNamespace getVariable [QGVAR(readerNetOpen), false])];
@@ -347,7 +347,7 @@ if (_rows isEqualTo []) then {
 // reader is a docked rail at a fixed height - see the end of this function - so
 // its controls belong at its foot the way the design draws them, rather than
 // floating up under the tabs whenever the net is quiet.
-private _btnH = ([0.85] call EFUNC(tacpad,textH)) + 2 * _padY;
+private _btnH = ([TEXT_TITLE] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _btnW = _w * 0.28;
 private _bodyH = (ctrlPosition _body) # 3;
 private _footY = _bodyH - _btnH - _padY * 2;
@@ -358,12 +358,12 @@ private _footY = _bodyH - _btnH - _padY * 2;
 // a control touching the frame reads as part of the frame.
 private _btnX = _pad * 2;
 [_body, [_btnX, _footY, _btnW, _btnH], _accent] call EFUNC(tacpad,drawFill);
-[_body, [_btnX + _pad, _footY, _btnW - 2 * _pad, _btnH], "OPEN FULL", _ground, 0.85, true] call EFUNC(tacpad,drawText);
+[_body, [_btnX + _pad, _footY, _btnW - 2 * _pad, _btnH], "OPEN FULL", _ground, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 [_body, [_btnX, _footY, _btnW, _btnH], {[] call EFUNC(tacpad,openReader)}] call EFUNC(tacpad,drawHit);
 
 private _newX = _btnX + _btnW + _pad * 2;
 [_body, [_newX, _footY, _btnW, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-[_body, [_newX + _pad, _footY, _btnW - 2 * _pad, _btnH], "NEW", _ink, 0.85, true] call EFUNC(tacpad,drawText);
+[_body, [_newX + _pad, _footY, _btnW - 2 * _pad, _btnH], "NEW", _ink, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 [_body, [_newX, _footY, _btnW, _btnH], {["", "", false] call EFUNC(tacpad,composeOpen)}] call EFUNC(tacpad,drawHit);
 
 // LOG opens the page-back over past notifications; the unread/flash tally
@@ -371,7 +371,7 @@ private _newX = _btnX + _btnW + _pad * 2;
 private _logX = _newX + _btnW + _pad * 2;
 private _logW = _w - _logX - _pad * 2;
 [_body, [_logX, _footY, _logW, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-[_body, [_logX, _footY, _logW, _btnH], "LOG", _ink, 0.85, true] call EFUNC(tacpad,drawText);
+[_body, [_logX, _footY, _logW, _btnH], "LOG", _ink, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 [_body, [_logX, _footY, _logW, _btnH], {
     GVAR(readerLog) = true;
     uiNamespace setVariable [QGVAR(readerNetOpen), false];
@@ -385,7 +385,7 @@ if (_flash > 0) then {_tally pushBack format ["%1 FLASH", _flash]};
     _body, [_logX, _footY - _btnH * 0.9, _logW, _btnH * 0.8],
     _tally joinString " - ",
     ([_mute, _accent] select (_flash > 0)),
-    0.6, true, "center", true
+    TEXT_LABEL, true, "center", true
 ] call EFUNC(tacpad,drawText);
 
 // THE OPEN DROPDOWN, DRAWN LAST so it overlays the traffic beneath it. One row
@@ -405,7 +405,7 @@ if (uiNamespace getVariable [QGVAR(readerNetOpen), false]) then {
         [
             _body, [_pad * 2, _oy, _w - _pad * 3, _optH],
             toUpper (format ["%1%2", _lab, [format ["  (%1)", _c], ""] select (_c == 0)]),
-            ([_ink, _ground] select _on), 0.85, true, "left"
+            ([_ink, _ground] select _on), TEXT_TITLE, true, "left"
         ] call EFUNC(tacpad,drawText);
         private _hit = [_body, [0, _oy, _w, _optH], {
             params ["_ctrl"];

@@ -45,9 +45,11 @@ if (isNull _body) exitWith {};
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+// HOST UNITS, like every shell panel: on a tablet the host is the map area,
+// not the monitor, and FUNC(fit) multiplies what it is handed by HOST_H.
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 private _amber = [0.85, 0.65, 0.15, 1];
@@ -63,7 +65,7 @@ if (_list isEqualTo []) exitWith {
             select (((missionNamespace getVariable [QGVAR(panelScope), 1]) max 0) min 2)
     };
     [_body, [_pad, _y, _w - 2 * _pad, _rowH], _why, _dim, 0.75, true, "left", true] call EFUNC(tacpad,drawText);
-    [_id, 0, (_y + _rowH + _padY) / safeZoneH] call EFUNC(tacpad,fit);
+    [_id, 0, (_y + _rowH + _padY) / HOST_H] call EFUNC(tacpad,fit);
 };
 
 private _mine = vehicle player;
@@ -166,4 +168,4 @@ private _onPress = {
     if (_buttons isNotEqualTo []) then { _y = _y + _btnH + _padY };
 } forEach _list;
 
-[_id, 0, (_y + _padY) / safeZoneH] call EFUNC(tacpad,fit);
+[_id, 0, (_y + _padY) / HOST_H] call EFUNC(tacpad,fit);

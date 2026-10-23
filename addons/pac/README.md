@@ -4,6 +4,29 @@
 
 The tacpad's drawing grammar - row heights, padding, rule weights - so the PAC app is drawn in the same hand as every other app in the suite.
 
+**Inside the tablet.** TAC//PAC (the admin page, `uiOpen`) is one root controls
+group, `jmfsb_pac_shell`, with every control as a child; the dialog is that
+group at the full safe zone. In tablet mode with a device open, `uiHost`
+creates the same group on the device dialog at the tablet's map area, places
+the bar and the confirm box at their config fractions, scales the type by the
+host's ratio to the safe zone, and adopts it as the tablet's open app
+(`jmfsb_tacpad_fnc_appHost`, id `pacAdmin`) - ESC, CLOSE (`uiClose`) or a tile
+close it and leave the tablet up. Every control is found through the group
+(`uiCtrl`) and placed in fractions of it (`uiPlace`), so the pages are the same
+on both hosts.
+
+**Base stations** (user, 2026-10-20). PAC bridges the radio plan into RF
+(`netPlanSync`), and it puts up the base stations the same way:
+`baseStation [site, side, owner]` (server) registers an RF node of profile
+`base` at a staging zone or a patrol base - on the site's object, or on an
+invisible helper at a position - holding every plan net, DATA and the default
+C2, relay and TX on, for the players' side unless told otherwise. One station
+per object or position; MPKilled and Deleted take it down, as does
+`baseStationRemove [object, owner]`; `netPlanSync` re-registers every station
+(`baseStationRegister`) when the plan changes. Called by `jmfsb_mission`
+(staging zones) and `jmfsb_patrol_base`, each behind its own setting. Without
+RF it does nothing. See docs/DESIGN_RF.md "Base stations".
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -18,7 +41,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-189 functions.
+199 functions.
 
 ## CBA settings
 
@@ -29,7 +52,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Functions
 
-<details><summary>189</summary>
+<details><summary>199</summary>
 
 - `jmfsb_pac_fnc_adminAddOperator`
 - `jmfsb_pac_fnc_adminApplication`
@@ -61,6 +84,9 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_attendanceReport`
 - `jmfsb_pac_fnc_autoSlot`
 - `jmfsb_pac_fnc_backupDump`
+- `jmfsb_pac_fnc_baseStation`
+- `jmfsb_pac_fnc_baseStationRegister`
+- `jmfsb_pac_fnc_baseStationRemove`
 - `jmfsb_pac_fnc_boot`
 - `jmfsb_pac_fnc_bootDoc`
 - `jmfsb_pac_fnc_bootFail`
@@ -88,6 +114,10 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_lookup`
 - `jmfsb_pac_fnc_managedNames`
 - `jmfsb_pac_fnc_minutesStamp`
+- `jmfsb_pac_fnc_netPlan`
+- `jmfsb_pac_fnc_netPlanSquad`
+- `jmfsb_pac_fnc_netPlanSync`
+- `jmfsb_pac_fnc_netPlanUnit`
 - `jmfsb_pac_fnc_operatorJson`
 - `jmfsb_pac_fnc_operatorSeq`
 - `jmfsb_pac_fnc_opordAsk`
@@ -185,9 +215,11 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_uiBack`
 - `jmfsb_pac_fnc_uiButtons`
 - `jmfsb_pac_fnc_uiClick`
+- `jmfsb_pac_fnc_uiClose`
 - `jmfsb_pac_fnc_uiComboChange`
 - `jmfsb_pac_fnc_uiConfirm`
 - `jmfsb_pac_fnc_uiConfirmAnswer`
+- `jmfsb_pac_fnc_uiCtrl`
 - `jmfsb_pac_fnc_uiDraw`
 - `jmfsb_pac_fnc_uiEsc`
 - `jmfsb_pac_fnc_uiFilter`
@@ -196,6 +228,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_uiFormRead`
 - `jmfsb_pac_fnc_uiGo`
 - `jmfsb_pac_fnc_uiHint`
+- `jmfsb_pac_fnc_uiHost`
 - `jmfsb_pac_fnc_uiList`
 - `jmfsb_pac_fnc_uiListClick`
 - `jmfsb_pac_fnc_uiLoaded`

@@ -1,3 +1,7 @@
+// The host: which display the suite is on and the rectangle it draws in.
+PREP(hostDisplay);
+PREP(setHost);
+
 // Theme and placement - the two things every panel asks the shell for.
 PREP(theme);
 PREP(hexOf);
@@ -7,6 +11,8 @@ PREP(place);
 // The drawing vocabulary. Every panel is built from these four, so a kicker is
 // the same kicker and a 2px rule is the same 2px rule wherever it appears.
 PREP(textH);
+PREP(textPx);
+PREP(textSize);
 PREP(xmlSafe);
 
 // Formatting a roster reads the same everywhere, so these sit with the shell
@@ -41,14 +47,28 @@ PREP(appAlive);
 PREP(appIdle);
 PREP(appFrame);
 PREP(appClose);
+PREP(appExits);
+PREP(appHost);
 
 // The reader, as a real dialog
 PREP(openReader);
+PREP(readerClose);
 PREP(readerDraw);
 PREP(readerInput);
 PREP(readerThreadView);
 PREP(readerNetView);
 PREP(readerComposer);
+PREP(readerRail);
+PREP(readerList);
+PREP(readerRow);
+PREP(readerChip);
+PREP(readerPreview);
+PREP(readerCard);
+PREP(readerReplies);
+PREP(readerQuick);
+PREP(readerCallUnits);
+PREP(readerMarkers);
+PREP(readerFlash);
 
 // Addressing. One rule for what a net name on the rail means and one list of
 // everything a message can be sent to - both were written out by hand in four
@@ -64,6 +84,8 @@ PREP(composePane);
 PREP(composePicker);
 PREP(composeToPicker);
 PREP(composeCard);
+PREP(composeCardHead);
+PREP(composeTiles);
 PREP(composeHarvest);
 PREP(composeSend);
 

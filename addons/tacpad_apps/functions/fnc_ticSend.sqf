@@ -62,13 +62,21 @@ if (_left > 0) exitWith {
     [format ["Contact report already sent - %1s", ceil _left]] call _fnc_no
 };
 
+// THE LOCATION IS HIS GPS FIX (jmfsb_ew_fnc_gpsHere, when EW is loaded): the
+// false one when spoofed; denied, there is nothing to send it with, and the
+// card - where a grid is typed - is the way.
+private _at = if (isNil QEFUNC(ew,gpsHere)) then {getPosATL player} else {[] call EFUNC(ew,gpsHere)};
+if (_at isEqualTo []) exitWith {
+    ["No GPS fix - send the TIC from the card with your grid"] call _fnc_no
+};
+
 // The deck's own report, with the two required lines answered from what the
 // game knows. ENEMY is what a man would say into a radio before he has looked
 // properly, and it is the line the follow-up card exists to replace.
 ([
     "tic",
     [
-        ["Location.A", getPosATL player],
+        ["Location.A", _at],
         ["Enemy.A", "CONTACT - DETAILS TO FOLLOW"],
         ["Intentions.A", "Returning fire"]
     ],

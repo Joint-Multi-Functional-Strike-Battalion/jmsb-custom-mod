@@ -10,6 +10,15 @@
 ] call CBA_fnc_addSetting;
 
 [
+    QGVAR(radioRelay),
+    "CHECKBOX",
+    ["Patrol base radio relay", "A built patrol base carries a base station: it relays the side's radio nets round the base and links by satellite to the staging zone and the other bases while its mast has open sky."],
+    ["1st Joint Multi-Functional Strike Battalion", "Patrol Base"],
+    true,
+    1
+] call CBA_fnc_addSetting;
+
+[
     QGVAR(maxCount),
     "SLIDER",
     ["Max patrol bases", "How many patrol bases may exist at once."],
@@ -50,7 +59,7 @@
     "EDITBOX",
     ["On-deploy init (SQF)", "SQF run on the server after a base is built. Passed: [_beacon, _pos, _name, _side, _builder]. Blank = nothing."],
     ["1st Joint Multi-Functional Strike Battalion", "Patrol Base"],
-    "params ['_base', '_pos', '_name']; [_base, 15] remoteExec ['YMF_fnc_addStagingZone', 0, true]; [_base, _name, west] call Rev_tp_fnc_addPoint;",
+    "params ['_base', '_pos', '_name', '_side']; [_base, 15] remoteExec ['jmfsb_mission_fnc_addStagingZone', 0, true]; [_base, _name, _side] call jmfsb_teleport_fnc_addPoint;",
     1
 ] call CBA_fnc_addSetting;
 
@@ -59,6 +68,6 @@
     "EDITBOX",
     ["On-undeploy init (SQF)", "SQF run on the server while the base beacon still exists (before it is deleted). Passed: [_beacon, _pos, _name, _side]. Blank = nothing."],
     ["1st Joint Multi-Functional Strike Battalion", "Patrol Base"],
-    "params ['_object']; [_object] remoteExec ['YMF_fnc_removeStagingZone', 0]; [_object] call Rev_tp_fnc_deletePoint;",
+    "params ['_object']; [_object] remoteExec ['jmfsb_mission_fnc_removeStagingZone', 0]; [_object] call jmfsb_teleport_fnc_deletePoint;",
     1
 ] call CBA_fnc_addSetting;

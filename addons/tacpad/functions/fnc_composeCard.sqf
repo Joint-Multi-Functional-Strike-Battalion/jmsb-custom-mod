@@ -15,10 +15,12 @@
  * NO LOCATION IS AUTO-FILLED. A grid that fills itself in with where you are
  * standing is a grid nobody reads before sending, and a CASEVAC pick-up that is
  * quietly your own position is how a bird goes to the wrong field. A location is
- * asked for, and there are three honest ways to answer it: CURRENT LOC for where
- * you are, MAP MARKER for somewhere already marked, or type it. A field that
- * names a marker rather than holding a position - an LZ name, a DZ mark - gets
- * the same list and takes the marker's NAME from it.
+ * asked for, and there are three honest ways to answer it: CUR LOC for where
+ * you are, MARKER for somewhere already marked, or type it - the two cells sit
+ * on the box's right edge, as the handoff draws them, and an ingress or egress
+ * carries MARKER only. A field that names a marker rather than holding a
+ * position - an LZ name, a DZ mark - gets the same list and takes the marker's
+ * NAME from it.
  *
  * A call sign and a time still prefill, because neither is a place: they are
  * facts the game already knows about the sender, and both are typed over in the
@@ -49,13 +51,15 @@ private _lines = _template getOrDefault ["lines", []];
 
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
-private _btnH = ([0.72] call FUNC(textH)) + 2 * _padY;
-private _fontH = ([0.85] call FUNC(textH)) / 1.25;
-private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
-private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
+private _btnH = ([TEXT_BODY] call FUNC(textH)) + 2 * _padY;
+private _fontH = ([TEXT_TITLE] call FUNC(textH)) / 1.25;
+private _mute = ["muted"] call FUNC(theme);
+private _dim = ["dim"] call FUNC(theme);
+private _accentText = ["accentText"] call FUNC(theme);
+private _surface = ["surface"] call FUNC(theme);
 
 private _bodyW = _dw - 2 * _pad;
 private _body = _display ctrlCreate [QGVAR(body), -1, _root];
@@ -64,7 +68,7 @@ _body ctrlSetBackgroundColor [0, 0, 0, 0];
 _body ctrlCommit 0;
 
 if (_lines isEqualTo []) exitWith {
-    [_body, [0, 0, _bodyW, _rowH], "THIS REPORT HAS NOTHING TO FILL IN - PRESS SEND", _dim, 0.85] call FUNC(drawText);
+    [_body, [0, 0, _bodyW, _rowH], "THIS REPORT HAS NOTHING TO FILL IN - PRESS SEND", _dim, TEXT_TITLE] call FUNC(drawText);
 };
 
 private _scrollW = 14 * pixelW;
@@ -106,15 +110,23 @@ private _fnc_shown = {
 private _fnc_edit = {
     params ["_key", "_x", "_y", "_w", "_h", ["_field", createHashMap], ["_multi", false]];
 
-    [_body, [_x, _y, _w, _h], _line, RULE_THIN] call FUNC(drawFrame);
+    // A REQUIRED FIELD SEND FOUND EMPTY - see FUNC(composeSend) - is framed
+    // 2px in the accent until something is put in it. The handoff's SEND
+    // validation: the box that stopped the send is the box that says so.
+    private _missing = _key in GVAR(composeMissing) && {([_key, _field] call _fnc_shown) isEqualTo ""};
+    if (_missing) then {
+        [_body, [_x, _y, _w, _h], _accent, RULE_THICK] call FUNC(drawFrame);
+    } else {
+        [_body, [_x, _y, _w, _h], _line, RULE_THIN] call FUNC(drawFrame);
+    };
 
     // THE FIELD META, flush right inside the box, the design's full set: REQ
     // (never an asterisk), a number's range, AUTO on a prefilled fact, MARKER
     // on a field the marker list can answer. The edit stops short of it, so
     // the label cannot eat a click meant for the box; on a textarea it sits in
-    // the first line's height rather than floating mid-void. Accent only when
-    // REQ is among them - the design spends the accent on required and
-    // nothing else here.
+    // the first line's height rather than floating mid-void. REQ alone is in
+    // the accent (accent-700 at this size, the full accent while the field is
+    // holding up a send); the rest is muted.
     private _tokens = [];
     if (_field getOrDefault ["required", false]) then {_tokens pushBack "REQ"};
     private _min = _field getOrDefault ["min", -1e10];
@@ -125,13 +137,21 @@ private _fnc_edit = {
     if ((_field getOrDefault ["autoFill", "none"]) isNotEqualTo "none") then {_tokens pushBack "AUTO"};
     if ((_field getOrDefault ["source", "manual"]) isEqualTo "marker") then {_tokens pushBack "MARKER"};
 
-    private _metaW = 0;
-    if (_tokens isNotEqualTo []) then {
-        private _metaText = _tokens joinString " - ";
-        _metaW = (_w * ((count _metaText) * 0.017 + 0.03)) min (_w * 0.4);
+    private _req = "REQ" in _tokens;
+    private _rest = _tokens - ["REQ"];
+    private _glyph = ([CARD_META_SIZE] call FUNC(textH)) / 1.25 * CARD_GLYPH_W * pixelW / pixelH;
+    private _restText = (["", "- "] select (_req && {_rest isNotEqualTo []})) + (_rest joinString " - ");
+    private _restW = [0, (count _restText) * _glyph + _pad * 0.5] select (_rest isNotEqualTo []);
+    private _reqW = [0, (count "REQ ") * _glyph] select _req;
+    private _metaW = (_restW + _reqW) min (_w * CARD_META_MAX_W);
+    private _metaR = _x + _w - _pad * 0.5;
+    if (_rest isNotEqualTo []) then {
+        [_body, [_metaR - _restW, _y, _restW, _h min _btnH], _restText, _mute, CARD_META_SIZE, true, "right"] call FUNC(drawText);
+    };
+    if (_req) then {
         [
-            _body, [_x + _w - _metaW - _pad * 0.5, _y, _metaW, _h min _btnH],
-            _metaText, ([_mute, _accent] select ("REQ" in _tokens)), 0.55, true, "right"
+            _body, [_metaR - _restW - _reqW, _y, _reqW, _h min _btnH],
+            "REQ", ([_accentText, _accent] select _missing), CARD_META_SIZE, true, "right"
         ] call FUNC(drawText);
     };
 
@@ -167,7 +187,7 @@ private _fnc_edit = {
         ([] call FUNC(theme)) params ["", "_ink"];
         private _pvText = [([GVAR(composeTemplate), GVAR(composeValues) toArray false, false] call EFUNC(messaging,render))] call FUNC(xmlSafe);
         _pv ctrlSetStructuredText parseText format [
-            "<t font='RobotoCondensed' size='0.72' color='%1'>%2</t>",
+            "<t font='RobotoCondensed' size='0.7' color='%1'>%2</t>",
             _ink call BIS_fnc_colorRGBAtoHTML,
             _pvText regexReplace ["\r\n", "<br/>"]
         ];
@@ -175,31 +195,43 @@ private _fnc_edit = {
     }];
 };
 
-// The marker list, under whichever field asked for it. Two modes, because two
-// kinds of field want it: a grid field takes the marker's POSITION - so the
-// thread still anchors somewhere the map can pin - and a name field takes its
-// NAME. Both are typed over afterwards like anything else.
+// THE ATTACHED CELLS, the handoff's: a grid's box carries CUR LOC (own
+// position) and MARKER (pick a map marker) on its right edge, in the same row,
+// rather than a row of buttons under it. The caller has drawn the box short by
+// exactly the cells' width; this draws them, then the marker list under the
+// row when MARKER is open. Two modes, because two kinds of field want the
+// list: a grid field takes the marker's POSITION - so the thread still anchors
+// somewhere the map can pin - and a name field takes its NAME. Both are typed
+// over afterwards like anything else.
+private _cellW = _colW * CARD_CELL_W;
+
 private _fnc_markerDrop = {
     params ["_key", "_mode", ["_cur", true]];
 
     private _open = GVAR(composeMarker) isEqualTo _key;
-    private _halfW = (_colW - _pad) / 2;
 
-    // An ingress or an egress is never where the sender is standing, so a
-    // noCur grid keeps the marker list and loses the CURRENT LOC cell - see
-    // the field option in registerTemplate.
+    // An ingress or an egress is never where the sender is standing, so it
+    // keeps MARKER and loses CUR LOC - see the grid branch below.
     private _grid = _mode isEqualTo "pos" && _cur;
+    private _mx = _cx + _colW - _cellW;
 
     if (_grid) then {
-        [_body, [_cx, _cy, _halfW, _btnH], _line, RULE_THIN] call FUNC(drawFrame);
-        [_body, [_cx, _cy, _halfW, _btnH], "CURRENT LOC", _ink, 0.64, true, "center"] call FUNC(drawText);
+        private _gx = _mx - _cellW;
+        [_body, [_gx, _cy, _cellW, _btnH], _surface] call FUNC(drawFill);
+        [_body, [_gx, _cy, _cellW, _btnH], _ink, RULE_THICK] call FUNC(drawFrame);
+        [_body, [_gx, _cy, _cellW, _btnH], "CUR LOC", _ink, CARD_CELL_SIZE, true, "center"] call FUNC(drawText);
 
-        private _hit = [_body, [_cx, _cy, _halfW, _btnH], {
+        private _hit = [_body, [_gx, _cy, _cellW, _btnH], {
             params ["_ctrl"];
             [] call FUNC(composeHarvest);
 
             private _k = _ctrl getVariable [QGVAR(fieldKey), ""];
-            private _at = getPosATL player;
+
+            // CUR LOC IS WHERE HIS GPS SAYS (jmfsb_ew_fnc_gpsHere, when EW is
+            // loaded): the false position when spoofed, and nothing - with a
+            // word on the rail - when it is denied. Type the grid instead.
+            private _at = if (isNil QEFUNC(ew,gpsHere)) then {getPosATL player} else {[true] call EFUNC(ew,gpsHere)};
+            if (_at isEqualTo []) exitWith {};
 
             // The POSITION is what is stored - the thread anchors on it and PIN
             // TO MAP has something to pin. The grid is what is shown.
@@ -212,13 +244,12 @@ private _fnc_markerDrop = {
         _hit setVariable [QGVAR(fieldKey), _key];
     };
 
-    private _mx = _cx + ([0, _halfW + _pad] select _grid);
-    private _mw = [_colW, _halfW] select _grid;
+    // Open is the pressed state, ink - the accent is not spent on it.
+    [_body, [_mx, _cy, _cellW, _btnH], [_surface, _ink] select _open] call FUNC(drawFill);
+    [_body, [_mx, _cy, _cellW, _btnH], _ink, RULE_THICK] call FUNC(drawFrame);
+    [_body, [_mx, _cy, _cellW, _btnH], "MARKER", [_ink, _ground] select _open, CARD_CELL_SIZE, true, "center"] call FUNC(drawText);
 
-    [_body, [_mx, _cy, _mw, _btnH], ([_line, _accent] select _open), ([RULE_THIN, RULE_THICK] select _open)] call FUNC(drawFrame);
-    [_body, [_mx, _cy, _mw, _btnH], "MAP MARKER", ([_ink, _accent] select _open), 0.64, true, "center"] call FUNC(drawText);
-
-    private _hitM = [_body, [_mx, _cy, _mw, _btnH], {
+    private _hitM = [_body, [_mx, _cy, _cellW, _btnH], {
         params ["_ctrl"];
         [] call FUNC(composeHarvest);
         private _k = _ctrl getVariable [QGVAR(fieldKey), ""];
@@ -236,7 +267,7 @@ private _fnc_markerDrop = {
     private _markers = [10] call FUNC(markerGrids);
 
     if (_markers isEqualTo []) exitWith {
-        [_body, [_cx + _pad, _cy, _colW - _pad, _rowH * 0.9], "NO MAP MARKERS", _dim, 0.66] call FUNC(drawText);
+        [_body, [_cx + _pad, _cy, _colW - _pad, _rowH * 0.9], "NO MAP MARKERS", _dim, TEXT_BODY] call FUNC(drawText);
         _cy = _cy + _rowH * 0.9;
     };
 
@@ -244,8 +275,8 @@ private _fnc_markerDrop = {
         _x params ["_label", "_pos"];
         private _my = _cy + _forEachIndex * _rowH * 0.9;
 
-        [_body, [_cx + _pad, _my, _colW * 0.6 - _pad, _rowH * 0.9], _label, _ink, 0.7] call FUNC(drawText);
-        [_body, [_cx + _colW * 0.6, _my, _colW * 0.4 - _pad, _rowH * 0.9], mapGridPosition _pos, _mute, 0.66, false, "right"] call FUNC(drawText);
+        [_body, [_cx + _pad, _my, _colW * 0.6 - _pad, _rowH * 0.9], _label, _ink, TEXT_BODY] call FUNC(drawText);
+        [_body, [_cx + _colW * 0.6, _my, _colW * 0.4 - _pad, _rowH * 0.9], mapGridPosition _pos, _mute, TEXT_BODY, false, "right"] call FUNC(drawText);
         [_body, [_cx, _my + _rowH * 0.9 - RULE_THIN * pixelH, _colW, RULE_THIN * pixelH], _line] call FUNC(drawFill);
 
         private _hitP = [_body, [_cx, _my, _colW, _rowH * 0.9], {
@@ -278,12 +309,13 @@ private _fnc_markerDrop = {
 };
 
 // The four colours the deck's bools and choices answer in. Green and amber are
-// the design's; red and black are the theme's own accent and ink, which is
-// what the design means by them.
+// the design's fixed swatches; red and black are the theme's own accent and
+// ink, which is what the design means by them.
+private _swYellow = ["swatchYellow"] call FUNC(theme);
 private _gyrb = createHashMapFromArray [
-    ["GREEN", [0.29, 0.58, 0.31, 1]],
-    ["YELLOW", [0.85, 0.68, 0.28, 1]],
-    ["AMBER", [0.85, 0.68, 0.28, 1]],
+    ["GREEN", ["swatchGreen"] call FUNC(theme)],
+    ["YELLOW", _swYellow],
+    ["AMBER", _swYellow],
     ["RED", _accent],
     ["BLACK", _ink]
 ];
@@ -320,7 +352,7 @@ private _fnc_options = {
 
         [
             _body, [_lx, _sy, _sx + _segW - _pad - _lx, _btnH], _label,
-            ([_ink, _ground] select _on), 0.6, true,
+            ([_ink, _ground] select _on), TEXT_LABEL, true,
             ["center", "left"] select (_sw isNotEqualTo [])
         ] call FUNC(drawText);
 
@@ -333,41 +365,10 @@ private _fnc_options = {
     _cy = _cy + _btnH + _padY;
 };
 
-// ------------------------------------------------------------ badge strip ---
-// The card's facts, the design's strip: what sending this DOES - the task it
-// opens, where it anchors on the map, who else it reaches - said once at the
-// top rather than discovered after SEND.
-private _badges = [];
-private _transitions = _template getOrDefault ["transitionsTo", ""];
-if (_transitions isNotEqualTo "") then {_badges pushBack format ["OPENS TASK - %1", _transitions]};
-
-private _anchorKey = ((_template getOrDefault ["anchor", ""]) splitString ".") param [0, ""];
-if (_anchorKey isNotEqualTo "") then {
-    private _ai = _lines findIf {(_x param [0, ""]) isEqualTo _anchorKey};
-    if (_ai > -1) then {
-        _badges pushBack format ["MAP ANCHOR - %1", toUpper ((_lines # _ai) param [1, _anchorKey])];
-    };
-};
-
-if ((_template getOrDefault ["broadcast", ""]) isNotEqualTo "") then {
-    _badges pushBack format ["BROADCAST - %1", toUpper (_template get "broadcast")];
-};
-if ((_template getOrDefault ["reportable", ""]) isNotEqualTo "") then {
-    _badges pushBack format ["ALIVE FWD - %1", toUpper (_template get "reportable")];
-};
-if ((_template getOrDefault ["routing", ""]) isNotEqualTo "") then {_badges pushBack "ROUTING - CMD TICK"};
-if ((_template getOrDefault ["kind", "root"]) isEqualTo "both") then {_badges pushBack "ROOT + REPLY"};
-
-private _stripH = 0;
-if (_badges isNotEqualTo []) then {
-    _stripH = ([0.52] call FUNC(textH)) + _padY;
-    [_body, [0, 0, _bodyW - _scrollW, _stripH], [_ink # 0, _ink # 1, _ink # 2, 0.07]] call FUNC(drawFill);
-    [
-        _body, [_pad, 0, _bodyW - _scrollW - 2 * _pad, _stripH],
-        _badges joinString "  |  ", _mute, 0.52, true
-    ] call FUNC(drawText);
-    _stripH = _stripH + _padY;
-};
+// ------------------------------------------------- header and badge strip ---
+// The tag box and title over a 2px rule, then the card's facts on the surface
+// fill - FUNC(composeCardHead), the handoff's anatomy.
+private _stripH = [_body, _template, _bodyW - _scrollW] call FUNC(composeCardHead);
 
 // TEMPLATE ON THE LEFT, THE MESSAGE ON THE RIGHT - the split the design
 // draws and the user asked for three times. Every line stacks down the left
@@ -388,10 +389,10 @@ private _half = count _lines;
     // counter, and it is the field-key contract made visible: the key on the
     // box is the key the payload files under.
     private _keyW = (_colW * (0.085 + 0.021 * count _lineTitle)) min (_colW * 0.32);
-    private _keyH = ([0.6] call FUNC(textH)) + _padY * 0.6;
+    private _keyH = ([TEXT_LABEL] call FUNC(textH)) + _padY * 0.6;
     [_body, [_cx, _cy + (_rowH - _keyH) * 0.5, _keyW, _keyH], _ink, RULE_THICK] call FUNC(drawFrame);
-    [_body, [_cx, _cy + (_rowH - _keyH) * 0.5, _keyW, _keyH], toUpper _lineTitle, _ink, 0.6, true, "center"] call FUNC(drawText);
-    [_body, [_cx + _keyW + _pad, _cy, _colW - _keyW - _pad, _rowH], _lineLabel, _ink, 0.7, true, "left", true] call FUNC(drawText);
+    [_body, [_cx, _cy + (_rowH - _keyH) * 0.5, _keyW, _keyH], _lineTitle, _ink, CARD_TAG_SIZE, true, "center"] call FUNC(drawText);
+    [_body, [_cx + _keyW + _pad, _cy, _colW - _keyW - _pad, _rowH], _lineLabel, _ink, TEXT_BODY, true, "left", true] call FUNC(drawText);
     _cy = _cy + _rowH;
 
     // ----------------------------------------------------------- the fields ---
@@ -415,7 +416,7 @@ private _half = count _lines;
         // the REQ meta inside the field, drawn by _fnc_edit.
         private _capH = 0;
         if (_n > 1 && {(_run findIf {(_x getOrDefault ["prefix", ""]) isEqualTo ""}) > -1}) then {
-            _capH = ([0.5] call FUNC(textH)) + _padY * 0.3;
+            _capH = ([TEXT_LABEL] call FUNC(textH)) + _padY * 0.3;
         };
 
         {
@@ -426,7 +427,7 @@ private _half = count _lines;
             private _capW = 0;
             if (_n > 1) then {
                 if (_prefix isEqualTo "") then {
-                    [_body, [_sx, _cy, _cellW - _pad, _capH], _x getOrDefault ["hint", ""], _mute, 0.5, true] call FUNC(drawText);
+                    [_body, [_sx, _cy, _cellW - _pad, _capH], _x getOrDefault ["hint", ""], _mute, TEXT_LABEL, true] call FUNC(drawText);
                 } else {
                     // SIZED TO THE WORD, not to a flat third of the cell (user,
                     // 2026-09-03). URGENT / PRIORITY / ROUTINE over three cells
@@ -438,10 +439,10 @@ private _half = count _lines;
                     // thirds it was taking, so the label may have what it needs
                     // and the box keeps the rest - never less than 30%, which is
                     // still wider than "99" plus its range meta.
-                    private _fh = ([0.62] call FUNC(textH)) / 1.25;
+                    private _fh = ([TEXT_LABEL] call FUNC(textH)) / 1.25;
                     private _need = (count _prefix) * _fh * 0.55 * pixelW / pixelH + _pad;
                     _capW = _need min ((_cellW - _pad) * 0.70);
-                    [_body, [_sx, _cy + _capH, _capW - _pad * 0.5, _btnH], toUpper _prefix, _ink, 0.62, true] call FUNC(drawText);
+                    [_body, [_sx, _cy + _capH, _capW - _pad * 0.5, _btnH], toUpper _prefix, _ink, TEXT_LABEL, true] call FUNC(drawText);
                 };
             };
 
@@ -470,9 +471,15 @@ private _half = count _lines;
                 private _cap = _field getOrDefault ["prefix", ""];
                 if (_cap isEqualTo "") then {_cap = _field getOrDefault ["hint", ""]};
                 if (_cap isNotEqualTo "") then {
-                    [_body, [_cx, _cy, _colW, _rowH * 0.65], _cap, _mute, 0.55, true, "left", true] call FUNC(drawText);
+                    [_body, [_cx, _cy, _colW, _rowH * 0.65], _cap, _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
                     _cy = _cy + _rowH * 0.65;
                 };
+            };
+
+            // A required choice SEND found empty is framed in the accent, as
+            // an empty required box is - see _fnc_edit.
+            if (_key in GVAR(composeMissing) && {(GVAR(composeValues) getOrDefault [_key, ""]) isEqualTo ""}) then {
+                [_body, [_cx, _cy, _colW - _pad, _btnH], _accent, RULE_THICK] call FUNC(drawFrame);
             };
 
             [
@@ -527,9 +534,9 @@ private _half = count _lines;
             };
 
             private _labW = _colW * 0.3;
-            [_body, [_tx, _cy, _labW, _rowB], toUpper _label, _ink, 0.64, true] call FUNC(drawText);
+            [_body, [_tx, _cy, _labW, _rowB], toUpper _label, _ink, TEXT_LABEL, true] call FUNC(drawText);
             if (_desc isNotEqualTo "") then {
-                [_body, [_tx + _labW + _pad, _cy, _cx + _colW - _tx - _labW - 2 * _pad, _rowB], _desc, _dim, 0.58, false] call FUNC(drawText);
+                [_body, [_tx + _labW + _pad, _cy, _cx + _colW - _tx - _labW - 2 * _pad, _rowB], _desc, _dim, TEXT_LABEL, false] call FUNC(drawText);
             };
 
             private _hit = [_body, [_cx, _cy, _colW, _rowB], {
@@ -565,10 +572,15 @@ private _half = count _lines;
         if (_type isEqualTo "grid") then {
             call _fnc_flushRun;
 
-            [_key, _cx, _cy, _colW, _btnH, _field, false] call _fnc_edit;
-            _cy = _cy + _btnH + _padY * 0.5;
+            // CUR LOC is offered unless the field says not to (noCur) or the
+            // line is an ingress or an egress by its title or label - the
+            // handoff's rule, kept even for a deck that forgot the flag.
+            private _named = toUpper (_lineTitle + " " + _lineLabel);
+            private _cur = !(_field getOrDefault ["noCur", false])
+                && {(CARD_NO_CUR_WORDS findIf {_x in _named}) < 0};
 
-            [_key, "pos", !(_field getOrDefault ["noCur", false])] call _fnc_markerDrop;
+            [_key, _cx, _cy, _colW - _cellW * ([1, 2] select _cur), _btnH, _field, false] call _fnc_edit;
+            [_key, "pos", _cur] call _fnc_markerDrop;
             continue;
         };
 
@@ -585,9 +597,7 @@ private _half = count _lines;
         if ((_field getOrDefault ["source", "manual"]) isEqualTo "marker") then {
             call _fnc_flushRun;
 
-            [_key, _cx, _cy, _colW, _btnH, _field, false] call _fnc_edit;
-            _cy = _cy + _btnH + _padY * 0.5;
-
+            [_key, _cx, _cy, _colW - _cellW, _btnH, _field, false] call _fnc_edit;
             [_key, "name"] call _fnc_markerDrop;
             continue;
         };
@@ -610,20 +620,20 @@ private _half = count _lines;
 private _px = _colW + _pad * 2;
 private _pvH = ((_colY # 0) max (_colY # 1)) - _stripH;
 [_body, [_px - _pad, _stripH, RULE_THICK * pixelW, _pvH max (_rowH * 4)], _ink] call FUNC(drawFill);
-[_body, [_px + _pad, _stripH, _colW - _pad, _rowH], "MESSAGE PREVIEW", _mute, 0.65, true, "left", true] call FUNC(drawText);
+[_body, [_px + _pad, _stripH, _colW - _pad, _rowH], "MESSAGE PREVIEW", _mute, TEXT_BODY, true, "left", true] call FUNC(drawText);
 
 // ONE LIVE CONTROL, updated on every keystroke - "preview should preview the
 // message", in red. The edits' KeyUp harvests and rewrites this in place, so
 // the right column reads back what is being typed as it is typed.
 private _pv = _display ctrlCreate [QGVAR(cell), -1, _body];
 _pv ctrlSetPosition [_px + _pad, _stripH + _rowH, _colW - 2 * _pad, ((_colY # 0) max (_rowH * 8)) - _stripH];
-_pv ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * GVAR(textScale) * GVAR(uiScale));
+_pv ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale) * GVAR(uiScale));
 _pv ctrlCommit 0;
 uiNamespace setVariable [QGVAR(previewCtrl), _pv];
 
 private _pvText = [([GVAR(composeTemplate), GVAR(composeValues) toArray false, false] call EFUNC(messaging,render))] call FUNC(xmlSafe);
 _pv ctrlSetStructuredText parseText format [
-    "<t font='RobotoCondensed' size='0.72' color='%1'>%2</t>",
+    "<t font='RobotoCondensed' size='0.7' color='%1'>%2</t>",
     _ink call BIS_fnc_colorRGBAtoHTML,
     _pvText regexReplace ["\r\n", "<br/>"]
 ];
@@ -635,11 +645,12 @@ _pv ctrlSetStructuredText parseText format [
 private _subject = _template getOrDefault ["subject", ""];
 if (_subject isNotEqualTo "") then {
     private _fy = (_colY # 0) max (_colY # 1);
+    [_body, [0, _fy, _bodyW - _scrollW, _rowH * 0.8 + 2 * _padY], _surface] call FUNC(drawFill);
     [_body, [0, _fy, _bodyW - _scrollW, RULE_THICK * pixelH], _ink] call FUNC(drawFill);
     _fy = _fy + _padY;
-    [_body, [_pad, _fy, _bodyW * 0.1, _rowH * 0.8], "SUBJ", _mute, 0.55, true, "left", true] call FUNC(drawText);
+    [_body, [_pad, _fy, _bodyW * 0.1, _rowH * 0.8], "SUBJ", _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
     [
         _body, [_pad + _bodyW * 0.1, _fy, _bodyW - _scrollW - _bodyW * 0.1 - 2 * _pad, _rowH * 0.8],
-        _subject, _ink, 0.6, true
+        _subject, _ink, TEXT_LABEL, true
     ] call FUNC(drawText);
 };

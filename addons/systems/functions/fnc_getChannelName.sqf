@@ -19,6 +19,9 @@ params [
 
 if (!EGVAR(Patches,usesACRE) && !EGVAR(Patches,usesTFAR)) exitWith {""};
 
+// TFAR: a channel is its number
+if (!EGVAR(Patches,usesACRE)) exitWith {str _channel};
+
 // ACRE
 if (EGVAR(Patches,usesACRE)) exitWith {
     private _radioNameHash = createHashMapFromArray [
@@ -285,9 +288,3 @@ if (EGVAR(Patches,usesACRE)) exitWith {
     
     _return;
 };
-
-// TFAR
-if (EGVAR(patches,usesTFAR)) exitWith { str _channel };
-
-SHOW_CHAT_ERROR("GetChannelName","Fatal");
-""

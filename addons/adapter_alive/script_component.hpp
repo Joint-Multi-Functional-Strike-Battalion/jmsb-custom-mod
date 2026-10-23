@@ -63,3 +63,13 @@
 // title yellow.
 #define HINT_LINE_JOIN " - "
 #define HINT_NOTIFY_COLOUR [1, 0.85, 0.2, 1]
+
+// The support provider this addon registers (EFUNC(support,registerProvider)):
+// its kind is the prefix of every asset id it lists, and the ATO's one row.
+#define SUPPORT_KIND "alive"
+#define SUPPORT_ATO_ID "alive:ato"
+// The order ALiVE's three asset types take in TAC//SUPPORT's ASSET list -
+// transport, CAS, artillery, as the screen has always listed them.
+#define SUPPORT_ORDER_TRANSPORT 10
+#define SUPPORT_ORDER_CAS 20
+#define SUPPORT_ORDER_ARTY 30

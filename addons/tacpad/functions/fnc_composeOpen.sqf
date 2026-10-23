@@ -63,12 +63,14 @@ GVAR(composeToPick) = false;
 GVAR(composeValues) = createHashMap;
 GVAR(composeGridText) = createHashMap;
 GVAR(composeMarker) = "";
-GVAR(composePin) = [];
+GVAR(composePin) = [];
+
 GVAR(composePinPick) = false;
 GVAR(composeTo) = _to;
 GVAR(composeCc) = "";
 GVAR(composeTags) = "";
 GVAR(composeError) = "";
+GVAR(composeMissing) = [];
 
 // An answer handed in by whatever opened this - the casualty a CASEVAC is being
 // filed for, say. A position is shown as its grid, exactly as CURRENT LOC shows

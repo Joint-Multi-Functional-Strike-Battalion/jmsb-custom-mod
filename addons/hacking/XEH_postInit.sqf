@@ -18,7 +18,7 @@ GVAR(tabletPFH) = -1;
 // the device list was never scanned: the tile said a tower was in range and the
 // app said NOTHING IN RANGE, for as long as the mission lasted.
 GVAR(session) = createHashMapFromArray [
-    ["device", objNull], ["kind", ""], ["intel", "picture"],
+    ["device", objNull], ["kind", ""], ["intel", "picture"], ["action", HACK_ACTION_DEFAULT],
     ["running", false], ["progress", 0], ["time", 60], ["range", 20], ["last", 0]
 ];
 
@@ -46,7 +46,21 @@ if (isServer) then {
     ["Hack", _msg, [0.914, 0.651, 0.235, 1]] call EFUNC(notify,notify);
 }] call CBA_fnc_addEventHandler;
 
+// RF REACH: a client with the HACK board open asks, the server answers that
+// client only. See FUNC(rfReach).
+[QGVAR(rfReached), {
+    params [["_list", [], [[]]]];
+    GVAR(rfReach) = _list;
+    GVAR(rfReachTime) = CBA_missionTime;
+}] call CBA_fnc_addEventHandler;
+
 if (isServer) then {
+    [QGVAR(rfReachAsk), {
+        params [["_unit", objNull, [objNull]]];
+        if (isNull _unit) exitWith {};
+        [QGVAR(rfReached), [[_unit] call FUNC(rfReach)], _unit] call CBA_fnc_targetEvent;
+    }] call CBA_fnc_addEventHandler;
+
     [QGVAR(pick), { _this call FUNC(serverPick) }] call CBA_fnc_addEventHandler;
     [QGVAR(remoteFail), { _this call FUNC(remoteHackFail) }] call CBA_fnc_addEventHandler;
 

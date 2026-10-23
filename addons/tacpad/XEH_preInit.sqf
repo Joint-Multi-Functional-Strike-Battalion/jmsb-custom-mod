@@ -21,6 +21,11 @@ GVAR(appHandlers) = createHashMap;
 GVAR(order) = [];
 
 GVAR(open) = createHashMap;
+// THE HOST STARTS AS THE SAFE ZONE. The HOST_* macros index this without
+// checking and FUNC(textH) is called from outside the suite - see FUNC(setHost).
+GVAR(host) = [safeZoneX, safeZoneY, safeZoneW, safeZoneH];
+// The host's fixed panel places, empty on the vanilla map - see FUNC(setHost).
+GVAR(hostPlaces) = createHashMap;
 GVAR(diaryOpen) = false;
 
 // One switch that clears the whole suite off the map, for when the map is
@@ -34,6 +39,13 @@ GVAR(pinned) = [];
 GVAR(readerThread) = "";
 GVAR(readerNet) = "ALL";
 GVAR(readerTab) = "all";
+
+// What the thread list is narrowed to, as typed - see FUNC(readerList).
+GVAR(readerFilter) = "";
+
+// The FLASH banner showing, as [index row, message], [] for none - see
+// FUNC(readerFlash).
+GVAR(readerFlashEntry) = [];
 
 // COMPOSING IS A STATE OF THE RIGHT PANE. `composeOn` is what the pane draws
 // instead of a thread; `composeThread` says whether it is a reply or a new
@@ -98,6 +110,10 @@ GVAR(composePending) = [];
 // dialog, so a dialog is always in front of it - the one message telling you why
 // nothing happened was behind the screen it was about.
 GVAR(composeError) = "";
+
+// The required fields the last refused SEND found empty, framed in the accent
+// on the card until they are filled - see FUNC(composeSend).
+GVAR(composeMissing) = [];
 GVAR(tickPFH) = -1;
 
 ADDON = true;

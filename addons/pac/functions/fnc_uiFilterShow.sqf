@@ -14,11 +14,10 @@
 */
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {""};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {""};
 
 GVAR(uiFilterable) = true;
-private _f = _display displayCtrl PAC_IDC_FILTER;
+private _f = [PAC_IDC_FILTER] call FUNC(uiCtrl);
 [PAC_IDC_FILTER_LABEL, 0.720, 0.114, 0.080, 0.030] call FUNC(uiPlace);
 [_f, 0.808, 0.114, 0.180, 0.030] call FUNC(uiPlace);
 if ((ctrlText _f) isNotEqualTo GVAR(uiFilterText)) then {_f ctrlSetText GVAR(uiFilterText)};

@@ -5,7 +5,7 @@ ADDON = false;
 #include "XEH_PREP.hpp"
 
 // IS ALiVE EVEN HERE. This lived in jmfsb_init's block of ten mod-presence
-// checks - ACE, ACRE, TFAR, Zen and the rest - and it was the last reference to
+// checks - ACE, ACRE, Zen and the rest - and it was the last reference to
 // an ALiVE symbol outside this addon, the one thing keeping the adapter-seam
 // invariant red. It is a data read about ALiVE, which makes it the adapter's by
 // the same rule that brought profileIgnore here.

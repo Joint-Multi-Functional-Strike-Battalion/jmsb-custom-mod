@@ -9,8 +9,9 @@
  * ONLY WHEN IT CHANGES, as the TAC//PAD's channel does: a public variable is a
  * network message, and an unchanged one every few seconds is noise.
  *
- * ACRE: the frequency of the current radio's channel in its preset. TFAR: the
- * active short-wave's frequency. Neither loaded, or nothing in hand: "".
+ * ACRE: the frequency of the current radio's channel in its preset. Game voice
+ * (jmfsb_voice) has nets, not frequencies: the active net instead ("NET C2").
+ * Neither loaded, or nothing in hand / no active net: "".
  *
  * Arguments (CBA per-frame handler):
  * 0: Arguments <ARRAY> - unused
@@ -36,11 +37,10 @@ private _freq = call {
         if !(_mhz isEqualType 0) exitWith {""};
         format ["%1 MHz", _mhz toFixed FREQ_DECIMALS]
     };
-    if (!isNil "TFAR_fnc_activeSwRadio") exitWith {
-        private _radio = call TFAR_fnc_activeSwRadio;
-        if (isNil "_radio") then {_radio = ""};
-        if (_radio isEqualTo "") exitWith {""};
-        format ["%1 MHz", [_radio] call TFAR_fnc_getSwFrequency]
+    if (!isNil QEFUNC(voice,activeNet)) exitWith {
+        private _net = [] call EFUNC(voice,activeNet);
+        if (!(_net isEqualType "") || _net isEqualTo "") exitWith {""};
+        format ["NET %1", _net]
     };
     ""
 };

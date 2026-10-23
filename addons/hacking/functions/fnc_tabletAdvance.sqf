@@ -52,7 +52,7 @@ if (_session getOrDefault ["running", false]) then {
             _session set ["running", false];
             _session set ["progress", 0];
             if (!isNull _device) then { _device setVariable [QGVAR(progress), 0, true] };
-            [_device, _session get "kind", _session get "intel"] call FUNC(hackComplete);
+            [_device, _session get "kind", _session get "intel", _session getOrDefault ["action", HACK_ACTION_DEFAULT]] call FUNC(hackComplete);
         };
     };
 };

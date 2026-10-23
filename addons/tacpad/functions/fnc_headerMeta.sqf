@@ -41,7 +41,7 @@ if (isNull _meta) exitWith {};
 private _color = [[_ink # 0, _ink # 1, _ink # 2, 0.62], _accent] select _alert;
 
 _meta ctrlSetStructuredText parseText format [
-    "<t font='RobotoCondensedBold' size='0.75' align='right' color='%1'>%2</t>",
+    "<t font='RobotoCondensedBold' size='0.7' align='right' color='%1'>%2</t>",
     _color call BIS_fnc_colorRGBAtoHTML,
     [toUpper _text] call FUNC(xmlSafe)
 ];

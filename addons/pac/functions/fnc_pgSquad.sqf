@@ -165,10 +165,10 @@ switch (_s) do {
         private _tf = ["tfarNets"] call _fnc_row;
         [[
             ["acre", "ACRE short range channel  (blank = none)", "t", [str (_acre param [1, ""]), ""] select (_acre isEqualTo [])],
-            ["tfarSw", "TFAR short range  (0-8, blank = none)", "t", [str (_tf param [1, ""]), ""] select (_tf isEqualTo [])],
-            ["tfarLr", "TFAR long range  (0-8)", "t", [str (_tf param [2, ""]), ""] select (_tf isEqualTo [])]
+            ["tfarSw", "Short range net slot  (0-8, blank = none)", "t", [str (_tf param [1, ""]), ""] select (_tf isEqualTo [])],
+            ["tfarLr", "Long range net slot  (0-8)", "t", [str (_tf param [2, ""]), ""] select (_tf isEqualTo [])]
         ], PAC_UI_TOP] call FUNC(uiForm);
-        ["Written to " + _unit + ".radio - srSquadChannel and tfarNets, keyed by the squad's name.", PAC_UI_TOP + 0.12, 0.05, "", PAC_UI_X, PAC_UI_W, true] call FUNC(uiText);
+        ["Written to " + _unit + ".radio - srSquadChannel (ACRE) and tfarNets (the net plan), keyed by the squad's name.", PAC_UI_TOP + 0.12, 0.05, "", PAC_UI_X, PAC_UI_W, true] call FUNC(uiText);
         if !(["radio"] call FUNC(fileFed)) then {
             _btns pushBack ["SAVE CHANNELS", {
                 private _f = [] call FUNC(uiFormRead);

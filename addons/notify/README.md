@@ -20,6 +20,7 @@ from the EW net looks like a warning from the medical page.
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_notify_enabled` | CHECKBOX | Enable stacked notifications |
+| `jmfsb_notify_hidden` | CHECKBOX | Hide notifications |
 | `jmfsb_notify_corner` | LIST | Corner |
 | `jmfsb_notify_maxVisible` | SLIDER | Max on screen |
 | `jmfsb_notify_duration` | SLIDER | Duration (sec) |

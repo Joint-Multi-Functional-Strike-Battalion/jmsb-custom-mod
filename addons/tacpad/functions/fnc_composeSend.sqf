@@ -48,6 +48,15 @@ private _payload = [];
     _payload pushBack [_x, _value];
 } forEach (_template getOrDefault ["order", []]);
 
+// WHICH REQUIRED FIELDS ARE EMPTY, every one of them - the engine's refusal
+// names only the first. FUNC(composeCard) frames each of these in the accent
+// until it is filled (the handoff's SEND validation).
+GVAR(composeMissing) = (_template getOrDefault ["order", []]) select {
+    private _v = GVAR(composeValues) getOrDefault [_x, ""];
+    ((_fields getOrDefault [_x, createHashMap]) getOrDefault ["required", false])
+    && {_v isEqualTo "" || _v isEqualTo false || _v isEqualTo []}
+};
+
 private _threadId = GVAR(composeThread);
 private _addressees = [];
 if (_threadId isEqualTo "") then {
@@ -84,6 +93,7 @@ if (!_ok) exitWith {
 };
 
 GVAR(composeError) = "";
+GVAR(composeMissing) = [];
 
 // KEPT UNTIL THE SERVER HAS AGREED. The server validates again - a thread that
 // closed while the card was open, a template that changed under it - and its
@@ -99,8 +109,10 @@ GVAR(composePending) = [_threadId, GVAR(composeTemplate), +GVAR(composeValues), 
 GVAR(composeOn) = false;
 GVAR(composePick) = false;
 GVAR(composeToPick) = false;
-GVAR(composeMarker) = "";
-GVAR(composePin) = [];
+GVAR(composeMarker) = "";
+
+GVAR(composePin) = [];
+
 GVAR(composePinPick) = false;
 GVAR(composeValues) = createHashMap;
 GVAR(composeGridText) = createHashMap;

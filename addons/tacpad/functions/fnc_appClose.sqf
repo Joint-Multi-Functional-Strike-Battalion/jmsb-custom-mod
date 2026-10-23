@@ -37,8 +37,16 @@ if (_was isEqualTo "" && {isNull _group}) exitWith {false};
 if (!isNull _group) then {ctrlDelete _group};
 uiNamespace setVariable [QGVAR(appGroup), controlNull];
 
-// Nothing is open now, so every refresh loop stands down on its next tick.
+// Nothing is open now, so every refresh loop stands down on its next tick -
+// and no app holds the host's map, so a map click closes again (FUNC(openApp)).
 uiNamespace setVariable [QGVAR(appCurrent), ""];
+uiNamespace setVariable [QGVAR(appMapClaim), ""];
+
+// And the screen that was open hears it, for whatever it keeps off the group -
+// the reader inside the tablet holds the device dialog as its display.
+if (_was isNotEqualTo "") then {
+    [QGVAR(appClosed), [_was]] call CBA_fnc_localEvent;
+};
 
 // The panels come back from their modal hide - see FUNC(openApp).
 {
@@ -49,7 +57,7 @@ uiNamespace setVariable [QGVAR(appCurrent), ""];
 // handlers, and deleting the control that owns the running handler is how
 // closing a window takes the closer with it.
 [{
-    private _map = findDisplay IDD_MAP;
+    private _map = HOST_DISPLAY;
     if (isNull _map) exitWith {};
 
     private _panels = (values (missionNamespace getVariable [QGVAR(open), createHashMap]))

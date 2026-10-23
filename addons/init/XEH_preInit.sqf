@@ -6,8 +6,6 @@
  * now and runs the same order for the same reasons.
  */
 
-diag_log text "[JMFSB-PROBE] jmfsb_init XEH_preInit ran";
-
 ADDON = false;
 
 // Guards the one-shot build in FUNC(missionConfigsReady), which is called from
@@ -30,11 +28,10 @@ EGVAR(patches,usesACETagging)   = isClass (configFile >> "CfgPatches" >> "ace_ta
 EGVAR(patches,usesACEX)         = isClass (configFile >> "CfgPatches" >> "acex_main");
 EGVAR(patches,usesKat)          = isClass (configFile >> "CfgPatches" >> "kat_main");
 EGVAR(patches,usesACRE)         = isClass (configFile >> "CfgPatches" >> "acre_sys_core");
-EGVAR(patches,usesTFAR)         = isClass (configFile >> "CfgPatches" >> "task_force_radio");
+// TFAR (classic or standalone). Then jmfsb_adapter_tfar tunes from the PAC net
+// plan; with neither radio mod voice is game VoIP (jmfsb_voice).
+EGVAR(patches,usesTFAR)         = isClass (configFile >> "CfgPatches" >> "task_force_radio") || {isClass (configFile >> "CfgPatches" >> "tfar_core")};
 EGVAR(patches,usesZen)          = isClass (configFile >> "CfgPatches" >> "zen_main");
-// Simplex Support Services. TAC//SUPPORT is a front end for it and nothing else,
-// so without it there is no app and no tile - see EFUNC(tacpad_apps,appSupport).
-EGVAR(patches,usesSimplex)      = isClass (configFile >> "CfgPatches" >> "sss_main");
 // ALiVE IS DELIBERATELY NOT IN THIS LIST. EGVAR(patches,usesAlive) is set by
 // EFUNC(adapter_alive,XEH_preInit) instead, because that addon is the only one
 // allowed to know ALiVE exists - see addons/adapter_alive. A mission

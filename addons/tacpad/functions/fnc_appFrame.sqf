@@ -16,7 +16,7 @@
  * Arguments:
  * 0: Map display <DISPLAY>
  * 1: Title <STRING>
- * 2: Width in safe-zone fractions <NUMBER> (optional, default 0.34)
+ * 2: Width in safe-zone fractions - on a device host the app takes the whole host <NUMBER> (optional, default 0.34)
  * 3: Height in safe-zone fractions <NUMBER> (optional, default 0.56)
  * 4: Scrolling body <BOOL> (optional, default false)
  *
@@ -47,7 +47,7 @@ if (!isNull _existing) then {ctrlDelete _existing};
 
 private _bx = RULE_THICK * pixelW;
 private _by = RULE_THICK * pixelH;
-private _pad = PAD * safeZoneW;
+private _pad = PAD * HOST_W;
 // THE BAND IS AS TALL AS ITS TEXT LINE, so the body starts BELOW the whole
 // CLOSE hit. The band was the constant alone while the CLOSE hit (created
 // after the body, on top of it - see below) was sized `_headerH max _lineH`:
@@ -56,7 +56,7 @@ private _pad = PAD * safeZoneW;
 // that started on that spill and released a few pixels lower fired neither
 // the close nor the tab: "the my record button is hard to click / nothing
 // happens" (user, 2026-09-05). FUNC(appIdle) already sizes the band this way.
-private _headerH = (HEADER_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH) max ([0.9] call FUNC(textH));
+private _headerH = (HEADER_H * GVAR(textScale) * GVAR(uiScale) * HOST_H) max ([TEXT_TITLE] call FUNC(textH));
 
 // CLAMPED TO THE SCREEN. An app that asks for more height than there is gets
 // centred at a NEGATIVE y - the frame runs off the top and the bottom at once,
@@ -67,12 +67,16 @@ private _headerH = (HEADER_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH) max 
 // A measured app that overflows is an app whose layout is wrong, and clamping
 // does not fix that - but it makes the failure visible as clipping at the bottom
 // edge instead of hiding half the page beyond both edges.
-private _w = (_wf min 1) * safeZoneW;
-private _h = (_hf min 1) * safeZoneH;
+if (HOST_DEVICE) then {
+    _wf = APP_DEVICE_FILL;
+    _hf = APP_DEVICE_FILL;
+};
+private _w = (_wf min 1) * HOST_W;
+private _h = (_hf min 1) * HOST_H;
 
 private _group = _display ctrlCreate [QGVAR(panel), -1];
 _group setVariable [QGVAR(owned), true];   // see FUNC(build)
-_group ctrlSetPosition [safeZoneX + (safeZoneW - _w) / 2, safeZoneY + (safeZoneH - _h) / 2, _w, _h];
+_group ctrlSetPosition [HOST_X + (HOST_W - _w) / 2, HOST_Y + (HOST_H - _h) / 2, _w, _h];
 _group ctrlCommit 0;
 uiNamespace setVariable [QGVAR(appGroup), _group];
 
@@ -88,7 +92,7 @@ _fill ctrlCommit 0;
 // that failure and closes the app itself. Both coordinate readings are
 // tested because the engine's control-event space is the one thing this
 // window cannot see from inside.
-_fill setVariable [QGVAR(headerBand), (HEADER_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH) max ([0.9] call FUNC(textH))];
+_fill setVariable [QGVAR(headerBand), (HEADER_H * GVAR(textScale) * GVAR(uiScale) * HOST_H) max ([TEXT_TITLE] call FUNC(textH))];
 _fill ctrlAddEventHandler ["MouseButtonDown", {
     params ["_ctrl", "_button", "", "_my"];
     if (_button isNotEqualTo 0) exitWith {true};
@@ -109,8 +113,8 @@ _header ctrlSetPosition [_bx, _by, _w - 2 * _bx, _headerH];
 _header ctrlSetBackgroundColor _ink;
 _header ctrlCommit 0;
 
-[_group, [_bx + _pad, _by, (_w - 2 * _bx) * 0.7, _headerH], _title, _ground, 0.9, true] call FUNC(drawText);
-[_group, [_bx + (_w - 2 * _bx) * 0.7, _by, (_w - 2 * _bx) * 0.3 - _pad, _headerH], "CLOSE", _ground, 0.8, true, "right"] call FUNC(drawText);
+[_group, [_bx + _pad, _by, (_w - 2 * _bx) * 0.7, _headerH], _title, _ground, TEXT_TITLE, true] call FUNC(drawText);
+[_group, [_bx + (_w - 2 * _bx) * 0.7, _by, (_w - 2 * _bx) * 0.3 - _pad, _headerH], "CLOSE", _ground, TEXT_TITLE, true, "right"] call FUNC(drawText);
 
 // NO SCROLLBAR BY DEFAULT. An app that knows how many rows it has should be the
 // size of them - a bar down the side of a screen that could have been an inch
@@ -138,7 +142,7 @@ _body ctrlCommit 0;
 // hit is a label drawHit will not claim, which is a CLOSE that eats its own
 // presses. That is "could not close the window", and it only appeared at the
 // text sizes the header was never tested at.
-private _lineH = [0.9] call FUNC(textH);
+private _lineH = [TEXT_TITLE] call FUNC(textH);
 private _closeHit = [_group, [_bx, _by, _w - 2 * _bx, _headerH max _lineH], {
     // ONE TEARDOWN for every way out - see FUNC(appClose).
     [] call FUNC(appClose);

@@ -17,7 +17,11 @@ Description:
     goes on. And every client when it takes the server's structure
     (FUNC(takeServer)).
 
-    RE-PROGRAMMING. gear's setupRadios wrote the ACRE presets from the
+    NETS. The plan's nets (FUNC(netPlan)) are made in RF on the server
+    whenever the plan changed (FUNC(netPlanSync)); nothing is tuned - voice
+    is game VoIP and the plan names nets, not frequencies.
+
+    RE-PROGRAMMING (ACRE only). gear's setupRadios wrote the ACRE presets from the
     globals at postInit, on every machine; a plan that arrives after that
     would leave the presets stale, so when a channel list changed and a
     plan is present the presets are written again. A radio already in
@@ -57,5 +61,7 @@ if (_changed && _hasPlan && {!isNil "jmfsb_gear_fnc_setupRadios"} && {!isNil "jm
     call jmfsb_gear_fnc_setupRadios;
     INFO("radio plan from the structure applied - presets re-programmed");
 };
+
+if (_changed && isServer) then {[] call FUNC(netPlanSync)};
 
 _changed

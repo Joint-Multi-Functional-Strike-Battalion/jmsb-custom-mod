@@ -94,3 +94,10 @@ releases/*
 
 # the server's real CBA settings - carries the database password (template: server/cba_settings.example.sqf)
 server/cba_settings.sqf
+
+# MPU5 radio source model (fbx/blend/obj + textures) - built into the addon, never committed raw
+Radio_MPU5_v01/
+Radio_TrellisWare_v01/
+
+# Claude Code personal settings (local permission rules)
+.claude/settings.local.json

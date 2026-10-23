@@ -9,7 +9,8 @@ class CfgPatches {
         requiredAddons[] = {
             "jmfsb_main",
             "jmfsb_diag",
-            "cba_xeh"
+            "cba_xeh",
+            "cba_settings"
         };
         skipWhenMissingDependencies = 1;
         author = QAUTHOR;

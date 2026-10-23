@@ -56,7 +56,7 @@ class CfgVehicles {
                 displayName = "Drone Class";
                 tooltip = "The airframe, e.g. O_UAV_01_F. Empty flies a UAV belonging to the enemy side, which is the ordinary case. A class that does not exist falls back the same way and says so in the RPT.";
                 typeName = "STRING";
-                defaultValue = "";
+                defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('droneClass',_value)]);
             };
 

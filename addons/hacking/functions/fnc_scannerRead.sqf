@@ -113,20 +113,21 @@ if (!isNil "acre_api_fnc_getCurrentRadio") then {
         // ACRE's getRadioChannel ALREADY RETURNS 1-N ("Channel number, 1-N
         // depending on the radio", api\fnc_getRadioChannel.sqf) - the +1 here
         // is what had the app and the sensor panel reading CH 2 while the
-        // radio in hand said CH 1. TFAR's is zero-based; they are not the
-        // same, which is exactly why this was easy to get wrong.
+        // radio in hand said CH 1.
         _chanText = format ["CH %1", _ch];
         _freqText = if (isNil "_f") then { "-- MHz" } else { format ["%1 MHz", _f] };
     };
 } else {
-    if (!isNil "TFAR_fnc_activeSwRadio") then {
-        private _sw = call TFAR_fnc_activeSwRadio;
-        if (_sw isEqualType "" && _sw isNotEqualTo "") then {
-            private _ch = [_sw] call TFAR_fnc_getSwChannel;
-            private _fr = ([_sw] call TFAR_fnc_getSwSettings) param [0, []];
-            private _f = if (_fr isEqualType [] && {count _fr > _ch}) then { _fr select _ch } else { "--" };
-            _chanText = format ["CH %1", _ch + 1];
-            _freqText = format ["%1 MHz", _f];
+    // GAME VOICE (jmfsb_voice): a net, not a channel, and no frequency - the
+    // second column is whether the net reaches anyone (netState's reachable).
+    if (!isNil QEFUNC(voice,activeNet)) then {
+        private _net = [] call EFUNC(voice,activeNet);
+        if (_net isEqualType "" && _net isNotEqualTo "") then {
+            private _state = if (isNil QEFUNC(voice,netState)) then {[]} else {[] call EFUNC(voice,netState)};
+            private _i = _state findIf {(_x param [0, ""]) isEqualTo _net};
+            private _row = if (_i < 0) then {[]} else {_state select _i};
+            _chanText = _row param [1, _net];
+            _freqText = ["NO LINK", "LINK"] select (_row param [6, false]);
         };
     };
 };

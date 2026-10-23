@@ -14,46 +14,36 @@
  * only "MISSION" counted as busy before, so a helo inbound on a pickup read
  * as idle and the RTB button never armed mid-task.
  *
+ * THE "alive" SUPPORT PROVIDER'S ROW LIST - registered with
+ * EFUNC(support,registerProvider) in XEH_postInit; the support core merges it
+ * with every other provider's. Ids are "alive:<type>:<index>" (NEO) and
+ * "alive:ato" (the ATO), the prefix being the provider kind the core routes on.
+ *
  * Arguments:
  * None
  *
  * Return Value:
  * Assets <ARRAY> of [id, type "cas"|"transport"|"arty", callsign, platform,
  * status "idle"|lowercased FSM token, ordnance [[type, rounds left], ...] -
- * arty only, [] for air, alive gun count - arty only, 0 for air]
+ * arty only, [] for air, alive gun count - arty only, 0 for air, the airframe
+ * <OBJECT> - air only, objNull for arty; a provider may leave it off]
+ *
+ * Example:
+ * call jmfsb_adapter_alive_fnc_supportAssets
  *
  * Public: No
  */
 
-private _test = missionNamespace getVariable [QGVAR(supportAssetsTest), []];
-if (_test isNotEqualTo []) exitWith {_test};
-
-// PROVIDERS OTHER THAN ALiVE, MERGED IN HERE.
-//
-// The support page has one way in and it is this function, so a jmfsb-native
-// asset - a CAS drone module, anything later - has to arrive through it or it
-// does not exist as far as the page is concerned. Naming those systems in this
-// file would put jmfsb addons inside the adapter seam that check_invariants.py
-// exists to keep clean, and the dependency would point the wrong way besides.
-//
-// So the seam grew a registry instead: a provider publishes three pieces of
-// code under a prefix and this merges what they list. This file learns no
-// addon's name, those addons learn no ALiVE name, and the page carries on
-// calling one function.
-//
-// It runs BEFORE the NEO check on purpose. A mission with a CAS module and no
-// ALiVE combat support still has assets, and returning [] there would have
-// hidden them behind somebody else's absence.
-private _extra = [];
-{
-    private _rows = [] call (_y param [0, {[]}]);
-    if (_rows isEqualType []) then {_extra append _rows};
-} forEach (missionNamespace getVariable [QGVAR(providers), createHashMap]);
-
-if (isNil "NEO_radioLogic") exitWith {_extra};
-
+// THE ATO ROW. ALiVE's air tasking order takes CAS requests from the side
+// that publishes it (GVAR(atoPub), see XEH_postInit); it is listed whether or
+// not NEO combat support is running, because the two are separate modules.
 private _side = side group player;
-private _out = +_extra;
+private _out = [];
+if ((toUpper str _side) in (missionNamespace getVariable [QGVAR(atoPub), []])) then {
+    _out pushBack [SUPPORT_ATO_ID, "cas", "ALiVE ATO", "CAS (experimental)", "idle", [], 0];
+};
+
+if (isNil "NEO_radioLogic") exitWith {_out};
 
 {
     _x params ["_arrName", "_type", "_statusVar"];
@@ -83,13 +73,18 @@ private _out = +_extra;
         private _status = ["idle", toLower _raw] select (_raw isNotEqualTo "" && _raw isNotEqualTo "NONE");
 
         _out pushBack [
-            format ["%1:%2", _typeName, _forEachIndex],
+            format ["%1:%2:%3", SUPPORT_KIND, _typeName, _forEachIndex],
             _typeName,
             _callsign,
             _platform,
             _status,
             _ordnance,
-            _guns
+            _guns,
+            // The airframe itself, for the app's map marker and its
+            // PASSENGERS list - an engine object, no ALiVE name crosses the
+            // seam with it. A battery's element 0 is its leader, a man, so
+            // artillery hands over nothing.
+            [_veh, objNull] select (_typeName isEqualTo "arty")
         ];
     } forEach (NEO_radioLogic getVariable [format [_arrName, _side], []]);
 } forEach [

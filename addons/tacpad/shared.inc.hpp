@@ -9,6 +9,41 @@
 // panning and clicking it, and a panel is laid on top rather than replacing it.
 #define IDD_MAP 12
 
+// THE HOST. Where the suite draws, as [x, y, w, h] in screen units, and the
+// display it draws on. In NATIVE mode that is the vanilla map's safe zone and
+// display 12, as it always was. In TABLET mode jmfsb_devices hands over its
+// dialog and the screen rectangle inside the device frame, and every panel,
+// app, row and reader lays itself out inside that instead - the same layout,
+// rescaled. Set by EFUNC(tacpad,setHost); read through these and nothing else.
+//
+// NOTHING IN THE SUITE NAMES safeZone* ANY MORE. A panel that did would draw
+// at monitor size inside a screen two thirds that wide. The one exception is
+// TAC//SUPPORT's dialog, which is a dialog of its own on the NATIVE host only
+// and keeps its safe-zone geometry there. On the tablet it opens no dialog: it
+// draws on the host display like every other app and picks on the host's own
+// map - see IDC_HOST_MAP.
+//
+// THE HOST'S MAP. idc 51 on both hosts - the vanilla map's own control, and
+// the device dialog's screen (jmfsb_devices declares its map with the same
+// idc on purpose). An app that needs map picks claims it through
+// QGVAR(appMapClaim) so the click-outside-closes rule stands down while it
+// holds it - see FUNC(appExits).
+#define IDC_HOST_MAP 51
+//
+// HOST_K scales type with the host. Text is set in pixelGrid units, which know
+// nothing about the host, so a screen 0.65 of the monitor wide would carry
+// full-size type and three words per row. The smaller of the two ratios, so a
+// tall narrow screen gets text that fits its width. 1 on the vanilla map.
+#define HOST_RECT (EGVAR(tacpad,host))
+#define HOST_X (HOST_RECT select 0)
+#define HOST_Y (HOST_RECT select 1)
+#define HOST_W (HOST_RECT select 2)
+#define HOST_H (HOST_RECT select 3)
+#define HOST_K ((HOST_W / safeZoneW) min (HOST_H / safeZoneH))
+#define HOST_DISPLAY (call EFUNC(tacpad,hostDisplay))
+#define HOST_NATIVE (EGVAR(tacpad,displayMode) isEqualTo "native")
+#define HOST_DEVICE (EGVAR(tacpad,displayMode) isNotEqualTo "native")
+
 // Panels get a block of idcs each, so a panel can own its children without
 // asking anyone. 20 is more than any panel needs and keeps the ranges legible
 // in a debug readout.
@@ -90,6 +125,27 @@
 // screen is not the same thing at all. Everything is set about 40% up from the
 // drawn sizes so the proportions survive and the labels can be read.
 #define TEXT_BASE 2.0
+
+// THE TYPE SCALE - one font (RobotoCondensed, bold for emphasis) and these four
+// sizes, as multiples of the body size, for every app on every device (user,
+// 2026-10-21: "make sure all apps have the same font and font size"). There were
+// some forty sizes from 0.5 to 2.4; each is now the role it was nearest to.
+//   LABEL    kickers, small-caps labels, notes and hints
+//   BODY     rows, values, buttons, list and message text
+//   TITLE    app titles, headers, subjects, the emphasised value in a row
+//   DISPLAY  the big read-outs: the timer, a tile's value, a state word
+#define TEXT_LABEL 0.6
+#define TEXT_BODY 0.7
+#define TEXT_TITLE 0.85
+#define TEXT_DISPLAY 1.6
+// LABEL and BODY are drawn this many pixels larger than the scale (FUNC(textSize);
+// user, 2026-10-21: "make the font on all the apps 1px larger, not the headers").
+#define APP_TEXT_PX 1
+// Two pixels more than that for the text the user asked up on 2026-10-22 -
+// the squad rail and the tiles' small lines ("2px larger") - through
+// jmfsb_tacpad_fnc_textPx, whose answer FUNC(textSize) then leaves alone.
+#define TEXT_UP_PX 2
+#define APP_TEXT_UP_PX (APP_TEXT_PX + TEXT_UP_PX)
 
 // Where a panel goes when it has never been placed, as [x, y, w, h] fractions.
 // Taken off the mockup: tiles across the top band, squad down the left rail,
@@ -184,6 +240,9 @@
 #define IDC_RD_INPUT 8902
 #define IDC_RD_ROOT 8903
 #define IDC_RD_CONTENT 8904
+// The thread list's filter box and the FLASH banner (FUNC(readerFlash)).
+#define IDC_RD_FILTER 8905
+#define IDC_RD_FLASH 8906
 
 // COMPOSING IS A STATE OF THE RIGHT PANE, NOT A WINDOW. It was a second dialog
 // over the top of the reader - so sending a report meant closing the traffic you
@@ -193,3 +252,20 @@
 // The message body is the default state. A template is something you INSERT
 // with the TEMPLATE button, the way the design draws it, rather than something
 // you must pick before the screen will let you type a word.
+
+// THE DERIVED THEME STEPS (FUNC(theme)): how far each is mixed from the three
+// tokens. Matched to the handoffs' ramps on Field Grey: accent-100 is ground
+// with a sixteenth of accent, accent-700 is accent a quarter of the way to ink.
+#define TINT_ACCENT 0.06
+#define MIX_ACCENT_HOVER 0.12
+#define MIX_ACCENT_TEXT 0.25
+#define MIX_ACCENT_DEEP 0.5
+#define TINT_SURFACE 0.05
+#define MIX_MUTED 0.3
+#define MIX_DIM 0.45
+
+// The two colour swatches the theme does not already carry - GREEN and YELLOW
+// on a report card's GREEN / YELLOW / RED / BLACK lines (RED is the accent,
+// BLACK the ink). The handoff's oklch(0.55 0.13 145) and oklch(0.78 0.14 85).
+#define SWATCH_GREEN [0.29, 0.58, 0.31, 1]
+#define SWATCH_YELLOW [0.85, 0.68, 0.28, 1]

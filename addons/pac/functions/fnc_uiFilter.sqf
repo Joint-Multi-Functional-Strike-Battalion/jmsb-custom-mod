@@ -14,9 +14,8 @@
 */
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 if !(missionNamespace getVariable [QGVAR(uiFilterable), false]) exitWith {};
 
-GVAR(uiFilterText) = ctrlText (_display displayCtrl PAC_IDC_FILTER);
+GVAR(uiFilterText) = ctrlText ([PAC_IDC_FILTER] call FUNC(uiCtrl));
 [] call FUNC(uiDraw);

@@ -45,9 +45,9 @@ if (isNull _display) exitWith {controlNull};
 
 private _w = (ctrlPosition _body) # 2;
 private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * safeZoneH;
+private _rowH = ROW_H * _scale * HOST_H;
 private _y = _index * _rowH;
-private _pad = PAD * safeZoneW;
+private _pad = PAD * HOST_W;
 
 private _swatchW = 0;
 if (_swatch isNotEqualTo []) then {
@@ -64,18 +64,20 @@ _text ctrlSetPosition [_textX, _y, _w - _textX - _pad, _rowH];
 
 private _colour = [_ink, _accent] select _accented;
 private _line1 = format [
-    "<t font='RobotoCondensed' size='1' color='%1'>%2</t>",
+    "<t font='RobotoCondensed' size='%3' color='%1'>%2</t>",
     _colour call BIS_fnc_colorRGBAtoHTML,
-    [_label] call EFUNC(tacpad,xmlSafe)
+    [_label] call EFUNC(tacpad,xmlSafe),
+    [TEXT_BODY] call EFUNC(tacpad,textSize)
 ];
 if (_value != "") then {
     _line1 = _line1 + format [
-        "<t font='RobotoCondensedBold' size='1' align='right' color='%1'>%2</t>",
+        "<t font='RobotoCondensedBold' size='%3' align='right' color='%1'>%2</t>",
         _ink call BIS_fnc_colorRGBAtoHTML,
-        [_value] call EFUNC(tacpad,xmlSafe)
+        [_value] call EFUNC(tacpad,xmlSafe),
+        [TEXT_BODY] call EFUNC(tacpad,textSize)
     ];
 };
-_text ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * _scale);
+_text ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * HOST_K * _scale);
 _text ctrlSetStructuredText parseText _line1;
 _text ctrlCommit 0;
 

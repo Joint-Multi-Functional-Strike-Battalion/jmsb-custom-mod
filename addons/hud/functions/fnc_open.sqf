@@ -13,6 +13,9 @@
  */
 
 if (!hasInterface || {!GVAR(enabled)}) exitWith {};
+// In tablet mode the device carries these readouts; the HUD is a second copy
+// unless the player asked for it - see the showInTablet setting.
+if (HOST_DEVICE && {!GVAR(showInTablet)}) exitWith {};
 if (!isNull (uiNamespace getVariable [QGVAR(display), displayNull])) exitWith {};
 
 // NOT OUTSIDE A MISSION. CBA settings initialise in the MAIN MENU as well

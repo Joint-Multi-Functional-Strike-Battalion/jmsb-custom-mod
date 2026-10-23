@@ -11,7 +11,8 @@
 
     Parameters:
         0: Who <OBJECT>
-        1: Answers <HASHMAP> - question id -> answer
+        1: Answers <HASHMAP> - question id -> answer (text, or an ARRAY of
+           skill ids for a "skills" question)
 
     Returns:
         Nothing
@@ -36,15 +37,23 @@ if ((GVAR(settings) getOrDefault ["sync", "off"]) isNotEqualTo "service") exitWi
     };
 
     private _questions = [] call FUNC(questionsLoad);
-    // only the questions asked, as text, and every required one answered
+    // only the questions asked, as text, and every required one answered; a
+    // "skills" question's answer is the list of ticked skill ids, kept only
+    // where the unit still has the skill, and required means one ticked
     private _clean = createHashMap;
     private _missing = [];
     {
         private _qid = _x getOrDefault ["id", ""];
         private _a = _answers getOrDefault [_qid, ""];
-        if !(_a isEqualType "") then {_a = str _a};
-        _a = trim _a;
-        if (_a isNotEqualTo "") then {_clean set [_qid, _a select [0, 4000]]};
+        if ((toLower (_x getOrDefault ["type", "text"])) isEqualTo "skills") then {
+            if !(_a isEqualType []) then {_a = []};
+            _a = _a arrayIntersect ((_x getOrDefault ["choices", []]) apply {_x # 0});
+            if (_a isEqualTo []) then {_a = ""} else {_clean set [_qid, _a]};
+        } else {
+            if !(_a isEqualType "") then {_a = str _a};
+            _a = trim _a;
+            if (_a isNotEqualTo "") then {_clean set [_qid, _a select [0, 4000]]};
+        };
         if (_a isEqualTo "" && {(_x getOrDefault ["required", false]) in [true, 1, "1", "true"]}) then {_missing pushBack (_x getOrDefault ["label", _qid])};
     } forEach _questions;
     if (_missing isNotEqualTo []) exitWith {[format ["Still needed: %1.", _missing joinString ", "], true] call _fnc_tell};

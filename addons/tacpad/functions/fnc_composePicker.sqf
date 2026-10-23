@@ -11,7 +11,13 @@
  *
  * A REPLY IS OFFERED ONLY WHAT THE THREAD WILL TAKE. The list comes off the
  * engine's own legality check, so the picker can never show a report the server
- * would refuse.
+ * would refuse - the thread's state (allowedFrom) and, where the cached thread
+ * says who issued and who claimed it, the registry's senderMustBe: WILCO, ON
+ * TASK and CANTCO are the assignee's, CLOSE the issuer's.
+ *
+ * A REPLY WITH NOTHING TO FILL IN IS A TILE, NOT A FORM (the handoff's 1b):
+ * ROGER, WILCO and ON TASK send on the one press and move the thread. The
+ * rest - CANTCO, MESSAGE, CLOSE - open their card as before.
  *
  * Arguments:
  * 0: [x, width, top y] of the pane, in the content group's own coordinates <ARRAY>
@@ -35,20 +41,37 @@ if (isNull _root) exitWith {};
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _h = (ctrlPosition _root) # 3;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
 private _threadId = GVAR(composeThread);
 
+private _thread = createHashMap;
 private _ids = if (_threadId isEqualTo "") then {
     ["root"] call EFUNC(messaging,templateIds)
 } else {
     private _cached = (missionNamespace getVariable [QEGVAR(messaging,cache), createHashMap]) getOrDefault [_threadId, []];
-    private _status = if (_cached isEqualTo []) then {""} else {(_cached # 0) getOrDefault ["status", ""]};
-    ["reply", _status] call EFUNC(messaging,templateIds)
+    if (_cached isNotEqualTo []) then {_thread = _cached # 0};
+    ["reply", _thread getOrDefault ["status", ""]] call EFUNC(messaging,templateIds)
+};
+
+// THE SENDER RULE, as the server reads it (EFUNC(messaging,srvThreadFor)): an
+// unclaimed thread may be answered by anyone it reached, and a thread whose
+// issuer this copy does not know is left for the server to decide.
+if (_threadId isNotEqualTo "") then {
+    private _uid = getPlayerUID player;
+    private _issuer = _thread getOrDefault ["issuerUid", ""];
+    private _claimed = _thread getOrDefault ["claimedBy", ""];
+    _ids = _ids select {
+        switch (([_x] call EFUNC(messaging,template)) getOrDefault ["senderMustBe", "any"]) do {
+            case "issuer": {_issuer in ["", _uid]};
+            case "assignee": {_claimed in ["", _uid]};
+            default {true};
+        }
+    };
 };
 
 // The deck scrolls. It is fifteen cards and counting, and a picker that only
@@ -80,35 +103,47 @@ _ids = _ids select {
 };
 private _cards = (_ids select {_x isNotEqualTo "freetext"}) apply {[_x, [_x] call EFUNC(messaging,template)]};
 
+// ------------------------------------------------------------ one-tap tiles --
+private _tiles = [];
+if (_threadId isNotEqualTo "") then {
+    _tiles = _cards select {((_x # 1) getOrDefault ["order", []]) isEqualTo []};
+    _cards = _cards select {((_x # 1) getOrDefault ["order", []]) isNotEqualTo []};
+};
+
+private _tileY = [_body, _tiles, _bodyW - _scrollW] call FUNC(composeTiles);
+
+private _tagH = ([CARD_TAG_SIZE] call FUNC(textH)) + _padY;
+private _glyph = ([CARD_TAG_SIZE] call FUNC(textH)) / 1.25 * CARD_GLYPH_W * pixelW / pixelH;
+
 {
     _x params ["_id", "_t"];
 
     private _col = _forEachIndex % 2;
     private _cx = _col * (_colW + _pad);
-    private _cy = floor (_forEachIndex / 2) * (_cardH + _pad);
+    private _cy = _tileY + floor (_forEachIndex / 2) * (_cardH + _pad);
 
     private _on = _id isEqualTo GVAR(composeTemplate);
     private _plain = _id isEqualTo "";
     private _fields = count (_t getOrDefault ["order", []]);
-    private _flash = (_t getOrDefault ["priority", "normal"]) isEqualTo "high";
+    private _flash = (_t getOrDefault ["priority", "normal"]) isEqualTo CARD_PRIORITY_HIGH;
 
     if (_on) then {
         [_body, [_cx, _cy, _colW, _cardH], [_accent # 0, _accent # 1, _accent # 2, 0.12]] call FUNC(drawFill);
     };
     [_body, [_cx, _cy, _colW, _cardH], ([_line, _accent] select _on), ([RULE_THIN, RULE_THICK] select _on)] call FUNC(drawFrame);
 
-    // The kicker: what the report is called on the net, and whether sending it
-    // makes somebody's screen go red.
-    [
-        _body, [_cx + _pad, _cy + _padY * 0.5, _colW - 2 * _pad, _rowH * 0.7],
-        [format ["%1%2", _t getOrDefault ["short", _id], ["", " - FLASH"] select _flash], "FREE TEXT"] select _plain,
-        ([_mute, _accent] select _flash), 0.6, true, "left", true
-    ] call FUNC(drawText);
+    // The tag: what the report is called on the net, in the card header's
+    // box - ink, or the accent when sending it makes somebody's screen go red.
+    private _short = toUpper (_t getOrDefault ["short", _id]);
+    private _tagW = ((count _short) * _glyph + 2 * _pad) min (_colW * CARD_TAG_MAX_W * 2);
+    private _tagY = _cy + _padY * 0.5 + (_rowH * 0.7 - _tagH) * 0.5;
+    [_body, [_cx + _pad, _tagY, _tagW, _tagH], [_ink, _accent] select _flash] call FUNC(drawFill);
+    [_body, [_cx + _pad, _tagY, _tagW, _tagH], _short, _ground, CARD_TAG_SIZE, true, "center"] call FUNC(drawText);
 
     [
         _body, [_cx + _pad, _cy + _rowH * 0.85, _colW - 2 * _pad, _rowH],
         [_t getOrDefault ["title", _id], "PLAIN MESSAGE"] select _plain,
-        _ink, 0.95, true
+        _ink, TEXT_TITLE, true
     ] call FUNC(drawText);
 
     [
@@ -118,7 +153,7 @@ private _cards = (_ids select {_x isNotEqualTo "freetext"}) apply {[_x, [_x] cal
         } else {
             [format ["%1 fields to fill", _fields], "Nothing to fill in - one press"] select (_fields isEqualTo 0)
         },
-        _mute, 0.68
+        _mute, TEXT_BODY
     ] call FUNC(drawText);
 
     private _hit = [_body, [_cx, _cy, _colW, _cardH], {
@@ -137,7 +172,7 @@ private _cards = (_ids select {_x isNotEqualTo "freetext"}) apply {[_x, [_x] cal
 // long - PLAIN MESSAGE - and this says why.
 if (_ids isEqualTo []) then {
     [
-        _body, [0, _cardH + _pad + _padY, _bodyW - _scrollW, _rowH],
-        "NO REPORT CAN BE SENT INTO THIS THREAD", _dim, 0.85
+        _body, [0, _tileY + _cardH + _pad + _padY, _bodyW - _scrollW, _rowH],
+        "NO REPORT CAN BE SENT INTO THIS THREAD", _dim, TEXT_TITLE
     ] call FUNC(drawText);
 };

@@ -15,10 +15,9 @@
 params [["_yes", false, [false]]];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
-{(_display displayCtrl _x) ctrlShow false} forEach [
+{([_x] call FUNC(uiCtrl)) ctrlShow false} forEach [
     PAC_IDC_CONFIRM_DIM, PAC_IDC_CONFIRM_BOX, PAC_IDC_CONFIRM_TEXT, PAC_IDC_CONFIRM_YES, PAC_IDC_CONFIRM_NO
 ];
 private _code = GVAR(uiConfirmCode);

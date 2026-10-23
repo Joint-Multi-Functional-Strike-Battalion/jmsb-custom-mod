@@ -9,14 +9,20 @@ if (!hasInterface) exitWith {};
     [] call FUNC(draw);
 }] call CBA_fnc_addEventHandler;
 
-[QGVAR(enabled_changed), {
-    if (GVAR(enabled)) then {
-        [] call FUNC(open);
-        [] call FUNC(draw);
-    } else {
-        [] call FUNC(close);
-    };
-}] call CBA_fnc_addEventHandler;
+// ENABLED, AND WANTED ON THIS HOST. In tablet mode the HUD is off unless the
+// player asked to keep it - see the showInTablet setting - so a display-mode
+// change is the same event as the switch: whichever way it went, the answer to
+// "should the slots be up" may have turned over.
+{
+    [_x, {
+        if (GVAR(enabled) && {HOST_NATIVE || GVAR(showInTablet)}) then {
+            [] call FUNC(open);
+            [] call FUNC(draw);
+        } else {
+            [] call FUNC(close);
+        };
+    }] call CBA_fnc_addEventHandler;
+} forEach [QGVAR(enabled_changed), QEGVAR(tacpad,displayMode_changed)];
 
 // A SCHEME CHANGE REPAINTS THIS TOO. The HUD is drawn in the tacpad's colours,
 // so a player switching to Night Olive on the map screen must not come back to a

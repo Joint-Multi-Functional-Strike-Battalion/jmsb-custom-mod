@@ -17,12 +17,11 @@
 params [["_title", "", [""]], ["_crumb", "", [""]]];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
-(_display displayCtrl PAC_IDC_PAGE_TITLE) ctrlSetStructuredText parseText format [
-    "<t size='1.3' font='RobotoCondensedBold'>%1</t>", [_title] call FUNC(uiEsc)
+([PAC_IDC_PAGE_TITLE] call FUNC(uiCtrl)) ctrlSetStructuredText parseText format [
+    "<t size='0.85' font='RobotoCondensedBold'>%1</t>", [_title] call FUNC(uiEsc)
 ];
-(_display displayCtrl PAC_IDC_CRUMB) ctrlSetStructuredText parseText format [
+([PAC_IDC_CRUMB] call FUNC(uiCtrl)) ctrlSetStructuredText parseText format [
     "<t color='#8b97a3'>%1</t>", [_crumb] call FUNC(uiEsc)
 ];

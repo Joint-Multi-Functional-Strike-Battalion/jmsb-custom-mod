@@ -44,6 +44,9 @@ All of these, every frame - the moment one fails, the overlay and the HUD go:
 - the player is alive and is the camera, on foot or in his own vehicle
 - Zeus is not open - opening it turns ECOTI off, closing it brings it back
 - the map is not open - opening it hides the boxes, closing it brings them back (user, 2026-10-17)
+- no dialog is open - the tablet or any other dialog hides the boxes and the compass. The hide runs on
+  EachFrame, not in the Draw3D handler: Arma stops calling Draw3D while the map is up, so a hide there
+  left the last boxes on screen over the map and the tablet (user, 2026-10-20)
 - he is wearing an opted-in NVG in **NVG mode** - or in day mode too when it says `jmfsb_ecoti_day = 1` (never TI)
 
 ## What it draws
@@ -83,8 +86,8 @@ ACE  A C E                       his ACE report, each letter coloured
 Rank and role names, the health test, the channel and the ACE report are the
 TAC//PAD squad page's own, so the card and the table never disagree. The
 frequency is ECOTI's: each player publishes his own current frequency (ACRE:
-the channel's in his radio's preset; TFAR: the active short-wave's), only when
-it changes. Without the TAC//PAD nobody is on the net and there are no cards.
+the channel's in his radio's preset; game voice has no frequency, so his active
+net instead, `NET C2`), only when it changes. Without the TAC//PAD nobody is on the net and there are no cards.
 
 Hostile is `getFriend` below 0.6 from the player's side. A vehicle is what its
 commander is, and red if any civilian aboard is armed. Colour is worked out
@@ -119,6 +122,17 @@ nothing is held on screen. Against flicker it appears once 15% of the target
 shows and goes below 5%, so a ray grazing a leaf edge does not blink it. A
 box's brightness is its range only.
 
+## Compass
+
+A DUI-style line compass across the top centre of the screen (user,
+2026-10-19), shown exactly when the boxes could be - AiTR on, no dialog over
+it - whether or not anything is in range, and only with *Show AiTR compass*
+(each player's own setting, on by default). A tick every 5 degrees, a label
+every 15 (N, NE, E... by name, the rest as bearings), fading toward the ends;
+at the centre a marker and the three-digit heading the camera faces, both in
+the TAC//PAD colour scheme's accent (white without the TAC//PAD). Like the
+boxes it is controls on the mission display, drawn from the same Draw3D.
+
 ## Cost
 
 One Draw3D handler that draws from caches only - three projections and five
@@ -136,7 +150,7 @@ refreshed every 0.2 s and no frame checks them all.
 
 ## Ships
 
-16 functions.
+18 functions.
 
 ## CBA settings
 
@@ -154,11 +168,13 @@ refreshed every 0.2 s and no frame checks them all.
 
 ## Functions
 
-<details><summary>16</summary>
+<details><summary>18</summary>
 
 - `jmfsb_ecoti_fnc_boxRect`
 - `jmfsb_ecoti_fnc_draw`
 - `jmfsb_ecoti_fnc_drawBoxes`
+- `jmfsb_ecoti_fnc_drawCompass`
+- `jmfsb_ecoti_fnc_hideCovered`
 - `jmfsb_ecoti_fnc_isActive`
 - `jmfsb_ecoti_fnc_isFullScreen`
 - `jmfsb_ecoti_fnc_labelText`

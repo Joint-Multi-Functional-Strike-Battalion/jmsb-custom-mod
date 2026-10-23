@@ -11,6 +11,11 @@
  * machine builds the same history off the same leader positions, so the trail
  * costs nothing on the network.
  *
+ * Every position is the man's GPS one (jmfsb_ew_fnc_gpsOf, when EW is
+ * loaded): a group whose GPS is spoofed is tracked where its sets say it is.
+ * A man whose GPS is denied still counts at his true position - the group
+ * marker never vanishes because one set lost its lock.
+ *
  * Arguments:
  * 0: Group <GROUP>
  *
@@ -25,10 +30,21 @@
 
 params ["_group"];
 
+private _ew = !isNil QEFUNC(ew,gpsOf);
+private _fnc_at = {
+    params ["_unit"];
+    private _at = position _unit;
+    if (_ew) then {
+        private _offset = ([_unit] call EFUNC(ew,gpsOf)) select 1;
+        _at = _at vectorAdd [_offset select 0, _offset select 1, 0];
+    };
+    _at
+};
+
 private _fnc_weightedAverage = {
     params ["_group"];
 
-    private _position = position leader _group;
+    private _position = [leader _group] call _fnc_at;
     // Starting weight: the number of times the leader's own position counts, so
     // a straggler cannot drag the marker off the body of the group.
     private _weight = 3 * (count units _group);
@@ -43,8 +59,8 @@ private _fnc_weightedAverage = {
         // Each unit pulls the marker towards itself, less and less as the
         // running total grows.
         _position = [
-            (((_position select 0) * _weight) + ((position _x) select 0)) / (_weight + 1),
-            (((_position select 1) * _weight) + ((position _x) select 1)) / (_weight + 1)
+            (((_position select 0) * _weight) + (([_x] call _fnc_at) select 0)) / (_weight + 1),
+            (((_position select 1) * _weight) + (([_x] call _fnc_at) select 1)) / (_weight + 1)
         ];
 
         _weight = _weight + 1;
@@ -53,7 +69,7 @@ private _fnc_weightedAverage = {
     _position
 };
 
-private _position = position leader _group;
+private _position = [leader _group] call _fnc_at;
 
 switch (GVAR(trackingMode)) do {
     case "weightedAverage": {

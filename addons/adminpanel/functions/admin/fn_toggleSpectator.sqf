@@ -38,4 +38,4 @@ if !(_spectatorActive) then {
     };
 };
 
-closeDialog 2;
+(uiNamespace getVariable ['admp_displayVar', displayNull]) closeDisplay 2; // the console, a dialog or a child of the tablet

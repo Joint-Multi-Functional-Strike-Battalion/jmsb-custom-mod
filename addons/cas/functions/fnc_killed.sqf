@@ -32,6 +32,7 @@ private _max = _logic getVariable [QGVAR(airframes), 3];
 private _callsign = _logic getVariable [QGVAR(callsign), "CAS"];
 
 _logic setVariable [QGVAR(lost), _lost, true];
+_logic setVariable [QGVAR(plan), [], true];
 
 if (_max > 0 && _lost >= _max) then {
     _logic setVariable [QGVAR(status), "expended", true];

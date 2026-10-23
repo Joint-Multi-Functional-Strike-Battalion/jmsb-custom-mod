@@ -1,8 +1,13 @@
 #include "script_component.hpp"
 /*
  * Author: JMSB
- * The map opened. Builds every panel the player has switched on, then starts
+ * The host opened. Builds every panel the player has switched on, then starts
  * the one refresh loop they all share.
+ *
+ * THE HOST IS THE MAP OR A DEVICE. On the vanilla map this runs off the Map
+ * event and lays out in the safe zone. In tablet mode jmfsb_devices calls it
+ * after FUNC(setHost) has handed over its dialog and screen rectangle, and the
+ * same panels are built there - see shared.inc.hpp.
  *
  * One loop, not one per panel: eight per-frame handlers ticking at eight
  * different periods is eight chances to leave one running after the map shuts,
@@ -19,7 +24,13 @@
 
 if (!hasInterface || {!GVAR(enabled)}) exitWith {};
 
-private _display = findDisplay IDD_MAP;
+// The native host is the safe zone as it is NOW - a resolution change between
+// two map opens would otherwise lay the suite out for the old one.
+if (HOST_NATIVE) then {
+    [] call FUNC(setHost);
+};
+
+private _display = HOST_DISPLAY;
 if (isNull _display) exitWith {};
 
 [] call FUNC(close);
@@ -52,6 +63,12 @@ private _built = 0;
         // second time to bring everything back.
         if (GVAR(hideAll) && {!(_x in GVAR(pinned))}) then {_wanted = false};
 
+        // NOT ON THIS DEVICE. A host's layout table maps a panel to [] when
+        // the device has no place for it: the tablet draws the live tiles in
+        // its own row, and the vehicle tablet shows ON BOARD where the squad
+        // rail would be - see FUNC(setHost).
+        if (_x in GVAR(hostPlaces) && {(GVAR(hostPlaces) get _x) isEqualTo []}) then {_wanted = false};
+
         if (_wanted) then {
             [_display, _panel] call FUNC(build);
             _built = _built + 1;
@@ -59,6 +76,7 @@ private _built = 0;
     };
 } forEach GVAR(order);
 
+INFO_3("open: %1 panel(s) built on host %2 (%3 registered)",_built,GVAR(host),count GVAR(order));
 if (_built == 0) exitWith {};
 
 // THE OPEN APP GOES BACK ON TOP. Every panel has just been created, which makes
@@ -73,7 +91,7 @@ if (_app isNotEqualTo "") then {
 GVAR(tickPFH) = [{
     params ["", "_handle"];
 
-    if (isNull (findDisplay IDD_MAP)) exitWith {
+    if (isNull (HOST_DISPLAY)) exitWith {
         [_handle] call CBA_fnc_removePerFrameHandler;
         GVAR(tickPFH) = -1;
     };

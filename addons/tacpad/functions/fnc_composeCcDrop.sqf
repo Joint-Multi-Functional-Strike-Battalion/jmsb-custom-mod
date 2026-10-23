@@ -75,7 +75,7 @@ _drop params ["_dx", "_dy", "_dw", "_rowH"];
 
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent"];
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
-private _pad = PAD * safeZoneW;
+private _pad = PAD * HOST_W;
 
 // OPAQUE, whatever the player's map opacity is. The theme's ground carries that
 // opacity, and a see-through dropdown over the rows it covers cannot be read.
@@ -103,8 +103,8 @@ _ctrl setVariable [QGVAR(ccList), _list];
         default {"NET"};
     };
 
-    [_list, [_pad, _ry, _dw * 0.68, _rowH], _label, _ink, 0.7] call FUNC(drawText);
-    [_list, [_dw * 0.7, _ry, _dw * 0.3 - _pad, _rowH], _kind, _mute, 0.55, true, "right", true] call FUNC(drawText);
+    [_list, [_pad, _ry, _dw * 0.68, _rowH], _label, _ink, TEXT_BODY] call FUNC(drawText);
+    [_list, [_dw * 0.7, _ry, _dw * 0.3 - _pad, _rowH], _kind, _mute, TEXT_LABEL, true, "right", true] call FUNC(drawText);
 
     private _hit = [_list, [0, _ry, _dw, _rowH], {
         params ["_row"];

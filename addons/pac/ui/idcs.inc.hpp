@@ -15,6 +15,12 @@
 #define PAC_IDC_WHO             6
 #define PAC_IDC_CLOSE           7
 
+// THE SHELL GROUP every control above and below is a child of - ui/pac.inc.hpp,
+// GVAR(shell). In the dialog it is the whole screen; inside the tablet it is
+// ctrlCreate'd onto the device dialog at the tablet's map area (FUNC(uiHost)).
+// Every control is found through it (FUNC(uiCtrl)), never through the display.
+#define PAC_IDC_SHELL           8
+
 // The nav bar - the website's, in its order. Ten slots; the pages a mission
 // without the service cannot serve are hidden and the rest close up.
 #define PAC_IDC_NAV1            10
@@ -59,7 +65,10 @@
 #define PAC_IDC_TILE_TXT1       48
 #define PAC_IDC_TILE_TXT2       49
 #define PAC_IDC_TILE_TXT3       50
-#define PAC_IDC_TILE_TXT4       51
+// 58, not 51: inside the tablet these controls live on the device dialog,
+// whose map is idc 51 - and a second 51 there is a displayCtrl coin toss for
+// everything that looks the map up.
+#define PAC_IDC_TILE_TXT4       58
 #define PAC_IDC_TILE_BG5        52
 #define PAC_IDC_TILE_BG6        53
 #define PAC_IDC_TILE_LINE5      54

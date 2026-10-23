@@ -18,6 +18,8 @@ Parameters:
 Returns:
     ARRAY - [[_object, _kind, _label, _distance, _range], ...]
             _kind is "tower" | "drone" | "wreck" | "unit".
+            A "unit" is a net: a man's handset, or a crewed vehicle that RF
+            says carries a set (GVAR(rfReach)) - its crew's net.
 
 Author:
     JMSB
@@ -104,6 +106,29 @@ if (missionNamespace getVariable [QGVAR(remoteHackEnabled), false]) then {
             };
         };
     } forEach (_unit nearEntities ["Man", _range]);
+
+    // A VEHICLE CARRYING A SET is a net too - its crew's - when RF says the
+    // operator's set hears it (GVAR(rfReach), the server's answer while the
+    // HACK board is open). A crew whose net already has a handset listed
+    // keeps that entry. Same reach, same scope, never your own group.
+    {
+        _x params [["_holder", objNull, [objNull]]];
+        if (isNull _holder || _holder isKindOf "CAManBase" || !alive _holder) then {continue};
+        private _boss = effectiveCommander _holder;
+        if (isNull _boss || !alive _boss) then {continue};
+        private _grp = group _boss;
+        private _theirSide = side _grp;
+        private _hostile = _theirSide getFriend _mySide < 0.6;
+        private _civ = _theirSide isEqualTo civilian;
+        private _inScope = switch (_scope) do {
+            case 1: {_hostile || _civ};
+            case 2: {true};
+            default {_hostile && !_civ};
+        };
+        private _d = _unit distance _holder;
+        if (!_inScope || _grp isEqualTo _myGroup || _d > _range || (str _grp) in _byGroup) then {continue};
+        _byGroup set [str _grp, [_holder, _d, _grp]];
+    } forEach GVAR(rfReach);
 
     {
         _y params ["_man", "_d", "_grp"];

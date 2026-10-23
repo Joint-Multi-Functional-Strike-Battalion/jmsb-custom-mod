@@ -37,7 +37,7 @@ if (_handler isEqualTo {}) exitWith {
     false
 };
 
-private _display = findDisplay IDD_MAP;
+private _display = HOST_DISPLAY;
 if (isNull _display) exitWith {false};
 
 // A STALE REOPEN IS REFUSED BEFORE IT TOUCHES ANYTHING. Every redraw in the
@@ -53,6 +53,14 @@ if ((uiNamespace getVariable [QGVAR(appCurrent), ""]) isNotEqualTo _app && {!_fr
     private _current = uiNamespace getVariable [QGVAR(appCurrent), ""];
     INFO_2("stale reopen of '%1' refused - the open app is '%2'",_app,_current);
     false
+};
+
+// THE APP IT REPLACES HEARS THAT IT HAS GONE. Its group is deleted by
+// FUNC(appFrame) below; a screen that keeps state of its own off the group -
+// the reader's display, inside the tablet - drops it on this event.
+private _was = uiNamespace getVariable [QGVAR(appCurrent), ""];
+if (_was isNotEqualTo "" && _was isNotEqualTo _app) then {
+    [QGVAR(appClosed), [_was]] call CBA_fnc_localEvent;
 };
 
 // WHICH APP IS OPEN, WRITTEN DOWN BEFORE IT OPENS. A live app refreshes itself
@@ -96,37 +104,10 @@ try {
 } forEach values (missionNamespace getVariable [QGVAR(open), createHashMap]);
 
 // TWO WAYS OUT, HUNG ON THE DISPLAY ITSELF - the user's call: no panic
-// button, a page closes the way every other window in the game closes.
-//
-//   ESC          closes the app and NOT the map. Without the consume, one
-//                press would shut both and the player would lose the map
-//                they were reading.
-//   map click    a press that reaches the map control is by definition
-//                outside the app - the app's own ground eats everything
-//                inside it - so it means "I am done with this".
-//
-// Once per display, not once per open: a handler added on every open is a
-// handler that fires as many times as the app has been opened.
-if (!(_display getVariable [QGVAR(exitWired), false])) then {
-    _display setVariable [QGVAR(exitWired), true];
-
-    _display displayAddEventHandler ["KeyDown", {
-        params ["", "_key"];
-        // 1 is ESC - the same literal FUNC(openReader) closes on.
-        if (_key isNotEqualTo 1) exitWith {false};
-        [] call FUNC(appClose)
-    }];
-
-    // 51 is the map control on the map display.
-    private _map = _display displayCtrl 51;
-    if (!isNull _map) then {
-        _map ctrlAddEventHandler ["MouseButtonDown", {
-            params ["", "_button"];
-            if (_button isNotEqualTo 0) exitWith {false};
-            [] call FUNC(appClose)
-        }];
-    };
-};
+// button, a page closes the way every other window in the game closes. ESC
+// and a press on the map, once per display - see FUNC(appExits), which a
+// self-drawn screen adopted with FUNC(appHost) shares.
+[_display] call FUNC(appExits);
 
 [QGVAR(appOpened), [_app, _args]] call CBA_fnc_localEvent;
 

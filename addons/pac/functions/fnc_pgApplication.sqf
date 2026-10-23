@@ -27,19 +27,28 @@ private _status = _app getOrDefault ["status", "new"];
 
 private _answers = _app getOrDefault ["answers", createHashMap];
 if !(_answers isEqualType createHashMap) then {_answers = createHashMap};
+// a "skills" answer is a list of skill ids - named off the question's choices, else the structure
+private _fnc_text = {
+    params ["_a", ["_choices", []]];
+    if (_a isEqualType "") exitWith {_a};
+    if !(_a isEqualType []) exitWith {str _a};
+    private _names = createHashMapFromArray _choices;
+    (_a apply {
+        private _sid = if (_x isEqualType "") then {_x} else {str _x};
+        _names getOrDefault [_sid, ["skills", _sid] call FUNC(lookup)]
+    }) joinString ", "
+};
 private _rows = [];
 private _seen = [];
 {
     private _qid = _x getOrDefault ["id", ""];
     _seen pushBack _qid;
-    private _a = _answers getOrDefault [_qid, ""];
-    if !(_a isEqualType "") then {_a = str _a};
+    private _a = [_answers getOrDefault [_qid, ""], _x getOrDefault ["choices", []]] call _fnc_text;
     _rows pushBack [[_x getOrDefault ["label", _qid], _a], ""];
 } forEach (GVAR(uiData) getOrDefault ["questions", []]);
 {
     if !(_x in _seen) then {
-        private _a = _answers get _x;
-        if !(_a isEqualType "") then {_a = str _a};
+        private _a = [_answers get _x] call _fnc_text;
         _rows pushBack [[format ["%1 (question removed)", _x], _a], "", [0.545, 0.592, 0.639, 1]];
     };
 } forEach (keys _answers);

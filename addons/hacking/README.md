@@ -15,6 +15,18 @@ circle down a size, and the throw is cached per tier so repetition CONFIRMS
 without ever narrowing - which closes the intersect-three-circles exploit while
 leaving cross-tier overlap working as intended.
 
+**SPOOF** (2026-10-20). A unit's net - an enemy handset, or a crewed vehicle
+the operator's set hears carrying an RF set (`jmfsb_hacking_rfReach`, the HACK
+board's RF answer) - can be broken into for a GPS spoof instead of a product:
+the HACK app's ACTIONS row picks TAP or SPOOF (`fnc_canSpoof`,
+`fnc_tabletSelectAction`, kept in the session as `action`). The hack itself is
+unchanged - same reach, clock, ISR and condition gates, fail roll and net
+detection roll; only completion differs: `fnc_hackComplete` hands the net's
+group to `jmfsb_ew_fnc_spoofNode`, whose spoof engine walks every man's GPS
+off true for its own setting's length. Their BFT dots and their DF cuts follow
+the false fix, so the fixes their side makes land off target. No `jmfsb_ew`:
+SPOOF is not offered.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -28,7 +40,7 @@ leaving cross-tier overlap working as intended.
 
 ## Ships
 
-2 unit classes, 4 weapon/item classes, 58 functions.
+2 unit classes, 4 weapon/item classes, 61 functions.
 
 ## Eden modules
 
@@ -69,7 +81,7 @@ Puts an intel package on a device. Hacking that device hands over a share of it.
 
 ## Functions
 
-<details><summary>58</summary>
+<details><summary>61</summary>
 
 - `jmfsb_hacking_fnc_alarmAdd`
 - `jmfsb_hacking_fnc_alarmArm`
@@ -79,6 +91,7 @@ Puts an intel package on a device. Hacking that device hands over a share of it.
 - `jmfsb_hacking_fnc_canHack`
 - `jmfsb_hacking_fnc_canPlaceDrop`
 - `jmfsb_hacking_fnc_canSearch`
+- `jmfsb_hacking_fnc_canSpoof`
 - `jmfsb_hacking_fnc_depositIntel`
 - `jmfsb_hacking_fnc_droneTag`
 - `jmfsb_hacking_fnc_hackComplete`
@@ -111,6 +124,7 @@ Puts an intel package on a device. Hacking that device hands over a share of it.
 - `jmfsb_hacking_fnc_productPackage`
 - `jmfsb_hacking_fnc_remoteHackFail`
 - `jmfsb_hacking_fnc_renderProduct`
+- `jmfsb_hacking_fnc_rfReach`
 - `jmfsb_hacking_fnc_scanDevices`
 - `jmfsb_hacking_fnc_scannerAlarm`
 - `jmfsb_hacking_fnc_scannerClose`
@@ -124,6 +138,7 @@ Puts an intel package on a device. Hacking that device hands over a share of it.
 - `jmfsb_hacking_fnc_tabletAction`
 - `jmfsb_hacking_fnc_tabletAdvance`
 - `jmfsb_hacking_fnc_tabletInRange`
+- `jmfsb_hacking_fnc_tabletSelectAction`
 - `jmfsb_hacking_fnc_tabletSelectDevice`
 - `jmfsb_hacking_fnc_tabletSelectIntel`
 - `jmfsb_hacking_fnc_taorType`

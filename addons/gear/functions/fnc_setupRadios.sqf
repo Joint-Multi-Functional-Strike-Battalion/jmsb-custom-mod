@@ -16,8 +16,23 @@
  * Public: No
  */
 
+// ACRE programs its presets here; TFAR gets its side default frequencies
+// from the PAC net plan (jmfsb_adapter_tfar_fnc_sideDefaults). Game voice
+// (jmfsb_voice) has no radio to program: nets come from the PAC plan.
 if (!EGVAR(Patches,usesACRE) && !EGVAR(Patches,usesTFAR)) exitWith {};
 if (!EGVAR(Settings,enableRadios)) exitWith {};
+
+// TFAR - the side defaults issued radios inherit, from the net plan. (Per-set
+// tuning to the player's own nets happens in fn_setRadioChannel.) TFAR
+// STANDALONE HAS NO TFAR_fnc_setSideRadioSettings: its side defaults are the
+// globals its client init reads when a radio is issued.
+if (!EGVAR(patches,usesACRE)) exitWith {
+    if (isNil QEFUNC(adapter_tfar,sideDefaults)) exitWith {
+        SHOW_WARNING("GearRadio","TFAR loaded without jmfsb_adapter_tfar: side radio frequencies left as TFAR has them.");
+    };
+    [] call EFUNC(adapter_tfar,sideDefaults);
+    SHOW_INFO("GearRadio","TFAR side radio frequencies set from the net plan.");
+};
 
 // ACRE
 if (EGVAR(patches,usesACRE)) exitWith {
@@ -216,13 +231,3 @@ if (EGVAR(patches,usesACRE)) exitWith {
 
     } forEach (_srradios + _mrradios + _lrradios);
 };
-
-// TFAR - push the SW/LR channel plans as the side defaults so issued radios inherit them.
-// (Per-radio tuning to the player's own net happens in fn_setRadioChannel.)
-if (EGVAR(patches,usesTFAR)) exitWith {
-    ["west", "sr", jmfsbFR_radio_tfarSrFreqs] call TFAR_fnc_setSideRadioSettings;
-    ["west", "lr", jmfsbFR_radio_tfarLrFreqs] call TFAR_fnc_setSideRadioSettings;
-    SHOW_INFO("GearRadio","TFAR side radio frequencies set.");
-};
-
-SHOW_CHAT_ERROR("GearRadio","Fatal");

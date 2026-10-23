@@ -28,6 +28,21 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 1 unit class, 2 functions.
 
+## Eden modules
+
+### JMSB - ACM Evacuation Zone
+
+`jmfsb_acm_moduleEvacZone`, category jmfsb_modules
+
+Any AI that enters the area is evacuated with ACM's evacuation: removed from the mission, out of a vehicle if it is in one, and a converted casualty returns its casualty ticket. Players are never touched. The zone is marked on everyone's map (EVAC).
+
+<details><summary>2 attributes</summary>
+
+- `interval`
+- `who`
+
+</details>
+
 ## Functions
 
 <details><summary>2</summary>

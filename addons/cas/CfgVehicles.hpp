@@ -71,7 +71,7 @@ class CfgVehicles {
             class spawnDistance: Edit {
                 property = QGVAR(spawnDistance);
                 displayName = "Ingress Distance (m)";
-                tooltip = "How far out the drone appears on the requested ingress bearing, and how far it runs on the egress bearing before it despawns.";
+                tooltip = "How far out the drone appears on the requested ingress bearing, and how far it runs on the egress bearing before the asset is free again. It then flies on off the map edge and despawns there.";
                 typeName = "NUMBER";
                 defaultValue = "4000";
                 expression = QUOTE(_this setVariable [ARR_2('spawnDistance',_value)]);
@@ -127,16 +127,16 @@ class CfgVehicles {
             description[] = {
                 "One taskable CAS drone on the support page. Place one module per airframe - many are allowed, and each is its own asset with its own losses.",
                 "",
-                "The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing.",
+                "The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing - off the map edge, where it despawns.",
                 "",
                 "ORDNANCE on the support page lists what THIS airframe is carrying, by name - the run uses the heaviest thing aboard unless one is picked.",
                 "",
-                "LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs a UAV terminal and the isISR variable. RTB ends it.",
+                "LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs the UAV operator trait and the isISR variable, no UAV terminal. RTB ends it.",
                 "",
                 "Airframe Class - Classname of the fixed-wing drone; blank for the side's vanilla UCAV",
                 "Callsign - What the support page and the radio call it",
                 "Airframes Available - How many times it may be shot down before the asset is expended; 0 for unlimited",
-                "Ingress Distance (m) - How far out it appears, and how far it runs before despawning",
+                "Ingress Distance (m) - How far out it appears, and how far past the target it runs before the asset is free again",
                 "Attack Altitude (m) - Height above the terrain (ATL) the run is flown at",
                 "Run Speed (km/h) - Capped at the airframe's own maximum",
                 "Response Delay (sec) - Time from accepted request to the aircraft appearing",

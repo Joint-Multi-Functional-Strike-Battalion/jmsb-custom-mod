@@ -51,6 +51,7 @@ if (!isClass (missionConfigFile >> "CfgGFA_PAC")) exitWith {
 };
 
 GVAR(bootLog) = [];
+GVAR(bootT0) = diag_tickTime;         // FUNC(bootLog) stamps every .rpt line with the time since this
 GVAR(bootDocs) = [];
 GVAR(bootStep) = 0;
 publicVariable QGVAR(bootDocs);
@@ -143,6 +144,10 @@ if (_service) then {
 
     ["3/6", format ["service: reading the config, one document per file - '%1.settings' .ranks .skills .awards .statuses .admins .nets .radio .orbat .templates .schemes, every '%1.role.*' and every '%1.opord.*' (each up to %2 s)", _unit, PAC_SVC_TIMEOUT]] call FUNC(bootLog);
     ([] call FUNC(svcStructure)) params ["_doc", "_status"];
+    // FUNC(bootDoc) publishes the checklist at most every PAC_BOOT_PUBLISH_EVERY
+    // seconds; this is the last word on it, so no client is left on a stale tick.
+    publicVariable QGVAR(bootDocs);
+    publicVariable QGVAR(bootStep);
     switch (_status) do {
         case "ok": {
             if ([_doc] call FUNC(structureAdopt)) then {

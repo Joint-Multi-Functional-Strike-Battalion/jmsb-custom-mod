@@ -22,11 +22,15 @@
 #define JAMMER_PRUNE_INTERVAL   10      // sec between server jammer-liveness re-broadcasts
 #define JAMMER_EFFECTIVE_FRAC   0.4     // inner fraction of a jammer radius that is full-strength
 
-// TFAR interference levers (Crows-Electronic-Warfare, APL-SA)
-#define TFAR_RX_FULL            100     // receiving distance mult at full jam
-#define TFAR_TX_FULL            0.05    // sending distance mult at full jam (1/20)
-#define TFAR_RX_FALLOFF_NEAR    20      // rx mult at inner edge of falloff band
-#define TFAR_RX_FALLOFF_FAR     1       // rx mult at outer edge (no jam)
+// RADIO AND DATA ZONES ARE RF NOISE (2026-10-19). FUNC(rfNoise) is registered
+// with jmfsb_rf_fnc_addNoiseSource: a radio zone adds noise on the voice
+// bands, a data zone on the band of RF's DATA net, at the module's dBm at the
+// core scaled by the zone's own factor (10 log10 f). Game voice feels it
+// through RF link quality in jmfsb_voice - this addon touches no voice code.
+// GPS stays here (FUNC(gpsApply)).
+#define JAM_RF_CORE_DBM         -40
+#define JAM_RF_RADIO_BANDS      ["VHF", "UHF"]
+#define JAM_RF_DATA_NET         "DATA"
 
 // ACRE2 jamming levers - fraction of received signal STRENGTH removed, applied
 // through acre_api_fnc_setCustomSignalFunc (strengthPct *= 1 - frac).
@@ -96,7 +100,7 @@
 
 // THE THREE DOMAINS (user, 2026-08-31). A zone denies one or more of them, and
 // every consumer asks about the one it cares about rather than about "jamming".
-//   radio - the voice net: TFAR and ACRE degradation
+//   radio - the voice net: game voice (through RF) and ACRE degradation
 //   data  - TAC//MSG traffic and other groups' BFT markers
 //   gps   - the GPS item and the map self-icon
 // DOM_ANY is not a domain a zone can carry; it is the question the HUD and the

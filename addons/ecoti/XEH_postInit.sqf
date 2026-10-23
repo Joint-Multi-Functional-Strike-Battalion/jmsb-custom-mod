@@ -7,6 +7,10 @@ if (!hasInterface) exitWith {};
 // ONE Draw3D handler, and it only draws from the caches below.
 addMissionEventHandler ["Draw3D", {[] call FUNC(draw)}];
 
+// Draw3D stops while the map is up, so the hide over the map and the tablet
+// runs on EachFrame instead (FUNC(hideCovered)).
+addMissionEventHandler ["EachFrame", {[] call FUNC(hideCovered)}];
+
 // Who and what is in range - twice a second.
 [{[] call FUNC(updateCandidates)}, CANDIDATE_TICK, []] call CBA_fnc_addPerFrameHandler;
 

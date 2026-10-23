@@ -53,7 +53,7 @@ getMousePosition params [["_mx", -1], ["_my", -1]];
 // the header is a finger over CLOSE, and a rebuild deleting that button under
 // the press is "the window will not close" - reported on three apps, all of
 // them the ones with refresh loops.
-private _headerH = (HEADER_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH) max ([0.9] call FUNC(textH));
+private _headerH = (HEADER_H * GVAR(textScale) * GVAR(uiScale) * HOST_H) max ([TEXT_TITLE] call FUNC(textH));
 if (_mx >= _x && {_mx <= _x + _w} && _my >= _y && {_my <= _y + _headerH + RULE_THICK * pixelH * 2}) exitWith {false};
 
 // Held too long already - see above. FUNC(openApp) stamps this every time it

@@ -189,7 +189,7 @@ class CfgVehicles {
                 displayName = "Package";
                 tooltip = "Class name of a package under Jmfsb_IntelPackages in the mission config. Checked when this is placed, so a typo is reported here rather than discovered by the player who hacks the terminal.";
                 typeName = "STRING";
-                defaultValue = "";
+                defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('package',_value)]);
             };
             class terminal: Edit {

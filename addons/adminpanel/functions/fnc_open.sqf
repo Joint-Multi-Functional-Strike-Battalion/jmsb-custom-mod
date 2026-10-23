@@ -32,8 +32,7 @@ if (!hasInterface) exitWith {false};
 if !(missionNamespace getVariable [QGVAR(enabled), true]) exitWith {false};
 
 if (_message) exitWith {
-    createDialog QGVAR(message);
-    true
+    [QGVAR(message)] call FUNC(openDisplay)
 };
 
 if !([player] call FUNC(isAdmin)) exitWith {
@@ -41,5 +40,4 @@ if !([player] call FUNC(isAdmin)) exitWith {
     false
 };
 
-createDialog QGVAR(console);
-true
+[QGVAR(console)] call FUNC(openDisplay)

@@ -50,6 +50,25 @@ if (hasInterface) then {
     }, "all"] call CBA_fnc_registerChatCommand;
 };
 
+// ---------------------------------------------------------------------------
+// ALiVE COMBAT SUPPORT AS A SUPPORT PROVIDER. The support core owns the
+// registry, the gate and the request flow; this registers ALiVE's NEO assets
+// and the ATO's one row as provider "alive", so every ALiVE name stays in this
+// addon. Ids are "alive:<type>:<index>" and "alive:ato". The AI commander's
+// artillery is deliberately absent - see the note at the ATO publish loop below.
+// An ATO task is a server event, because the request has to be raised on the
+// machine that holds ALiVE's event log.
+//
+// ON EVERY MACHINE, ABOVE THE SERVER-ONLY EXIT: TAC//SUPPORT is drawn on the
+// client and reads its rows locally. (The old ATO provider sat below that exit
+// and so only ever reached the server's own screen.)
+[SUPPORT_KIND, createHashMapFromArray [
+    ["assets", FUNC(supportAssets)],
+    ["task", FUNC(supportTask)],
+    ["sitrep", FUNC(supportSitrep)],
+    ["types", call FUNC(supportTypes)]
+]] call EFUNC(support,registerProvider);
+
 if (!isServer) exitWith {};
 
 [] call FUNC(ready);
@@ -133,11 +152,24 @@ if (!isServer) exitWith {};
     // fnc_COPConfig.sqf:200-206) and the server skips collecting them when
     // all are off (fnc_COPAsym.sqf:119-125). JMSB's whole asymmetric hunt is
     // those installations; a tablet that cannot show them is missing the
-    // point, so the four jmfsb hunts are switched on where the mission left
-    // them unset.
+    // point, so the four jmfsb hunts are switched on.
+    //
+    // Set outright and broadcast: the server reads them to collect, but each
+    // client reads its own copy to draw (fnc_COPRender.sqf:613-627), and
+    // every machine's COPConfig has already seeded them false - so an isNil
+    // guard cannot tell a mission's choice from ALiVE's default, and a
+    // server-only set leaves every dedicated client drawing nothing. The
+    // JIP-persistent value also beats a late client's COPConfig, which only
+    // fills in what is still nil.
     {
-        if (isNil _x) then { missionNamespace setVariable [_x, true] };
-    } forEach ["ALIVE_COP_ASYM_SHOW_HQ", "ALIVE_COP_ASYM_SHOW_FACTORY", "ALIVE_COP_ASYM_SHOW_DEPOT", "ALIVE_COP_ASYM_SHOW_ROADBLOCK", "ALIVE_militaryIntelRevealInstallations"];
+        missionNamespace setVariable [_x, true, true];
+    } forEach ["ALIVE_COP_ASYM_SHOW_HQ", "ALIVE_COP_ASYM_SHOW_FACTORY", "ALIVE_COP_ASYM_SHOW_DEPOT", "ALIVE_COP_ASYM_SHOW_ROADBLOCK"];
+
+    // The intel reveal is a C2ISTAR / Military Intel module attribute that
+    // ALiVE publishes itself; it is only defaulted on when no module set it.
+    if (isNil "ALIVE_militaryIntelRevealInstallations") then {
+        missionNamespace setVariable ["ALIVE_militaryIntelRevealInstallations", true, true];
+    };
 
     // LAMBS OFF FOR EVERY COMBAT-SUPPORT AIRFRAME. ALiVE tags each asset it
     // stands up with ALIVE_CombatSupport, so that tag is the whole list -
@@ -159,32 +191,6 @@ if (!isServer) exitWith {};
         });
     }, POOL_TICK, []] call CBA_fnc_addPerFrameHandler;
 }] call CBA_fnc_addEventHandler;
-
-// ---------------------------------------------------------------------------
-// THE ATO IN THE TACPAD. The support app lists whatever providers have
-// published themselves under a prefix (see the cas addon for the shape); this
-// puts one row for ALiVE's ATO on that list beside the mission-placed assets.
-// The AI commander's artillery is deliberately absent - see the note at the
-// publish loop above. A task is a server event, because the request has to be
-// raised on the machine that holds ALiVE's event log.
-private _providers = missionNamespace getVariable [QGVAR(providers), createHashMap];
-_providers set ["alivecas", [
-    {
-        private _side = toUpper str (side group player);
-        if !(_side in (missionNamespace getVariable [QGVAR(atoPub), []])) exitWith {[]};
-        [["alivecas:ato", "cas", "ALiVE ATO", "CAS (experimental)", "idle", [], 0]]
-    },
-    {
-        params ["_assetId", "_task", "_pos"];
-        if (_pos isEqualTo []) exitWith {[false, "no target"]};
-        [QGVAR(supportRequest), ["cas", side group player, _pos, name player]] call CBA_fnc_serverEvent;
-        [true, "CAS requested from the ATO."]
-    },
-    {
-        [true, "The ATO answers requests as its airframes come free."]
-    }
-]];
-missionNamespace setVariable [QGVAR(providers), _providers];
 
 if (isServer) then {
     [QGVAR(supportRequest), {

@@ -53,7 +53,7 @@
 
 [
     QGVAR(show_tools), "CHECKBOX",
-    ["Show map tools", "The tool strip along the bottom. A front end for PLP Map Tools Remastered - without that mod the buttons are greyed."],
+    ["Show map tools", "The tool strip along the bottom: centre, ruler, protractor, route, mark, grid, viewshed and clear."],
     ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
     true,
     false
@@ -78,12 +78,4 @@
     ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
     true,
     false
-] call CBA_fnc_addSetting;
-
-[
-    QGVAR(supportTag), "EDITBOX",
-    ["Support tasking tag", "Audience tag that may use TAC//SUPPORT - JFO, HQ, AVIATION, a squad, a callsign. JFO matches the mission's isJFO customVariable. Empty: everyone."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
-    "",
-    true
 ] call CBA_fnc_addSetting;

@@ -2,7 +2,8 @@
 /*
  * Author: JMSB
  * Where a panel actually goes: its default, clamped into the current safe zone
- * and pushed clear of the three regions the design says must never be covered.
+ * and pushed clear of the three regions the design says must never be covered -
+ * or, on a device that handed over a layout table, its fixed place there.
  *
  * THE DEFAULT IS THE POSITION. Nothing stores a per-player one and nothing
  * reads one - a panel is where its DEFAULT_* define says, every session, on
@@ -32,6 +33,18 @@
 params [["_id", "", [""]], ["_default", [0.1, 0.1, 0.2, 0.2], [[]], 4]];
 
 private _fr = _default;
+
+// A DEVICE'S FIXED PLACE WINS (docs/DESIGN_TABLET.md: "panels are not
+// draggable on the tablet; their places are fixed"). The tablet hands its own
+// layout table over with the host - see FUNC(setHost) - in fractions of its
+// map area, and a panel it names goes exactly there: not scaled, because the
+// table was drawn at the size the screen is, and not pushed by the reserved
+// zones below, which are the vanilla map's furniture and not the device's.
+private _hostPlace = GVAR(hostPlaces) getOrDefault [_id, []];
+private _fixed = HOST_DEVICE && {_hostPlace isNotEqualTo []};
+if (_fixed) then {
+    _fr = _hostPlace;
+};
 _fr params ["_px", "_py", "_pw", "_ph"];
 
 // THE UI SCALE IS A SIZE, NOT A ZOOM. It multiplies what the panel was placed
@@ -39,7 +52,7 @@ _fr params ["_px", "_py", "_pw", "_ph"];
 // and gives back the screen from the other two edges. Scaling the position too
 // would pull the whole layout towards the top left, which is not what "make it
 // smaller" means to anybody looking at it.
-private _scale = GVAR(uiScale);
+private _scale = [GVAR(uiScale), 1] select _fixed;
 _pw = _pw * _scale;
 _ph = _ph * _scale;
 
@@ -49,7 +62,7 @@ _ph = 0.05 max (_ph min 1);
 _px = 0 max (_px min (1 - _pw));
 _py = 0 max (_py min (1 - _ph));
 
-if (GVAR(respectZones)) then {
+if (GVAR(respectZones) && HOST_NATIVE) then {
     {
         _x params ["_zx", "_zy", "_zw", "_zh"];
 
@@ -95,10 +108,10 @@ if (GVAR(respectZones)) then {
 
 [
     [
-        safeZoneX + _px * safeZoneW,
-        safeZoneY + _py * safeZoneH,
-        _pw * safeZoneW,
-        _ph * safeZoneH
+        HOST_X + _px * HOST_W,
+        HOST_Y + _py * HOST_H,
+        _pw * HOST_W,
+        _ph * HOST_H
     ],
     [_px, _py, _pw, _ph]
 ]

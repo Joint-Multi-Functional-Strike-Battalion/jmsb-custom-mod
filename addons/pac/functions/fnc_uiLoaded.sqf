@@ -14,12 +14,11 @@
 
 disableSerialization;
 
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
 private _unit = GVAR(settings) getOrDefault ["unitId", ""];
-(_display displayCtrl PAC_IDC_UNIT) ctrlSetText ([_unit, "  -  no unit id"] select (_unit isEqualTo ""));
-(_display displayCtrl PAC_IDC_WHO) ctrlSetText format ["%1  %2", name player, [player] call FUNC(uid)];
+([PAC_IDC_UNIT] call FUNC(uiCtrl)) ctrlSetText ([_unit, "  -  no unit id"] select (_unit isEqualTo ""));
+([PAC_IDC_WHO] call FUNC(uiCtrl)) ctrlSetText format ["%1  %2", name player, [player] call FUNC(uid)];
 
 GVAR(uiFilterText) = "";
 GVAR(uiFilling) = false;

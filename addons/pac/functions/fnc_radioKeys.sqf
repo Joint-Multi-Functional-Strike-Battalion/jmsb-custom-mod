@@ -58,11 +58,32 @@ Author:
     ["srFallback", 1],
     ["mrDefault", 1],
     ["lrDefault", 1],
-    // TFAR
-    ["tfarActiveRadio", "TFAR_pnr1000a"],
+    // THE NET PLAN (game voice, docs/DESIGN_VOICE.md). The keys keep the names
+    // they had under TFAR so a saved plan still reads: tfarNets is
+    // [[net, sr slot, lr slot], ...] and the two fallbacks are slots
+    // (FUNC(netPlan)). Game voice tunes nothing; with TFAR loaded
+    // jmfsb_adapter_tfar reads tfarActiveRadio (the handheld put in hand) and
+    // the two frequency lists (a slotted net's frequency) - no page here.
+    ["tfarActiveRadio", ""],
     ["tfarSrFreqs", []],
     ["tfarLrFreqs", []],
     ["tfarNets", []],
     ["tfarSwFallback", 0],
-    ["tfarLrFallback", 0]
+    ["tfarLrFallback", 0],
+    // THE VON PLAN (2026-10-20, the same keys DIVINER and the website write).
+    // When vonNets has rows FUNC(netPlan) builds the nets from these instead
+    // of tfarNets:
+    //   vonTeamNets [[squad, team net], ...] - a squad's TEAM net; no row (or
+    //               a blank name) is the squad's own name
+    //   vonNets     [[net, "c2" | "a2g", [squad, ...], [role id, ...],
+    //               [skill id, ...]], ...] - ten at most; a man is on the
+    //               first row of each kind naming his squad, his role or a
+    //               skill he holds (FUNC(netPlanUnit))
+    //   vonSide / vonCommand / vonGlobalAdminsOnly - carried for the voice
+    //               side; missing means false / false / true
+    ["vonTeamNets", []],
+    ["vonNets", []],
+    ["vonSide", false],
+    ["vonCommand", false],
+    ["vonGlobalAdminsOnly", true]
 ]

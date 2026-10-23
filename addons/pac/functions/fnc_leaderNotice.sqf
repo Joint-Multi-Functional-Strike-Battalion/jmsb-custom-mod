@@ -4,8 +4,8 @@ Function: jmfsb_pac_fnc_leaderNotice
 
 Description:
     The moment a player takes a leader slot, tells them their METT-TC is
-    owed and opens the compose on it. Called from the groups addon at the
-    end of its role setup, with whether this was a respawn.
+    owed. Called from the groups addon at the end of its role setup, with
+    whether this was a respawn.
 
     A LEADER SLOT IS ONE THAT SETS isLeader - the mission's own flag, the
     one the role's customVariables carry and every net tag reads. Not
@@ -14,9 +14,12 @@ Description:
     for a moment is not a man who owes an estimate.
 
     ONCE, ON TAKING THE SLOT. A respawn is the same man in the same slot
-    and gets nothing. The notice comes at once; the compose waits until the
-    group menu has closed and the player is standing, and only opens if the
-    tacpad is there to open it in.
+    and gets nothing.
+
+    A NOTICE, NOT AN OPEN. This used to open the TAC//MSG compose on the
+    METT-TC as well; it no longer does (user, 2026-10-21: "for leaders lets
+    stop the auto open tac//msg"). The leader files it from TAC//MSG when
+    they are ready.
 
 Parameters:
     0: Was this a respawn <BOOL>
@@ -40,15 +43,6 @@ if (_opordId isNotEqualTo "") then {
     _against = format [" against %1", _hdr getOrDefault ["title", _opordId]];
 };
 
-["TAC//PAC", format ["You hold a leader slot. File your METT-TC%1 - opening the compose.", _against], [0.780, 0.510, 0.129, 1]] call EFUNC(notify,notify);
-
-if (isNil "jmfsb_tacpad_fnc_composeOpen") exitWith {true};
-
-[] spawn {
-    sleep 2;
-    // Not over the group menu, and not while dead or in the void between.
-    waitUntil {sleep 0.5; !dialog && {alive player}};
-    ["", "mettc", false, "", []] call jmfsb_tacpad_fnc_composeOpen;
-};
+["TAC//PAC", format ["You hold a leader slot. File your METT-TC%1 from TAC//MSG.", _against], [0.780, 0.510, 0.129, 1]] call EFUNC(notify,notify);
 
 true

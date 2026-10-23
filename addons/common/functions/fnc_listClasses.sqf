@@ -10,7 +10,16 @@
  * picker offers as "no side" rather than hiding.
  *
  * Arguments:
- * 0: Kind <STRING> - "vehicle" | "uav" | "static" | "ammo"
+ * 0: Kind <STRING> - "vehicle" | "uav" | "static" | "ammo" | "aircraft" (planes and
+ *    helicopters, crewed or drone) | "heli_transport" (crewed helicopters with
+ *    passenger seats) | "air_transport" (crewed planes and helicopters with
+ *    passenger seats)
+ *
+ * NOT EVERYTHING IN CONFIG IS THE UNIT'S (user, 2026-10-19). The Aegis and
+ * Atlas classes that QAV and the faction ports bring in are hidden though the
+ * Aegis mod is not run, and so is any class whose faction is not defined - the
+ * leftovers of a mod that is not loaded. LIST_HIDE_SOURCES names the addon
+ * fragments that hide a class.
  *
  * Return Value:
  * [[class, display, side <NUMBER>, faction, category, source], ...] <ARRAY>
@@ -27,6 +36,17 @@ params [["_kind", "vehicle", [""]]];
 
 private _rows = [];
 private _facSide = createHashMap;
+
+// HIDDEN SOURCES. A class is dropped when any addon that defines or changes it
+// carries one of these fragments in its CfgPatches name.
+private _hidden = {
+    params ["_cfg"];
+    private _src = (configSourceAddonList _cfg) apply {toLower _x};
+    (LIST_HIDE_SOURCES findIf {
+        private _frag = _x;
+        (_src findIf {_frag in _x}) > -1
+    }) > -1
+};
 private _sideOf = {
     params ["_cfg"];
     if (isNumber (_cfg >> "side")) exitWith { getNumber (_cfg >> "side") };
@@ -52,6 +72,7 @@ if (_kind isEqualTo "ammo") exitWith {
             case (_cn isKindOf "BombCore"): {"bomb"};
             default {"other"};
         };
+        if ([_x] call _hidden) then {continue};
         _rows pushBack [_cn, _cn, -1, "", _cat, (configSourceModList _x) param [0, "A3"]];
     } forEach _cands;
     _rows sort true;
@@ -63,15 +84,27 @@ private _filter = switch (_kind) do {
     // the radars carry it too, and they were turning up in the drone pickers
     case "uav": {"getNumber (_x >> 'scope') == 2 && {getNumber (_x >> 'isUav') > 0} && {!((configName _x) isKindOf 'StaticWeapon')}"};
     case "static": {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'StaticWeapon'}"};
+    // AIRCRAFT ONLY for the support modules: a parachute is a Helicopter in
+    // config and a quad bike is not an aircraft, and both were in their lists.
+    case "aircraft": {"getNumber (_x >> 'scope') == 2 && {((configName _x) isKindOf 'Plane') || {(configName _x) isKindOf 'Helicopter'}} && {!((configName _x) isKindOf 'ParachuteBase')}"};
+    case "heli_transport": {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'Helicopter'} && {!((configName _x) isKindOf 'ParachuteBase')} && {getNumber (_x >> 'isUav') == 0} && {getNumber (_x >> 'transportSoldier') > 0}"};
+    case "air_transport": {"getNumber (_x >> 'scope') == 2 && {((configName _x) isKindOf 'Plane') || {(configName _x) isKindOf 'Helicopter'}} && {!((configName _x) isKindOf 'ParachuteBase')} && {getNumber (_x >> 'isUav') == 0} && {getNumber (_x >> 'transportSoldier') > 0}"};
     default {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'LandVehicle' || {(configName _x) isKindOf 'Air'} || {(configName _x) isKindOf 'Ship'} || {(configName _x) isKindOf 'StaticWeapon'}}"};
 };
 {
     private _cfg = _x;
     private _cn = configName _cfg;
+    if ([_cfg] call _hidden) then {continue};
+    // A faction that is not defined is a mod that is not loaded.
+    private _fac = getText (_cfg >> "faction");
+    if (_fac isNotEqualTo "" && {!isClass (configFile >> "CfgFactionClasses" >> _fac)}) then {continue};
     private _dn = getText (_cfg >> "displayName");
     if (_dn isEqualTo "") then { _dn = _cn };
     private _cat = switch (_kind) do {
         case "uav": {["ground", "air"] select (_cn isKindOf "Air")};
+        case "aircraft";
+        case "heli_transport";
+        case "air_transport": {["heli", "plane"] select (_cn isKindOf "Plane")};
         case "static": {"static"};
         default {
             switch (true) do {

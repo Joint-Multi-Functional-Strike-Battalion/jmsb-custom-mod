@@ -33,6 +33,9 @@ if (!hasInterface) exitWith { false };
 GVAR(history) pushBack [_title, _text, _colour, time, _pos];
 if (count GVAR(history) > HISTORY_MAX) then { GVAR(history) deleteAt 0 };
 
+// Hidden: recorded above, said nowhere.
+if (GVAR(hidden)) exitWith { true };
+
 if (!GVAR(enabled)) exitWith {
     hint format ["%1%2%3", _title, [": ", ""] select (_text isEqualTo ""), _text];
     true

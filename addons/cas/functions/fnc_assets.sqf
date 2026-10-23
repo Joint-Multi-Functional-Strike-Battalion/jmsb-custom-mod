@@ -3,12 +3,10 @@
  * Author: JMSB
  * Every CAS module this side owns, as support-page rows.
  *
- * REGISTERED AS A PROVIDER, NOT BOLTED INTO THE ADAPTER. The support page used
- * to have exactly one source of assets - ALiVE - and the page called it by
- * name. Naming this addon in there instead would have put a jmfsb system
- * inside the adapter seam that check_invariants.py exists to keep clean. So
- * the seam grew a neutral registry and this publishes into it: the adapter
- * never learns this addon's name, and this addon never learns ALiVE's.
+ * REGISTERED AS A PROVIDER OF THE SUPPORT CORE (addons/support), the "assets"
+ * code of provider "cas". The core merges every provider's rows for the page,
+ * so the page never learns this addon's name, and this addon never learns
+ * ALiVE's.
  *
  * SIDE IS THE VIEWER'S. A support page is drawn for the man looking at it, and
  * he may not task another side's aircraft.

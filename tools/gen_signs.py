@@ -16,7 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMG = os.path.join(ROOT, "addons", "media", "images")
 OUT = os.path.join(IMG, "signs_v2")
 LOGO = os.path.join(ROOT, "art", "JMSB-crossed-arrows-G", "512", "jmsb-crossed-arrows-G-clean-512.png")
-ART = os.path.join(ROOT, "tools", "art", "signs")   # swatches lifted from the last good boards
+ART = os.path.join(ROOT, "art", "signs")   # swatches lifted from the last good boards
 ORIG = os.environ.get("JMFSB_SIGN_ORIG", "")   # folder of old signs converted to PNG
 
 W, H = 2048, 1024
@@ -33,6 +33,7 @@ BONE         = (0xE9, 0xE4, 0xD3)   # paper - titles and body text
 SLATE        = (0xA9, 0xAE, 0x95)   # sage - sub-lines and footer
 WOOD_RULE    = (0x3A, 0x44, 0x33)   # ranger green footer rule
 WARN         = (0xD0, 0x6A, 0x4A)   # a bind still to be set
+MARKER       = (0xB3, 0x26, 0x1E)   # the device diagrams' numbered callouts
 
 F_BLACK = r"C:\Windows\Fonts\ariblk.ttf"
 F_BOLD  = r"C:\Windows\Fonts\arialbd.ttf"
@@ -164,7 +165,7 @@ def ammo_cols(im, d, columns):
 
 def steps(im, d, items):
     """Numbered steps side by side, each a caption over a screenshot. items =
-    [(caption, file in tools/art/signs)]; the shots keep their shape, all at one
+    [(caption, file in art/signs)]; the shots keep their shape, all at one
     height, spread across the body."""
     fn_, fc = font(F_BLACK, 60), font(F_BOLD, 30)
     top, bottom = ROWS_Y + 62, BODY_BOTTOM - 4
@@ -293,6 +294,53 @@ def sections(im, d, blocks):
         y += 18
 
 
+def devices(im, d, figs, key, plain=False):
+    """A device board: the diagrams (art/signs/diag_*.png, from
+    tools/gen_device_diagrams.py) along the left at the body's height, and
+    the numbered key down the right, its numbers in the diagrams' own red
+    callout discs - or, plain, a tan dash each, for pictures with no callouts
+    (the radios). Key lines wrap to the room they have, and a short key (the
+    simple signs, user 2026-10-23) is set large enough to read from the road."""
+    top, bottom = ROWS_Y + 8, BODY_BOTTOM - 8
+    h = bottom - top
+    x = MARGIN
+    for f in figs:
+        s = Image.open(os.path.join(ART, f)).convert("RGBA")
+        s = s.resize((int(s.width * h / s.height), h), Image.LANCZOS)
+        im.paste(s, (int(x), top), s)
+        x += s.width + 48
+    kx, kw = x + 12, W - MARGIN - x - 12
+    n = len(key)
+    step = (h - 4) / n
+    size = 46 if step >= 100 else (31 if step >= 44 else 27)
+    fk, fn = font(F_REG, size), font(F_BLACK, size - 6)
+    r = 26 if step >= 100 else (18 if step >= 44 else 15)
+    for i, text in enumerate(key):
+        y = top + i * step
+        # wrap to the key's width; a second line only when it fits the step
+        words, lines, cur = text.split(), [], ""
+        for w_ in words:
+            t = (cur + " " + w_).strip()
+            if tw(d, t, fk) <= kw - 2 * r - 16:
+                cur = t
+            else:
+                lines.append(cur)
+                cur = w_
+        lines.append(cur)
+        lines = lines[:2] if step >= size * 2.2 else lines[:1]
+        lh = size * 1.12
+        ty = y + (step - lh * len(lines)) / 2
+        cy = ty + lh / 2
+        if plain:
+            d.rectangle([kx + r * 0.5, cy - 3, kx + r * 1.5, cy + 3], fill=AMBER)
+        else:
+            d.ellipse([kx, cy - r, kx + 2 * r, cy + r], fill=MARKER, outline=BONE, width=2)
+            s = str(i + 1)
+            d.text((kx + r - tw(d, s, fn) / 2, cy - (size - 6) * 0.62), s, font=fn, fill=BONE)
+        for j, l in enumerate(lines):
+            d.text((kx + 2 * r + 16, ty + j * lh), l, font=fk, fill=BONE)
+
+
 def centred_title(im, d, lines, eyebrow=None):
     """Wayfinding sign: eyebrow at the top, the name large and centred."""
     d.text((MARGIN, EYEBROW_Y), (eyebrow or EYEBROW).upper(), font=font(F_BOLD, 40), fill=EMBER)
@@ -328,7 +376,7 @@ def S(title, blocks, sub=None, foot=None, fig=None):
 
 def U(name, src, box, foot=None, local=False):
     """local=True reads src from addons/media/images (repo material), local="art"
-    from tools/art/signs (swatches lifted from the last good boards, the old
+    from art/signs (swatches lifted from the last good boards, the old
     converted signs being gone), else the JMFSB_SIGN_ORIG folder."""
     return {"kind": "uniform", "name": name, "src": src, "box": box, "foot": foot, "local": local}
 
@@ -338,12 +386,15 @@ def K(title, columns, foot=None):
 def FIG(title, src, box, sub=None, foot=None):
     return {"kind": "figure", "title": title, "src": src, "box": box, "sub": sub, "foot": foot}
 
+def D(title, figs, key, sub=None, foot=None, plain=False):
+    return {"kind": "devices", "title": title, "figs": figs, "key": key, "sub": sub, "foot": foot, "plain": plain}
+
 RANGE_FOOT = "Fire only on a hot range - check your lane before you go loud"
 
 SIGNS = {
     # the mission's own "Group & Arsenal System" board (data\fa_sign_group_arsenal.paa
     # in Task_Force_Roomba), brought into the set: the three game screenshots are
-    # cut from it into tools/art/signs, the board around them is the unit's
+    # cut from it into art/signs, the board around them is the unit's
     "group_arsenal": {"kind": "steps", "title": "Group & Arsenal System",
         "sub": "self interact → group menu  ·  pick your role  ·  self interact → arsenal",
         "items": [("ACE self interact", "group_arsenal_1.png"),
@@ -557,6 +608,149 @@ SIGNS = {
         ]),
     ], foot="Set in: Options > Controls > Configure Addons (CBA)"),
 
+    # GAME VOICE (user, 2026-10-22: "signs for the game voip system"). Three
+    # boards, the words from addons/voice, addons/adapter_von and the devices'
+    # keybinds (XEH_postInit.sqf): the nets a man is on, the keys, and how it
+    # works. Radio voice on Arma's own VON; TFAR and ACRE nights are their own.
+    "radio_nets": R("Radio Voice - Your Nets", [
+        ["TEAM", "your squad, e.g. GHOST 1 - everyday talk; where you start on every role pick"],
+        ["C2", "team leaders, ATLs and all of HHC - leaders talking between squads"],
+        ["A2G", "pilots and copilots by seat, plus the JFO skill - air to ground"],
+        ["VEH", "crew intercom of the vehicle you are in - not the passengers"],
+        ["DIRECT", "talking out loud to whoever is near you - always works, no radio needed"],
+        ["CALL 1-8", "private calls, up to 8 people each - CALL beside a name in the Squad app"],
+        ["GLOBAL", "the whole server - the tablet's GLOBAL button; C2 members and admins only"],
+    ], sub="The comm plan in PAC puts you on them - by squad, role and skill",
+       foot="Chip outline: green good  ·  amber weak or jammed  ·  red no route  ·  dim muted"),
+
+    "radio_keys": K("Radio Voice - Keys", [
+        ("Talk and nets", [
+            ("Talk on your active net", "Push To Talk"),
+            ("Select net 1 - 4", "Num 1-4"),
+            ("Active net left / right", "Num 0 / Num ."),
+            ("Ear for the active net", "Ctrl+Num 2"),
+            ("Mute the active net", "Ctrl+Num 3"),
+            ("Global (C2 and admins)", "tablet GLOBAL"),
+        ]),
+        ("Calls and devices", [
+            ("Accept a call", "Ctrl+Num 1"),
+            ("Decline / hang up", "Ctrl+Num 4"),
+            ("Open the tablet", "Num 5"),
+            ("RADIO app", "Num 6"),
+            ("RADIO app tabs", "Num 7 / Num 8"),
+            ("Hide / show the phone", "Ctrl+End"),
+        ]),
+    ], foot="Push To Talk: Options > Controls > Multiplayer  ·  the rest: Configure Addons (CBA)"),
+
+    "radio_howto": R("Radio Voice - How It Works", [
+        ["1", "bind Push To Talk in Options > Controls > Multiplayer - the VON toggle key is blocked"],
+        ["2", "carry the MPU5, your role's default radio - with no radio you only have VEH and DIRECT"],
+        ["3", "pick a role and you land on your squad net - the filled chip on your phone"],
+        ["4", "Num 1-4 picks a net by its chip number; hold Push To Talk and the chip goes red with TX"],
+        ["5", "no fixed range - your signal routes radio to radio, through vehicles and the base stations"],
+        ["6", "weak route = quiet with static; red outline = nobody can hear you - move, or get near a base"],
+        ["7", "unconscious or on radio silence your radio nets close; DIRECT always works"],
+    ], sub="Game voice on Arma's own VON - no TFAR, no ACRE, nothing to download",
+       foot="NET % on your phone is the free radio channels - at 0% a new call cannot connect"),
+
+    # The devices drawn (user, 2026-10-22: "include drawings" - in the signs):
+    # the diagrams from tools/gen_device_diagrams.py, the key beside each.
+    "radio_phone": D("Radio Voice - The Phone", ["diag_phone.png"], [
+        "Status row: NET free channels, MESH, JAM, GPS, DRONES, MSG",
+        "Map, centred on you, with your squad's markers",
+        "Net chips: number = its key (Num 1-4); filled = your active net",
+        "TX: the chip goes red while you transmit on it",
+        "Ear tag L / B / R: which ear that net's beeps play in",
+        "Outline = signal: green good, amber weak, red no route, dim muted",
+        "Squad list with a status dot per member",
+        "Talking chip: who is talking right now, and on which net",
+        "F1-F4 are Ctrl+Num 1-4: accept a call, ear, mute, decline or hang up",
+        "The arrows are Num 0 and Num . : step the active net left and right",
+    ], sub="The walking view - always on, in the GPS slot",
+       foot="Hide or show it with Ctrl+End  ·  size and keys under the tablet's SETTINGS > DEVICES"),
+
+    "radio_side": D("Radio Voice - The Side Device", ["diag_side.png"], [
+        "Status in two rows: NET free channels, MESH, JAM, GPS grid, DRONES, MSG",
+        "Map, centred on you, with your squad's markers",
+        "Net chips: number = its key (Num 1-4); filled = your active net",
+        "TX: the chip goes red while you transmit on it",
+        "Ear tag L / B / R: which ear that net's beeps play in",
+        "Outline = signal: green good, amber weak, red no route, dim muted",
+        "Squad list in two columns, a status dot per member",
+        "Talking chip: who is talking right now, and on which net",
+        "F1-F4 are Ctrl+Num 1-4: accept a call, ear, mute, decline or hang up",
+        "The arrows are Num 0 and Num . : step the active net left and right",
+    ], sub="The same walking view, stacked - left or right edge of your screen",
+       foot="Pick the edge and the size under the tablet's SETTINGS > DEVICES"),
+
+    "radio_tablet": D("Radio Voice - The Tablet", ["diag_tablet.png"], [
+        "Bar: time, your grid, your name and squad, CH radio channels used and free",
+        "Notification line: the latest alert and how many are waiting",
+        "RADIO tile: your active net - press it for the RADIO app (Num 6; tabs Num 7 / 8)",
+        "Squad rail: CALL beside a name dials that person",
+        "Map, with the map tools in the panel on the right",
+        "Talking chip: who is talking, on which net",
+        "TAC//MSG reader: CALL on a message replies with a phone call",
+        "SETTINGS: device keys, phone size, tablet frame, grid digits, beeps",
+        "Net chips: number = key, filled = active, outline = signal",
+        "TX chip while you transmit",
+        "GLOBAL: server-wide talk for C2 members and admins - red while on",
+        "F1-F4 are Ctrl+Num 1-4, the tablet's own keys",
+        "The arrows are Num 0 and Num . : step the active net",
+    ], sub="Num 5 opens it; the UAV tablet is the same screen in a frame with grips",
+       foot="ESC closes it  ·  everything on it is also on the phone, smaller"),
+
+    # The radios themselves, and the tablet's apps (user, 2026-10-23: "add
+    # guides to the radios, the devices and the tablets").
+    "radio_sets": D("Radio Voice - The Radios", ["mpu5_icon.png", "tw950_icon.png"], [
+        "MPU5, left: the unit's handheld and every role's default, in your radio slot",
+        "It is what puts you on your nets - no radio, and you have only VEH and DIRECT",
+        "TW-950, right: the second handheld - an older set, no relay, shorter reach",
+        "Game voice: no man packs. On a TFAR or ACRE night carry that radio's sets too",
+        "Arsenal > Tools holds both; the one you take goes in the radio slot",
+    ], sub="The MPU5 is a MANET set: it relays for the men round you",
+       foot="Lose your radio and your chips go grey - get one from a mate or the arsenal", plain=True),
+
+    "tablet_apps": R("The Tablet - Apps", [
+        ["RADIO", "your nets and calls; MANAGE for leaders - the RTO makes nets there"],
+        ["TAC//MSG", "reports and messages by net; CALL on a message replies with a call"],
+        ["SUPPORT", "task transport, CAS and fires - the JFO holds it"],
+        ["DRONES", "the drones: fly yours, see the enemy's; the nearest hostile's bearing"],
+        ["HACK", "nodes in range, the intel they hold"],
+        ["MEDIC", "the squad's vitals live - heart rate, SpO2, rhythm - and casualties"],
+        ["WEATHER / TIMER", "wind and visibility; a timer that rings on every scanner"],
+        ["INTEL", "what has been recovered"],
+        ["PAC", "your record, the roster, the operation"],
+        ["SETTINGS", "device keys, phone size, tablet frame, grid digits, colour scheme"],
+    ], sub="Num 5 opens the tablet - a tile is a readout and the button to its app",
+       foot="ESC closes  ·  the apps also run on the vanilla map in native mode"),
+
+    # THE SIMPLE SIGNS (user, 2026-10-23: "make sure i have simple signs with
+    # pictures for in game"): the drawing with four callouts and four big lines.
+    "simple_phone": D("The Phone", ["diag_phone_simple.png"], [
+        "NET, MESH, JAM, GPS, DRONES, MSG",
+        "Net chips - Num 1-4 picks one",
+        "Red with TX while you talk",
+        "F1-F4 = Ctrl + Num 1-4",
+    ], sub="Hold Push To Talk to speak on the filled chip",
+       foot="Hide it with Ctrl+End  ·  size in SETTINGS > DEVICES"),
+
+    "simple_side": D("The Side Device", ["diag_side_simple.png"], [
+        "NET, MESH, JAM, GPS, DRONES, MSG",
+        "Net chips - Num 1-4 picks one",
+        "Red with TX while you talk",
+        "F1-F4 = Ctrl + Num 1-4",
+    ], sub="The phone's layout, stacked, on the edge of your screen",
+       foot="Left or right edge and size in SETTINGS > DEVICES"),
+
+    "simple_tablet": D("The Tablet", ["diag_tablet_simple.png"], [
+        "RADIO tile - press for the RADIO app",
+        "Net chips - Num 1-4 picks one",
+        "Red with TX while you talk",
+        "GLOBAL - leaders and admins, server-wide",
+    ], sub="Num 5 opens it, ESC closes it",
+       foot="Everything on it is also on the phone, smaller"),
+
     "markers": R("Marker Tree", [
         ["Enemy SALUTE", "infantry, motorised, armour, air, mine, IED"],
         ["Medical", "casualty collection, MEDEVAC pickup, regroup"],
@@ -599,6 +793,10 @@ def render(name, spec):
         header(im, d, spec["title"])
         keycols(im, d, spec["columns"])
         footer(im, d, spec.get("foot"))
+    elif spec["kind"] == "devices":
+        header(im, d, spec["title"], spec.get("sub"))
+        devices(im, d, spec["figs"], spec["key"], spec.get("plain", False))
+        footer(im, d, spec.get("foot"))
     elif spec["kind"] == "steps":
         header(im, d, spec["title"], spec.get("sub"))
         steps(im, d, spec["items"])
@@ -623,8 +821,8 @@ def render(name, spec):
 # THE FA AMMO BOARDS (fa_main/data/fa_sign_*.paa), placed at the ranges by the
 # missions. They were hand-made in the old brown Ghosts of Battle style; same
 # words now, on the unit board, the arsenal tag as it is today ([JMSB]).
-# PNG masters go to tools/art/signs/fa (never shipped), PAAs into fa_main.
-FA_OUT = os.path.join(ROOT, "tools", "art", "signs", "fa")
+# PNG masters go to art/signs/fa (never shipped), PAAs into fa_main.
+FA_OUT = os.path.join(ROOT, "art", "signs", "fa")
 FA_PAA = os.path.join(ROOT, "addons", "fa_main", "data")
 FA_SIGNS = {
     "fa_sign_40mm": dict(R("40mm UGL - Smart Payloads", [

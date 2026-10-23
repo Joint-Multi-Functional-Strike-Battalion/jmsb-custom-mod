@@ -274,6 +274,10 @@ if (!isNull _chip) then {
 [] call FUNC(execTabs);
 
 // ---------------------------------------------------------------- the scale --
+// ON THE TABLET IT IS THE TABLET'S SCREEN, not the monitor and not the UI
+// scale - see FUNC(fitHost).
+if ([_display] call FUNC(fitHost)) exitWith {};
+
 private _scale = missionNamespace getVariable [QEGVAR(tacpad,uiScale), 1];
 if (_scale isEqualTo 1) exitWith {};
 

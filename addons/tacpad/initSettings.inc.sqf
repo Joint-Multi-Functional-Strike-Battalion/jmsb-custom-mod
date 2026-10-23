@@ -14,6 +14,20 @@
     false
 ] call CBA_fnc_addSetting;
 
+// WHERE THE SUITE DRAWS. Native is the map screen, as it always has been.
+// Tablet takes every panel off the map and puts the same screens inside a
+// device that jmfsb_devices draws - the vanilla map becomes a plain map.
+// Owned here rather than by the devices addon because this is the addon that
+// has to read it before anything is built; see shared.inc.hpp on the host.
+[
+    QGVAR(displayMode), "LIST",
+    ["Display mode", "NATIVE draws the tacpad on the map screen as it always has. TABLET takes it off the map and puts the same screens inside a device - open it from the ACE self-interaction menu under Equipment, or its key. The vanilla map stays a plain map."],
+    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    [["native", "tablet"], ["Native", "Tablet"], 1],
+    false,
+    {[QGVAR(displayMode_changed), []] call CBA_fnc_localEvent}
+] call CBA_fnc_addSetting;
+
 [
     QGVAR(scheme), "LIST",
     [

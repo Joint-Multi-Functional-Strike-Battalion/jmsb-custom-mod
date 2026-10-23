@@ -22,8 +22,9 @@
  */
 
 params [["_size", 1, [0]]];
+_size = [_size] call FUNC(textSize);
 
 // The 1.25 is the leading FUNC(drawText) lays a single line out with. Both read
 // it from here so a box sized against this cannot disagree with the text put in
 // it.
-TEXT_BASE * pixelH * pixelGrid * GVAR(textScale) * GVAR(uiScale) * _size * 1.25
+TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale) * GVAR(uiScale) * _size * 1.25

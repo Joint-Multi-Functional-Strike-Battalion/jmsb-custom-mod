@@ -39,7 +39,7 @@ if (!hasInterface) exitWith {};
 // nothing on screen until something else forced a redraw.
 {
     [_x, {
-        if (!isNull (findDisplay IDD_MAP)) then {
+        if (!isNull (HOST_DISPLAY)) then {
             ["reader"] call EFUNC(tacpad,rebuild);
         };
     }] call CBA_fnc_addEventHandler;
@@ -73,39 +73,86 @@ addMissionEventHandler ["Map", {
 // recovered them. See EFUNC(hacking,productPackage).
 ["intel", FUNC(appIntel)] call EFUNC(tacpad,registerApp);
 
-// TAC//SUPPORT - combat support fronted through the adapter, gated by a
-// messaging tag rather than a role tree. One board, three back ends: ALiVE's
-// ATO and NEO combat support, jmfsb's own CAS module, and Simplex Support
-// Services - the last two arrive as rows through
-// EGVAR(adapter_alive,providers), which is what that registry is for.
+// TAC//SUPPORT - combat support fronted through the support core
+// (jmfsb_support), gated by a messaging tag rather than a role tree. One board,
+// any number of back ends: every provider registered with
+// EFUNC(support,registerProvider) - ALiVE's ATO and NEO combat support through
+// the adapter, jmfsb's own CAS drones, support_fires and support_air.
 //
-// NOT REGISTERED WITHOUT THE ADAPTER. EFUNC(adapter_alive,supportAssets) is the
-// board's only way in, so with the adapter's PBO skipped for want of ALiVE the
-// app would be a door onto an empty room. The tile goes with it, in
-// FUNC(tileData). This is a real narrowing against DIVINER, where a Simplex-only
-// server got the board: here Simplex reaches the board THROUGH the registry, so
-// the adapter has to be there to hold it.
-if (!isNil QEFUNC(adapter_alive,supportAssets)) then {
-    ["support", FUNC(appSupport)] call EFUNC(tacpad,registerApp);
-    // Simplex, as a provider row rather than as the whole board.
-    if (EGVAR(patches,usesSimplex)) then { [] call FUNC(simplexProvider) };
+// NO SIMPLEX (user, 2026-10-20: "no simplex dependency"). Our own support
+// addons replace it; nothing here detects, lists or opens Simplex Support
+// Services, and the mod forces none of its settings.
+//
+// REGISTERED WHEN THE CORE IS LOADED, NOT WHEN ALiVE IS. The core is the
+// board's only way in; ALiVE is one optional provider of it, so a mission with
+// our own support modules and no ALiVE still gets the board.
+if (!isNil QEFUNC(support,assets)) then {
+    [SUP_APP, FUNC(appSupport)] call EFUNC(tacpad,registerApp);
 };
 
-// THE DELIVERY RECEIPT from the adapter: the combat-support FSM consumed the
-// order, or never did, after 20s. Lands in the support screen's verdict row and
-// the notify rail, and forces a redraw so it shows the moment it arrives rather
-// than on the next poll tick.
-[QEGVAR(adapter_alive,supportAck), {
+// THE DELIVERY RECEIPT from the support core: a provider's asset consumed the
+// order, or never did. Lands in the support screen's verdict row and the
+// notify rail, and forces a redraw so it shows the moment it arrives rather
+// than on the next poll tick - the dialog on the vanilla map, the open app on
+// the tablet (SUP_SHOWN).
+[QEGVAR(support,ack), {
     params [["_assetId", ""], ["_ok", true], ["_said", ""]];
     missionNamespace setVariable [QGVAR(supportFlash), [_said, _ok, CBA_missionTime]];
     ["SUPPORT", _said, ["high", "normal"] select _ok] call EFUNC(messaging,notify);
-    if (!isNull (uiNamespace getVariable [QGVAR(supportDlg), displayNull])) then {
-        {["support"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+    if (SUP_SHOWN) then {
+        {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
     };
 }] call CBA_fnc_addEventHandler;
+
+// ON THE TABLET THE BOARD IS SEVERAL TOP-LEVEL CONTROLS, not
+// one app group - the map hole between them is the point. FUNC(appFrame)
+// replaces only the group, so when any other app takes the screen the rest
+// goes here, and the board's hold on the host's map with it.
+// On the vanilla map the board is a dialog and its controls die with it.
+private _fnc_supportDrop = {
+    params [["_keep", "", [""]]];
+    if (_keep isNotEqualTo SUP_APP) then {
+        private _roots = uiNamespace getVariable [QGVAR(supportRoot), []];
+        if (_roots isEqualType controlNull) then {_roots = [_roots]};
+        {if (!isNull _x) then {ctrlDelete _x}} forEach _roots;
+        uiNamespace setVariable [QGVAR(supportRoot), []];
+    };
+    if (_keep isNotEqualTo SUP_APP && {(uiNamespace getVariable [QEGVAR(tacpad,appMapClaim), ""]) isEqualTo SUP_APP}) then {
+        uiNamespace setVariable [QEGVAR(tacpad,appMapClaim), ""];
+    };
+};
+[QEGVAR(tacpad,appOpened), {
+    params [["_app", "", [""]]];
+    if (HOST_DEVICE) then {[_app] call _thisArgs};
+}, _fnc_supportDrop] call CBA_fnc_addEventHandlerArgs;
+
+// And closing it takes all of it at once, rather than leaving the slabs
+// for EFUNC(tacpad,appClose)'s orphan sweep a frame later.
+[QEGVAR(tacpad,appClosed), {
+    params [["_app", "", [""]]];
+    if (HOST_DEVICE && _app isEqualTo SUP_APP) then {[""] call _thisArgs};
+}, _fnc_supportDrop] call CBA_fnc_addEventHandlerArgs;
 ["settings", FUNC(appSettings)] call EFUNC(tacpad,registerApp);
 
-// Each client publishes its own radio channel, because neither ACRE nor TFAR
-// will answer for anybody but the caller - see FUNC(radioState). Five seconds is
-// slower than a man can retune and far slower than it matters.
+// Each client publishes its own radio state, because only his own client knows
+// it - see FUNC(radioState). Five seconds is slower than a man can change net
+// and far slower than it matters.
 [LINKFUNC(radioPublish), 5, []] call CBA_fnc_addPerFrameHandler;
+
+// THE RADIO BOARD'S RECENT CONTACTS: the people of each call that went live,
+// kept off the voice API's call events - see FUNC(radioCalls). The HACK
+// board's LOG of the current hack - see FUNC(appHackTrack).
+GVAR(radioRecent) = [];
+GVAR(radioLast) = ["", -1];
+GVAR(hackLog) = [];
+[QEGVAR(voice,callState), {_this call FUNC(radioCalls)}] call CBA_fnc_addEventHandler;
+
+// A ring, a call changing state or a net changing redraws the open RADIO board
+// at once rather than on its next look (FUNC(appRadio)) - never under a press.
+{
+    [_x, {
+        if ((uiNamespace getVariable [QEGVAR(tacpad,appCurrent), ""]) isEqualTo "radio" && {[] call EFUNC(tacpad,appIdle)}) then {
+            {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+        };
+    }] call CBA_fnc_addEventHandler;
+} forEach [QEGVAR(voice,callRing), QEGVAR(voice,callState), QEGVAR(voice,netsChanged)];

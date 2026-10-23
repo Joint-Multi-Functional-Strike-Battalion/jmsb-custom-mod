@@ -8,8 +8,7 @@ class CfgVehicles {
     class B_Kitbag_rgr;
     class B_TacticalPack_blk;
     class B_Kitbag_Base;
-    // class B_RadioBag_01_base_F;
-    // class TFAR_rt1523g;
+    class B_RadioBag_01_base_F;
     // External class reference  END
 
     class GVAR(AssaultPack_Multicam): B_AssaultPack_rgr {
@@ -574,7 +573,11 @@ class CfgVehicles {
     };
 
     //Start radios
-   /*  class GVAR(TFAR_rt1523g_kitbag): TFAR_rt1523g {
+    // RADIO BAGS ARE BAGS. No man packs (user, 2026-10-21): none of these is a
+    // radio set any more - no jmfsb_rf_profile, and jmfsb_rf_fnc_carriedSets
+    // reads nothing off the back. The class names are kept - TFAR_rt1523g_kitbag
+    // too - because old loadouts and missions name them.
+    class GVAR(TFAR_rt1523g_kitbag): B_Kitbag_Base {
         author = "NemesisRE";
         model = "\A3\weapons_f\Ammoboxes\bags\Backpack_Fast";
         hiddenSelections[]=
@@ -657,12 +660,6 @@ class CfgVehicles {
         class TransportMagazines {};
         class TransportWeapons {};
         isBackpack = 1;
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
         // class TransportItems {
         //     MACRO_ADDITEM(ACRE_PRC117F,1);
         // };
@@ -674,12 +671,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Multicam_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Multicam_Snow): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -688,12 +679,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Multicam_Snow_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Multicam_Woodland): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -702,12 +687,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Multicam_Woodland_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Solid_CoyoteBrown): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -716,12 +695,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Solid_CoyoteBrown_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Solid_Olive): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -730,12 +703,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Solid_Olive_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Solid_Ranger_Green): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -744,12 +711,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Solid_Ranger_Green_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Solid_Tan): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -758,12 +719,6 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Solid_Tan_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_Solid_White): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;
@@ -772,13 +727,7 @@ class CfgVehicles {
         picture = QPATHTOF(data\UI\icon_B_C_UAV_Solid_White_ca.paa);
         hiddenSelections[] = {"Camo1"};
         MACRO_ITEM_COMMON
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
-    }; */
+    }; 
     //End radios 
 
     class GVAR(FieldPack_Multicam): B_FieldPack_oli {

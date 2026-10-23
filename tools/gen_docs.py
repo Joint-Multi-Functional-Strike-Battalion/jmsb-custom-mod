@@ -166,7 +166,10 @@ def settings_of(d):
     return out
 
 
-MODULE_RE = re.compile(r"class\s+(\w+)\s*:\s*Module_F\s*\{(.*?)\n    \};", re.S)
+# A module class is written out (jmfsb_moduleCAS) or, in an addon that owns it
+# outright, as GVAR(x) - expanded below to jmfsb_<addon>_x, or every module
+# written the guideline way would be missing from MODULES.md.
+MODULE_RE = re.compile(r"class\s+(\w+|GVAR\(\w+\))\s*:\s*Module_F\s*\{(.*?)\n    \};", re.S)
 
 
 def modules_of(d):
@@ -177,6 +180,9 @@ def modules_of(d):
         txt = strip_comments(read(os.path.join(d, f)))
         for m in MODULE_RE.finditer(txt):
             cls, body = m.group(1), m.group(2)
+            g = re.match(r"GVAR\((\w+)\)", cls)
+            if g:
+                cls = "jmfsb_%s_%s" % (os.path.basename(d), g.group(1))
             def get(k):
                 mm = re.search(k + r'\s*=\s*"([^"]*)"', body)
                 if mm:

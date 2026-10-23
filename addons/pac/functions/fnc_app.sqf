@@ -114,7 +114,7 @@ private _y = 0;
         [_body, [_tx, _y, _tw - _pad, _rowH], [_accent # 0, _accent # 1, _accent # 2, 0.14]] call jmfsb_tacpad_fnc_drawFill;
     };
     [_body, [_tx, _y, _tw - _pad, _rowH], ([_line, _accent] select _on), ([RULE_THIN, RULE_THICK] select _on)] call jmfsb_tacpad_fnc_drawFrame;
-    [_body, [_tx, _y, _tw - _pad, _rowH], _label, ([_mute, _ink] select _on), 0.75, _on, "center", true] call jmfsb_tacpad_fnc_drawText;
+    [_body, [_tx, _y, _tw - _pad, _rowH], _label, ([_mute, _ink] select _on), TEXT_BODY, _on, "center", true] call jmfsb_tacpad_fnc_drawText;
 
     private _hit = [_body, [_tx, _y, _tw - _pad, _rowH], {
         params ["_ctrl"];
@@ -151,8 +151,8 @@ private _valW = _w * 0.66 - _pad;
 
 private _fnc_row = {
     params ["_label", "_value", ["_colour", _ink]];
-    [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
-    [_body, [_valX, _y, _valW, _rowH], _value, _colour, 0.85, false, "left"] call jmfsb_tacpad_fnc_drawText;
+    [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+    [_body, [_valX, _y, _valW, _rowH], _value, _colour, TEXT_TITLE, false, "left"] call jmfsb_tacpad_fnc_drawText;
     _y = _y + _rowH;
 };
 
@@ -164,9 +164,9 @@ private _fnc_row = {
 // reports what the engine actually laid out at this width; the box is grown
 // to that and the next row starts below it, so nothing can be cut.
 private _fnc_wrapped = {
-    params ["_label", "_text", ["_colour", _ink], ["_size", 0.8]];
+    params ["_label", "_text", ["_colour", _ink], ["_size", TEXT_BODY]];
     if (_label isNotEqualTo "") then {
-        [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
     };
     private _c = [_body, [_valX, _y, _valW, _rowH], _text, _colour, _size, false, "left"] call jmfsb_tacpad_fnc_drawText;
     private _th = (ctrlTextHeight _c) max _rowH;
@@ -192,31 +192,31 @@ switch (_view) do {
         private _me = _roster select {(_x # 0) isEqualTo _who};
 
         if (_me isEqualTo []) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO RECORD", _dim, 0.8, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO RECORD", _dim, TEXT_TITLE, false] call jmfsb_tacpad_fnc_drawText;
             [
                 _body, [_pad, _y + _rowH, _w - 2 * _pad, _rowH * 2],
                 ["That player is no longer on the published roster.", "The server has not seen you yet, or has not published the roster."] select _self,
-                _dim, 0.65, false
+                _dim, TEXT_BODY, false
             ] call jmfsb_tacpad_fnc_drawText;
         };
 
         // Reading somebody else: a way back to the list, and the roster row is
         // the whole of what there is to read.
         if (!_self) then {
-            [_body, [_pad, _y, _w * 0.3, _rowH], "< BACK TO ROSTER", _accent, 0.75, true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w * 0.3, _rowH], "< BACK TO ROSTER", _accent, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
             [_body, [_pad, _y, _w * 0.3, _rowH], {
                 GVAR(viewUid) = "";
                 GVAR(view) = "roster";
                 {["pac"] call jmfsb_tacpad_fnc_openApp} call CBA_fnc_execNextFrame;
             }] call jmfsb_tacpad_fnc_drawHit;
-            [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], "PERSONNEL RECORD", _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], "PERSONNEL RECORD", _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
             _y = _y + _rowH * 1.2;
         };
 
         (_me # 0) params ["", "_name", "_rankId", "_roleId", "_groupId", "_statusId", "_skillIds", "_awards", "_updated", ["_time", [0, 0]]];
 
         private _abbrev = ["ranks", _rankId, "abbrev"] call FUNC(lookup);
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], format ["%1 %2", _abbrev, _name], _ink, 1.1, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], format ["%1 %2", _abbrev, _name], _ink, TEXT_TITLE, true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 1.4;
 
         ["RANK", ["ranks", _rankId] call FUNC(lookup)] call _fnc_row;
@@ -253,25 +253,25 @@ switch (_view) do {
         ["TIME ON", format ["%1h %2m  ·  %3 session%4", floor (_mins / 60), _mins mod 60, _joins, ["s", ""] select (_joins isEqualTo 1)], _ink] call _fnc_row;
         _y = _y + _rowH * 0.5;
 
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["UPDATED %1", _updated], _dim, 0.6, false, "right"] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["UPDATED %1", _updated], _dim, TEXT_LABEL, false, "right"] call jmfsb_tacpad_fnc_drawText;
     };
 
     // ---- ROSTER: everybody ------------------------------------------------------
     case "roster": {
         if (_roster isEqualTo []) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO ROSTER", _dim, 0.8, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO ROSTER", _dim, TEXT_TITLE, false] call jmfsb_tacpad_fnc_drawText;
         };
 
         // Column heads once, then one row a player. Rank abbrev, name, role, and
         // the status in the accent because it is the thing an admin set on
         // purpose and the thing a player looking down the list is checking.
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 0.8], "TAP A NAME TO READ THAT MAN'S RECORD", _dim, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 0.8], "TAP A NAME TO READ THAT MAN'S RECORD", _dim, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 0.8;
 
-        [_body, [_pad, _y, _w * 0.12, _rowH], "RANK", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.12, _y, _w * 0.38, _rowH], "NAME", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.50, _y, _w * 0.30, _rowH], "ROLE", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.80, _y, _w * 0.20 - _pad, _rowH], "STATUS", _mute, 0.6, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w * 0.12, _rowH], "RANK", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.12, _y, _w * 0.38, _rowH], "NAME", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.50, _y, _w * 0.30, _rowH], "ROLE", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.80, _y, _w * 0.20 - _pad, _rowH], "STATUS", _mute, TEXT_LABEL, true, "right", true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH;
         [_body, [_pad, _y, _w - 2 * _pad, RULE_THIN * pixelH], _line] call jmfsb_tacpad_fnc_drawFill;
         _y = _y + _padY - _rowH;          // each row steps down onto itself before it draws
@@ -282,10 +282,10 @@ switch (_view) do {
             _x params ["_rUid", "_name", "_rankId", "_roleId", "", "_statusId"];
             private _mine = _rUid isEqualTo _uid;
 
-            [_body, [_pad, _y, _w * 0.12, _rowH], ["ranks", _rankId, "abbrev"] call FUNC(lookup), _mute, 0.75, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.12, _y, _w * 0.38, _rowH], _name, _ink, 0.8, _mine] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.50, _y, _w * 0.30, _rowH], ["roles", _roleId] call FUNC(lookup), _mute, 0.75, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.80, _y, _w * 0.20 - _pad, _rowH], ["statuses", _statusId] call FUNC(lookup), _accent, 0.7, false, "right"] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w * 0.12, _rowH], ["ranks", _rankId, "abbrev"] call FUNC(lookup), _mute, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.12, _y, _w * 0.38, _rowH], _name, _ink, TEXT_TITLE, _mine] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.50, _y, _w * 0.30, _rowH], ["roles", _roleId] call FUNC(lookup), _mute, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.80, _y, _w * 0.20 - _pad, _rowH], ["statuses", _statusId] call FUNC(lookup), _accent, TEXT_BODY, false, "right"] call jmfsb_tacpad_fnc_drawText;
 
             // The row opens that man's record - the published row, no notes.
             private _rowHit = [_body, [_pad, _y, _w - 2 * _pad, _rowH], {
@@ -316,7 +316,7 @@ switch (_view) do {
         // dates that sort and wrong if they did not, and the fix is theirs.
         if (_open isEqualTo "") exitWith {
             if (count _opords isEqualTo 0) exitWith {
-                [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO OPORDS", _dim, 0.8, false] call jmfsb_tacpad_fnc_drawText;
+                [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO OPORDS", _dim, TEXT_TITLE, false] call jmfsb_tacpad_fnc_drawText;
             };
 
             private _list = (keys _opords) apply {
@@ -337,8 +337,8 @@ switch (_view) do {
                 if (_isCurrent) then {
                     [_body, [_pad, _y, _w - 2 * _pad, _rowH], [_accent # 0, _accent # 1, _accent # 2, 0.14]] call jmfsb_tacpad_fnc_drawFill;
                 };
-                [_body, [_pad * 2, _y, _w * 0.6, _rowH], _hdr getOrDefault ["title", _id], ([[_dim, _ink] select _isLive, _accent] select _isCurrent), 0.85, _isCurrent] call jmfsb_tacpad_fnc_drawText;
-                [_body, [_w * 0.6, _y, _w * 0.4 - _pad * 2, _rowH], ([_orderId, _date] select {_x isNotEqualTo ""}) joinString "  -  ", _mute, 0.7, false, "right"] call jmfsb_tacpad_fnc_drawText;
+                [_body, [_pad * 2, _y, _w * 0.6, _rowH], _hdr getOrDefault ["title", _id], ([[_dim, _ink] select _isLive, _accent] select _isCurrent), TEXT_TITLE, _isCurrent] call jmfsb_tacpad_fnc_drawText;
+                [_body, [_w * 0.6, _y, _w * 0.4 - _pad * 2, _rowH], ([_orderId, _date] select {_x isNotEqualTo ""}) joinString "  -  ", _mute, TEXT_BODY, false, "right"] call jmfsb_tacpad_fnc_drawText;
 
                 private _hit = [_body, [_pad, _y, _w - 2 * _pad, _rowH], {
                     params ["_ctrl"];
@@ -361,7 +361,7 @@ switch (_view) do {
         private _o = _opords get _open;
         private _hdr = _o get "header";
 
-        [_body, [_pad, _y, _w * 0.2, _rowH], "< BACK", _accent, 0.75, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w * 0.2, _rowH], "< BACK", _accent, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
         ([_body, [_pad, _y, _w * 0.2, _rowH], {
             GVAR(openOpord) = "";
             // NEXT FRAME, UNSCHEDULED - the way every other app reopens itself
@@ -372,10 +372,10 @@ switch (_view) do {
         {["pac"] call jmfsb_tacpad_fnc_openApp} call CBA_fnc_execNextFrame;
         }] call jmfsb_tacpad_fnc_drawHit);
         private _headline = [_hdr getOrDefault ["id", ""], "DATED " + (_hdr getOrDefault ["date", ""])] select {_x isNotEqualTo "" && _x isNotEqualTo "DATED "};
-        [_body, [_w * 0.2, _y, _w * 0.8 - _pad, _rowH], _headline joinString "  -  ", _ink, 0.95, true, "right"] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.2, _y, _w * 0.8 - _pad, _rowH], _headline joinString "  -  ", _ink, TEXT_TITLE, true, "right"] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH;
 
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], _hdr getOrDefault ["title", _open], _ink, 1.1, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], _hdr getOrDefault ["title", _open], _ink, TEXT_TITLE, true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 1.4;
 
         // MEASURED, NOT COUNTED. This sized each block by dividing its length
@@ -387,10 +387,10 @@ switch (_view) do {
         private _fnc_block = {
             params ["_label", "_text"];
             if (_text isEqualTo "" || {_y > _h - _rowH * 2}) exitWith {};
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], _label, _mute, 0.65, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], _label, _mute, TEXT_BODY, true, "left", true] call jmfsb_tacpad_fnc_drawText;
             _y = _y + _rowH;
 
-            private _c = [_body, [_pad * 2, _y, _w - 3 * _pad, _rowH], _text, _ink, 0.75, false] call jmfsb_tacpad_fnc_drawText;
+            private _c = [_body, [_pad * 2, _y, _w - 3 * _pad, _rowH], _text, _ink, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
             private _th = (ctrlTextHeight _c) max _rowH;
             _c ctrlSetPosition [_pad * 2, _y, _w - 3 * _pad, _th];
             _c ctrlCommit 0;
@@ -428,19 +428,19 @@ switch (_view) do {
     case "requests": {
         private _svc = "service" in ((missionNamespace getVariable [QGVAR(summary), createHashMap]) getOrDefault ["backend", ""]);
         if (!_svc) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO DATABASE", _dim, 0.8, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_pad, _y + _rowH, _w - 2 * _pad, _rowH * 2], "PAC requests are kept in the unit's database, and this server has none.", _dim, 0.65, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO DATABASE", _dim, TEXT_TITLE, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y + _rowH, _w - 2 * _pad, _rowH * 2], "PAC requests are kept in the unit's database, and this server has none.", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
         if (GVAR(myTicketsAt) < 0 || {diag_tickTime - GVAR(myTicketsAt) > 60}) then {
             GVAR(myTicketsAt) = diag_tickTime;
             [player] remoteExec [QFUNC(ticketMine), 2];
         };
 
-        [_body, [_pad, _y, _w * 0.6, _rowH], format ["MY REQUESTS  %1", count GVAR(myTickets)], _mute, 0.65, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w * 0.6, _rowH], format ["MY REQUESTS  %1", count GVAR(myTickets)], _mute, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
         // RAISE A REQUEST, top right, where the website's card is
         [_body, [_w * 0.72, _y, _w * 0.28 - _pad, _rowH], [_accent # 0, _accent # 1, _accent # 2, 0.14]] call jmfsb_tacpad_fnc_drawFill;
         [_body, [_w * 0.72, _y, _w * 0.28 - _pad, _rowH], _accent, RULE_THICK] call jmfsb_tacpad_fnc_drawFrame;
-        [_body, [_w * 0.72, _y, _w * 0.28 - _pad, _rowH], "RAISE A REQUEST", _ink, 0.75, true, "center", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.72, _y, _w * 0.28 - _pad, _rowH], "RAISE A REQUEST", _ink, TEXT_BODY, true, "center", true] call jmfsb_tacpad_fnc_drawText;
         [_body, [_w * 0.72, _y, _w * 0.28 - _pad, _rowH], {
             GVAR(view) = "raise";
             {["pac"] call jmfsb_tacpad_fnc_openApp} call CBA_fnc_execNextFrame;
@@ -453,15 +453,15 @@ switch (_view) do {
                 case (!GVAR(myTicketsOk)): {"The database did not answer."};
                 default {"None yet - RAISE A REQUEST is how one starts."};
             };
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], _said, _dim, 0.75, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], _said, _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
 
         // the website's table: Id | Subject | Kind | State | Replies - tap a row to read it
-        [_body, [_pad, _y, _w * 0.14, _rowH], "ID", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.14, _y, _w * 0.42, _rowH], "SUBJECT", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.56, _y, _w * 0.18, _rowH], "KIND", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.74, _y, _w * 0.14, _rowH], "STATE", _mute, 0.6, true, "left", true] call jmfsb_tacpad_fnc_drawText;
-        [_body, [_w * 0.88, _y, _w * 0.12 - _pad, _rowH], "REPLIES", _mute, 0.6, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w * 0.14, _rowH], "ID", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.14, _y, _w * 0.42, _rowH], "SUBJECT", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.56, _y, _w * 0.18, _rowH], "KIND", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.74, _y, _w * 0.14, _rowH], "STATE", _mute, TEXT_LABEL, true, "left", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.88, _y, _w * 0.12 - _pad, _rowH], "REPLIES", _mute, TEXT_LABEL, true, "right", true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH;
         [_body, [_pad, _y, _w - 2 * _pad, RULE_THIN * pixelH], _line] call jmfsb_tacpad_fnc_drawFill;
         _y = _y + _padY - _rowH;          // each row steps down onto itself before it draws
@@ -472,11 +472,11 @@ switch (_view) do {
             private _t = _x;
             private _kid = _t getOrDefault ["kind", ""];
             private _kindName = (_kinds getOrDefault [_kid, createHashMap]) getOrDefault ["label", _kid];
-            [_body, [_pad, _y, _w * 0.14, _rowH], _t getOrDefault ["id", ""], _mute, 0.7, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.14, _y, _w * 0.42, _rowH], _t getOrDefault ["subject", ""], _ink, 0.8, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.56, _y, _w * 0.18, _rowH], _kindName, _mute, 0.7, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.74, _y, _w * 0.14, _rowH], toUpper (_t getOrDefault ["status", "open"]), _accent, 0.7, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_w * 0.88, _y, _w * 0.12 - _pad, _rowH], str (count (_t getOrDefault ["replies", []])), _mute, 0.7, false, "right"] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w * 0.14, _rowH], _t getOrDefault ["id", ""], _mute, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.14, _y, _w * 0.42, _rowH], _t getOrDefault ["subject", ""], _ink, TEXT_TITLE, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.56, _y, _w * 0.18, _rowH], _kindName, _mute, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.74, _y, _w * 0.14, _rowH], toUpper (_t getOrDefault ["status", "open"]), _accent, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.88, _y, _w * 0.12 - _pad, _rowH], str (count (_t getOrDefault ["replies", []])), _mute, TEXT_BODY, false, "right"] call jmfsb_tacpad_fnc_drawText;
             private _hit = [_body, [_pad, _y, _w - 2 * _pad, _rowH], {
                 params ["_ctrl"];
                 GVAR(reqOpen) = _ctrl getVariable [QGVAR(id), ""];
@@ -492,20 +492,20 @@ switch (_view) do {
         private _id = GVAR(reqOpen);
         private _found = GVAR(myTickets) select {(_x getOrDefault ["id", ""]) isEqualTo _id};
 
-        [_body, [_pad, _y, _w * 0.3, _rowH], "< BACK TO REQUESTS", _accent, 0.75, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w * 0.3, _rowH], "< BACK TO REQUESTS", _accent, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
         [_body, [_pad, _y, _w * 0.3, _rowH], {
             GVAR(view) = "requests";
             {["pac"] call jmfsb_tacpad_fnc_openApp} call CBA_fnc_execNextFrame;
         }] call jmfsb_tacpad_fnc_drawHit;
         if (_found isEqualTo []) exitWith {
-            [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], "NOT ON THE LIST", _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_pad, _y + _rowH * 1.5, _w - 2 * _pad, _rowH], "That request is not on your list any more.", _dim, 0.75, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], "NOT ON THE LIST", _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y + _rowH * 1.5, _w - 2 * _pad, _rowH], "That request is not on your list any more.", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
         private _t = _found # 0;
-        [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], format ["%1  -  %2", _id, toUpper (_t getOrDefault ["status", "open"])], _accent, 0.8, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], format ["%1  -  %2", _id, toUpper (_t getOrDefault ["status", "open"])], _accent, TEXT_TITLE, true, "right", true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 1.2;
 
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], _t getOrDefault ["subject", ""], _ink, 1.1, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], _t getOrDefault ["subject", ""], _ink, TEXT_TITLE, true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 1.4;
         private _kid = _t getOrDefault ["kind", ""];
         ["KIND", (GVAR(ticketKinds) getOrDefault [_kid, createHashMap]) getOrDefault ["label", _kid]] call _fnc_row;
@@ -521,20 +521,20 @@ switch (_view) do {
         // THE THREAD, oldest first, the reply box kept clear of at the foot.
         private _replies = _t getOrDefault ["replies", []];
         if !(_replies isEqualType []) then {_replies = []};
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["THREAD  %1", count _replies], _mute, 0.65, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["THREAD  %1", count _replies], _mute, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH;
         private _foot = _h - _rowH * 4;
         // each post steps over the gap above it before it draws; the gap after the last one is added below the loop
         {
             _y = _y + _padY;
             if (_y > _foot - _rowH * 2) exitWith {
-                [_body, [_pad, _y, _w - 2 * _pad, _rowH], "... more on the website", _dim, 0.65, false] call jmfsb_tacpad_fnc_drawText;
+                [_body, [_pad, _y, _w - 2 * _pad, _rowH], "... more on the website", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
                 _y = _y + _rowH - _padY;
             };
             private _r = _x;
             private _head = format ["%1   %2%3", _r getOrDefault ["byName", ""], (_r getOrDefault ["at", ""]) select [0, 16],
                 ["", "   marked " + toUpper (_r getOrDefault ["status", ""])] select ((_r getOrDefault ["status", ""]) isNotEqualTo "")];
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], _head, _mute, 0.65, true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], _head, _mute, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
             _y = _y + _rowH * 0.9;
             private _text = _r getOrDefault ["text", ""];
             if !(_text isEqualType "") then {_text = str _text};
@@ -544,7 +544,7 @@ switch (_view) do {
         // the reply box - a real edit control in the body, its text kept
         // across the tile's redraws in GVAR(reqReply)
         _y = _foot max (_y + _padY);
-        [_body, [_pad, _y, _labW - _pad, _rowH], "REPLY", _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _labW - _pad, _rowH], "REPLY", _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
         private _multi = ["RscEdit", "RscEditMulti"] select (isClass (configFile >> "RscEditMulti"));
         private _e = _display ctrlCreate [_multi, -1, _body];
         _e ctrlSetPosition [_valX, _y, _valW, _rowH * 2];
@@ -557,7 +557,7 @@ switch (_view) do {
         _y = _y + _rowH * 2 + _padY;
         [_body, [_valX, _y, _w * 0.24, _rowH], [_accent # 0, _accent # 1, _accent # 2, 0.14]] call jmfsb_tacpad_fnc_drawFill;
         [_body, [_valX, _y, _w * 0.24, _rowH], _accent, RULE_THICK] call jmfsb_tacpad_fnc_drawFrame;
-        [_body, [_valX, _y, _w * 0.24, _rowH], "SEND", _ink, 0.8, true, "center", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_valX, _y, _w * 0.24, _rowH], "SEND", _ink, TEXT_TITLE, true, "center", true] call jmfsb_tacpad_fnc_drawText;
         [_body, [_valX, _y, _w * 0.24, _rowH], {
             private _text = trim GVAR(reqReply);
             if (_text isEqualTo "") exitWith {["TAC//PAC", "Nothing to send.", [0.831, 0.267, 0.267, 1]] call EFUNC(notify,notify)};
@@ -570,18 +570,18 @@ switch (_view) do {
 
     // ---- RAISE ONE: the form, with real dropdowns ---------------------------------
     case "raise": {
-        [_body, [_pad, _y, _w * 0.3, _rowH], "< BACK TO REQUESTS", _accent, 0.75, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w * 0.3, _rowH], "< BACK TO REQUESTS", _accent, TEXT_BODY, true] call jmfsb_tacpad_fnc_drawText;
         [_body, [_pad, _y, _w * 0.3, _rowH], {
             GVAR(view) = "requests";
             {["pac"] call jmfsb_tacpad_fnc_openApp} call CBA_fnc_execNextFrame;
         }] call jmfsb_tacpad_fnc_drawHit;
-        [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], "RAISE A PAC REQUEST", _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_w * 0.3, _y, _w * 0.7 - _pad, _rowH], "RAISE A PAC REQUEST", _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 1.4;
 
         private _kinds = keys GVAR(ticketKinds);
         _kinds sort true;
         if (_kinds isEqualTo []) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH * 2], "The unit has no request kinds yet - an admin adds them in TAC//PAC under Templates, System.", _dim, 0.7, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH * 2], "The unit has no request kinds yet - an admin adds them in TAC//PAC under Templates, System.", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
 
         // A DROPDOWN (RscCombo) in the body, drawn in the suite's colours. What
@@ -589,7 +589,7 @@ switch (_view) do {
         // redraw puts it back.
         private _fnc_combo = {
             params ["_label", "_options", "_var"];
-            [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
             private _c = _display ctrlCreate ["RscCombo", -1, _body];
             _c ctrlSetPosition [_valX, _y, _valW, _rowH];
             _c ctrlSetBackgroundColor [_ink # 0, _ink # 1, _ink # 2, 0.08];
@@ -623,7 +623,7 @@ switch (_view) do {
         private _multi = ["RscEdit", "RscEditMulti"] select (isClass (configFile >> "RscEditMulti"));
         private _fnc_box = {
             params ["_label", "_var", "_lines", "_class"];
-            [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
             private _e = _display ctrlCreate [_class, -1, _body];
             _e ctrlSetPosition [_valX, _y, _valW, _rowH * _lines];
             _e ctrlSetBackgroundColor [_ink # 0, _ink # 1, _ink # 2, 0.08];
@@ -644,7 +644,7 @@ switch (_view) do {
 
         [_body, [_valX, _y, _w * 0.24, _rowH], [_accent # 0, _accent # 1, _accent # 2, 0.14]] call jmfsb_tacpad_fnc_drawFill;
         [_body, [_valX, _y, _w * 0.24, _rowH], _accent, RULE_THICK] call jmfsb_tacpad_fnc_drawFrame;
-        [_body, [_valX, _y, _w * 0.24, _rowH], "RAISE IT", _ink, 0.8, true, "center", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_valX, _y, _w * 0.24, _rowH], "RAISE IT", _ink, TEXT_TITLE, true, "center", true] call jmfsb_tacpad_fnc_drawText;
         [_body, [_valX, _y, _w * 0.24, _rowH], {
             private _kinds = keys GVAR(ticketKinds);
             _kinds sort true;
@@ -669,8 +669,8 @@ switch (_view) do {
     case "apply": {
         private _svc = "service" in ((missionNamespace getVariable [QGVAR(summary), createHashMap]) getOrDefault ["backend", ""]);
         if (!_svc) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO DATABASE", _dim, 0.8, false] call jmfsb_tacpad_fnc_drawText;
-            [_body, [_pad, _y + _rowH, _w - 2 * _pad, _rowH * 2], "Applications are kept in the unit's database, and this server has none - ask an admin to add you.", _dim, 0.65, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NO DATABASE", _dim, TEXT_TITLE, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y + _rowH, _w - 2 * _pad, _rowH * 2], "Applications are kept in the unit's database, and this server has none - ask an admin to add you.", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
         if (GVAR(applyAt) < 0 || {diag_tickTime - GVAR(applyAt) > 60}) then {
             GVAR(applyAt) = diag_tickTime;
@@ -680,10 +680,10 @@ switch (_view) do {
         private _status = _app getOrDefault ["status", "none"];
         private _faction = ([] call jmfsb_groups_fnc_orbat) # 2;
 
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], format ["APPLY TO JOIN %1", toUpper ([_faction, "THE UNIT"] select (_faction isEqualTo ""))], _ink, 1.1, true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.3], format ["APPLY TO JOIN %1", toUpper ([_faction, "THE UNIT"] select (_faction isEqualTo ""))], _ink, TEXT_TITLE, true] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH * 1.4;
         if (!GVAR(applySeen)) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "Asking the server what the unit wants to know ...", _dim, 0.75, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH], "Asking the server what the unit wants to know ...", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
         private _said = switch (_status) do {
             case "new": {format ["Your application is IN, sent %1 - an admin decides it. You may change your answers until then.", (_app getOrDefault ["submittedAt", ""]) select [0, 16]]};
@@ -692,13 +692,13 @@ switch (_view) do {
             case "nodb": {"This server has no database."};
             default {"You are not on the roster. Answer the unit's questions and SEND; an admin accepts you under APPLICATIONS."};
         };
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH], _said, [_mute, _accent] select (_status in ["new", "accepted"]), 0.75, false] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH], _said, [_mute, _accent] select (_status in ["new", "accepted"]), TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         _y = _y + _rowH + _padY;
         if (_status in ["accepted", "rejected", "nodb"]) exitWith {};
 
         private _questions = GVAR(applyQuestions);
         if (_questions isEqualTo []) exitWith {
-            [_body, [_pad, _y, _w - 2 * _pad, _rowH * 2], "The unit has not written its questions yet - an admin sets them on the website (Applications, Edit the questions).", _dim, 0.7, false] call jmfsb_tacpad_fnc_drawText;
+            [_body, [_pad, _y, _w - 2 * _pad, _rowH * 2], "The unit has not written its questions yet - an admin sets them on the website (Applications, Edit the questions).", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
         };
         [_body, [0, _y, _w, RULE_THIN * pixelH], _dim] call jmfsb_tacpad_fnc_drawFill;
         _y = _y + _padY;
@@ -712,58 +712,97 @@ switch (_view) do {
             private _qid = _q getOrDefault ["id", ""];
             private _type = toLower (_q getOrDefault ["type", "text"]);
             private _lines = [1, 3] select (_type isEqualTo "textarea");
+            // a "skills" question: an "I'm interested in" line, then the checkboxes, APPLY_SKILL_COLUMNS to a line
+            private _choices = _q getOrDefault ["choices", []];
+            if !(_choices isEqualType []) then {_choices = []};
+            if (_type isEqualTo "skills") then {_lines = 1 + ceil ((count _choices max 1) / APPLY_SKILL_COLUMNS)};
             private _help = _q getOrDefault ["help", ""];
             if (_y > _h - _rowH * (_lines + 3)) exitWith {
-                [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["... %1 more question(s) - the website's Apply page has them all", (count _questions) - _drawn], _dim, 0.65, false] call jmfsb_tacpad_fnc_drawText;
+                [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["... %1 more question(s) - the website's Apply page has them all", (count _questions) - _drawn], _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
                 _y = _y + _rowH - _padY;
             };
             private _label = _q getOrDefault ["label", _qid];
             if ((_q getOrDefault ["required", false]) in [true, 1, "1", "true"]) then {_label = _label + " *"};
-            [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, 0.65, true, "right", true] call jmfsb_tacpad_fnc_drawText;
-            if (_type isEqualTo "select") then {
-                private _c = _display ctrlCreate ["RscCombo", -1, _body];
-                _c ctrlSetPosition [_valX, _y, _valW, _rowH];
-                _c ctrlSetBackgroundColor [_ink # 0, _ink # 1, _ink # 2, 0.08];
-                _c ctrlSetTextColor _ink;
-                _c ctrlSetFontHeight (_rowH * 0.72);
-                private _opts = _q getOrDefault ["options", []];
-                if !(_opts isEqualType []) then {_opts = []};
-                _c lbAdd "-";
-                _c lbSetData [0, ""];
-                private _cur = GVAR(applyAnswers) getOrDefault [_qid, ""];
-                private _sel = 0;
-                {
-                    private _o = if (_x isEqualType "") then {_x} else {str _x};
-                    private _i = _c lbAdd _o;
-                    _c lbSetData [_i, _o];
-                    if (_o isEqualTo _cur) then {_sel = _i};
-                } forEach _opts;
-                _c lbSetCurSel _sel;
-                _c setVariable [QGVAR(qid), _qid];
-                _c ctrlAddEventHandler ["LBSelChanged", {
-                    params ["_ctrl", "_i"];
-                    GVAR(applyAnswers) set [_ctrl getVariable [QGVAR(qid), ""], _ctrl lbData _i];
-                }];
-                _c ctrlCommit 0;
-            } else {
-                private _e = _display ctrlCreate [[_multi, "RscEdit"] select (_lines isEqualTo 1), -1, _body];
-                _e ctrlSetPosition [_valX, _y, _valW, _rowH * _lines];
-                _e ctrlSetBackgroundColor [_ink # 0, _ink # 1, _ink # 2, 0.08];
-                _e ctrlSetTextColor _ink;
-                _e ctrlSetFontHeight (_rowH * 0.72);
-                _e ctrlSetTooltip _help;
-                _e ctrlSetText (GVAR(applyAnswers) getOrDefault [_qid, ""]);
-                _e setVariable [QGVAR(qid), _qid];
-                _e ctrlAddEventHandler ["KeyUp", {
-                    params ["_ctrl"];
-                    GVAR(applyAnswers) set [_ctrl getVariable [QGVAR(qid), ""], ctrlText _ctrl];
-                    false
-                }];
-                _e ctrlCommit 0;
+            [_body, [_pad, _y, _labW - _pad, _rowH], _label, _mute, TEXT_BODY, true, "right", true] call jmfsb_tacpad_fnc_drawText;
+            switch (_type) do {
+                case "skills": {
+                    // the answer is the ticked skill ids; a press ticks or unticks one and redraws the tab
+                    [_body, [_valX, _y, _valW, _rowH], "I'm interested in", _dim, TEXT_BODY, false] call jmfsb_tacpad_fnc_drawText;
+                    if (_choices isEqualTo []) exitWith {
+                        [_body, [_valX, _y + _rowH, _valW, _rowH], "The unit has no skills listed yet.", _dim, TEXT_LABEL, false] call jmfsb_tacpad_fnc_drawText;
+                    };
+                    private _ticked = GVAR(applyAnswers) getOrDefault [_qid, []];
+                    if !(_ticked isEqualType []) then {_ticked = []};
+                    private _colW = _valW / APPLY_SKILL_COLUMNS;
+                    {
+                        _x params [["_sid", "", [""]], ["_sname", "", [""]]];
+                        private _on = _sid in _ticked;
+                        private _cell = [
+                            _valX + (_forEachIndex % APPLY_SKILL_COLUMNS) * _colW,
+                            _y + _rowH * (1 + floor (_forEachIndex / APPLY_SKILL_COLUMNS)),
+                            _colW, _rowH
+                        ];
+                        [_body, _cell, format ["%1  %2", ["[   ]", "[ X ]"] select _on, _sname], [_mute, _ink] select _on, TEXT_BODY, _on] call jmfsb_tacpad_fnc_drawText;
+                        private _hit = [_body, _cell, {
+                            params ["_ctrl"];
+                            private _qid = _ctrl getVariable [QGVAR(qid), ""];
+                            private _sid = _ctrl getVariable [QGVAR(sid), ""];
+                            private _now = GVAR(applyAnswers) getOrDefault [_qid, []];
+                            if !(_now isEqualType []) then {_now = []};
+                            _now = [_now + [_sid], _now - [_sid]] select (_sid in _now);
+                            GVAR(applyAnswers) set [_qid, _now];
+                            {["pac"] call jmfsb_tacpad_fnc_openApp} call CBA_fnc_execNextFrame;
+                        }] call jmfsb_tacpad_fnc_drawHit;
+                        _hit setVariable [QGVAR(qid), _qid];
+                        _hit setVariable [QGVAR(sid), _sid];
+                    } forEach _choices;
+                };
+                case "select": {
+                    private _c = _display ctrlCreate ["RscCombo", -1, _body];
+                    _c ctrlSetPosition [_valX, _y, _valW, _rowH];
+                    _c ctrlSetBackgroundColor [_ink # 0, _ink # 1, _ink # 2, 0.08];
+                    _c ctrlSetTextColor _ink;
+                    _c ctrlSetFontHeight (_rowH * 0.72);
+                    private _opts = _q getOrDefault ["options", []];
+                    if !(_opts isEqualType []) then {_opts = []};
+                    _c lbAdd "-";
+                    _c lbSetData [0, ""];
+                    private _cur = GVAR(applyAnswers) getOrDefault [_qid, ""];
+                    private _sel = 0;
+                    {
+                        private _o = if (_x isEqualType "") then {_x} else {str _x};
+                        private _i = _c lbAdd _o;
+                        _c lbSetData [_i, _o];
+                        if (_o isEqualTo _cur) then {_sel = _i};
+                    } forEach _opts;
+                    _c lbSetCurSel _sel;
+                    _c setVariable [QGVAR(qid), _qid];
+                    _c ctrlAddEventHandler ["LBSelChanged", {
+                        params ["_ctrl", "_i"];
+                        GVAR(applyAnswers) set [_ctrl getVariable [QGVAR(qid), ""], _ctrl lbData _i];
+                    }];
+                    _c ctrlCommit 0;
+                };
+                default {
+                    private _e = _display ctrlCreate [[_multi, "RscEdit"] select (_lines isEqualTo 1), -1, _body];
+                    _e ctrlSetPosition [_valX, _y, _valW, _rowH * _lines];
+                    _e ctrlSetBackgroundColor [_ink # 0, _ink # 1, _ink # 2, 0.08];
+                    _e ctrlSetTextColor _ink;
+                    _e ctrlSetFontHeight (_rowH * 0.72);
+                    _e ctrlSetTooltip _help;
+                    _e ctrlSetText (GVAR(applyAnswers) getOrDefault [_qid, ""]);
+                    _e setVariable [QGVAR(qid), _qid];
+                    _e ctrlAddEventHandler ["KeyUp", {
+                        params ["_ctrl"];
+                        GVAR(applyAnswers) set [_ctrl getVariable [QGVAR(qid), ""], ctrlText _ctrl];
+                        false
+                    }];
+                    _e ctrlCommit 0;
+                };
             };
             _y = _y + _rowH * _lines;
             if (_help isNotEqualTo "" && _type isNotEqualTo "textarea") then {
-                [_body, [_valX, _y, _valW, _rowH * 0.8], _help, _dim, 0.6, false] call jmfsb_tacpad_fnc_drawText;
+                [_body, [_valX, _y, _valW, _rowH * 0.8], _help, _dim, TEXT_LABEL, false] call jmfsb_tacpad_fnc_drawText;
                 _y = _y + _rowH * 0.8;
             };
             _drawn = _drawn + 1;
@@ -773,7 +812,7 @@ switch (_view) do {
         private _btn = ["SEND APPLICATION", "UPDATE MY APPLICATION"] select (_status isEqualTo "new");
         [_body, [_valX, _y, _w * 0.30, _rowH], [_accent # 0, _accent # 1, _accent # 2, 0.14]] call jmfsb_tacpad_fnc_drawFill;
         [_body, [_valX, _y, _w * 0.30, _rowH], _accent, RULE_THICK] call jmfsb_tacpad_fnc_drawFrame;
-        [_body, [_valX, _y, _w * 0.30, _rowH], _btn, _ink, 0.8, true, "center", true] call jmfsb_tacpad_fnc_drawText;
+        [_body, [_valX, _y, _w * 0.30, _rowH], _btn, _ink, TEXT_TITLE, true, "center", true] call jmfsb_tacpad_fnc_drawText;
         [_body, [_valX, _y, _w * 0.30, _rowH], {
             [player, +GVAR(applyAnswers)] remoteExec [QFUNC(applySubmit), 2];
             ["TAC//PAC", "Sending your application ...", [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);

@@ -16,8 +16,6 @@ if (GVAR(initDone)) exitWith {};
 GVAR(initDone) = true;
 
 GVAR(hasACRE) = isClass (configFile >> "CfgPatches" >> "acre_main");
-GVAR(hasTFAR) = isClass (configFile >> "CfgPatches" >> "tfar_core") ||
-                {isClass (configFile >> "CfgPatches" >> "task_force_radio")};
 GVAR(hasDEW)  = isClass (configFile >> "CfgPatches" >> "DEW_main") ||
                 {isClass (configFile >> "CfgPatches" >> "Drongo_EW")};
 

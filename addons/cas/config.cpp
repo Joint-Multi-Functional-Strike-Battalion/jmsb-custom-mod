@@ -8,7 +8,8 @@ class CfgPatches {
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
-            "jmfsb_common"
+            "jmfsb_common",
+            "jmfsb_support"
         };
         authorUrl = "https://github.com/Joint-Multi-Functional-Strike-Battalion/";
         author = QAUTHOR;

@@ -11,6 +11,11 @@ PREP_RECOMPILE_END;
 // window on every read - see FUNC(netFailChance).
 GVAR(netHistory) = [];
 
+// The server's last answer to "what RF nodes can my set hear" (FUNC(rfReach)),
+// and when it came - read by the tacpad HACK board.
+GVAR(rfReach) = [];
+GVAR(rfReachTime) = -1;
+
 #include "initSettings.inc.sqf"
 
 // Scanner stopwatch. Declared here so the screen can read it on the very

@@ -35,6 +35,7 @@ class CfgVehicles {
     class EGVAR(uniform,B_H_Soldier_unarmed_F);
     class EGVAR(uniform,B_H_soldier_M_F);
     class B_Boat_Armed_01_minigun_F;
+    class B_Carryall_oli;
     class B_G_Offroad_01_AT_F;
     class B_G_Offroad_01_F;
     class B_G_Offroad_01_armed_F;
@@ -62,6 +63,22 @@ class CfgVehicles {
 
     // ---- the uniform bodies - Atlas's HIMF paint on base-game models, see CfgWeapons.hpp ----
 
+    // ---- the AA gunners' Titan: at 100 mass it does not fit in the uniform and
+    // light rig with the rifle ammo, so it rides in the bag and the launcher
+    // loads from there.
+    class GVAR(B_Carryall_Titan_AA): B_Carryall_oli {
+        scope = 1;
+        author = QAUTHOR;
+        class TransportMagazines {
+            class _xx_Titan_AA {
+                magazine = "Titan_AA";
+                count = 1;
+            };
+        };
+        class TransportItems {};
+        class TransportWeapons {};
+    };
+
     // ---- the men ----
     class GVAR(Rifleman): EGVAR(uniform,B_H_Soldier_F) {
         scope = 2;
@@ -81,7 +98,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -99,7 +116,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -121,7 +138,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -143,7 +160,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -155,8 +172,8 @@ class CfgVehicles {
         side = 1;
         faction = QUOTE(ADDON);
         identityTypes[] = {"LanguageENG_F","Head_Tanoan","G_NATO_default"};
-        magazines[] = {"150Rnd_762x54_Box","150Rnd_762x54_Box","150Rnd_762x54_Box","HandGrenade","SmokeShell"};
-        respawnMagazines[] = {"150Rnd_762x54_Box","150Rnd_762x54_Box","150Rnd_762x54_Box","HandGrenade","SmokeShell"};
+        magazines[] = {"150Rnd_762x54_Box","150Rnd_762x54_Box","HandGrenade"};
+        respawnMagazines[] = {"150Rnd_762x54_Box","150Rnd_762x54_Box","HandGrenade"};
         weapons[] = {"LMG_Zafir_F","Throw","Put"};
         respawnWeapons[] = {"LMG_Zafir_F","Throw","Put"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
@@ -165,7 +182,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -187,7 +204,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -210,7 +227,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -224,15 +241,15 @@ class CfgVehicles {
         weapons[] = {"arifle_Mk20_F","launch_MRAWS_olive_rail_F","Throw","Put"};
         respawnWeapons[] = {"arifle_Mk20_F","launch_MRAWS_olive_rail_F","Throw","Put"};
         identityTypes[] = {"LanguageENG_F","Head_Tanoan","G_NATO_default"};
-        magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","MRAWS_HEAT55_F","HandGrenade","SmokeShell"};
-        respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","MRAWS_HEAT55_F","HandGrenade","SmokeShell"};
+        magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","MRAWS_HEAT55_F","HandGrenade","SmokeShell"};
+        respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","MRAWS_HEAT55_F","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
         linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -246,15 +263,16 @@ class CfgVehicles {
         identityTypes[] = {"LanguageENG_F","Head_Tanoan","G_NATO_default"};
         weapons[] = {"arifle_Mk20_F","launch_B_Titan_F","Throw","Put"};
         respawnWeapons[] = {"arifle_Mk20_F","launch_B_Titan_F","Throw","Put"};
-        magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
-        respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
+        magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
+        respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
+        backpack = QGVAR(B_Carryall_Titan_AA);
         linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -268,16 +286,16 @@ class CfgVehicles {
         identityTypes[] = {"LanguageENG_F","Head_Tanoan","G_NATO_default"};
         weapons[] = {"arifle_Mk20_F","Throw","Put","Rangefinder"};
         respawnWeapons[] = {"arifle_Mk20_F","Throw","Put","Rangefinder"};
-        magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
-        respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","Titan_AA","HandGrenade","SmokeShell"};
-        backpack = "B_Carryall_oli";
+        magazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
+        respawnMagazines[] = {"30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","30Rnd_556x45_Stanag_Tracer_Red","HandGrenade","SmokeShell"};
+        backpack = QGVAR(B_Carryall_Titan_AA);
         uniformClass = "SOF_U_B_SFFatigues_tigerstripe";
         linkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         respawnLinkedItems[] = {"V_CarrierRigKBT_01_light_Olive_F","jmfsb_headware_H_I_Helmet_canvas_Green","ItemMap","ItemCompass","ItemWatch","ItemRadio"};
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -297,7 +315,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -319,7 +337,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -341,7 +359,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -363,7 +381,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -385,7 +403,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -405,7 +423,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -427,7 +445,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -450,7 +468,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -473,7 +491,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -539,7 +557,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -561,7 +579,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -583,7 +601,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -605,7 +623,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -627,7 +645,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -647,7 +665,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -669,7 +687,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -691,7 +709,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };
@@ -713,7 +731,7 @@ class CfgVehicles {
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
             class GVAR(goggles) {
-                init = "params ['_unit']; if (local _unit) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
+                init = "params ['_unit']; if (local _unit && {isClass (configFile >> 'CfgGlasses' >> 'adfrc_facewear_kondor_blk_clr')}) then {removeGoggles _unit; _unit addGoggles 'adfrc_facewear_kondor_blk_clr'};";
             };
         };
     };

@@ -8,7 +8,7 @@ class XtdGearModels {
 
             class camo {
                 alwaysSelectable = 1;
-                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White"};
+                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White", "OCP"};
 
                 class Multicam {
                     label = "MC";
@@ -37,6 +37,13 @@ class XtdGearModels {
                 class Solid_White {
                     label = "White";
                     image = "z\aceax\addons\gearinfo\data\camo\wht.paa";
+                };
+                // THE VANILLA MTP BAG, WHICH ax_vanillaocp RE-SKINS TO OCP (user, 2026-10-19):
+                // one camo of this group rather than a vanilla group of its own, so the
+                // arsenal shows one bag with OCP beside MC.
+                class OCP {
+                    label = "OCP";
+                    image = "z\aceax\addons\gearinfo\data\camo\ocp.paa";
                 };
             };
         };
@@ -86,7 +93,7 @@ class XtdGearModels {
 
             class camo {
                 alwaysSelectable = 1;
-                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White"};
+                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White", "OCP"};
 
                 class Multicam {
                     label = "MC";
@@ -115,6 +122,13 @@ class XtdGearModels {
                 class Solid_White {
                     label = "White";
                     image = "z\aceax\addons\gearinfo\data\camo\wht.paa";
+                };
+                // THE VANILLA MTP BAG, WHICH ax_vanillaocp RE-SKINS TO OCP (user, 2026-10-19):
+                // one camo of this group rather than a vanilla group of its own, so the
+                // arsenal shows one bag with OCP beside MC.
+                class OCP {
+                    label = "OCP";
+                    image = "z\aceax\addons\gearinfo\data\camo\ocp.paa";
                 };
             };
         };
@@ -125,7 +139,7 @@ class XtdGearModels {
 
             class camo {
                 alwaysSelectable = 1;
-                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White"};
+                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White", "OCP"};
 
                 class Multicam {
                     label = "MC";
@@ -154,6 +168,13 @@ class XtdGearModels {
                 class Solid_White {
                     label = "White";
                     image = "z\aceax\addons\gearinfo\data\camo\wht.paa";
+                };
+                // THE VANILLA MTP BAG, WHICH ax_vanillaocp RE-SKINS TO OCP (user, 2026-10-19):
+                // one camo of this group rather than a vanilla group of its own, so the
+                // arsenal shows one bag with OCP beside MC.
+                class OCP {
+                    label = "OCP";
+                    image = "z\aceax\addons\gearinfo\data\camo\ocp.paa";
                 };
             };
         };
@@ -164,7 +185,7 @@ class XtdGearModels {
 
             class camo {
                 alwaysSelectable = 1;
-                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White"};
+                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_White", "OCP"};
 
                 class Multicam {
                     label = "MC";
@@ -193,6 +214,13 @@ class XtdGearModels {
                 class Solid_White {
                     label = "White";
                     image = "z\aceax\addons\gearinfo\data\camo\wht.paa";
+                };
+                // THE VANILLA MTP BAG, WHICH ax_vanillaocp RE-SKINS TO OCP (user, 2026-10-19):
+                // one camo of this group rather than a vanilla group of its own, so the
+                // arsenal shows one bag with OCP beside MC.
+                class OCP {
+                    label = "OCP";
+                    image = "z\aceax\addons\gearinfo\data\camo\ocp.paa";
                 };
             };
         };
@@ -227,7 +255,7 @@ class XtdGearModels {
 
             class camo {
                 alwaysSelectable = 1;
-                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland"};
+                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "OCP"};
 
                 class Multicam {
                     label = "MC";
@@ -240,6 +268,13 @@ class XtdGearModels {
                 class Multicam_Woodland {
                     label = "MCW";
                     image = "z\aceax\addons\gearinfo\data\camo\mcw.paa";
+                };
+                // THE VANILLA MTP BAG, WHICH ax_vanillaocp RE-SKINS TO OCP (user, 2026-10-19):
+                // one camo of this group rather than a vanilla group of its own, so the
+                // arsenal shows one bag with OCP beside MC.
+                class OCP {
+                    label = "OCP";
+                    image = "z\aceax\addons\gearinfo\data\camo\ocp.paa";
                 };
             };
         };
@@ -289,7 +324,7 @@ class XtdGearModels {
 
             class camo {
                 alwaysSelectable = 1;
-                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_Tan", "Solid_White"};
+                values[] = {"Multicam", "Multicam_Snow", "Multicam_Woodland", "Solid_CoyoteBrown", "Solid_Olive", "Solid_Ranger_Green", "Solid_Tan", "Solid_White", "OCP"};
 
                 class Multicam {
                     label = "MC";
@@ -322,6 +357,13 @@ class XtdGearModels {
                 class Solid_White {
                     label = "White";
                     image = "z\aceax\addons\gearinfo\data\camo\wht.paa";
+                };
+                // THE VANILLA MTP BAG, WHICH ax_vanillaocp RE-SKINS TO OCP (user, 2026-10-19):
+                // one camo of this group rather than a vanilla group of its own, so the
+                // arsenal shows one bag with OCP beside MC.
+                class OCP {
+                    label = "OCP";
+                    image = "z\aceax\addons\gearinfo\data\camo\ocp.paa";
                 };
             };
         };

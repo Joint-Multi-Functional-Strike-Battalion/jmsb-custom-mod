@@ -130,6 +130,19 @@ class CfgVehicles {
                 defaultValue = "400";
                 expression = QUOTE(_this setVariable [ARR_2('gpsUplinkRadius',_value)]);
             };
+            // THE ZONES ARE RF NOISE (2026-10-19). A radio or data zone adds
+            // this much noise at its full-strength core to every receiver on
+            // its bands, falling with the zone's own shape; the RF link budget
+            // does the rest, so voice and data degrade by SNR like any other
+            // interference, and a set's spread gain buys some of it back.
+            class rfNoise: Edit {
+                property = QGVAR(rfNoise);
+                displayName = "Zone Noise at the Core (dBm)";
+                tooltip = "Interference a radio or data zone puts into a receiver standing in its full-strength core, before the receiver's spread gain. -40 drowns a handheld anywhere in the core and a vehicle set beyond a few hundred metres; every 10 dB lower roughly triples the distance a link survives.";
+                typeName = "NUMBER";
+                defaultValue = -40;
+                expression = QUOTE(_this setVariable [ARR_2('rfNoise',_value)]);
+            };
         };
 
         class ModuleDescription: ModuleDescription {
@@ -142,6 +155,7 @@ class CfgVehicles {
                 "Uplink Radius (m) - the uplink's own GPS field",
                 "Radio Burn-Through - a strong set beats a jammer, and is answered with a QRF",
                 "Burn-Through Reference (mW) - the set power the field is calibrated against",
+                "Zone Noise at the Core (dBm) - what a radio or data zone adds to the RF link budget",
             };
         };
     };

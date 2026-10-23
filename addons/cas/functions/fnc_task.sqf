@@ -3,8 +3,9 @@
  * Author: JMSB
  * Takes one order from the support page and either flies it or says why not.
  *
- * THE SAME SIGNATURE THE ADAPTER'S TASKING USES, because the page calls
- * whichever provider owns the id without caring which one that is. Air
+ * THE SUPPORT CORE'S PROVIDER TASK SIGNATURE (addons/support/README.md):
+ * EFUNC(support,request) gates and validates, then calls whichever provider
+ * owns the id without caring which one that is. Air
  * assets there read the first entries of the parameter array; this reads the
  * two that are its own.
  *
@@ -32,7 +33,7 @@
  * terminal rather than a script with a target list. See FUNC(request).
  *
  * Arguments:
- * 0: Asset id, "jmfsbcas:<n>" <STRING>
+ * 0: Asset id, "cas:<n>" <STRING>
  * 1: Task token <STRING> - "rtb" sends it home, "LOITER" holds it overhead the
  *    point, anything else is a strike on the point
  * 2: Target position <ARRAY> - the grid; terminal guidance may move it

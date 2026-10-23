@@ -13,11 +13,11 @@ private _wantOrbat = _settings getOrDefault ["currentOrbat", ""];
 if (_wantOrbat isEqualType "" && _wantOrbat isNotEqualTo "") then {
     _orbatKey = _unit + ".orbat." + _wantOrbat;
 };
-([_orbatKey] call FUNC(svcLoad)) params ["_odoc", "_ostatus"];
+([_orbatKey] call _fnc_fetch) params ["_odoc", "_ostatus"];
 // A named ORBAT that is not there falls back to the common one rather than
 // leaving the mission with no order of battle at all.
 if (_ostatus isNotEqualTo "ok" && _orbatKey isNotEqualTo (_unit + ".orbat")) then {
-    ([_unit + ".orbat"] call FUNC(svcLoad)) params ["_odoc", "_ostatus"];
+    ([_unit + ".orbat"] call _fnc_fetch) params ["_odoc", "_ostatus"];
 };
 if (_ostatus isEqualTo "error") exitWith {[createHashMap, "error"]};
 if (_ostatus isEqualTo "ok") then {

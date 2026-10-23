@@ -17,6 +17,8 @@ PREP(tabletAdvance);
 PREP(intelOptions);
 PREP(tabletSelectDevice);
 PREP(tabletSelectIntel);
+PREP(tabletSelectAction);
+PREP(canSpoof);
 PREP(tabletAction);
 PREP(tabletInRange);
 PREP(hackComplete);
@@ -63,3 +65,6 @@ PREP(hasRadio);
 PREP(canPlaceDrop);
 PREP(placeDrop);
 PREP(packDrop);
+
+// What RF says an operator's set can hear - the HACK board's NODES IN REACH.
+PREP(rfReach);

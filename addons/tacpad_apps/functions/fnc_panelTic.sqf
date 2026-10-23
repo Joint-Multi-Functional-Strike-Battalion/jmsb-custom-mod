@@ -41,9 +41,9 @@ if (isNull _body) exitWith {};
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 // A TIC is a shout, not a bulletin. The cell is deliberately the tallest thing
@@ -76,7 +76,7 @@ private _fill = [_accent, _line] select (!_ready || {!_live});
     _body, [_cellX + _pad, _cellY + _padY * 0.5, _cellW - 2 * _pad, _rowH],
     "TROOPS IN CONTACT",
     ([_mute, _ground] select (_ready && _live)),
-    1.1, true, "center"
+    TEXT_TITLE, true, "center"
 ] call EFUNC(tacpad,drawText);
 
 [
@@ -87,7 +87,7 @@ private _fill = [_accent, _line] select (!_ready || {!_live});
         default {format ["MARKS THE MAP, ALERTS THE SIDE, FILES ON %1", toUpper (_nets # 0)]};
     },
     ([_mute, _ground] select (_ready && _live)),
-    0.6, true, "center", true
+    TEXT_LABEL, true, "center", true
 ] call EFUNC(tacpad,drawText);
 
 if (_ready && _live) then {
@@ -105,7 +105,7 @@ if (_ready && _live) then {
     }] call EFUNC(tacpad,drawHit);
 };
 
-[_id, 0, (_cellH + 3 * _padY) / safeZoneH] call EFUNC(tacpad,fit);
+[_id, 0, (_cellH + 3 * _padY) / HOST_H] call EFUNC(tacpad,fit);
 
 // UNDER THE STRIPS, WHEREVER THE STRIPS ACTUALLY END. The default y was
 // measured at the default text size, but the strips above are sized off the
@@ -126,7 +126,7 @@ if (_bottom > -1) then {
     (_open getOrDefault [_id, []]) params [["_group", controlNull]];
     if (!isNull _group) then {
         (ctrlPosition _group) params ["_gx", "_gy", "_gw", "_gh"];
-        private _gap = ((DEFAULT_SETTINGS # 1) - ((DEFAULT_READER # 1) + (DEFAULT_READER # 3))) * safeZoneH;
+        private _gap = ((DEFAULT_SETTINGS # 1) - ((DEFAULT_READER # 1) + (DEFAULT_READER # 3))) * HOST_H;
         private _want = _bottom + _gap;
         if (abs (_gy - _want) > pixelH) then {
             _group ctrlSetPosition [_gx, _want, _gw, _gh];

@@ -96,6 +96,28 @@ from its default position ended below the top of the chat zone. `fit` clamps to
 the nearest reserved edge underneath the panel, and the rail is the size of the
 section actually in it.
 
+## TAC//MSG inside the tablet
+
+In tablet mode, with a device open, TAC//MSG never opens a window over it
+(user, 2026-10-20: "tac//msg needs to be inside the tablet"). `openReader`
+creates the reader's root on the device dialog in the tablet's map area and
+adopts it as the tablet's open app (`appHost`, id `reader`): the panels hide
+under it, the device bar, notification line, tiles and net row stay round it,
+**ESC**, CLOSE (`readerClose`) or a press on the map close it and leave the
+tablet up, and a tile or soft key replaces it like any other app. Everything
+TAC//MSG draws - the rail, the list and its filter, the thread and net views,
+the composer, the template and recipient pickers, the report card, the quick
+replies, the FLASH banner - is drawn into that root or onto the device, and
+its edit boxes are created into the device dialog, which takes keyboard
+focus. The comms app's COMPOSE, NEW, OPEN FULL on the docked reader and the
+keybind all arrive here. On the vanilla map, and in tablet mode with no device
+open, the reader is the dialog it always was.
+
+`appHost` is public: any screen that draws its own group on the host can be
+the open app that way (TAC//PAC does). Every way an app stops being open -
+`appClose`, another app replacing it, the host going - raises
+`jmfsb_tacpad_appClosed` with its id.
+
 ## Composing
 
 **There is no compose window.** Composing is a state of the reader's right pane:
@@ -134,6 +156,12 @@ is asked for, and there are three honest ways to answer it: **CURRENT LOC**,
 **MAP MARKER** (the marker list, nearest first, off `markerGrids`), or type it.
 Either button stores a real position and shows it as a grid, so the thread
 anchors somewhere the map can pin and the text can still be typed over.
+
+**"Where I am" is where the GPS says** (`jmfsb_ew_fnc_gpsHere`, when EW is
+loaded) - CUR LOC on a card, CURRENT LOC on the compose pin and + GRID in a
+reply all take it: the false position when the set is spoofed (it does not
+know), the held fix with a warning on the rail when it is SUSPECT, and
+nothing - with "NO GPS FIX" on the rail - when it is denied. Type the grid.
 
 The one exception is FILE CASEVAC FOR *name* in the squad app, which fills the
 pick-up site with that man's position — because the button names the man it is
@@ -280,13 +308,14 @@ it, and every `PREP` in it would then look for its functions in this folder.
 
 ## Ships
 
-49 functions.
+69 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_tacpad_enabled` | CHECKBOX | Enable tacpad |
+| `jmfsb_tacpad_displayMode` | LIST | Display mode |
 | `jmfsb_tacpad_scheme` | LIST | Colour scheme |
 | `jmfsb_tacpad_opacity` | SLIDER | Panel opacity |
 | `jmfsb_tacpad_respectZones` | CHECKBOX | Keep clear of reserved areas |
@@ -299,16 +328,19 @@ it, and every `PREP` in it would then look for its functions in this folder.
 
 ## Functions
 
-<details><summary>49</summary>
+<details><summary>69</summary>
 
 - `jmfsb_tacpad_fnc_appAlive`
 - `jmfsb_tacpad_fnc_appClose`
+- `jmfsb_tacpad_fnc_appExits`
 - `jmfsb_tacpad_fnc_appFrame`
+- `jmfsb_tacpad_fnc_appHost`
 - `jmfsb_tacpad_fnc_appIdle`
 - `jmfsb_tacpad_fnc_build`
 - `jmfsb_tacpad_fnc_clock`
 - `jmfsb_tacpad_fnc_close`
 - `jmfsb_tacpad_fnc_composeCard`
+- `jmfsb_tacpad_fnc_composeCardHead`
 - `jmfsb_tacpad_fnc_composeCcDrop`
 - `jmfsb_tacpad_fnc_composeCcIds`
 - `jmfsb_tacpad_fnc_composeHarvest`
@@ -317,6 +349,7 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_composePicker`
 - `jmfsb_tacpad_fnc_composeSend`
 - `jmfsb_tacpad_fnc_composeTargets`
+- `jmfsb_tacpad_fnc_composeTiles`
 - `jmfsb_tacpad_fnc_composeToPicker`
 - `jmfsb_tacpad_fnc_diaryWatch`
 - `jmfsb_tacpad_fnc_drawFill`
@@ -327,6 +360,7 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_fit`
 - `jmfsb_tacpad_fnc_headerMeta`
 - `jmfsb_tacpad_fnc_hexOf`
+- `jmfsb_tacpad_fnc_hostDisplay`
 - `jmfsb_tacpad_fnc_hotspot`
 - `jmfsb_tacpad_fnc_markerGrids`
 - `jmfsb_tacpad_fnc_netBox`
@@ -336,10 +370,22 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_openReader`
 - `jmfsb_tacpad_fnc_place`
 - `jmfsb_tacpad_fnc_rankShort`
+- `jmfsb_tacpad_fnc_readerCallUnits`
+- `jmfsb_tacpad_fnc_readerCard`
+- `jmfsb_tacpad_fnc_readerChip`
+- `jmfsb_tacpad_fnc_readerClose`
 - `jmfsb_tacpad_fnc_readerComposer`
 - `jmfsb_tacpad_fnc_readerDraw`
+- `jmfsb_tacpad_fnc_readerFlash`
 - `jmfsb_tacpad_fnc_readerInput`
+- `jmfsb_tacpad_fnc_readerList`
+- `jmfsb_tacpad_fnc_readerMarkers`
 - `jmfsb_tacpad_fnc_readerNetView`
+- `jmfsb_tacpad_fnc_readerPreview`
+- `jmfsb_tacpad_fnc_readerQuick`
+- `jmfsb_tacpad_fnc_readerRail`
+- `jmfsb_tacpad_fnc_readerReplies`
+- `jmfsb_tacpad_fnc_readerRow`
 - `jmfsb_tacpad_fnc_readerThreadView`
 - `jmfsb_tacpad_fnc_rebuild`
 - `jmfsb_tacpad_fnc_register`
@@ -347,7 +393,10 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_repaint`
 - `jmfsb_tacpad_fnc_rgbOf`
 - `jmfsb_tacpad_fnc_roleShort`
+- `jmfsb_tacpad_fnc_setHost`
 - `jmfsb_tacpad_fnc_textH`
+- `jmfsb_tacpad_fnc_textPx`
+- `jmfsb_tacpad_fnc_textSize`
 - `jmfsb_tacpad_fnc_theme`
 - `jmfsb_tacpad_fnc_xmlSafe`
 

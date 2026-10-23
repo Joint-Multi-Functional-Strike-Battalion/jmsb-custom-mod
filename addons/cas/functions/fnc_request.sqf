@@ -2,7 +2,8 @@
 /*
  * Author: JMSB
  * One CAS run, server side: the aircraft appears on the ingress heading, flies
- * the target, releases, and leaves on the egress heading.
+ * the target, releases, and leaves on the egress heading - on past the egress
+ * point and off the edge of the map, where FUNC(egress) deletes it.
  *
  * THE GEOMETRY IS THE PLAYER'S AND IT IS THE WHOLE FEATURE. Ingress and egress
  * are POINTS ON THE MAP - the aircraft appears at the one and leaves towards
@@ -32,7 +33,7 @@
  * on-station event and XEH_postInit. A drone told to hold overhead used to fly
  * a strike and leave, which is neither of the things the word means.
  *
- * IT IS A REAL AIRCRAFT AND IT CAN BE LOST. Killed is wired to FUNC(killed),
+ * IT IS A REAL AIRCRAFT AND IT CAN BE LOST. MPKilled is wired to FUNC(killed),
  * which is what makes the module's airframe count mean anything and what makes
  * the air defence on the ridge worth putting there.
  *
@@ -57,7 +58,25 @@ if (!isServer || {isNull _logic} || {_pos isEqualTo []}) exitWith {};
 private _callsign = _logic getVariable [QGVAR(callsign), "CAS"];
 private _delay = _logic getVariable [QGVAR(spawnDelay), 30];
 
+// THE SERVER'S COPY IS THE ONE THAT COUNTS. FUNC(task) gated on the client's
+// replicated status, so two orders inside one network round trip both pass it.
+// This runs unscheduled with the status write below, so the second is dropped
+// here rather than putting a second airframe up on one asset.
+([_logic] call FUNC(available)) params ["_ok", "", "_why"];
+if (!_ok) exitWith {
+    INFO_2("request dropped for %1 - %2",_callsign,_why);
+};
+
+// A recall left over from before this run is not a recall of it. One sent
+// during the spawn delay still lands after this and is honoured.
+_logic setVariable [QGVAR(abort), false, true];
 _logic setVariable [QGVAR(status), "inbound", true];
+// THE PLAN THE BOARD DRAWS (row field 8): the run as the player set it.
+private _plan = [];
+if (_ingress isNotEqualTo []) then {_plan pushBack [_ingress, PLAN_IN]};
+_plan pushBack [_pos, toUpper _mode];
+if (_egress isNotEqualTo []) then {_plan pushBack [_egress, PLAN_OUT]};
+_logic setVariable [QGVAR(plan), _plan, true];
 
 private _fromText = ["auto", mapGridPosition _ingress] select (_ingress isNotEqualTo []);
 INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_fromText);
@@ -107,9 +126,11 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
         _pos getPos [_dist, (_start getDir _pos)]
     };
 
-    // Far enough out that the aircraft is clear of the target area before it
-    // despawns - an egress point picked just past the objective would have it
-    // vanish in front of the section that called it.
+    // Far enough out that the aircraft is clear of the target area before the
+    // run is called over and the asset freed - an egress point picked just past
+    // the objective would hand the asset back with its aircraft still over the
+    // section that called it. It does not despawn there: it flies on along the
+    // same heading and off the map (FUNC(egress)).
     if (_end distance2D _pos < _dist) then {
         _end = _pos getPos [_dist, _pos getDir _end];
     };
@@ -125,6 +146,10 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
     _end set [2, _alt];
 
     private _ingressHdg = _start getDir _pos;
+    // THE WAY OUT, for every ending - the strike flown, a recall, a loiter
+    // released. Always the target-to-egress line, so a recalled aircraft
+    // leaves the way the player said it would.
+    private _egressHdg = _pos getDir _end;
 
     private _grp = createGroup [_side, true];
     private _veh = createVehicle [_cls, _start, [], 0, "FLY"];
@@ -132,6 +157,7 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
     if (isNull _veh) exitWith {
         WARNING_2("%1 could not put '%2' in the air - run abandoned",_callsign,_cls);
         _logic setVariable [QGVAR(status), "idle", true];
+        _logic setVariable [QGVAR(plan), [], true];
         if (!isNull _grp) then {deleteGroup _grp};
     };
 
@@ -184,8 +210,12 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
     // is not allowed to know it.
     [_veh] call EFUNC(adapter_alive,profileIgnore);
 
-    _veh addEventHandler ["Killed", {
+    // MPKilled, not Killed: Killed fires only where the vehicle is local, and a
+    // loiter drone in a controller's hands is local to HIS machine - a loss
+    // there would never reach the airframe count.
+    _veh addMPEventHandler ["MPKilled", {
         params ["_u", "_k", "_i"];
+        if (!isServer) exitWith {};
         private _owner = _u getVariable [QGVAR(owner), objNull];
         [_owner, [_k, _i] select (!isNull _i)] call FUNC(killed);
     }];
@@ -226,39 +256,27 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
     // exactly as it ends a run.
     [{
         params ["_args", "_handle"];
-        _args params ["_veh", "_logic", "_pos", "_radius", "_side", "_end", "_until", "_callsign", "_mode"];
+        _args params ["_veh", "_logic", "_pos", "_radius", "_side", "_end", "_egressHdg", "_until", "_callsign", "_mode"];
 
+        // THE BOARD IS FREED HERE, NOT WHEN THE AIRCRAFT IS GONE. The asset
+        // reads idle (cooling down) the moment the run is over; the airframe
+        // on its way off the map is no longer what the row describes.
         private _done = {
             [_handle] call CBA_fnc_removePerFrameHandler;
             if (!isNull _logic) then {
                 _logic setVariable [QGVAR(status), "idle", true];
                 _logic setVariable [QGVAR(vehicle), objNull, true];
+                _logic setVariable [QGVAR(plan), [], true];
                 _logic setVariable [QGVAR(readyAt), CBA_missionTime + (_logic getVariable [QGVAR(cooldown), 300]), true];
             };
         };
 
-        // THE SEAT IS GIVEN BACK BEFORE THE AIRCRAFT IS TAKEN AWAY. A drone
-        // controller whose airframe is deleted out from under him is a man
-        // looking at a dead camera with no way out of it, so every ending goes
-        // through here: the off-station event first, the delete a beat later.
-        // It costs two seconds and it is the difference between a recall and a
-        // bug report.
+        // EVERY ENDING GOES THROUGH FUNC(egress): the seat given back, the
+        // airframe taken back off the controller's machine, and the aircraft
+        // flown off the map on its egress heading and deleted there - or, a
+        // wreck, deleted a beat later where it lies.
         private _sweep = {
-            [QGVAR(offStation), [_veh]] call CBA_fnc_globalEvent;
-
-            // AND THE AIRFRAME IS TAKEN BACK OFF HIS MACHINE FIRST. A UAV goes
-            // LOCAL to whoever is flying it, and a delete only lands where the
-            // object lives - so an aircraft a controller was holding would be
-            // deleted on the server, stay alive on his client, and hold the
-            // module's ledger busy for the rest of the mission.
-            if (!local _veh) then {_veh setOwner 2};
-
-            [{
-                params ["_veh"];
-                if (isNull _veh) exitWith {};
-                deleteVehicleCrew _veh;
-                deleteVehicle _veh;
-            }, [_veh], 3] call CBA_fnc_waitAndExecute;
+            [_veh, _egressHdg, _callsign] call FUNC(egress);
         };
 
         // Shot down: FUNC(killed) has already counted it against the module.
@@ -273,7 +291,7 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
         if ((_logic getVariable [QGVAR(abort), false]) || CBA_missionTime > _until) exitWith {
             call _done;
             if (!isNull _logic) then {_logic setVariable [QGVAR(abort), false, true]};
-            INFO_1("%1 off task - clearing the area",_callsign);
+            INFO_1("%1 off task - leaving the area",_callsign);
             call _sweep;
         };
 
@@ -308,6 +326,6 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
         INFO_3("%1 releasing on %2 (%3)",_callsign,mapGridPosition _aim,_by);
         [QGVAR(release), [_logic, _aim, _by]] call CBA_fnc_globalEvent;
         [_veh, _aim, _track] call FUNC(fireAt);
-    }, CAS_ACQUIRE_STEP, [_veh, _logic, _pos, _radius, _side, _end, CBA_missionTime + ([CAS_RUN_TIMEOUT, CAS_LOITER_TIMEOUT] select (_mode isEqualTo "loiter")), _callsign, _mode]] call CBA_fnc_addPerFrameHandler;
+    }, CAS_ACQUIRE_STEP, [_veh, _logic, _pos, _radius, _side, _end, _egressHdg, CBA_missionTime + ([CAS_RUN_TIMEOUT, CAS_LOITER_TIMEOUT] select (_mode isEqualTo "loiter")), _callsign, _mode]] call CBA_fnc_addPerFrameHandler;
 
 }, [_logic, _pos, _ingress, _egress, _caller, _mag, _mode], _delay] call CBA_fnc_waitAndExecute;

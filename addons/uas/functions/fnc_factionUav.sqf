@@ -50,7 +50,11 @@ if (_found isEqualTo "") then {
         case independent: {"I_UAV_01_F"};
         default {"O_UAV_01_F"};
     };
-    WARNING_2("faction '%1' flies no UAV of its own - falling back to %2",_faction,_found);
+    // No faction named is the ordinary case (FUNC(planPatrols) passes none) -
+    // only a named faction without a UAV is worth a warning.
+    if (_faction isNotEqualTo "") then {
+        WARNING_2("faction '%1' flies no UAV of its own - falling back to %2",_faction,_found);
+    };
 };
 
 if !(isClass (configFile >> "CfgVehicles" >> _found)) then { _found = "" };

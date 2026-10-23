@@ -1,0 +1,51 @@
+[h1]October 2026 (to build 1315)[/h1]
+
+[h2]Radio voice on the game's own voice chat[/h2]
+No TFAR, no ACRE, nothing to download: bind Push To Talk, turn your VON volume up, carry a radio.
+[list]
+[*][b]Your nets come from the comm plan in TAC//PAC[/b] - by squad, role and skill. TEAM is your squad, C2 the leaders (TLs, ATLs, HHC), A2G pilots and the JFO, VEH the crew intercom, DIRECT out loud. You start on your squad net every time you pick a role.
+[*][b]No fixed range.[/b] Your signal finds a path radio to radio, through vehicles and through the base stations at the staging zone and patrol bases, which link to each other by satellite. A weak path is quiet with static; no path and nobody hears you. The chip's outline says which: green, amber, red.
+[*][b]You can see yourself talk:[/b] the net's chip goes red with TX, and the game's talking popup names the net.
+[*][b]Phone calls[/b] - up to 8 people, 8 calls at once, callbacks when someone is out of reach, FLASH for the RTO and admins.
+[*][b]Cut-offs:[/b] unconscious or on radio silence your radio nets close; DIRECT always works. Radio sounds are the game's own.
+[*][b]TFAR and ACRE still work.[/b] With either loaded, game voice stands down and the devices show that radio's nets instead.
+[/list]
+
+[h2]The MPU5[/h2]
+[list]
+[*][b]Every role's default radio[/b], in the radio slot - set in TAC//PAC for all 36 roles. The TW-950 is the second handheld, in the arsenal under Tools.
+[*][b]No man packs under game voice.[/b] On TFAR and ACRE nights, carry theirs as before.
+[/list]
+
+[h2]The devices: phone, side devices, tablets[/h2]
+[list]
+[*][b]The phone[/b] sits in your GPS slot and is always on screen: a status row (free channels, mesh hops, jamming, your grid, drones, unread messages), a map, the net chips, a squad list. Side devices show the same stacked on the screen's edge. It hides itself while you look through a scope.
+[*][b]The tablet[/b] (Num 5) is the full screen in your hands; UAV operators get the one with grips, crews the vehicle tablet. Every app runs inside the frame now: TAC//MSG, TAC//PAC, TAC//SUPPORT, the admin console.
+[*][b]Numpad keys:[/b] Num 1-4 pick a net by its chip number, Num 0 / . step nets, Ctrl+Num 1-4 are the frame's F1-F4 (accept, ear, mute, hang up), Num 6-8 the RADIO app and its tabs, Ctrl+End hides the phone. All rebindable.
+[*][b]Settings[/b] for size, edge, opacity, 8 or 10 figure grid, and which frame the tablet wears.
+[/list]
+
+[h2]Apps[/h2]
+[list]
+[*][b]RADIO[/b] - your nets, calls, and MANAGE for leaders. [b]New RTO skill:[/b] an RTO (or admin) makes custom nets on MANAGE, by squad and by name; everyone named gets the chip. Leaders and HHC get a GLOBAL button.
+[*][b]TAC//SUPPORT[/b] - fires and air without Simplex: artillery is virtual, air gets points, a verdict and map overlays.
+[*][b]DRONES[/b] - fly them from the devices, no UAV terminal needed; GO TO, LASE, RTB and Drone40 modes. [b]HACK[/b] and [b]TAC//EW[/b] - direction finding, tracks, jamming, GPS spoofing, decoys.
+[*][b]TAC//MEDIC[/b] - the squad's vitals live (heart rate, SpO2, rhythm) and casualties. [b]VEHICLE STATUS[/b] on the vehicle tablet.
+[*][b]Map tools[/b] are ours now - ruler, protractor, route, marks, grid, viewshed; PLP is gone.
+[/list]
+
+[h2]Learning it[/h2]
+[list]
+[*][b]Field Manual:[/b] pause menu > Field Manual > 1st JMSB - radio voice, radios, devices, tablets, the staging zone, map and tablet, ammunition. 30 entries, each with its board.
+[*][b]Signs at the staging zone:[/b] game-voice boards, the phone, side device and tablet drawn with numbered keys, and simple four-line versions.
+[*][b]jmsb.info:[/b] The Quiver > Communications has the radios, the devices and the tablet in full.
+[/list]
+
+[h2]Also[/h2]
+[list]
+[*]The device frames' corners: the rubber guards sit over the screen's corners and the screen's dark border has a slight radius.
+[*]Map labels show the name only, no skill tags. The old vanilla GPS is out of the arsenal and the loadouts; the phone is your GPS.
+[*]104 SPS / Aegis magazines in every common arsenal, with extended-arsenal attachment configs.
+[*]UAV skill actually grants drone control; the phone no longer draws a second marker over your own.
+[*]Admin console: an RTO box beside the other skills; the console opens inside the tablet with the camera picture in proportion.
+[/list]

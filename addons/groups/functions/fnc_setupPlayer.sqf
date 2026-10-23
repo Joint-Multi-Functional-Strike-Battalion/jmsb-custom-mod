@@ -130,6 +130,10 @@ if (_isRespawn) then {
     // pac addon is optional.
     if (!isNil "jmfsb_pac_fnc_applyOnClient") then {[] call jmfsb_pac_fnc_applyOnClient};
     if (!isNil "jmfsb_pac_fnc_leaderNotice") then {[_isRespawn] call jmfsb_pac_fnc_leaderNotice};
+    // ON HIS SQUAD'S NET from the moment he picks the role (user, 2026-10-21:
+    // "players need to be set to their squad channel on role selection").
+    // Guarded: game voice is optional.
+    if (!isNil "jmfsb_voice_fnc_toTeam") then {[] call jmfsb_voice_fnc_toTeam};
 
     /* Name Stuff ------------------------------------------------------------------------------------------------------- */
     call (missionNamespace getVariable ["jmfsb_w28fixes_fnc_player_set_name", {}]);
@@ -137,7 +141,8 @@ if (_isRespawn) then {
     player call EFUNC(gear,saveLoadout);
 };
 
-//re-tune radios to the joined group's nets - runs for BOTH a fresh join and a respawn.
+//re-tune ACRE / TFAR radios to the joined group's nets - runs for BOTH a fresh join and a respawn.
+//Game voice (jmfsb_voice) needs no tuning: its TEAM net is the Arma group itself.
 //getRadioChannel keys off the player's current squad, so this re-applies for whatever group was joined.
 //The squad name is read from groupId (group player), but the server creates, names (setGroupIdGlobal)
 //and joins the group in the same frame it remote-executes this function, so the client can still be
@@ -170,6 +175,6 @@ if (EGVAR(patches,usesTFAR)) then {
     }, {
         INFO_1("GearRadio","Setting up TFAR radio channels for %1...",player);
         [player] call EFUNC(players,setRadioChannel);
-        [jmfsbFR_radio_tfarActiveRadio] call EFUNC(players,setActiveRadio);
+        [missionNamespace getVariable ["jmfsbFR_radio_tfarActiveRadio", ""]] call EFUNC(players,setActiveRadio);
     }, [_squadNames,_deadline]] call CBA_fnc_waitUntilAndExecute;
 };

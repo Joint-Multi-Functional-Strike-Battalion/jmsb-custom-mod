@@ -29,20 +29,19 @@ params [
 ];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
-private _head = _display displayCtrl PAC_IDC_TEXT_HEAD;
+private _head = [PAC_IDC_TEXT_HEAD] call FUNC(uiCtrl);
 if (_heading isNotEqualTo "") then {
     [_head, _left, _y, _w, 0.026] call FUNC(uiPlace);
-    _head ctrlSetStructuredText parseText format ["<t color='#93cf72' size='0.75'>%1</t>", [toUpper _heading] call FUNC(uiEsc)];
+    _head ctrlSetStructuredText parseText format ["<t color='#93cf72' size='0.7'>%1</t>", [toUpper _heading] call FUNC(uiEsc)];
     _y = _y + 0.028;
     _h = _h - 0.028;
 } else {
     _head ctrlShow false;
 };
 
-private _c = _display displayCtrl PAC_IDC_TEXT;
+private _c = [PAC_IDC_TEXT] call FUNC(uiCtrl);
 [_c, _left, _y, _w, _h max 0.03] call FUNC(uiPlace);
 private _safe = [_text] call FUNC(uiEsc);
 _safe = [_safe, endl, "<br/>"] call CBA_fnc_replace;

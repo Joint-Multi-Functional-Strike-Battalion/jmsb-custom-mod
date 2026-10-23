@@ -3,11 +3,11 @@
     File: fnc_pgRadioSettings.sqf
     Author: YonV
     Description: The radio plan's settings - the website's "ACRE radios and
-        power" and "TFAR radio and fallbacks" forms. SAVE writes the keys
-        that changed.
+        power" form, and the net plan's fallback slots (game voice: nets,
+        not frequencies - FUNC(netPlan)). SAVE writes the keys that changed.
 
     Parameters:
-        None - reads GVAR(uiArgs): which ("acre" | "tfar")
+        None - reads GVAR(uiArgs): which ("acre" | "nets")
 
     Returns:
         Nothing
@@ -22,12 +22,11 @@ private _fnc_lines = {
     if (_v isEqualType []) then {(_v apply {if (_x isEqualType "") then {_x} else {str _x}}) joinString (toString [10])} else {str _v}
 };
 
-[["ACRE radios and power", "TFAR radio and fallbacks"] select (_which isEqualTo "tfar"), format ["ORBAT  -  Communications  -  %1.radio%2", _unit, ["", "  -  from the config folder, read only in game"] select _fed]] call FUNC(uiTitle);
+[["ACRE radios and power", "Net plan fallbacks"] select (_which isEqualTo "nets"), format ["ORBAT  -  Communications  -  %1.radio%2", _unit, ["", "  -  from the config folder, read only in game"] select _fed]] call FUNC(uiTitle);
 
-private _rows = if (_which isEqualTo "tfar") then {[
-    ["tfarActiveRadio", "Radio in hand on spawn", "t", _radio getOrDefault ["tfarActiveRadio", ""]],
-    ["tfarSwFallback", "Short range fallback channel  (0-8)", "n", _radio getOrDefault ["tfarSwFallback", 0]],
-    ["tfarLrFallback", "Long range fallback channel  (0-8)", "n", _radio getOrDefault ["tfarLrFallback", 0]]
+private _rows = if (_which isEqualTo "nets") then {[
+    ["tfarSwFallback", "Short range fallback net slot  (0-8)", "n", _radio getOrDefault ["tfarSwFallback", 0]],
+    ["tfarLrFallback", "Long range fallback net slot  (0-8)", "n", _radio getOrDefault ["tfarLrFallback", 0]]
 ]} else {[
     ["acreActiveRadio", "Radio in hand on spawn", "t", _radio getOrDefault ["acreActiveRadio", ""]],
     ["srPower", "SR power  (-1 = stock)", "n", _radio getOrDefault ["srPower", -1]],

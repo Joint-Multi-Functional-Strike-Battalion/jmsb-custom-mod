@@ -4,11 +4,14 @@
 PREP(adminList);
 PREP(isAdmin);
 PREP(open);
+PREP(openDisplay);
 PREP(panelAdmin);
 
 // The look, read off the tacpad's settings at display-open time
 PREP(style);
 PREP(styleMessage);
+PREP(fitHost);
+PREP(openPac);
 
 // The console's own controls, which the panel did not have
 PREP(filterList);

@@ -1,7 +1,7 @@
 #include "script_component.hpp"
 
 // THE JAM REGISTRY lives on every client - reference-counted burst sources
-// with expiry times, the TFAR/ACRE lever true while any is live (see
+// with expiry times, the ACRE lever true while any is live (see
 // fnc_jamRegister / fnc_jamTick). jmfsb_radio_mesh and jmfsb_jamming read
 // GVAR(acreJam) in their signal functions, so a burst degrades the radio
 // exactly the way a jamming zone does, and the two never fight over one

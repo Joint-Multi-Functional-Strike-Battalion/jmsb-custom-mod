@@ -46,4 +46,3 @@ class CfgFunctions {
 #include "RscInGameUI.hpp"
 #include "CfgMagazines.hpp"
 #include "ACEX_Fortify_Presets.hpp"
-// #include "tfar.hpp"

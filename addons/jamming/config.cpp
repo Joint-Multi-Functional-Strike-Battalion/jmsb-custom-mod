@@ -13,6 +13,7 @@ class CfgPatches {
             "jmfsb_main",
             "jmfsb_common",
             "jmfsb_notify",
+            "jmfsb_rf",
             "cba_xeh"
         };
         skipWhenMissingDependencies = 1;

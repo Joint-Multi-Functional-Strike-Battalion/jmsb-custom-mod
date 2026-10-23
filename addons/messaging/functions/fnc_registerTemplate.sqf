@@ -118,6 +118,16 @@ private _order = [];
     _built pushBack [_lineKey, _lineTitle, _lineLabel, _builtFields, _lineIndex];
 } forEach _lines;
 
+// EVERY ROOT REPORT ENDS WITH REMARKS (the report-forms handoff), before the
+// ROUTING line where one exists. The deck is data the mod does not own, so a
+// card without one is said in the RPT rather than refused or patched here.
+if ((_template get "kind") in ["root", "both"]) then {
+    private _tail = _built select [(count _built - 2) max 0];
+    if ((_tail findIf {"REMARKS" in toUpper ((_x # 1) + " " + (_x # 2))}) < 0) then {
+        INFO_1("template '%1' has no REMARKS line at its end",_id);
+    };
+};
+
 _template set ["lines", _built];
 _template set ["fields", _fields];
 _template set ["order", _order];

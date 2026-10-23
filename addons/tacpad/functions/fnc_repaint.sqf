@@ -52,7 +52,7 @@ uiNamespace setVariable [QGVAR(themeCache), nil];
     private _title = _group controlsGroupCtrl IDC_TITLE(_slot);
     if (!isNull _title) then {
         _title ctrlSetStructuredText parseText format [
-            "<t font='RobotoCondensedBold' size='0.9' color='%1'>%2</t>",
+            "<t font='RobotoCondensedBold' size='0.85' color='%1'>%2</t>",
             _ink call BIS_fnc_colorRGBAtoHTML,
             [toUpper (_panel get "title")] call FUNC(xmlSafe)
         ];

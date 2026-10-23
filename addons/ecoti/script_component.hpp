@@ -125,3 +125,56 @@
 // and how it is written.
 #define FREQ_TICK 5
 #define FREQ_DECIMALS 3
+
+// --- The compass (FUNC(drawCompass), user 2026-10-19) -------------------------
+// A DUI-style line compass across the top centre while AiTR is up. Laid out on
+// DUI's own grid - a row is a 108th of the safe-zone height, a column that much
+// narrowed to the 4:3 frame - so it sits where a DUI player expects one.
+#define COMPASS_GRID (safeZoneH / 108)
+#define COMPASS_GX(V) ((V) * COMPASS_GRID / ASPECT_4_3)
+#define COMPASS_GY(V) ((V) * COMPASS_GRID)
+// Columns per degree, and how far either side of the heading is drawn: 180 of
+// the 360 degrees on the strip, as DUI's.
+#define COMPASS_DEG_COLS 0.5
+#define COMPASS_HALF_SPAN 90
+// Ticks every 5 degrees, a label every 15, the cardinals and intercardinals by name.
+#define COMPASS_TICK_STEP 5
+#define COMPASS_LABEL_STEP 15
+#define COMPASS_NAME_STEP 45
+#define COMPASS_NAMES ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+#define COMPASS_TICKS (2 * COMPASS_HALF_SPAN / COMPASS_TICK_STEP + 1)
+#define COMPASS_LABELS (2 * COMPASS_HALF_SPAN / COMPASS_LABEL_STEP + 1)
+#define FULL_CIRCLE 360
+#define HEADING_DIGITS 3
+// Full strength out to this far from the centre (degrees); faded to nothing at
+// the ends of the strip.
+#define COMPASS_FADE 30
+// Rows from the top of the safe zone, and sizes - rows down, columns across.
+#define COMPASS_TOP 1
+#define COMPASS_TICK_PIXELS 2
+#define COMPASS_TICK_MINOR 0.8
+#define COMPASS_TICK_MAJOR 1.4
+#define COMPASS_LABEL_TOP 1.8
+#define COMPASS_LABEL_W 6
+#define COMPASS_LABEL_H 2.2
+#define COMPASS_FONT_NAME 2.4
+#define COMPASS_FONT_NUMBER 1.8
+// The centre marker: an accent bar through the tick band, a little past it each way.
+#define COMPASS_MARKER_PIXELS 3
+#define COMPASS_MARKER_OVER 0.4
+// The heading readout, under the labels.
+#define COMPASS_READOUT_TOP 4.2
+#define COMPASS_READOUT_W 8
+#define COMPASS_READOUT_H 2.6
+#define COMPASS_FONT_READOUT 2.4
+#define COMPASS_WHITE [1, 1, 1, 1]
+
+// Frames Draw3D may miss before FUNC(hideCovered) treats the scene as not drawn
+// (EachFrame can run before Draw3D in the same frame, so one frame is allowed).
+#define DRAW_FRAME_GAP 1
+
+// The engine's control style for centred text; its own header's IDC_ names are
+// not wanted here.
+#ifndef ST_CENTER
+    #define ST_CENTER 2
+#endif

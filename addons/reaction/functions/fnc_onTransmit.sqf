@@ -8,9 +8,9 @@
  * connection rather than a flag jmfsb keeps - a set talking to a satellite is
  * not radiating across the valley, and that is the point of carrying one.
  *
- * Power: ACRE knows the live channel's transmit power in milliwatts. TFAR has
- * no equivalent, so its long-range sets - the only ones that reach here - are
- * treated as above any sane threshold, which is what they are.
+ * Power: ACRE knows the live channel's transmit power in milliwatts. Game
+ * voice has no equivalent, so its nets beyond the squad - the only ones that
+ * reach here - are treated as above any sane threshold, which is what they are.
  *
  * Arguments:
  * 0: Radio id or class <STRING>

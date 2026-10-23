@@ -22,7 +22,9 @@
  * EVERY PRESS LANDS IN THE RPT, AND EVERY ACCEPTED ORDER IS RECEIPTED. The
  * FSM nils the task variable the moment it takes the order, so a watcher on
  * that variable IS the delivery receipt - raised back to the app as the
- * QGVAR(supportAck) event with the callsign, or a no-ack warning after 20s.
+ * support core's ack (EFUNC(support,ack), the jmfsb_support_ack event) with
+ * the callsign, or a no-ack warning after 20s. The old QGVAR(supportAck)
+ * event still fires beside it for any mission script listening to it.
  * A day of testing produced "nothing happened" with nothing in the log on
  * either side of the handoff; silence was the bug on top of the bug.
  *
@@ -36,12 +38,15 @@
  * app says it up front, with the distance, before the order is sent.
  *
  * Arguments:
- * 0: Asset id from FUNC(supportAssets), "type:index" <STRING>
+ * 0: Asset id from FUNC(supportAssets), "alive:type:index" or "alive:ato"
+ *    <STRING>. THE "alive" PROVIDER'S TASK CODE: EFUNC(support,request) gates
+ *    and validates, then calls this.
  * 1: Task token <STRING>
  * 2: Position <ARRAY> (optional for AIR - defaults to the caller's own
  *    position, "overhead me". REQUIRED for artillery: a fire mission is
  *    never defaulted onto the caller's own grid.)
- * 3: Parameters [radius, alt, roeIdx, speedIdx, ordIdx, countIdx,
+ * 3: Parameters [radius, alt, roeIdx (0 RED, 1 GREEN, 2 WHITE, 3 YELLOW,
+ *    4 BLUE), speedIdx, ordIdx, countIdx,
  *    dispersion, guns] <ARRAY> - air reads the first four, arty the last
  *    four (guns 0 or absent = the whole battery)
  *
@@ -57,14 +62,17 @@ _prm params [["_radius", 500], ["_alt", 150], ["_roeIdx", 0]];
 
 INFO_4("supportTask: asset '%1' task '%2' pos %3 prm %4",_assetId,_task,_pos,_prm);
 
-// A REGISTERED PROVIDER OWNS ITS OWN IDS - see the note in FUNC(supportAssets).
-// Checked before anything ALiVE, because the dispatch below defaults an
-// unrecognised type to transport and would otherwise hand a jmfsb asset's
-// order to ALiVE's transport array.
-private _prefix = (_assetId splitString ":") param [0, ""];
-private _provider = (missionNamespace getVariable [QGVAR(providers), createHashMap]) getOrDefault [_prefix, []];
-if (_provider isNotEqualTo []) exitWith {
-    [_assetId, _task, _pos, _prm] call (_provider param [1, {[false, "that provider cannot be tasked"]}])
+// THE ATO. Not a NEO asset: a CAS request raised on the server, which holds
+// ALiVE's event log - see the GVAR(supportRequest) handler in XEH_postInit.
+if (_assetId isEqualTo SUPPORT_ATO_ID) exitWith {
+    if (_task isEqualTo "rtb") exitWith {[false, "the ATO cannot be recalled"]};
+    // No point means "overhead me", as on the NEO air path below: the ATO
+    // declares no needsPoint, so the screen offers TARGET as optional and a
+    // refusal here would contradict it.
+    if (_pos isEqualTo []) then {_pos = getPosATL player};
+    _pos set [2, 0];
+    [QGVAR(supportRequest), ["cas", side group player, _pos, name player]] call CBA_fnc_serverEvent;
+    [true, "CAS requested from the ATO."]
 };
 
 if (isNil "NEO_radioLogic") exitWith {
@@ -72,7 +80,7 @@ if (isNil "NEO_radioLogic") exitWith {
     [false, "ALiVE combat support is not running"]
 };
 
-(_assetId splitString ":") params [["_type", ""], ["_idxText", "-1"]];
+(_assetId splitString ":") params ["", ["_type", ""], ["_idxText", "-1"]];
 private _idx = parseNumber _idxText;
 
 private _arrName = switch (_type) do {
@@ -118,6 +126,7 @@ private _fnc_watchAck = {
         {
             params ["", "_var", "_assetId", "_said"];
             INFO_2("supportTask: ACK - %1 consumed for %2",_var,_assetId);
+            [_assetId, true, _said] call EFUNC(support,ack);
             [QGVAR(supportAck), [_assetId, true, _said]] call CBA_fnc_localEvent;
         },
         [_obj, _var, _assetId, _said],
@@ -125,7 +134,9 @@ private _fnc_watchAck = {
         {
             params ["_obj", "_var", "_assetId"];
             WARNING_3("supportTask: NO ACK - %1 still set on %2 after 20s (%3)",_var,_obj,_assetId);
-            [QGVAR(supportAck), [_assetId, false, "Not acknowledged yet - the unit is mid-task and will take the order when it can"]] call CBA_fnc_localEvent;
+            private _said = "Not acknowledged yet - the unit is mid-task and will take the order when it can";
+            [_assetId, false, _said] call EFUNC(support,ack);
+            [QGVAR(supportAck), [_assetId, false, _said]] call CBA_fnc_localEvent;
         }
     ] call CBA_fnc_waitUntilAndExecute;
 };
@@ -311,7 +322,10 @@ _pos set [2, 0];
 // ALiVE's ROE tokens are COMBAT MODES - cas.fsm runs `_grp setCombatMode
 // _ROE` - so the free/hold choice must arrive as RED/GREEN. "FREE" was an
 // invalid enum and the whole tasking died quietly on it.
-private _roe = ["RED", "GREEN"] select (_roeIdx > 0);
+// FIVE MODES NOW, the five the engine has - the support app lists them all.
+// 0 and 1 keep the meaning the old free/hold pair gave them.
+private _modes = ["RED", "GREEN", "WHITE", "YELLOW", "BLUE"];
+private _roe = _modes param [((round _roeIdx) max 0) min (count _modes - 1), "RED"];
 
 private _watchVar = "";
 if (_type isEqualTo "cas") then {

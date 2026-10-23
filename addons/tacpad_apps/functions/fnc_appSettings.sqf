@@ -11,7 +11,12 @@
  *
  * It writes the same CBA settings that Addon Options writes, so a change made
  * here is the change made there - there is one set of values, not an in-game
- * set and a menu set that can disagree.
+ * set and a menu set that can disagree. A setting the server or mission forces
+ * is drawn read-only, LOCKED (FUNC(settingLocked)).
+ *
+ * Other addons add sections after these (GVAR(settingsSections)): the phone
+ * and side devices' DEVICES and DEVICE KEYS come from jmfsb_devices, which owns
+ * their ranges and choices.
  *
  * Arguments:
  * 0: Map display <DISPLAY>
@@ -39,12 +44,12 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
 private _h = _pos # 3;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 // ---------------------------------------------------------------- the rail --
@@ -59,7 +64,7 @@ private _navH = _rowH * 1.4;
     if (_on) then {
         [_body, [0, _y, _railW, _navH], _accent] call EFUNC(tacpad,drawFill);
     };
-    [_body, [_pad * 2, _y, _railW - _pad * 3, _navH], _label, ([_ink, _ground] select _on), 0.8, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_pad * 2, _y, _railW - _pad * 3, _navH], _label, ([_ink, _ground] select _on), TEXT_TITLE, true, "left", true] call EFUNC(tacpad,drawText);
     [_body, [0, _y + _navH - RULE_THIN * pixelH, _railW, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
     // Next frame, because reopening the app deletes the button whose handler is
@@ -72,7 +77,7 @@ private _navH = _rowH * 1.4;
         ] call CBA_fnc_execNextFrame;
     }] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(section), _key];
-} forEach ([
+} forEach (([
     ["scheme", "COLOUR SCHEME"],
     ["panels", "PANELS"],
     ["tiles", "LIVE TILES"],
@@ -81,11 +86,12 @@ private _navH = _rowH * 1.4;
     ["size", "UI SIZE"],
     ["text", "TEXT SIZE"]
 ] select {
-    // NO PLP, NO SECTION. Its one row toggles a panel that cannot exist without
-    // PLP Map Tools Remastered - see the tools registration in XEH_preInit. A
-    // settings page whose switch does nothing is worse than one without it.
-    (_x # 0) isNotEqualTo "tools" || {!isNil "PLP_fnc_SMT_Main"}
-});
+    // NO MAP TOOLS ADDON, NO SECTION. Its one row toggles a panel that cannot
+    // exist without jmfsb_maptools - see the tools registration in
+    // XEH_preInit. A settings page whose switch does nothing is worse than one
+    // without it.
+    (_x # 0) isNotEqualTo "tools" || {!isNil QEFUNC(maptools,start)}
+}) + (GVAR(settingsSections) apply {[_x # 0, _x # 1]}));
 
 // A 2px rule between the rail and the pane - a region boundary, not a row one.
 [_body, [_railW, 0, RULE_THICK * pixelW, _h], _ink] call EFUNC(tacpad,drawFill);
@@ -126,10 +132,10 @@ if (_section == "scheme") exitWith {
             [_body, [_cx + _cardW * 0.75, _cy, _cardW * 0.25, _bandH], _a] call EFUNC(tacpad,drawFill);
 
             [_body, [_cx, _cy, _cardW, _cardH], ([_ink, _accent] select _on), RULE_THICK] call EFUNC(tacpad,drawFrame);
-            [_body, [_cx + _pad, _cy + _bandH, _cardW * 0.62, _plateH], _label, _ink, 0.66, true, "left", true] call EFUNC(tacpad,drawText);
+            [_body, [_cx + _pad, _cy + _bandH, _cardW * 0.62, _plateH], _label, _ink, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 
             if (_on) then {
-                [_body, [_cx + _cardW * 0.62, _cy + _bandH, _cardW * 0.38 - _pad, _plateH], "ACTIVE", _accent, 0.6, true, "right", true] call EFUNC(tacpad,drawText);
+                [_body, [_cx + _cardW * 0.62, _cy + _bandH, _cardW * 0.38 - _pad, _plateH], "ACTIVE", _accent, TEXT_LABEL, true, "right", true] call EFUNC(tacpad,drawText);
             };
 
             // The card's own data travels on the hit control, because the block
@@ -143,7 +149,7 @@ if (_section == "scheme") exitWith {
         _y + ceil ((count _cards) / _perRow) * (_cardH + _pad)
     };
 
-    [_body, [_px, _y, _pw, _rowH], "PRESETS", _mute, 0.7, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw, _rowH], "PRESETS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
     _y = _y + _rowH;
 
     _y = [
@@ -184,7 +190,7 @@ if (_section == "scheme") exitWith {
 
     if (_mission isNotEqualTo []) then {
         _y = _y + _padY;
-        [_body, [_px, _y, _pw, _rowH], "MISSION PRESETS", _mute, 0.7, true, "left", true] call EFUNC(tacpad,drawText);
+        [_body, [_px, _y, _pw, _rowH], "MISSION PRESETS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
         _y = _y + _rowH;
 
         private _fnc_bare = {toUpper (_this splitString " #" joinString "")};
@@ -231,7 +237,7 @@ if (_section == "scheme") exitWith {
     // on the map display means an edit control taking keyboard focus off the map
     // - so this offers a row of swatches per token instead. It is the same three
     // tokens and the same result; you just cannot spell one wrong.
-    [_body, [_px, _y, _pw, _rowH], "CUSTOM - THREE TOKENS", _mute, 0.7, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw, _rowH], "CUSTOM - THREE TOKENS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
     _y = _y + _rowH;
 
     {
@@ -239,7 +245,7 @@ if (_section == "scheme") exitWith {
 
         private _current = toUpper ((missionNamespace getVariable [_setting, ""]) splitString " #" joinString "");
 
-        [_body, [_px, _y, _pw * 0.18, _rowH * 1.1], _label, _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+        [_body, [_px, _y, _pw * 0.18, _rowH * 1.1], _label, _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 
         private _stripX = _px + _pw * 0.18;
         private _stripW = _pw - _pw * 0.18;
@@ -300,7 +306,7 @@ if (_section == "scheme") exitWith {
     [
         _body, [_px, _y, _pw, _rowH],
         "DIVIDERS, TINTS AND PRESSED STATES DERIVE FROM THESE THREE - NOTHING ELSE IS SET BY HAND",
-        _mute, 0.6, true, "left", true
+        _mute, TEXT_LABEL, true, "left", true
     ] call EFUNC(tacpad,drawText);
 
     _y = _y + _rowH + _padY;
@@ -308,7 +314,7 @@ if (_section == "scheme") exitWith {
     _y = _y + _padY * 2;
 
     // ------------------------------------------------- what is never themed --
-    [_body, [_px, _y, _pw, _rowH], "FIXED - STATUS COLOURS ARE NEVER THEMED", _mute, 0.7, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw, _rowH], "FIXED - STATUS COLOURS ARE NEVER THEMED", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
     _y = _y + _rowH;
 
     private _fixW = _pw / 4;
@@ -317,7 +323,7 @@ if (_section == "scheme") exitWith {
         _x params ["_label", "_icon"];
         private _fx = _px + _forEachIndex * _fixW;
         [_body, [_fx, _y + (_rowH - _iconH) * 0.5, _iconH], _icon] call EFUNC(tacpad,drawIcon);
-        [_body, [_fx + _iconH * pixelW / pixelH + _pad, _y, _fixW - _iconH, _rowH], _label, _mute, 0.68, true] call EFUNC(tacpad,drawText);
+        [_body, [_fx + _iconH * pixelW / pixelH + _pad, _y, _fixW - _iconH, _rowH], _label, _mute, TEXT_BODY, true] call EFUNC(tacpad,drawText);
     } forEach [
         ["OK", ICON_OK],
         ["WIA", ICON_WIA],
@@ -332,21 +338,21 @@ if (_section == "scheme") exitWith {
 
     private _btnW = _pw * 0.3;
     [_body, [_px, _footY, _btnW, _footH], _accent] call EFUNC(tacpad,drawFill);
-    [_body, [_px + _pad, _footY, _btnW - 2 * _pad, _footH], "APPLY TO ALL PANELS", _ground, 0.72, true, "center"] call EFUNC(tacpad,drawText);
+    [_body, [_px + _pad, _footY, _btnW - 2 * _pad, _footH], "APPLY TO ALL PANELS", _ground, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
     [_body, [_px, _footY, _btnW, _footH], {
         [] call EFUNC(tacpad,open);
     }] call EFUNC(tacpad,drawHit);
 
     private _resetX = _px + _btnW + _pad;
     [_body, [_resetX, _footY, _btnW, _footH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-    [_body, [_resetX + _pad, _footY, _btnW - 2 * _pad, _footH], "RESET TO FIELD GREY", _ink, 0.72, true, "center"] call EFUNC(tacpad,drawText);
+    [_body, [_resetX + _pad, _footY, _btnW - 2 * _pad, _footH], "RESET TO FIELD GREY", _ink, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
     [_body, [_resetX, _footY, _btnW, _footH], {
         [QEGVAR(tacpad,scheme), "light"] call FUNC(setSetting);
     }] call EFUNC(tacpad,drawHit);
 
     [
         _body, [_resetX + _btnW + _pad, _footY, _pw - 2 * _btnW - 2 * _pad, _footH],
-        "SAVED PER PLAYER PROFILE", _mute, 0.62, true, "right", true
+        "SAVED PER PLAYER PROFILE", _mute, TEXT_LABEL, true, "right", true
     ] call EFUNC(tacpad,drawText);
 };
 
@@ -358,24 +364,24 @@ if (_section == "size") exitWith {
     private _y = _padY;
     private _pct = round (EGVAR(tacpad,uiScale) * 100);
 
-    [_body, [_px, _y, _pw, _rowH], "UI SIZE", _mute, 0.7, true, "left", true] call EFUNC(tacpad,drawText);
-    [_body, [_px, _y, _pw, _rowH], format ["%1%2", _pct, "%"], _accent, 1, true, "right"] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw, _rowH], "UI SIZE", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw, _rowH], format ["%1%2", _pct, "%"], _accent, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
     _y = _y + _rowH * 1.2;
 
     [
         _body, [_px, _y, _pw, _rowH],
         "PANELS, ROWS AND TYPE TOGETHER - TEXT SIZE IS ITS OWN SECTION",
-        _mute, 0.6, true, "left", true
+        _mute, TEXT_LABEL, true, "left", true
     ] call EFUNC(tacpad,drawText);
     _y = _y + _rowH * 1.2;
 
-    private _btnH = ([0.8] call EFUNC(tacpad,textH)) + 2 * _padY;
+    private _btnH = ([TEXT_TITLE] call EFUNC(tacpad,textH)) + 2 * _padY;
     private _stepW = (_pw - 2 * _pad) / 3;
 
     {
         _x params ["_label", "_rows"];
 
-        [_body, [_px, _y, _pw, _rowH], _label, _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+        [_body, [_px, _y, _pw, _rowH], _label, _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
         _y = _y + _rowH;
 
         {
@@ -383,7 +389,7 @@ if (_section == "size") exitWith {
             private _sx = _px + _forEachIndex * (_stepW + _pad);
 
             [_body, [_sx, _y, _stepW, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-            [_body, [_sx, _y, _stepW, _btnH], _text, _ink, 0.85, true, "center"] call EFUNC(tacpad,drawText);
+            [_body, [_sx, _y, _stepW, _btnH], _text, _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 
             private _hit = [_body, [_sx, _y, _stepW, _btnH], {
                 params ["_ctrl"];
@@ -409,20 +415,23 @@ if (_section == "size") exitWith {
 
     private _resetW = _pw * 0.4;
     [_body, [_px, _y, _resetW, _btnH], _accent] call EFUNC(tacpad,drawFill);
-    [_body, [_px, _y, _resetW, _btnH], "RESET TO 100%", _ground, 0.8, true, "center"] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _resetW, _btnH], "RESET TO 100%", _ground, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
     [_body, [_px, _y, _resetW, _btnH], {
         [QEGVAR(tacpad,uiScale), 1] call FUNC(setSetting);
     }] call EFUNC(tacpad,drawHit);
 
     [
         _body, [_px + _resetW + _pad, _y, _pw - _resetW - _pad, _btnH],
-        "SAVED PER PLAYER PROFILE", _mute, 0.62, true, "right", true
+        "SAVED PER PLAYER PROFILE", _mute, TEXT_LABEL, true, "right", true
     ] call EFUNC(tacpad,drawText);
 };
 
 // ------------------------------------------------------ everything else -----
 // The remaining sections are lists of toggles, which is what a toggle wants to
-// be. Each row is [label, current value, what pressing it does].
+// be. Each row is [label, current value, what pressing it does], and optionally
+// the press that steps it down (a minus / plus pair), whether the setting is
+// forced (drawn LOCKED, no controls) and the pair's two glyphs. A row whose
+// press is {} is a line to read, not a control.
 private _fnc_onOff = {["OFF", "ON"] select _this};
 
 private _rows = switch (_section) do {
@@ -510,36 +519,52 @@ private _rows = switch (_section) do {
     };
 };
 
+// A section another addon added (GVAR(settingsSections)) answers its own rows.
+private _registered = GVAR(settingsSections) findIf {(_x # 0) isEqualTo _section};
+if (_registered >= 0) then {
+    _rows = call (GVAR(settingsSections) # _registered # 2);
+};
+
 {
-    _x params ["_label", "_value", "_action", ["_down", {}]];
+    _x params ["_label", "_value", "_action", ["_down", {}], ["_locked", false], ["_glyphs", ["-", "+"]]];
     private _y = _padY + _forEachIndex * _rowH;
     private _stepper = _down isNotEqualTo {};
 
-    [_body, [_px, _y, _pw * 0.6, _rowH], _label, _ink, 0.85, false] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw * 0.6, _rowH], _label, _ink, TEXT_TITLE, false] call EFUNC(tacpad,drawText);
     [_body, [_px, _y + _rowH - RULE_THIN * pixelH, _pw, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
-    if (!_stepper) then {
-        [_body, [_px + _pw * 0.6, _y, _pw * 0.4, _rowH], _value, _accent, 0.85, true, "right"] call EFUNC(tacpad,drawText);
+    // FORCED BY THE SERVER OR MISSION: the value it is held at, muted, and
+    // nothing to press - a control that does nothing is worse than none.
+    if (_locked) then {
+        [_body, [_px + _pw * 0.6, _y, _pw * 0.4, _rowH], format ["%1  %2", _value, SETTINGS_LOCKED], _mute, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
+        continue;
+    };
 
-        private _hit = [_body, [_px, _y, _pw, _rowH], {
-            params ["_ctrl"];
-            call (_ctrl getVariable [QGVAR(settingAction), {}]);
-        }] call EFUNC(tacpad,drawHit);
-        _hit setVariable [QGVAR(settingAction), _action];
+    if (!_stepper) then {
+        [_body, [_px + _pw * 0.6, _y, _pw * 0.4, _rowH], _value, _accent, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
+
+        if (_action isNotEqualTo {}) then {
+            private _hit = [_body, [_px, _y, _pw, _rowH], {
+                params ["_ctrl"];
+                call (_ctrl getVariable [QGVAR(settingAction), {}]);
+            }] call EFUNC(tacpad,drawHit);
+            _hit setVariable [QGVAR(settingAction), _action];
+        };
     } else {
         // MINUS, VALUE, PLUS. The value sits between the two so it reads as the
         // thing being changed rather than as a third button.
         private _stepW = _rowH * 1.1;
         private _minusX = _px + _pw - 2 * _stepW - _pad;
         private _plusX = _px + _pw - _stepW;
+        private _valueW = _pw * SETTINGS_STEP_VALUE_W;
 
-        [_body, [_minusX - _pw * 0.2 - _pad, _y, _pw * 0.2, _rowH], _value, _accent, 0.85, true, "right"] call EFUNC(tacpad,drawText);
+        [_body, [_minusX - _valueW - _pad, _y, _valueW, _rowH], _value, _accent, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
 
         {
             _x params ["_sx", "_glyph", "_code"];
 
             [_body, [_sx, _y + _padY * 0.5, _stepW, _rowH - _padY], _ink, RULE_THIN] call EFUNC(tacpad,drawFrame);
-            [_body, [_sx, _y, _stepW, _rowH], _glyph, _ink, 0.9, true, "center"] call EFUNC(tacpad,drawText);
+            [_body, [_sx, _y, _stepW, _rowH], _glyph, _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 
             private _hit = [_body, [_sx, _y + _padY * 0.5, _stepW, _rowH - _padY], {
                 params ["_ctrl"];
@@ -547,8 +572,8 @@ private _rows = switch (_section) do {
             }] call EFUNC(tacpad,drawHit);
             _hit setVariable [QGVAR(settingAction), _code];
         } forEach [
-            [_minusX, "-", _down],
-            [_plusX, "+", _action]
+            [_minusX, _glyphs # 0, _down],
+            [_plusX, _glyphs # 1, _action]
         ];
     };
 } forEach _rows;

@@ -37,10 +37,12 @@ if (isNull _body) exitWith {};
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+// HOST UNITS, as the TOOLS, SETTINGS and HIDE strips beside it: on a tablet
+// the host is the map area, and FUNC(fit) multiplies by HOST_H.
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 
-private _labelSize = 0.8;
+private _labelSize = TEXT_BODY;
 private _cellH = ([_labelSize] call EFUNC(tacpad,textH)) + 2 * _padY;
 
 private _cellY = _padY * 1.5;
@@ -69,10 +71,13 @@ private _cellW = _w - _cellX - _pad;
     // map open behind it means the map's own Escape fights the dialog's, and
     // closing the console drops the player onto a map they did not ask to still
     // be looking at.
+    //
+    // ON A TABLET THERE IS NO MAP TO CLOSE: the console opens over the device,
+    // fitted to its screen (FUNC(fitHost)), and ESC drops back onto it.
     {
-        openMap false;
+        if (HOST_NATIVE) then {openMap false};
         [] call FUNC(open);
     } call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
-[_id, 0, (_cellH + 3 * _padY) / safeZoneH] call EFUNC(tacpad,fit);
+[_id, 0, (_cellH + 3 * _padY) / HOST_H] call EFUNC(tacpad,fit);
