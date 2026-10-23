@@ -30,7 +30,9 @@ private _pos = getPosATL _b;
 // zone). Deleting the beacon afterwards also fires its Deleted EHs (e.g. Rev teleport cleanup).
 [missionNamespace getVariable [QGVAR(onUndeployCode), ""], [_b, _pos, _name, _side]] call FUNC(runHook);
 
-// Tear down
+// Tear down - the base station first, whoever put it up (it would also go
+// with the beacon's Deleted handler; this says so where the base is taken apart)
+if (!isNil QEFUNC(pac,baseStationRemove)) then {[_b] call EFUNC(pac,baseStationRemove)};
 deleteMarker _mrk;
 deleteVehicle _b;
 

@@ -1,8 +1,17 @@
+#include "..\script_component.hpp"
 /*
     File: fn_getActiveUAV.sqf
     Author: Dom
     Description: Attempts to return the UAV object if a player is actively controlling one
+
+    JMSB: drones are flown without a UAV terminal (jmfsb_devices_fnc_uavControl,
+    2026-10-20), so neither ACE's controlled-UAV record nor getConnectedUAV sees
+    them - that seat is asked first. The terminal path below stays for a
+    mission or loadout that still carries one.
 */
+
+private _flying = if (isNil QEFUNC(devices,uavControl)) then {objNull} else {["flying"] call EFUNC(devices,uavControl)};
+if (!isNull _flying) exitWith {_flying};
 
 if (DT_viewDistance_isACEEnabled) exitWith {
     ACE_controlledUAV param [0,objNull];

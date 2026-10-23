@@ -3,7 +3,7 @@
  * Author: JMSB
  * The TOOLS button: shows or hides the MAP TOOLS bar.
  *
- * MAP TOOLS IS THREE ROWS OF FOUR, and that is a lot of map to give up to
+ * MAP TOOLS IS TWO ROWS OF FOUR, and that is a lot of map to give up to
  * buttons nobody is pressing. It earns its place while somebody is measuring a
  * distance or checking a profile and is in the way the rest of the time, so it
  * gets a switch of its own rather than living or dying with the master HIDE.
@@ -37,10 +37,10 @@ if (isNull _body) exitWith {};
 
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 
-private _labelSize = 0.8;
+private _labelSize = TEXT_BODY;
 private _cellH = ([_labelSize] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _cellY = _padY * 1.5;
 private _cellX = _pad;
@@ -65,4 +65,4 @@ private _shown = missionNamespace getVariable [QGVAR(toolsShown), true];
     {[] call EFUNC(tacpad,open)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
-[_id, 0, (_cellH + 3 * _padY) / safeZoneH] call EFUNC(tacpad,fit);
+[_id, 0, (_cellH + 3 * _padY) / HOST_H] call EFUNC(tacpad,fit);

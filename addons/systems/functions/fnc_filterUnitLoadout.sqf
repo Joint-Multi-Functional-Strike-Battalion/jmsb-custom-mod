@@ -51,7 +51,7 @@ private _replaceRadio = {
         // Replace only if string (array can be eg. weapon inside container) and an TFAR radio
         if (!(_item isEqualType []) && {_item call TFAR_fnc_isRadio}) then {
             private _baseClassRadio = getText (configFile >> "CfgWeapons" >> _item >> "ace_arsenal_uniqueBase");
-            _this set [0, _baseClassRadio];
+            if (_baseClassRadio isNotEqualTo "") then {_this set [0, _baseClassRadio]};
         };
     };
 };

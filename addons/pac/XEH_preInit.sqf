@@ -34,6 +34,12 @@ GVAR(readOnly) = false;
 GVAR(dirty) = false;
 GVAR(lastSave) = -1e9;
 
+// Base stations (FUNC(baseStation)), server: id -> [object, side, owner,
+// helper made here, position key]; position key -> helper object.
+GVAR(baseStations) = createHashMap;
+GVAR(basePositions) = createHashMap;
+GVAR(baseSeq) = 0;
+
 // Attendance. An op window is open or it is not, and that is a fact the tile
 // shows and the report applies after the fact - see the handoff on windows.
 GVAR(windowOpen) = "";           // id of the manually started op window, "" for none

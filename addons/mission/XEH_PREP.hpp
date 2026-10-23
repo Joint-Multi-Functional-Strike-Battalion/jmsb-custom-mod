@@ -8,3 +8,4 @@ PREP(doStarterCrate);
 PREP(makeAgent);
 PREP(removeStagingZone);
 PREP(setVehicleLable);
+PREP(stagingUplink);

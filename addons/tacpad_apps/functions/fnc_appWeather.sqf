@@ -32,7 +32,7 @@ if (isNull _display) exitWith {};
 // height that can be worked out - so it is, and the frame is made that size.
 // Guessing 0.52 and letting a scrollbar take up the difference is the app
 // declining to do arithmetic it is perfectly able to do.
-private _padY = PAD * safeZoneH;
+private _padY = PAD * HOST_H;
 
 // A ROW IS AS TALL AS THE LINE STANDING IN IT. ROW_H is a DENSITY - a target
 // spacing - and it is not a promise that the type fits: past about 1.4 on the
@@ -40,12 +40,12 @@ private _padY = PAD * safeZoneH;
 // footer off the bottom of a frame that was measured in rows, and the last thing
 // on the page is cut in half. Measured off the type instead, so the page is
 // whatever height it actually needs at whatever size the player reads at.
-private _rowH = (ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH)
-    max (([0.9] call EFUNC(tacpad,textH)) + _padY * 0.5);
+private _rowH = (ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H)
+    max (([TEXT_TITLE] call EFUNC(tacpad,textH)) + _padY * 0.5);
 
 // The hero is the same problem at 2.4: three rows was ample at the default and
 // clipped the word CLEAR at a large one.
-private _heroH = (_rowH * 3) max (([2.4] call EFUNC(tacpad,textH)) / 0.62);
+private _heroH = (_rowH * 3) max (([TEXT_DISPLAY] call EFUNC(tacpad,textH)) / 0.62);
 
 // ONE TALL COLUMN - asked for by the user for the twentieth time, in those
 // words, so the two-column compromise is dead. Eleven rows stack down a
@@ -63,23 +63,23 @@ private _needed = _padY + _heroH + _padY + RULE_THICK * pixelH + _padY
 // body this page draws into loses the title bar and the borders. A page
 // measured exactly to its content therefore clipped its last line by
 // exactly one header. The chrome rides on top of the measurement now.
-private _chrome = HEADER_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH + (RULE_THICK * pixelH) * 3;
+private _chrome = HEADER_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H + (RULE_THICK * pixelH) * 3;
 
 // And when taller genuinely runs out of screen, the PAGE fits the screen:
 // rows, hero and type scale down by one factor so the last line is always on
 // the page.
-private _kFit = (((0.92 * safeZoneH) - _chrome) / _needed) min 1;
+private _kFit = (((0.92 * HOST_H) - _chrome) / _needed) min 1;
 _rowH = _rowH * _kFit;
 _heroH = _heroH * _kFit;
 _needed = _needed * _kFit + _chrome;
 
-([_display, "WEATHER", 0.42, _needed / safeZoneH] call EFUNC(tacpad,appFrame)) params ["", "_body"];
+([_display, "WEATHER", 0.42, _needed / HOST_H] call EFUNC(tacpad,appFrame)) params ["", "_body"];
 if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
-private _pad = PAD * safeZoneW;
+private _pad = PAD * HOST_W;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 // The tile already decides what the weather IS. Asking it rather than deciding
@@ -94,8 +94,8 @@ if (_tile isEqualTo []) exitWith {};
 [_body, [_pad, _padY, _heroH], _icon, ([_ink, _accent] select (_state != "rest"))] call EFUNC(tacpad,drawIcon);
 
 private _heroX = _pad * 2 + _heroH * pixelW / pixelH;
-[_body, [_heroX, _padY, _w - _heroX - _pad, _heroH * 0.62], _cover, ([_ink, _accent] select (_state != "rest")), (2.4 * _kFit), true] call EFUNC(tacpad,drawText);
-[_body, [_heroX, _padY + _heroH * 0.6, _w - _heroX - _pad, _heroH * 0.4], _detail, _mute, (0.75 * _kFit), true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_heroX, _padY, _w - _heroX - _pad, _heroH * 0.62], _cover, ([_ink, _accent] select (_state != "rest")), (TEXT_DISPLAY * _kFit), true] call EFUNC(tacpad,drawText);
+[_body, [_heroX, _padY + _heroH * 0.6, _w - _heroX - _pad, _heroH * 0.4], _detail, _mute, (TEXT_BODY * _kFit), true, "left", true] call EFUNC(tacpad,drawText);
 
 private _y = _padY + _heroH + _padY;
 [_body, [_pad, _y, _w - 2 * _pad, RULE_THICK * pixelH], _ink] call EFUNC(tacpad,drawFill);
@@ -145,8 +145,8 @@ private _colW = _w - 2 * _pad;
     private _cx = _pad + _col * (_colW + _pad);
     private _ry = _y + (_forEachIndex - _col * _perCol) * _rowH;
 
-    [_body, [_cx, _ry, _colW * 0.46, _rowH], _label, _mute, (0.7 * _kFit), true, "left", true] call EFUNC(tacpad,drawText);
-    [_body, [_cx + _colW * 0.46, _ry, _colW * 0.54, _rowH], _value, ([_ink, _accent] select _hot), (0.9 * _kFit), true, "right"] call EFUNC(tacpad,drawText);
+    [_body, [_cx, _ry, _colW * 0.46, _rowH], _label, _mute, (TEXT_BODY * _kFit), true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_cx + _colW * 0.46, _ry, _colW * 0.54, _rowH], _value, ([_ink, _accent] select _hot), (TEXT_TITLE * _kFit), true, "right"] call EFUNC(tacpad,drawText);
     [_body, [_cx, _ry + _rowH - RULE_THIN * pixelH, _colW, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 } forEach [
     ["LOCAL TIME", _clock, false],
@@ -178,11 +178,11 @@ private _thermal = rain > 0.1 || {fog > 0.3};
 [
     _body, [_pad, _footY, _w - 2 * _pad, _rowH],
     format ["ROTARY - %1", ["CONDITIONS ACCEPTABLE", "MARGINAL - CEILING, VIS OR WIND"] select _airRisk],
-    ([_ink, _accent] select _airRisk), (0.75 * _kFit), true, "left", true
+    ([_ink, _accent] select _airRisk), (TEXT_BODY * _kFit), true, "left", true
 ] call EFUNC(tacpad,drawText);
 
 [
     _body, [_pad, _footY + _rowH, _w - 2 * _pad, _rowH],
     format ["THERMAL - %1", ["UNDEGRADED", "DEGRADED BY RAIN OR FOG"] select _thermal],
-    ([_ink, _accent] select _thermal), (0.75 * _kFit), true, "left", true
+    ([_ink, _accent] select _thermal), (TEXT_BODY * _kFit), true, "left", true
 ] call EFUNC(tacpad,drawText);

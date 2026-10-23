@@ -203,14 +203,13 @@ switch (_s) do {
     case "loadout": {
         disableSerialization;
         private _head = [PAC_IDC_BIGEDIT_HEAD, PAC_UI_X, PAC_UI_TOP, PAC_UI_W, 0.026] call FUNC(uiPlace);
-        _head ctrlSetStructuredText parseText "<t color='#93cf72' size='0.75'>DEFAULT LOADOUT  -  the config's own spelling, {} for []; empty = the role's class default</t>";
+        _head ctrlSetStructuredText parseText "<t color='#93cf72' size='0.7'>DEFAULT LOADOUT  -  the config's own spelling, {} for []; empty = the role's class default</t>";
         private _edit = [PAC_IDC_BIGEDIT, PAC_UI_X, PAC_UI_TOP + 0.028, PAC_UI_W, _h - 0.028] call FUNC(uiPlace);
         _edit ctrlSetText (["defaultLoadout", _r getOrDefault ["defaultLoadout", []]] call FUNC(roleFieldText));
         if (!_fed) then {
             _btns pushBack ["SAVE LOADOUT", {
                 disableSerialization;
-                private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-                [player, "roles", "set", GVAR(uiArgs) get "id", createHashMapFromArray [["defaultLoadout", ctrlText (_display displayCtrl PAC_IDC_BIGEDIT)]]] remoteExec [QFUNC(adminStructure), 2];
+                [player, "roles", "set", GVAR(uiArgs) get "id", createHashMapFromArray [["defaultLoadout", ctrlText ([PAC_IDC_BIGEDIT] call FUNC(uiCtrl))]]] remoteExec [QFUNC(adminStructure), 2];
                 ["Saved.", false] call FUNC(uiHint);
             }];
         };

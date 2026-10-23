@@ -38,10 +38,10 @@ if (isNull _body) exitWith {};
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * safeZoneH;
+private _rowH = ROW_H * _scale * HOST_H;
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 private _units = (units group player) select {alive _x || {!isNull _x}};
@@ -62,7 +62,13 @@ private _scrollW = 14 * pixelW;
 // scrolls, and the buttons stay where the player last saw them.
 private _bodyH = (ctrlPosition _body) # 3;
 private _legendH = _iconH + _rowH * 0.7;
-private _refreshH = ([0.7] call EFUNC(tacpad,textH)) + 2 * _padY;
+// THE RAIL'S TYPE IS TWO PIXELS UP on the rest of the apps' (user,
+// 2026-10-22: "increase the fonts in the squad screen ... 2px larger"): the
+// rows, the legend and REFRESH, and the health figure by the same two.
+private _rowText = [TEXT_BODY, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx);
+private _smallText = [TEXT_LABEL, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx);
+private _figureText = [TEXT_TITLE, TEXT_UP_PX] call EFUNC(tacpad,textPx);
+private _refreshH = ([_rowText] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _footH = _legendH + _refreshH + _padY * 3;
 private _footY = _bodyH - _footH;
 
@@ -106,10 +112,10 @@ private _row = 0;
         [_pad * 2 + _iconW, _y, _w * 0.72 - _pad, _rowH],
         format ["%1 %2", [rank _unit] call EFUNC(tacpad,rankShort), name _unit],
         _ink,
-        // The tile band's own type size. The rail was set a third larger than
-        // everything it sits beside, which is what made a five-man section look
-        // like it needed half the screen.
-        0.7, _self
+        // The body size plus the rail's two pixels. The rail was once set a
+        // third larger than everything beside it, which made a five-man
+        // section look like it needed half the screen.
+        _rowText, _self
     ] call EFUNC(tacpad,drawText);
 
     // A NUMBER ONLY WHEN IT MEANS SOMETHING. A column of 100s down a healthy
@@ -123,7 +129,7 @@ private _row = 0;
             [_w * 0.72, _y, _w * 0.28 - _scrollW - _pad, _rowH],
             [str _health, "-"] select (!alive _unit || _uncon),
             _accent,
-            0.85, true, "right"
+            _figureText, true, "right"
         ] call EFUNC(tacpad,drawText);
     };
 
@@ -155,7 +161,7 @@ if (_hidden > 0) then {
     // size, so pointing at the list is the only useful thing to say.
     [
         _body, [_pad, _row * _rowH, _w - 2 * _pad - _scrollW, _rowH],
-        format ["+%1 MORE - PRESS A ROW FOR THE FULL LIST", _hidden], _mute, 0.62, true, "left", true
+        format ["+%1 MORE - PRESS A ROW FOR THE FULL LIST", _hidden], _mute, _smallText, true, "left", true
     ] call EFUNC(tacpad,drawText);
 };
 
@@ -173,7 +179,7 @@ private _cellW = (_w - 2 * _pad) / 4;
     _x params ["_label", "_icon"];
     private _lx = _pad + _forEachIndex * _cellW;
     [_body, [_lx + (_cellW - _iconW) * 0.5, _legendY, _iconH] , _icon] call EFUNC(tacpad,drawIcon);
-    [_body, [_lx, _legendY + _iconH, _cellW, _rowH * 0.7], _label, _mute, 0.62, true, "center", true] call EFUNC(tacpad,drawText);
+    [_body, [_lx, _legendY + _iconH, _cellW, _rowH * 0.7], _label, _mute, _smallText, true, "center", true] call EFUNC(tacpad,drawText);
 } forEach [
     ["OK", ICON_OK],
     ["WIA", ICON_WIA],
@@ -189,7 +195,7 @@ private _cellW = (_w - 2 * _pad) / 4;
 private _refreshY = _legendY + _legendH + _padY * 0.5;
 
 [_body, [_pad, _refreshY, _w - 2 * _pad - _scrollW, _refreshH], _ink, RULE_THIN] call EFUNC(tacpad,drawFrame);
-[_body, [_pad * 2, _refreshY, _w - 3 * _pad - _scrollW, _refreshH], "REFRESH", _mute, 0.7, true, "center", true] call EFUNC(tacpad,drawText);
+[_body, [_pad * 2, _refreshY, _w - 3 * _pad - _scrollW, _refreshH], "REFRESH", _mute, _rowText, true, "center", true] call EFUNC(tacpad,drawText);
 [_body, [_pad, _refreshY, _w - 2 * _pad - _scrollW, _refreshH], {
     {["squad"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);

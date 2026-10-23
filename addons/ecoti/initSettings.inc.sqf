@@ -80,3 +80,13 @@
     true,
     false
 ] call CBA_fnc_addSetting;
+
+// THE COMPASS (user, 2026-10-19: "a compass on the top like DUI has"). Only
+// while AiTR is drawing; off, the overlay is boxes and labels alone.
+[
+    QGVAR(compass), "CHECKBOX",
+    ["Show AiTR compass", "A line compass across the top of the screen while AiTR is on, your heading marked in the TAC//PAD accent colour."],
+    ["1st Joint Multi-Functional Strike Battalion", "ECOTI"],
+    true,
+    false
+] call CBA_fnc_addSetting;

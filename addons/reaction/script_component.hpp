@@ -65,3 +65,10 @@
 // transmitter's own position, not an objective - they are answering a
 // bearing, not a captured place.
 #define REACT_BURN_QRF_RADIUS 150
+
+// Game voice net kinds (jmfsb_voice_fnc_nets) a key-up on never reaches the
+// filter: the squad's own net, the crew intercom, and direct speech.
+#define REACT_VOICE_SAFE_KINDS ["team", "veh", "direct"]
+// Under ACRE (jmfsb_voice_system) the ACRE poll below hears his key-ups itself,
+// with the radio's power; the voice talk event would count them twice.
+#define REACT_VOICE_SYSTEM_ACRE "acre"

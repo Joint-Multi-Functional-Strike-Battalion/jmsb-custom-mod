@@ -2441,12 +2441,6 @@ class CfgVehicles {
         displayName = "Radio Pack (MCU-D)";
         picture = "\z\jmfsb\addons\uniform\models\supplies\Bags\Data\UI\icon_Aegis_B_RadioBag_01_des_lxWS_ca.paa";
         hiddenSelectionsTextures[] = {"\lxws\characters_f_lxws\data\NATO\B_RadioBag_01_desert_CO.paa"};
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class EGVAR(uniform,B_D_RadioOperator_F): EGVAR(uniform,B_RadioOperator_F) {
         editorPreview = "\z\jmfsb\addons\uniform\models\editorpreviews\Data\CfgVehicles\Aegis_B_D_RadioOperator_F.jpg";

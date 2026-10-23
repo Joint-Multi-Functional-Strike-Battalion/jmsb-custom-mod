@@ -17,4 +17,4 @@ A content pack: 51 unit classes. No scripted behaviour.
 
 ## Ships
 
-51 unit classes.
+67 unit classes.

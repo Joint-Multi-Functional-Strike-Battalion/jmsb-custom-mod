@@ -24,14 +24,15 @@ Description:
     And the two that write the RADIO section rather than the ORBAT, because
     that is where the mod reads a channel from:
 
-        squadRadio    key = the squad's name; record {acre, tfarSw, tfarLr}.
+        squadRadio    key = the squad's name; record {acre, tfarSw, tfarLr}
+                      (tfarSw / tfarLr: the net plan's slots, names kept).
                       An empty value drops the squad's row, which puts it back
                       on the plan's fallback.
         platoonRadio  key = the platoon id; record {lr} - its long range
                       channel, empty for the plan default.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -42,7 +43,7 @@ Description:
                       armor ...) - record {type}.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -53,7 +54,7 @@ Description:
                       armor ...) - record {type}.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -64,7 +65,7 @@ Description:
                       armor ...) - record {type}.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -75,7 +76,7 @@ Description:
                       armor ...) - record {type}.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -86,7 +87,7 @@ Description:
                       armor ...) - record {type}.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -97,7 +98,7 @@ Description:
                       armor ...) - record {type}.
         radio         key = a jmfsbFR_radio_* key (FUNC(radioKeys)); record
                       {value} - the whole value, of the default's type
-                      (2026-09-09: the ACRE / TFAR tables and settings pages).
+                      (2026-09-09: the ACRE tables and the net plan's settings pages).
     And three more on the ORBAT itself (2026-09-09, the one-dialog PAC):
         runs          record {netsVersion, radioVersion, arsenalVersion,
                       motorpoolVersion} - which versions this order of
@@ -267,10 +268,13 @@ switch (_kind) do {
         private _value = _rec getOrDefault ["value", _default];
         // the default's type, or nothing: a channel table is an array, a radio a string, a power a number
         if (_default isEqualType 0 && _value isEqualType "") then {_value = parseNumber _value};
-        if !(_value isEqualType _default) exitWith {[format ["%1 takes %2.", _key, switch (true) do {case (_default isEqualType []): {"a list"}; case (_default isEqualType 0): {"a number"}; default {"text"}}], true] call _fnc_tell; _ok = false};
+        // a switch (the VON keys, 2026-10-20): true / false, or "true" / "false" / 1 / 0 from a form
+        if (_default isEqualType true && _value isEqualType 0) then {_value = _value != 0};
+        if (_default isEqualType true && _value isEqualType "" && {(toLower trim _value) in ["true", "1", "false", "0"]}) then {_value = (toLower trim _value) in ["true", "1"]};
+        if !(_value isEqualType _default) exitWith {[format ["%1 takes %2.", _key, switch (true) do {case (_default isEqualType []): {"a list"}; case (_default isEqualType 0): {"a number"}; case (_default isEqualType true): {"true or false"}; default {"text"}}], true] call _fnc_tell; _ok = false};
         _radio set [_key, _value];
         GVAR(structure) set ["radio", _radio];
-        if (!isNil QFUNC(radioApply)) then {[] call FUNC(radioApply)};
+        if (!isNil QFUNC(radioApply)) then {[_radio] call FUNC(radioApply)};
         ["radio"] call FUNC(structurePersist);
         _detail = format ["radio %1 written", _key];
         [getPlayerUID _caller, name _caller, "orbat", _key, _detail] call FUNC(logAction);
@@ -282,7 +286,7 @@ switch (_kind) do {
     // ---- the channels, which live in the RADIO section, not the ORBAT ----
     // A squad without a radio is half a squad, so they are edited beside it -
     // but the mod reads them from <unit>.radio (srSquadChannel for ACRE,
-    // tfarNets for TFAR, lrPlatoonChannel for a platoon's long range), so that
+    // tfarNets for the net plan, lrPlatoonChannel for a platoon's long range), so that
     // is where they are written. The website writes exactly the same rows.
     case "squadRadio";
     case "platoonRadio": {
@@ -313,7 +317,7 @@ switch (_kind) do {
                 _tf = [parseNumber _sw, parseNumber _lr];
             };
             ["tfarNets", _key, _tf] call _fnc_row;
-            _detail = format ["%1 channels: ACRE %2, TFAR %3/%4", _key, _acre, _sw, _lr];
+            _detail = format ["%1 channels: ACRE %2, nets %3/%4", _key, _acre, _sw, _lr];
         } else {
             if (_key isEqualTo "") exitWith {["Pick a platoon first.", true] call _fnc_tell; _ok = false};
             private _lrCh = ["lr"] call _fnc_text;
@@ -327,7 +331,7 @@ switch (_kind) do {
         // The globals the gear and player code read are written from the
         // section, so a channel changed in game takes effect without a
         // restart - the same call the boot makes.
-        if (!isNil QFUNC(radioApply)) then {[] call FUNC(radioApply)};
+        if (!isNil QFUNC(radioApply)) then {[_radio] call FUNC(radioApply)};
         ["radio"] call FUNC(structurePersist);
         [getPlayerUID _caller, name _caller, "orbat", _key, _detail] call FUNC(logAction);
         INFO_2("%1 edited the radio plan: %2",name _caller,_detail);
@@ -343,7 +347,7 @@ if (_kind in ["squadRadio", "platoonRadio", "radio", "newVersion"]) exitWith {tr
 _orbat set ["groups", _groups];
 _orbat set ["platoons", _platoons];
 // NO radioNets KEY WRITTEN BACK. "Shared radio nets" are not a thing (user,
-// 2026-09-09) - radio channels are the ACRE and TFAR plans and messaging nets
+// 2026-09-09) - radio channels are the ACRE plan and the net plan, messaging nets
 // are mailboxes. An ORBAT document that still carries the old key keeps it
 // untouched and unread; nothing writes a new one.
 GVAR(structure) set ["orbat", _orbat];

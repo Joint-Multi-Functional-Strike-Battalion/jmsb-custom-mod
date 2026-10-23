@@ -30,7 +30,7 @@
 
 params ["", ""];
 
-private _display = findDisplay IDD_MAP;
+private _display = HOST_DISPLAY;
 if (isNull _display) exitWith {};
 
 // CA_ContentBackgroundd, idc 1023 on RscDisplayMainMap, is the diary PAGE

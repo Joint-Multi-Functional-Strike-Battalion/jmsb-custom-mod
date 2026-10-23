@@ -28,4 +28,11 @@ GVAR(visCursor) = 0;
 GVAR(pool) = [];
 GVAR(shown) = 0;
 
+// The compass controls, [marker, readout, ticks, labels], made the first time it
+// is drawn, and whether they are showing. See FUNC(drawCompass).
+GVAR(compassCtrls) = [];
+GVAR(compassShown) = false;
+// The frame Draw3D last ran on - FUNC(hideCovered) reads a gap as "not drawn".
+GVAR(drawFrame) = 0;
+
 ADDON = true;

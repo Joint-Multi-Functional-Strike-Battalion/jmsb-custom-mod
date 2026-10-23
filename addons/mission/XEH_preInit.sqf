@@ -16,4 +16,12 @@ ADDON = false;
 // these were the exception because they were written from scratch in one go.
 #include "XEH_PREP.hpp"
 
+#include "initSettings.inc.sqf"
+
+// The staging zones' satellite uplinks are the server's: a client that adds or
+// removes a zone reports it here (FUNC(stagingUplink)).
+if (isServer) then {
+    [QGVAR(stagingUplink), {_this call FUNC(stagingUplink)}] call CBA_fnc_addEventHandler;
+};
+
 ADDON = true;

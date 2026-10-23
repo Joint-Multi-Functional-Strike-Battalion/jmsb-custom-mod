@@ -38,11 +38,11 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 private _amber = [0.85, 0.65, 0.15, 1];
@@ -62,14 +62,14 @@ private _fnc_clock = {
     };
 };
 
-private _btnH = ([0.8] call EFUNC(tacpad,textH)) + 2 * _padY;
+private _btnH = ([TEXT_TITLE] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _y = _padY;
 
 // ------------------------------------------------------------ the roster ----
 private _alarms = missionNamespace getVariable [QEGVAR(hacking,alarms), []];
 private _ringing = !isNil QEGVAR(hacking,alarmRingUntil) && {time < (missionNamespace getVariable [QEGVAR(hacking,alarmRingUntil), -1])};
 
-[_body, [_pad, _y, _w * 0.5, _rowH], "ARMED ALARMS", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w * 0.5, _rowH], "ARMED ALARMS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 
 // RINGING is also the button that stops it. The keybind is the fast way and
 // this is the discoverable one - a player who has never bound the key is
@@ -77,7 +77,7 @@ private _ringing = !isNil QEGVAR(hacking,alarmRingUntil) && {time < (missionName
 if (_ringing) then {
     private _silW = _w * 0.5 - _pad;
     [_body, [_w * 0.5, _y, _silW, _rowH], _accent, RULE_THIN] call EFUNC(tacpad,drawFrame);
-    [_body, [_w * 0.5, _y, _silW, _rowH], "RINGING - SILENCE", _accent, 0.7, true, "center", true] call EFUNC(tacpad,drawText);
+    [_body, [_w * 0.5, _y, _silW, _rowH], "RINGING - SILENCE", _accent, TEXT_BODY, true, "center", true] call EFUNC(tacpad,drawText);
     [_body, [_w * 0.5, _y, _silW, _rowH], {
         if (isNil QEFUNC(hacking,alarmSilence)) exitWith {};
         [] call EFUNC(hacking,alarmSilence);
@@ -87,11 +87,11 @@ if (_ringing) then {
 _y = _y + _rowH;
 
 if (isNil QEGVAR(hacking,alarms)) then {
-    [_body, [_pad, _y, _w - 2 * _pad, _rowH], "SCANNER NETWORK OFFLINE", _accent, 0.8] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _y, _w - 2 * _pad, _rowH], "SCANNER NETWORK OFFLINE", _accent, TEXT_TITLE] call EFUNC(tacpad,drawText);
     _y = _y + _rowH;
 } else {
     if (_alarms isEqualTo []) then {
-        [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NONE", _dim, 0.8] call EFUNC(tacpad,drawText);
+        [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NONE", _dim, TEXT_TITLE] call EFUNC(tacpad,drawText);
         _y = _y + _rowH;
     } else {
         // Soonest first - the one about to go is the one you care about.
@@ -110,7 +110,7 @@ if (isNil QEGVAR(hacking,alarms)) then {
                 default {_ink};
             };
 
-            [_body, [_pad, _y, _w * 0.3, _rowH], [_left] call _fnc_clock, _colour, 1, true] call EFUNC(tacpad,drawText);
+            [_body, [_pad, _y, _w * 0.3, _rowH], [_left] call _fnc_clock, _colour, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
             // WHEN, as well as how long. A section coordinating on the radio
             // says "at twenty past", not "in eleven minutes forty" - and this
             // roster is the thing they are reading off.
@@ -125,13 +125,13 @@ if (isNil QEGVAR(hacking,alarms)) then {
                     [floor ((_atClock - floor _atClock) * 60), 2] call CBA_fnc_formatNumber,
                     toUpper _who
                 ],
-                _mute, 0.65, false
+                _mute, TEXT_BODY, false
             ] call EFUNC(tacpad,drawText);
 
             // DEL names its row, so "#2" on the key is "#2" on the roster.
             private _delW = _w * 0.2;
             [_body, [_w - _delW - _pad, _y, _delW, _rowH * 0.9], _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
-            [_body, [_w - _delW - _pad, _y, _delW, _rowH * 0.9], format ["DEL #%1", _forEachIndex + 1], _mute, 0.62, true, "center"] call EFUNC(tacpad,drawText);
+            [_body, [_w - _delW - _pad, _y, _delW, _rowH * 0.9], format ["DEL #%1", _forEachIndex + 1], _mute, TEXT_LABEL, true, "center"] call EFUNC(tacpad,drawText);
 
             private _hit = [_body, [_w - _delW - _pad, _y, _delW, _rowH * 0.9], {
                 params ["_ctrl"];
@@ -173,13 +173,13 @@ private _stepW = (_w - (count _quick + 1) * _pad) / (count _quick);
     private _sx = _pad + _forEachIndex * (_stepW + _pad);
 
     [_body, [_sx, _y, _stepW, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-    [_body, [_sx, _y, _stepW, _btnH], str _x, _ink, 0.8, true, "center"] call EFUNC(tacpad,drawText);
+    [_body, [_sx, _y, _stepW, _btnH], str _x, _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 
     private _hit = [_body, [_sx, _y, _stepW, _btnH], _fnc_arm] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(alarmStep), _x * 60];
 } forEach _quick;
 
-[_body, [_pad, _y + _btnH, _w - 2 * _pad, _rowH * 0.8], "MINUTES FROM NOW", _mute, 0.6, false, "center", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y + _btnH, _w - 2 * _pad, _rowH * 0.8], "MINUTES FROM NOW", _mute, TEXT_LABEL, false, "center", true] call EFUNC(tacpad,drawText);
 _y = _y + _btnH + _rowH * 0.8;
 
 // --------------------------------------------------------- a custom delay ---
@@ -188,8 +188,8 @@ _y = _y + _btnH + _rowH * 0.8;
 // player decides a screen is not worth using.
 private _custom = GVAR(alarmCustom);
 
-[_body, [_pad, _y, _w * 0.44, _rowH], "CUSTOM", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
-[_body, [_w * 0.44, _y, _w * 0.56 - _pad, _rowH], [_custom] call _fnc_clock, _ink, 1.1, true, "right"] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w * 0.44, _rowH], "CUSTOM", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_w * 0.44, _y, _w * 0.56 - _pad, _rowH], [_custom] call _fnc_clock, _ink, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
 _y = _y + _rowH;
 
 private _fnc_bump = {
@@ -206,7 +206,7 @@ private _bumpW = (_w - (count _bumps + 1) * _pad) / (count _bumps);
     private _bx = _pad + _forEachIndex * (_bumpW + _pad);
 
     [_body, [_bx, _y, _bumpW, _btnH], _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
-    [_body, [_bx, _y, _bumpW, _btnH], _label, _mute, 0.72, true, "center"] call EFUNC(tacpad,drawText);
+    [_body, [_bx, _y, _bumpW, _btnH], _label, _mute, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
 
     private _hit = [_body, [_bx, _y, _bumpW, _btnH], _fnc_bump] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(bumpBy), _by];
@@ -214,7 +214,7 @@ private _bumpW = (_w - (count _bumps + 1) * _pad) / (count _bumps);
 _y = _y + _btnH + _padY;
 
 [_body, [_pad, _y, _w - 2 * _pad, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-[_body, [_pad, _y, _w - 2 * _pad, _btnH], format ["ARM %1", [_custom] call _fnc_clock], _ink, 0.85, true, "center"] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w - 2 * _pad, _btnH], format ["ARM %1", [_custom] call _fnc_clock], _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 private _armCustom = [_body, [_pad, _y, _w - 2 * _pad, _btnH], _fnc_arm] call EFUNC(tacpad,drawHit);
 _armCustom setVariable [QGVAR(alarmStep), _custom];
 _y = _y + _btnH + _padY;
@@ -229,8 +229,8 @@ private _atText = format ["%1:%2",
     [floor ((_at % 3600) / 60), 2] call CBA_fnc_formatNumber
 ];
 
-[_body, [_pad, _y, _w * 0.44, _rowH], "ALARM AT", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
-[_body, [_w * 0.44, _y, _w * 0.56 - _pad, _rowH], _atText, _ink, 1.1, true, "right"] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w * 0.44, _rowH], "ALARM AT", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_w * 0.44, _y, _w * 0.56 - _pad, _rowH], _atText, _ink, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
 _y = _y + _rowH;
 
 private _fnc_bumpAt = {
@@ -250,7 +250,7 @@ private _atW = (_w - (count _atBumps + 1) * _pad) / (count _atBumps);
     private _bx = _pad + _forEachIndex * (_atW + _pad);
 
     [_body, [_bx, _y, _atW, _btnH], _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
-    [_body, [_bx, _y, _atW, _btnH], _label, _mute, 0.68, true, "center"] call EFUNC(tacpad,drawText);
+    [_body, [_bx, _y, _atW, _btnH], _label, _mute, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
 
     private _hit = [_body, [_bx, _y, _atW, _btnH], _fnc_bumpAt] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(bumpBy), _by];
@@ -265,7 +265,7 @@ private _atDelay = [_at] call FUNC(alarmAtDelay);
 [
     _body, [_pad, _y, _w - 2 * _pad, _btnH],
     format ["ARM AT %1  -  IN %2", _atText, [_atDelay] call _fnc_clock],
-    _ink, 0.8, true, "center"
+    _ink, TEXT_TITLE, true, "center"
 ] call EFUNC(tacpad,drawText);
 
 [_body, [_pad, _y, _w - 2 * _pad, _btnH], {
@@ -283,7 +283,7 @@ _y = _y + _padY;
 // ---------------------------------------------------------- the stopwatch ---
 ([] call FUNC(timerState)) params ["_secs", "_running", "_down", "_expired"];
 
-[_body, [_pad, _y, _w * 0.5, _rowH], "STOPWATCH", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w * 0.5, _rowH], "STOPWATCH", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 [
     _body, [_w * 0.5, _y, _w * 0.5 - _pad, _rowH],
     switch (true) do {
@@ -292,17 +292,21 @@ _y = _y + _padY;
         case (_secs > 0): {"HELD"};
         default {"READY"};
     },
-    ([_mute, _accent] select (_expired || _running)), 0.62, true, "right", true
+    ([_mute, _accent] select (_expired || _running)), TEXT_LABEL, true, "right", true
 ] call EFUNC(tacpad,drawText);
 _y = _y + _rowH;
 
-[_body, [_pad, _y, _w - 2 * _pad, _rowH * 1.6], [_secs] call _fnc_clock, ([_ink, _accent] select _expired), 2.4, true, "center"] call EFUNC(tacpad,drawText);
-_y = _y + _rowH * 1.7;
+// The readout's box is its own text height plus air, not a multiple of the row:
+// at 2.4 times the body size it outgrew a row-based box and START / RESET sat
+// over the digits (user screenshot, 2026-10-21: "lower the buttons a little").
+private _clockH = ([TEXT_DISPLAY] call EFUNC(tacpad,textH)) + 2 * _padY;
+[_body, [_pad, _y, _w - 2 * _pad, _clockH], [_secs] call _fnc_clock, ([_ink, _accent] select _expired), TEXT_DISPLAY, true, "center"] call EFUNC(tacpad,drawText);
+_y = _y + _clockH + _padY;
 
 private _halfW = (_w - 3 * _pad) / 2;
 
 [_body, [_pad, _y, _halfW, _btnH], _accent] call EFUNC(tacpad,drawFill);
-[_body, [_pad, _y, _halfW, _btnH], ["START", "STOP"] select _running, _ground, 0.85, true, "center"] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _halfW, _btnH], ["START", "STOP"] select _running, _ground, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 [_body, [_pad, _y, _halfW, _btnH], {
     ["toggle"] call FUNC(timerSet);
     {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
@@ -310,7 +314,7 @@ private _halfW = (_w - 3 * _pad) / 2;
 
 private _resetX = _pad * 2 + _halfW;
 [_body, [_resetX, _y, _halfW, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-[_body, [_resetX, _y, _halfW, _btnH], "RESET", _ink, 0.85, true, "center"] call EFUNC(tacpad,drawText);
+[_body, [_resetX, _y, _halfW, _btnH], "RESET", _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 [_body, [_resetX, _y, _halfW, _btnH], {
     ["reset"] call FUNC(timerSet);
     {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;

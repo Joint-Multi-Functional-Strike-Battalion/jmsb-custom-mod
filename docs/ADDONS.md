@@ -10,7 +10,7 @@ A dependency in **bold** is an external mod.
 | `cba_settings` | CBA Settings |  |  |  | **cba_settings**, **ace_hearing** |
 | `common` | Common |  |  | 54 | - |
 | `compatibility` | Compatibility |  |  |  | A3_Data_F_Decade_Loadorder |
-| `main` | Main |  |  |  | **cba_main**, **diwako_dui_main**, A3_Weapons_F |
+| `main` | Main |  |  |  | **cba_main**, A3_Weapons_F |
 | `media` | Media |  |  |  | - |
 | `modules` | Modules | 4 |  | 7 | jmfsb_common |
 
@@ -18,7 +18,7 @@ A dependency in **bold** is an external mod.
 
 | Addon | Name | units | weapons | fns | Requires |
 |---|---|--:|--:|--:|---|
-| `backpack` | Backpack | 51 |  |  | A3_Characters_F, A3_Characters_F_Enoch, A3_Supplies_F_Enoch_Bags, A3_Characters_F_Exp, A3_Supplies_F_Exp |
+| `backpack` | Backpack | 67 |  |  | A3_Characters_F, A3_Characters_F_Enoch, A3_Supplies_F_Enoch_Bags, A3_Characters_F_Exp, A3_Supplies_F_Exp |
 | `boc` | Backpack On Chest | 2 |  | 37 | **ace_common** |
 | `faces` | Faces |  |  |  | A3_Data_F_Tank_Loadorder |
 | `flags` | Flags |  |  |  | jmfsb_common |
@@ -63,7 +63,7 @@ A dependency in **bold** is an external mod.
 | `chat` | Chat |  |  | 1 | jmfsb_common, jmfsb_notify |
 | `curator` | Curator |  |  | 3 | - |
 | `evac` | Evac |  |  | 3 | jmfsb_notify, **ace_interact_menu**, **ace_common**, **ace_medical**, **ace_medical_treatment** |
-| `hacking` | Hacking | 2 | 4 | 58 | **ace_interact_menu**, **ace_common**, jmfsb_notify, jmfsb_common, **cba_xeh** |
+| `hacking` | Hacking | 2 | 4 | 61 | **ace_interact_menu**, **ace_common**, jmfsb_notify, jmfsb_common, **cba_xeh** |
 | `insurgents` | Insurgents | 3 |  | 2 | jmfsb_common |
 | `killtracker` | Killtracker |  |  | 1 | - |
 | `patrol_base` | Patrol Base | 2 | 2 | 12 | jmfsb_notify |
@@ -114,17 +114,23 @@ A dependency in **bold** is an external mod.
 | `aceax_ammo` | ACEAX Ammo |  |  | 11 | **ace_arsenal**, **cba_settings** |
 | `aceax_attachments` | ACEAX Attachments |  |  |  | **aceax_gearinfo** |
 | `acre_faces` | Acre_faces |  |  |  | **acre_sys_prc148**, **acre_sys_prc152** |
-| `adapter_alive` | ALiVE Adapter |  |  | 39 | jmfsb_common, **cba_xeh**, jmfsb_notify, **ALiVE_main**, **ALiVE_x_lib** |
-| `adminpanel` | Admin Panel |  |  | 27 | jmfsb_common, jmfsb_notify, jmfsb_tacpad, **cba_xeh** |
+| `adapter_acre` | ACRE Adapter |  |  | 9 | jmfsb_rf, jmfsb_voice, **cba_xeh**, **acre_main** |
+| `adapter_alive` | ALiVE Adapter |  |  | 40 | jmfsb_common, **cba_xeh**, jmfsb_notify, jmfsb_support, **ALiVE_main**, **ALiVE_x_lib** |
+| `adapter_tfar` | TFAR Adapter |  |  | 29 | jmfsb_rf, jmfsb_voice, **cba_xeh**, **cba_settings**, **tfar_core** |
+| `adapter_von` | VON Adapter |  |  | 27 | jmfsb_voice, **cba_main**, **cba_xeh**, **cba_settings**, A3_Ui_F |
+| `adminpanel` | Admin Panel |  |  | 30 | jmfsb_common, jmfsb_notify, jmfsb_tacpad, **cba_xeh** |
 | `ambience` | Ambience | 2 |  | 5 | jmfsb_common, **cba_xeh** |
 | `antiship` | AntiShip | 6 |  | 8 | jmfsb_common, **cba_xeh** |
 | `aps` | APS | 1 |  | 24 | jmfsb_common, jmfsb_notify, **cba_xeh**, **cba_settings** |
-| `bft` | BFT |  |  | 21 | jmfsb_common, **ace_interact_menu**, **ace_common**, **cba_xeh** |
+| `bft` | BFT |  |  | 22 | jmfsb_common, **ace_interact_menu**, **ace_common**, **cba_xeh** |
 | `boarding` | Boarding | 1 |  | 4 | jmfsb_notify, **ace_interact_menu**, **cba_xeh** |
-| `cas` | CAS | 1 |  | 12 | jmfsb_common |
+| `cas` | CAS | 1 |  | 17 | jmfsb_common, jmfsb_support |
+| `devices` | Devices |  | 3 | 72 | jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** |
 | `diag` | Diag |  |  | 4 | **cba_xeh** |
 | `documents` | Documents |  |  | 2 | jmfsb_diag, **cba_xeh** |
-| `ecoti` | ECOTI |  |  | 16 | **cba_main**, **cba_xeh** |
+| `drone40` | Drone40 | 9 |  | 7 | jmfsb_rf, **cba_xeh**, **gx_drones_uav_drone40** |
+| `ecoti` | ECOTI |  |  | 18 | **cba_main**, **cba_xeh** |
+| `ew` | EW | 1 | 1 | 52 | jmfsb_common, jmfsb_notify, jmfsb_rf, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** ... |
 | `fa_adf` | Future Ammunition - ADF Re-Cut |  |  |  | **cba_main**, **ace_ballistics**, jmfsb_fa_ammo, jmfsb_fa_tiers, **adf_ef88**, **adf_hk416** ... |
 | `fa_aegis` | Future Ammunition - Aegis |  |  |  | **cba_main**, **ace_ballistics**, jmfsb_fa_ammo, jmfsb_weapons |
 | `fa_ammo` | Future Ammunition |  |  | 2 | jmfsb_fa_main, jmfsb_notify, **cba_main**, **ace_ballistics**, A3_Weapons_F_Mark |
@@ -176,7 +182,7 @@ A dependency in **bold** is an external mod.
 | `faction_eudf_arc` | EUDF (Arctic) | 136 |  |  | jmfsb_headware, jmfsb_uniform, jmfsb_vehicle, jmfsb_vests, **QAV_Challenger**, **hawks_gtk_boxer** |
 | `faction_eudf_des` | EUDF (Desert) | 52 |  |  | jmfsb_vehicle, **QAV_Challenger**, **hawks_gtk_boxer** |
 | `faction_gen` | Gendarmerie | 12 |  |  | jmfsb_headware, jmfsb_weapons |
-| `faction_himf` | HIMF | 62 |  |  | jmfsb_uniform, jmfsb_vehicle, jmfsb_weapons |
+| `faction_himf` | HIMF | 63 |  |  | jmfsb_uniform, jmfsb_vehicle, jmfsb_weapons |
 | `faction_iran` | Iran | 156 | 4 |  | jmfsb_vests, jmfsb_weapons, jmfsb_uniform, jmfsb_vehicle |
 | `faction_iran_tna` | Iran (Tropical) | 156 | 4 |  | jmfsb_vests, jmfsb_weapons, jmfsb_uniform, jmfsb_vehicle |
 | `faction_jmsb` | 1st JMSB | 1 |  |  | jmfsb_uniform_sof, jmfsb_headware, jmfsb_vests_mig, **sps_hk_vp9_pistols** |
@@ -193,32 +199,41 @@ A dependency in **bold** is an external mod.
 | `faction_us_jtf_ocp` | US Army JTF (OCP) | 99 | 18 |  | jmfsb_headware, jmfsb_uniform, jmfsb_vests, jmfsb_weapons, jmfsb_vehicle |
 | `faction_us_jtf_tna` | US Army JTF (Tropical) | 155 | 17 |  | jmfsb_vehicle, jmfsb_uniform, jmfsb_weapons |
 | `faction_us_jtf_wdl` | US Army JTF (Woodland) | 160 | 17 |  | jmfsb_vehicle, jmfsb_headware, jmfsb_uniform, jmfsb_weapons |
+| `fieldmanual` | Field Manual |  |  |  | jmfsb_media, jmfsb_fa_main |
 | `gear` | Gear |  |  | 9 | jmfsb_diag, **cba_xeh** |
 | `groups` | Groups |  |  | 25 | jmfsb_diag, **cba_xeh** |
 | `hud` | HUD |  |  | 16 | jmfsb_common, jmfsb_tacpad, **cba_xeh** |
 | `init` | Init |  |  | 16 | jmfsb_diag, **cba_xeh** |
-| `jamming` | Jamming | 2 |  | 19 | jmfsb_common, jmfsb_notify, **cba_xeh** |
+| `jamming` | Jamming | 2 |  | 23 | jmfsb_common, jmfsb_notify, jmfsb_rf, **cba_xeh** |
 | `jca_rails` | JCA Rails |  |  |  | **cba_jr**, **Weapons_F_JCA_IA** |
 | `leaders` | Leaders | 1 |  | 16 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `logistics` | Logistics |  |  | 11 | jmfsb_diag, **cba_xeh** |
+| `maptools` | Map Tools |  |  | 22 | jmfsb_common, jmfsb_tacpad, **cba_xeh** |
+| `medic` | Medic |  |  | 16 | jmfsb_common, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** |
 | `messaging` | Messaging |  |  | 48 | jmfsb_common, jmfsb_notify, **cba_xeh** |
-| `mission` | Mission |  |  | 10 | jmfsb_diag, **cba_xeh** |
+| `mission` | Mission |  |  | 11 | jmfsb_diag, **cba_xeh**, **cba_settings** |
 | `naval` | Naval | 1 |  | 1 | jmfsb_common, **cba_xeh** |
-| `pac` | TAC//PAC |  |  | 189 | jmfsb_common, jmfsb_adminpanel, jmfsb_tacpad, jmfsb_notify |
+| `pac` | TAC//PAC |  |  | 199 | jmfsb_common, jmfsb_adminpanel, jmfsb_tacpad, jmfsb_notify |
 | `players` | Players |  |  | 15 | jmfsb_diag, **cba_xeh** |
 | `qrf` | QRF | 1 |  | 9 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `radio_mesh` | Radio Mesh |  |  | 4 | **cba_xeh**, **cba_settings** |
+| `radios` | Radios | 3 | 2 |  | jmfsb_backpack |
 | `reaction` | Reaction | 1 |  | 6 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `repair` | Repair | 1 |  | 3 | jmfsb_common, **cba_xeh** |
+| `rf` | RF |  |  | 40 | **cba_main**, **cba_xeh**, **cba_settings** |
 | `satcom` | SatCom | 1 | 1 | 5 | **ace_interact_menu**, **cba_xeh** |
+| `support` | Support |  |  | 11 | jmfsb_common, jmfsb_messaging, **cba_xeh** |
+| `support_air` | Support Air | 4 |  | 62 | jmfsb_common, jmfsb_messaging, jmfsb_support, jmfsb_cas, **cba_xeh** |
+| `support_fires` | Support Fires | 4 |  | 47 | jmfsb_common, jmfsb_support |
 | `systems` | Systems |  |  | 25 | jmfsb_diag, **cba_xeh** |
-| `tacpad` | Tacpad |  |  | 49 | jmfsb_common, **cba_xeh** |
-| `tacpad_apps` | Tacpad Apps |  |  | 39 | jmfsb_common, jmfsb_tacpad, **cba_xeh** |
+| `tacpad` | Tacpad |  |  | 69 | jmfsb_common, **cba_xeh** |
+| `tacpad_apps` | Tacpad Apps |  |  | 87 | jmfsb_common, jmfsb_tacpad, jmfsb_support, **cba_xeh** |
 | `teleport` | Teleport |  |  | 12 | jmfsb_notify, **cba_settings**, **cba_xeh** |
 | `uas` | UAS | 4 |  | 19 | jmfsb_common, **cba_xeh** |
 | `uniform_pla` | uniform_pla | 114 | 54 |  | A3_Characters_F, A3_Characters_F_Exp, A3_Characters_F_Enoch, A3_Characters_F_Tank |
 | `uniform_ru` | Russian Uniforms | 173 | 57 | 1 | A3_Characters_F, A3_Characters_F_Enoch_Vests, A3_Characters_F_Exp_Vests, A3_Data_F_Decade_Loadorder, A3_Weapons_F, A3_Weapons_F_Machineguns_M200 ... |
 | `vehicle` | Vehicle | 242 | 10 | 31 | jmfsb_weapons, A3_Data_F_Decade_Loadorder, jmfsb_diag, jmfsb_notify, **cba_xeh** |
+| `voice` | Voice |  |  | 89 | jmfsb_rf, jmfsb_notify, **cba_main**, **cba_xeh**, **cba_settings** |
 | `zenmodules` | Zenmodules |  |  | 12 | jmfsb_diag, **cba_xeh** |
 
 ## Optionals
@@ -236,4 +251,4 @@ Not loaded by default - copy out of `optionals/` to use.
 These declare `skipWhenMissingDependencies`, so they drop out quietly when an
 external mod is absent instead of breaking the load:
 
-`aceax_ammo`, `aceax_attachments`, `acm`, `acre_faces`, `adapter_alive`, `adsite`, `airdefence`, `ambience`, `antiship`, `aps`, `boarding`, `diag`, `documents`, `fa_adf`, `fa_aegis`, `fa_antidrone_ef`, `fa_antidrone_jca`, `fa_antidrone_rhs`, `fa_atlas`, `fa_ef`, `fa_jca`, `fa_jca_mk153`, `fa_lot`, `fa_mcc`, `fa_mpp`, `fa_mxa2`, `fa_qav_abramsx`, `fa_qav_ef_abramsx`, `fa_qav_ripsaw`, `fa_rearma_cn`, `fa_rearma_rus`, `fa_rearma_us`, `fa_rf`, `fa_rhs`, `fa_sps`, `fa_tiers_antidrone_ef`, `fa_tiers_ef`, `fa_tiers_mods`, `fa_tiers_rf`, `fa_tmt`, `fa_tni`, `fa_vehicles`, `fa_vve`, `faction_adf`, `faction_china`, `faction_china_ard`, `faction_delhi`, `faction_eudf`, `faction_eudf_arc`, `faction_eudf_des`, `faction_gen`, `faction_himf`, `faction_iran`, `faction_iran_tna`, `faction_jmsb`, `faction_marine_des`, `faction_marine_wdl`, `faction_russia`, `faction_russia_arc`, `faction_russia_ard`, `faction_turkey`, `faction_turkey_ind`, `faction_turkey_ind_ard`, `faction_turkey_tna`, `faction_us_jtf_des`, `faction_us_jtf_ocp`, `faction_us_jtf_tna`, `faction_us_jtf_wdl`, `gear`, `groups`, `headware`, `headware_jca_ie`, `headware_mig`, `init`, `jamming`, `jca_rails`, `leaders`, `logistics`, `mission`, `naval`, `nvg`, `optics`, `optics_ef`, `pac`, `patrol_base`, `players`, `qrf`, `radio_mesh`, `reaction`, `repair`, `satcom`, `systems`, `teleport`, `uas`, `uniform_eu`, `uniform_pla`, `uniform_sof`, `vehicle`, `vests_efa`, `vests_jca`, `vests_mig`, `vests_sof`, `vs17`, `weapons_jca`, `weapons_mcc`, `weapons_sps`, `zenmodules`, `weapons_spsv2`
+`aceax_ammo`, `aceax_attachments`, `acm`, `acre_faces`, `adapter_acre`, `adapter_alive`, `adapter_tfar`, `adsite`, `airdefence`, `ambience`, `antiship`, `aps`, `boarding`, `diag`, `documents`, `drone40`, `ew`, `fa_adf`, `fa_aegis`, `fa_antidrone_ef`, `fa_antidrone_jca`, `fa_antidrone_rhs`, `fa_atlas`, `fa_ef`, `fa_jca`, `fa_jca_mk153`, `fa_lot`, `fa_mcc`, `fa_mpp`, `fa_mxa2`, `fa_qav_abramsx`, `fa_qav_ef_abramsx`, `fa_qav_ripsaw`, `fa_rearma_cn`, `fa_rearma_rus`, `fa_rearma_us`, `fa_rf`, `fa_rhs`, `fa_sps`, `fa_tiers_antidrone_ef`, `fa_tiers_ef`, `fa_tiers_mods`, `fa_tiers_rf`, `fa_tmt`, `fa_tni`, `fa_vehicles`, `fa_vve`, `faction_adf`, `faction_china`, `faction_china_ard`, `faction_delhi`, `faction_eudf`, `faction_eudf_arc`, `faction_eudf_des`, `faction_gen`, `faction_himf`, `faction_iran`, `faction_iran_tna`, `faction_jmsb`, `faction_marine_des`, `faction_marine_wdl`, `faction_russia`, `faction_russia_arc`, `faction_russia_ard`, `faction_turkey`, `faction_turkey_ind`, `faction_turkey_ind_ard`, `faction_turkey_tna`, `faction_us_jtf_des`, `faction_us_jtf_ocp`, `faction_us_jtf_tna`, `faction_us_jtf_wdl`, `gear`, `groups`, `headware`, `headware_jca_ie`, `headware_mig`, `init`, `jamming`, `jca_rails`, `leaders`, `logistics`, `mission`, `naval`, `nvg`, `optics`, `optics_ef`, `pac`, `patrol_base`, `players`, `qrf`, `radio_mesh`, `reaction`, `repair`, `satcom`, `systems`, `teleport`, `uas`, `uniform_eu`, `uniform_pla`, `uniform_sof`, `vehicle`, `vests_efa`, `vests_jca`, `vests_mig`, `vests_sof`, `vs17`, `weapons_jca`, `weapons_mcc`, `weapons_sps`, `zenmodules`, `weapons_spsv2`

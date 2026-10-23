@@ -45,4 +45,4 @@ if (_player != player) then { // show selected player a message
     [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
 };
 
-if (_player == player) then {closeDialog 2;}; // close the admin panel if arsenal was opened on local client
+if (_player == player) then {(uiNamespace getVariable ['admp_displayVar', displayNull]) closeDisplay 2;}; // close the admin panel if arsenal was opened on local client

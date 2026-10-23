@@ -38,7 +38,8 @@ if !(_skills isEqualType createHashMap) then {_skills = createHashMap};
     [IDC_ADMINPANEL_PLAYER_SKILLS_UAV_LABEL, "uav", "UAV operator"],
     [IDC_ADMINPANEL_PLAYER_SKILLS_MKS_LABEL, "marksman", "Marksman"],
     [IDC_ADMINPANEL_PLAYER_SKILLS_SNP_LABEL, "sniper", "Sniper"],
-    [IDC_ADMINPANEL_PLAYER_SKILLS_HVY_LABEL, "heavy", "Heavy Weapons"]
+    [IDC_ADMINPANEL_PLAYER_SKILLS_HVY_LABEL, "heavy", "Heavy Weapons"],
+    [IDC_ADMINPANEL_PLAYER_SKILLS_RTO_LABEL, "rto", "RTO"]
 ];
 
 [] call admp_fnc_loadPlayerSkills;

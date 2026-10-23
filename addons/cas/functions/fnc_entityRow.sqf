@@ -2,11 +2,11 @@
 /*
  * Author: JMSB
  * One module as one support-page row, in the neutral shape the page already
- * reads - see the adapter's supportAssets for the contract.
+ * reads - see addons/support/README.md for the contract.
  *
- *   [id, type, callsign, platform, status, ordnance, guns]
+ *   [id, type, callsign, platform, status, ordnance, guns, vehicle, plan]
  *
- * THE SHAPE IS THE ADAPTER'S BECAUSE THE PAGE IS ALREADY WRITTEN. A CAS
+ * THE SHAPE IS THE SUPPORT CORE'S BECAUSE THE PAGE IS ALREADY WRITTEN. A CAS
  * provider that invented its own row would have needed a second renderer
  * beside the first, and the two would have drifted the first time a column
  * moved. The guns column is artillery's and stays empty here, exactly as
@@ -19,8 +19,8 @@
  * leads the list and stays the default. See FUNC(stores) for the read and
  * FUNC(task) for the index that comes back.
  *
- * THE ID CARRIES THE PROVIDER'S NAME. "jmfsbcas:3" routes back to this addon
- * and to entity 3; the adapter's own ids are "cas:0" and cannot collide.
+ * THE ID CARRIES THE PROVIDER'S KIND. "cas:3" routes back to this addon and to
+ * entity 3; ALiVE's ids are "alive:cas:0" and cannot collide.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -43,11 +43,15 @@ if (isNull _logic) exitWith {[]};
 private _ordnance = ["AUTO"] + (([_logic getVariable [QGVAR(cls), ""]] call FUNC(stores)) apply {_x select 1});
 
 [
-    format ["jmfsbcas:%1", _logic getVariable [QGVAR(id), -1]],
+    format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id), -1]],
     "cas",
     _logic getVariable [QGVAR(callsign), "CAS"],
     getText (configFile >> "CfgVehicles" >> (_logic getVariable [QGVAR(cls), ""]) >> "displayName"),
     _status,
     _ordnance,
-    0
+    0,
+    // The airframe while it is out, and the run it is flying - the board's
+    // map draws both (support core README, row fields 7 and 8).
+    _logic getVariable [QGVAR(vehicle), objNull],
+    _logic getVariable [QGVAR(plan), []]
 ]

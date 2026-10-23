@@ -15,6 +15,20 @@ Backpack on chest, re-prefixed into jmfsb.
 
 2 unit classes, 37 functions.
 
+## Eden modules
+
+### Add Chestpack
+
+`jmfsb_boc_ModuleAdd`, category bocr
+
+Classname of the disered chestpack
+
+### Backpack on Chest
+
+`jmfsb_boc_ModuleOnChest`, category bocr
+
+Classname of the backpack which should be added after putting the backpack on chest.
+
 ## CBA settings
 
 | Setting | Type | Name |

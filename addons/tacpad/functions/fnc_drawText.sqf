@@ -33,7 +33,7 @@
  * The control <CONTROL>
  *
  * Example:
- * [_body, [_pad, 0, _w, _rowH], "WEATHER", _ink, 0.8, true, "left", true] call jmfsb_tacpad_fnc_drawText
+ * [_body, [_pad, 0, _w, _rowH], "WEATHER", _ink, TEXT_TITLE, true, "left", true] call jmfsb_tacpad_fnc_drawText
  *
  * Public: Yes
  */
@@ -51,6 +51,9 @@ params [
 
 if (isNull _parent) exitWith {controlNull};
 
+// The apps' label and body text, one pixel up (FUNC(textSize)).
+_size = [_size] call FUNC(textSize);
+
 if (_tracked) then {
     _text = (toUpper _text) splitString "" joinString " ";
 };
@@ -61,7 +64,7 @@ _text = [_text] call FUNC(xmlSafe);
 
 _pos params ["_x", "_y", "_w", "_h"];
 
-private _fontH = TEXT_BASE * pixelH * pixelGrid * GVAR(textScale) * GVAR(uiScale);
+private _fontH = TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale) * GVAR(uiScale);
 
 // One line occupies a little more than its font height. The box is shrunk to
 // that and dropped to the middle of what the caller asked for, which is what

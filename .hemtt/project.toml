@@ -21,7 +21,7 @@ include = [
 
 # Source material that must never reach a PBO. The image formats are the
 # working files the .paa are made from; the Python is the art generators, which
-# have no business in a released addon at all and are kept in tools/art now.
+# have no business in a released addon at all and are kept in tools/ now, their art in art/.
 # This stays as a second line of defence: a stray .py inside addons/ would
 # otherwise be packed and shipped.
 exclude = ["*.psd", "*.png", "*.tga", "*.py", "*.pyc", "__pycache__"]

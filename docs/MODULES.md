@@ -2,6 +2,15 @@
 
 Place from the 3DEN entity list under the listed category.
 
+## ACM (`acm`)
+
+### JMSB - ACM Evacuation Zone
+
+- **Class** `jmfsb_acm_moduleEvacZone`
+- **Category** jmfsb_modules
+- Any AI that enters the area is evacuated with ACM's evacuation: removed from the mission, out of a vehicle if it is in one, and a converted casualty returns its casualty ticket. Players are never touched. The zone is marked on everyone's map (EVAC).
+- **Attributes** `interval`, `who`
+
 ## Air Defence Intercept (`adsite`)
 
 ### JMSB - Air Defence Site
@@ -70,13 +79,27 @@ Place from the 3DEN entity list under the listed category.
 - A muster point that loads players into transport. Synchronise the OBJECT players press - a sign, a crate, a flagpole - and it carries an ACE action; pressing it moves every player within the module's range into cargo. Synchronise VEHICLES too to say which transport is theirs; with none synced it uses whatever has free cargo near the module. Players already in a vehicle are left alone, and anyone who does not fit is told so rather than being silently left behind.
 - **Attributes** `includePresser`, `range`, `sideOnly`, `title`
 
+## Backpack On Chest (`boc`)
+
+### Add Chestpack
+
+- **Class** `jmfsb_boc_ModuleAdd`
+- **Category** bocr
+- Classname of the disered chestpack
+
+### Backpack on Chest
+
+- **Class** `jmfsb_boc_ModuleOnChest`
+- **Category** bocr
+- Classname of the backpack which should be added after putting the backpack on chest.
+
 ## CAS (`cas`)
 
 ### JMSB - CAS Drone
 
 - **Class** `jmfsb_moduleCAS`
 - **Category** jmfsb_modules
-- One taskable CAS drone on the support page. Place one module per airframe - many are allowed, and each is its own asset with its own losses.<br>The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing.<br>ORDNANCE on the support page lists what THIS airframe is carrying, by name - the run uses the heaviest thing aboard unless one is picked.<br>LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs a UAV terminal and the isISR variable. RTB ends it.<br>Airframe Class - Classname of the fixed-wing drone; blank for the side's vanilla UCAV Callsign - What the support page and the radio call it Airframes Available - How many times it may be shot down before the asset is expended; 0 for unlimited Ingress Distance (m) - How far out it appears, and how far it runs before despawning Attack Altitude (m) - Height above the terrain (ATL) the run is flown at Run Speed (km/h) - Capped at the airframe's own maximum Response Delay (sec) - Time from accepted request to the aircraft appearing Cooldown (sec) - Time after a run before this asset can be tasked again Terminal Search (m) - How far from the grid a laser spot or smoke is accepted as the real target; 0 for none
+- One taskable CAS drone on the support page. Place one module per airframe - many are allowed, and each is its own asset with its own losses.<br>The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing - off the map edge, where it despawns.<br>ORDNANCE on the support page lists what THIS airframe is carrying, by name - the run uses the heaviest thing aboard unless one is picked.<br>LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs the UAV operator trait and the isISR variable, no UAV terminal. RTB ends it.<br>Airframe Class - Classname of the fixed-wing drone; blank for the side's vanilla UCAV Callsign - What the support page and the radio call it Airframes Available - How many times it may be shot down before the asset is expended; 0 for unlimited Ingress Distance (m) - How far out it appears, and how far past the target it runs before the asset is free again Attack Altitude (m) - Height above the terrain (ATL) the run is flown at Run Speed (km/h) - Capped at the airframe's own maximum Response Delay (sec) - Time from accepted request to the aircraft appearing Cooldown (sec) - Time after a run before this asset can be tasked again Terminal Search (m) - How far from the grid a laser spot or smoke is accepted as the real target; 0 for none
 - **Attributes** `airframes`, `altitude`, `callsign`, `cooldown`, `droneClass`, `searchRadius`, `spawnDelay`, `spawnDistance`, `speed`
 
 ## Hacking (`hacking`)
@@ -94,8 +117,8 @@ Place from the 3DEN entity list under the listed category.
 
 - **Class** `jmfsb_moduleJamming`
 - **Category** jmfsb_modules
-- Placing this module turns on jamming. Without it, the system is off. It places no jammers - a JMSB - Jammer Site module does that, one per emitter.<br>Site Radius Min / Max (m) - every site rolls its own reach between the two GPS Denial - one uplink per commander steering a wandering 1-2 km GPS sphere Uplink Radius (m) - the uplink's own GPS field Radio Burn-Through - a strong set beats a jammer, and is answered with a QRF Burn-Through Reference (mW) - the set power the field is calibrated against
-- **Attributes** `burnRef`, `gpsUplinkRadius`, `largeRadius`, `maxPerSide`, `objectiveShare`, `smallRadius`
+- Placing this module turns on jamming. Without it, the system is off. It places no jammers - a JMSB - Jammer Site module does that, one per emitter.<br>Site Radius Min / Max (m) - every site rolls its own reach between the two GPS Denial - one uplink per commander steering a wandering 1-2 km GPS sphere Uplink Radius (m) - the uplink's own GPS field Radio Burn-Through - a strong set beats a jammer, and is answered with a QRF Burn-Through Reference (mW) - the set power the field is calibrated against Zone Noise at the Core (dBm) - what a radio or data zone adds to the RF link budget
+- **Attributes** `burnRef`, `gpsUplinkRadius`, `largeRadius`, `maxPerSide`, `objectiveShare`, `rfNoise`, `smallRadius`
 
 ### JMSB - Jammer Site
 
@@ -165,6 +188,66 @@ Place from the 3DEN entity list under the listed category.
 - **Category** jmfsb_modules
 - Keeps everything synchronised to it serviceable: rearmed, refuelled and repaired on a timer, and optionally rebuilt if destroyed. A snapshot of each object is taken at mission start while it is still intact, and that is what a respawn is rebuilt from - so a respawned object comes back where it was placed, not where the blast left it.
 - **Attributes** `debug`, `interval`, `rearm`, `refuel`, `repair_amount`, `replace_crew`, `respawn`, `respawn_delay`
+
+## Support Air (`support_air`)
+
+### JMSB - CAS
+
+- **Class** `jmfsb_support_air_moduleCAS`
+- **Category** jmfsb_modules
+- One taskable CAS aircraft on TAC , , , , , , Sorties - Taskings before it is spent; 0 for unlimited Altitude (m) - Working height above the terrain Run-In Distance (m) - How far past the target a run turns out Time On Station (sec) - How long a SAD or LOITER holds Terminal Search (m) - Laser/smoke search radius on a run; 0 for none Response Delay (sec) - Time from accepted request to launch Cooldown (sec) - Time after a sortie before it can be tasked again Respawn Delay (sec) - Time to replace a lost aircraft; -1 never Cooldown Starts - End of the sortie, or at the request Ingress Distance (m) - Where a class aircraft appears and leaves Friendly Range (m) - Releases held this close to friendlies unless DANGER CLOSE
+- **Attributes** `aircraftClass`, `altitude`, `callsign`, `cooldown`, `cooldownTrigger`, `friendlyRange`, `ingressDistance`, `respawnDelay`, `runIn`, `searchRadius`, `sorties`, `spawnDelay`, `stationTime`
+
+### JMSB - Transport
+
+- **Class** `jmfsb_support_air_moduleTransport`
+- **Category** jmfsb_modules
+- One taskable transport helicopter on TAC , , , , Seats - Passenger seats offered; 0 for all Airframes Available - Losses before it is spent; 0 for unlimited Flight Height (m) - Height flown between points Extract Wait (sec) - How long an EXTRACT waits for the requester's group Task: ... - Which of PICKUP, LAND, LAND ENG OFF, HOVER, EXTRACT, PICKUP > LZ, LOITER, FASTROPE, HELOCAST, PARADROP and SLINGLOAD it offers Paradrop Height (m) - Height a paradrop crosses the drop zone at Response Delay (sec) - Time from the first request to launch Cooldown (sec) - Time after it is home before it can be tasked again Respawn Delay (sec) - Time to replace a lost helicopter; -1 never Cooldown Starts - End of the sortie, or at the request
+- **Attributes** `aircraftClass`, `airframes`, `callsign`, `cooldown`, `cooldownTrigger`, `height`, `jumpHeight`, `respawnDelay`, `seats`, `spawnDelay`, `waitTime`
+
+### JMSB - Logistics Drop
+
+- **Class** `jmfsb_support_air_moduleLogistics`
+- **Category** jmfsb_modules
+- One taskable supply drop on TAC , , , , Method - Parachute, or sling for a helicopter PAC Arsenal Lists - List names that fill the crate; ';' between loads the requester picks from Magazines Per Class / Other Gear Per Class - Quantities Crate Class - The box; dropped with its own contents when the lists give nothing Drops - Crates before it is spent; 0 for unlimited Drop Height (m) - Parachute release height Response Delay (sec) - Time from accepted request to launch Cooldown (sec) - Time after the aircraft is home before the next drop Respawn Delay (sec) - Time before a lost aircraft is replaced; -1 never Cooldown Starts - End of the sortie, or at the request Crate Signal - Smoke, IR strobe, chemlight, flare or none on the landed crate
+- **Attributes** `aircraftClass`, `arsenalLists`, `callsign`, `cooldown`, `cooldownTrigger`, `crateClass`, `dropHeight`, `drops`, `itemCount`, `magCount`, `method`, `respawnDelay`, `signal`, `spawnDelay`
+
+### JMSB - QRF Insertion
+
+- **Class** `jmfsb_support_air_moduleQRF`
+- **Category** jmfsb_modules
+- One taskable quick reaction force on TAC , , , , Squad (CfgGroups) / Unit Classes - Who is inserted Insert: ... - Which insertion methods are offered On The Ground - Defend the grid or join the requester Defend Radius (m) - Area a defending squad holds Squads - Insertions before it is spent; 0 for unlimited Static Line Height (m) - Height of the static-line pass Response Delay (sec) - Time from accepted request to launch Cooldown (sec) - Time after the aircraft is home before the next squad Respawn Delay (sec) - Time before a lost aircraft is replaced; -1 never Cooldown Starts - End of the sortie, or at the request
+- **Attributes** `aircraftClass`, `callsign`, `cooldown`, `cooldownTrigger`, `defendRadius`, `groupClass`, `onLanding`, `respawnDelay`, `spawnDelay`, `squads`, `staticAlt`, `unitClasses`
+
+## Support Fires (`support_fires`)
+
+### JMSB - Artillery Battery (retired)
+
+- **Class** `jmfsb_moduleFiresArtillery`
+- **Category** jmfsb_modules
+- RETIRED - place JMSB - Virtual Artillery instead. Kept so missions that placed it still load.<br>Runs as a virtual battery: no gun aims or fires. Synced artillery, if any, gives only the battery's position, its gun count and (with Ammunition Per Gun blank) the rounds its magazines carry.<br>Callsign - What the support page calls it Ammunition Per Gun - class:rounds per gun; blank reads the synced guns Cooldown (sec) - Time after a mission before it can be tasked again
+- **Attributes** `ammunition`, `callsign`, `cooldown`
+
+### JMSB - Virtual Artillery
+
+- **Class** `jmfsb_moduleFiresVirtual`
+- **Category** jmfsb_modules
+- THE artillery module. A battery on the support page, on or off the map: no guns exist, the module IS the battery's position. Each round is the shell class itself, spawned high over the target on its descending arc after the time of flight from here, so it is heard coming in. Counter-battery has nothing to find.<br>A Simplex fire mission: ordnance, rounds per gun, sheaf type and size, guns, interval, delay, repeat volleys, and coordination with nearby batteries. The target is marked on the map until the mission ends. Rounds are counted per type and run out.<br>Callsign - What the support page calls it Guns - Tubes in the battery HE, Smoke, Illumination, Cluster, Guided - Shell class and rounds of each; 0 none, -1 unlimited Minimum / Maximum Range (m) - From this module Dispersion (m) - Each round's own error Muzzle Velocity (m/s) - Top charge; time-of-flight model Trajectory - High or low angle Reload (sec) - Between one gun's rounds Cooldown (sec) - After the mission, and between repeats Cooldown Per Round (sec) - Added per round fired Response Time Min / Max (sec) - Random wait before the first round Sheaf Types - Which the support page offers Max Rounds Per Gun, Max Interval, Max Delay, Max Repeats - Stepper limits; 0 hides a stepper Coordination Distance (m) - Batteries this close may fire together; 0 never
+- **Attributes** `callsign`, `clusterClass`, `clusterRounds`, `cooldown`, `coordination`, `dispersion`, `guidedClass`, `guidedRounds`, `guns`, `heClass`, `heRounds`, `illumClass`, `illumRounds`, `maxDelay`, `maxInterval`, `maxRange`, `maxRepeat`, `maxRounds`, `minRange`, `muzzleVelocity`, `reload`, `responseMax`, `responseMin`, `roundCooldown`, `sheafTypes`, `smokeClass`, `smokeRounds`, `trajectory`
+
+### JMSB - Cruise Missiles
+
+- **Class** `jmfsb_moduleFiresCruise`
+- **Category** jmfsb_modules
+- A cruise missile launcher on the support page, at this module's position - a ship or ground site, off the map edge is fine.<br>Each missile is a real projectile that flies the whole route: up off the rail, terrain-following at cruise altitude to the target, then a terminal dive. Air defence and active protection can shoot it down. The target is marked on the map until the salvo is gone.<br>Callsign - What the support page calls it Missiles - How many for the whole mission Missile Class - The CfgAmmo flown; blank for ammo_Missile_Cruise_01 Warhead - CfgAmmo set off at the target; blank for the missile's own Salvo Size - Most per request Cruise Speed (m/s) / Cruise Altitude (m) - The route Cooldown (sec) - After a salvo Cooldown Per Missile (sec) - Added per missile launched Response Time Min / Max (sec) - Random wait before the first launch Max Delay (sec) - Top of the DELAY stepper; 0 hides it
+- **Attributes** `altitude`, `callsign`, `cooldown`, `maxDelay`, `missileClass`, `missileCooldown`, `missiles`, `responseMax`, `responseMin`, `salvo`, `speed`, `warhead`
+
+### JMSB - Loitering Munitions
+
+- **Class** `jmfsb_moduleFiresLoiter`
+- **Category** jmfsb_modules
+- A loitering munition launch site on the support page, at this module's position.<br>Each munition is a real air vehicle: it flies to the target area, orbits it for the loiter time hunting, dives on the best target its strike rules allow, and self-destructs when time runs out. It can be shot down. The hunt area is marked on the map until the last munition is gone; a target further than the munition can fly in its transit time is refused.<br>Callsign - What the support page calls it Munition Class - Blank for the Switchblade 600 (Switchblade mod) or the side's Darter Munitions - How many for the whole mission Launch Size - Most per request Loiter Time (sec) - Time on station Strike Rules - Vehicles, infantry or both, enemy side only Loiter Altitude (m) - Height above the ground Warhead - CfgAmmo set off on the target; blank for the munition's own Cooldown (sec) - After the last munition is gone
+- **Attributes** `altitude`, `callsign`, `cooldown`, `launchSize`, `loiterTime`, `munitionClass`, `munitions`, `strikeRules`, `warhead`
 
 ## UAS (`uas`)
 

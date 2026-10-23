@@ -1,8 +1,8 @@
 #include "script_component.hpp"
 /*
  * Author: JMSB
- * Puts the local player's radio channel where everyone else's squad table can
- * read it.
+ * Puts the local player's active voice net where everyone else's squad table
+ * and target card can read it: the name (QGVAR(radio)).
  *
  * ONLY WHEN IT CHANGES. A public variable is a network message, and sixteen
  * players broadcasting an unchanged string every few seconds is sixteen messages
@@ -15,6 +15,9 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [LINKFUNC(radioPublish), 5, []] call CBA_fnc_addPerFrameHandler
+ *
  * Public: No
  */
 
@@ -22,22 +25,7 @@ params ["", ""];
 
 if (isNull player) exitWith {};
 
-private _channel = [] call FUNC(radioState);
-if (_channel isEqualTo (player getVariable [QGVAR(radio), ""])) exitWith {};
+private _net = [] call FUNC(radioState);
+if (_net isEqualTo (player getVariable [QGVAR(radio), ""])) exitWith {};
 
-player setVariable [QGVAR(radio), _channel, true];
-
-// THE RAW SETTING RIDES ALONG - [system, channel] - because the display
-// string can be read but not dialled. FUNC(radioTune) is what dials it.
-private _raw = [];
-if (!isNil "acre_api_fnc_getCurrentRadio") then {
-    private _r = [] call acre_api_fnc_getCurrentRadio;
-    if (_r isNotEqualTo "") then {_raw = ["acre", [_r] call acre_api_fnc_getRadioChannel]};
-} else {
-    if (!isNil "TFAR_fnc_activeSwRadio") then {
-        private _r = call TFAR_fnc_activeSwRadio;
-        if (isNil "_r") then {_r = ""};
-        if (_r isNotEqualTo "") then {_raw = ["tfar", [_r] call TFAR_fnc_getSwChannel]};
-    };
-};
-player setVariable [QGVAR(radioRaw), _raw, true];
+player setVariable [QGVAR(radio), _net, true];

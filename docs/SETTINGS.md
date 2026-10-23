@@ -3,6 +3,22 @@
 Everything under **Options > Addon Options**. `Default` is the value the addon
 ships with, which a mission or the forced list below can override.
 
+## TFAR Adapter (`adapter_tfar`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| RF voice override | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > RF - Voice (TFAR) | `true` | TFAR range follows RF link quality: the set's range shrinks as the link to its net weakens and is cut when RF reaches nobody. Off: TFAR's own range, u |
+| Cut at quality | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Voice (TFAR) | `[0, 0.5, DEFAULT_VOICE_CUT, 2]` | Link quality (0-1) at or below which a net's voice is cut. 0 = only when RF says no link (SNR under its threshold). |
+| Range at the weakest link | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Voice (TFAR) | `[0.05, 1, DEFAULT_VOICE_FLOOR, 2]` | Share of TFAR's normal range left at the lowest quality above the cut. Range grows linearly from here to full range at quality 1. |
+| Hide TFAR's radio UI | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > RF - Voice (TFAR) | `true` | TFAR's transmit and channel-change popups do not show; the HUD's RADIO widget and the tablet's net row and RADIO app are the radio UI. Overrides TFAR' |
+| Fill new sets from the plan | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > RF - Voice (TFAR) | `true` | A handheld or backpack set that carries none of the radio plan's nets when it is first seen (spawn, respawn, picked up) is loaded with the plan's fill |
+
+## VON Adapter (`adapter_von`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Volume at the weakest link | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - VON | `[0, 1, DEFAULT_VOLUME_FLOOR, 2]` | VON volume of a radio speaker whose link quality is just above zero; it rises to full at quality 1. At quality 0 he is muted. |
+
 ## Admin Panel (`adminpanel`)
 
 | Setting | Type | Category | Default | What it does |
@@ -92,6 +108,7 @@ ships with, which a mission or the forced list below can override.
 | Enable group markers | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > BFT | `true` | Blue Force Tracking: every group that has its tracker on is drawn on the map for everyone who shares one of its networks. |
 | Auto enable for | LIST | 1st Joint Multi-Functional Strike Battalion > BFT | `[[0, 1, 2], ["None", "Player", "All"], 2` | None: nothing is tracked until switched on by hand. Player or All: groups nobody has configured are tracked automatically. |
 | Member markers | LIST | 1st Joint Multi-Functional Strike Battalion > BFT | `[[0, 1, 2], ["Off", "Own squad", "All tr` | Individual marks for the men inside tracked groups, coloured by fire team. Own squad: your group's members. All tracked: every same-side tracked group |
+| Member voice rings | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > BFT | `true` | A ring round a member's mark while he talks: red on a radio net, magenta in direct voice. Needs game voice (jmfsb_voice). |
 | Hide own group marker | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > BFT | `true` | Your own group's marker is not drawn on your map - it sits on top of you and hides the ground. Everyone else on the net still sees it, and your own me |
 | Show virtual friendlies | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > BFT | `true` | Friendly groups ALiVE is simulating off-map are drawn faded, from the commander's own picture. Nothing about them is secret to their side. |
 | Update delay | SLIDER | 1st Joint Multi-Functional Strike Battalion > BFT | `[1, 60, 5, 0]` | Delay between group marker updates. |
@@ -129,6 +146,35 @@ ships with, which a mission or the forced list below can override.
 | ISR unit variable | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Common | `"isISR"` | Name of the unit variable marking someone as an ISR operator. Gates the hacking tablet and Intel Hunt processing. Set it on a unit with: this setVaria |
 | Threat Board Debug | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Common | `false` | Log every contact jmfsb's sensors file on a side's threat board - what that side knows, where, how wrong it might be, and which sensor said so. |
 
+## Devices (`devices`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| F1 key on the tablet opens | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 1]` | SOFT_KEY_HELP |
+| F2 key on the tablet opens | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 2]` | SOFT_KEY_HELP |
+| F3 key on the tablet opens | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 3]` | SOFT_KEY_HELP |
+| F4 key on the tablet opens | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 12]` | SOFT_KEY_HELP |
+| Tablet size | SLIDER | 1st Joint Multi-Functional Strike Battalion > Devices | `[0.5, 1, 1, 2, true]` | How much of the monitor the tablet fills when it is open. 1 is as large as the screen allows; smaller leaves the world visible around it. |
+| Phone size | SLIDER | 1st Joint Multi-Functional Strike Battalion > Devices | `[0.15, 0.5, 0.3, 2, true]` | How tall the phone's walking view is, as a fraction of the screen's height. The frame keeps its shape; this only scales it. |
+| Phone map zoom | SLIDER | 1st Joint Multi-Functional Strike Battalion > Devices | `[0.005, 0.1, 0.015, 3, false]` | How far the phone and side devices' map is zoomed in. Smaller is closer. The map always stays centred on you. |
+| Side device size | SLIDER | 1st Joint Multi-Functional Strike Battalion > Devices | `[0.2, 0.8, 0.42, 2, true]` | How tall a side device is, as a fraction of the screen's height. |
+| Device opacity | SLIDER | 1st Joint Multi-Functional Strike Battalion > Devices | `[0.4, 1, 1, 2, true]` | How solid the phone or side device is on screen while walking. 1 is fully opaque. |
+| Device button F1 | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[BUTTON_IDS, BUTTON_NAMES, 1]` | BUTTON_HELP |
+| Device button F2 | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[BUTTON_IDS, BUTTON_NAMES, 2]` | BUTTON_HELP |
+| Device button F3 | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[BUTTON_IDS, BUTTON_NAMES, 3]` | BUTTON_HELP |
+| Device button F4 | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[BUTTON_IDS, BUTTON_NAMES, 4]` | BUTTON_HELP |
+| Device button left | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[BUTTON_IDS, BUTTON_NAMES, 5]` | BUTTON_HELP |
+| Device button right | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[BUTTON_IDS, BUTTON_NAMES, 6]` | BUTTON_HELP |
+| Tablet frame | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[TABLET_FRAME_IDS, TABLET_FRAME_NAMES, 0` | Which frame the tablet wears: Auto (the UAV tablet with grips for the UAV skill, the large tablet otherwise), or always the large or always the UAV ta |
+| Device grid digits | LIST | 1st Joint Multi-Functional Strike Battalion > Devices | `[GRID_DIGIT_CHOICES, GRID_DIGIT_NAMES, 0` | How many figures the GPS grid on the phone, side devices and tablet bar shows: 8 (10 m square, the default) or 10 (1 m). |
+
+## Drone40 (`drone40`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Jammer radius (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Drone40 | `[MIN_JAMMER_RADIUS, MAX_JAMMER_RADIUS, D` | How far a Drone40 Jammer's barrage counts in the RF link budget. Inside it the noise falls off with the band's path loss; past it, nothing. |
+| Jammer power (dBm) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Drone40 | `[MIN_JAMMER_POWER, MAX_JAMMER_POWER, DEF` | Transmit power of a Drone40 Jammer's barrage on VHF and UHF, as noise in the RF link budget. 30 = 1 W, 37 = 5 W, 43 = 20 W. |
+
 ## ECOTI (`ecoti`)
 
 | Setting | Type | Category | Default | What it does |
@@ -163,6 +209,25 @@ ships with, which a mission or the forced list below can override.
 | Enable Medic Evac | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Evac | `true` | Master toggle for the medic 'Evacuate (Reinforce)' action that replaces respawn. Stands down on its own when Advanced Combat Medicine (ACM) is loaded, |
 | Medics Only | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Evac | `true` | If checked, only ACE medics can evacuate a downed player. Uncheck to let anyone do it. |
 | Evac Time (s) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Evac | `[0, 60, EVAC_DEFAULT_TIME, 0]` | How long the medic's evacuate progress bar takes, in seconds. |
+
+## EW (`ew`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| DF tick (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[1, 15, DEFAULT_DF_TICK, 0]` | How often intercepts are taken, cuts crossed into fixes and each side's picture sent. |
+| Fix window (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[5, 120, DEFAULT_FIX_WINDOW, 0]` | Two cuts from different places inside this window make a fix. Move after transmitting to beat it. |
+| Track lifetime (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[30, 1800, DEFAULT_TRACK_TTL, 0]` | A track nobody has heard for this long is dropped. |
+| Decoy battery (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[60, 3600, DEFAULT_DECOY_LIFE, 0]` | How long a placed decoy radiates before its battery is flat and it is removed. |
+| GPS spoof radius (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[100, 3000, DEFAULT_SPOOF_RADIUS, 0]` | Reach of a GPS spoofer at full power; lower power steps reach less. |
+| GPS spoof max drift (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[50, 2000, DEFAULT_SPOOF_DRIFT, 0]` | How far an unprotected GPS inside a spoofer's field is walked off its true position. |
+| Jammer reach (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[500, 10000, DEFAULT_JAM_RANGE, 0]` | Past this distance a jammer adds no noise, whatever its power. |
+| Jammer battery (Wh) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[20, 2000, DEFAULT_JAM_BATTERY_WH, 0]` | What a jammer module's battery holds. It runs the transmitter while the vehicle's engine is off; flat, the jammer goes off the air until the engine ru |
+| Jammer charge with the engine running (W) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[10, 2000, DEFAULT_JAM_CHARGE_W, 0]` | What a running engine puts into the jammer's battery over the transmitter's own draw. |
+| Jammer heating (% per sec at full output) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[0.05, 5, DEFAULT_JAM_HEAT_RISE, 2]` | How fast a jammer heats at 50 W continuous; less output heats it less. At 100% it cuts out until it has cooled to 60%. |
+| Jammer cooling (% per sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[0.01, 2, DEFAULT_JAM_HEAT_COOL, 2]` | How fast a jammer sheds heat, transmitting or not. A jammer whose heating at its output is below this never cuts out. |
+| Hacked GPS spoof (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[30, 1800, DEFAULT_SPOOF_HACK_TIME, 0]` | How long a net broken with the HACK app's SPOOF has its GPS walked off true, before it walks back. |
+| Enemy AI EW skill | LIST | 1st Joint Multi-Functional Strike Battalion > EW | `[[AI_OFF, AI_BASIC, AI_ACTIVE, AI_SMART]` | OFF: the enemy AI takes no DF cuts. BASIC: its groups with a DF-capable radio take cuts on player transmitters, and a fix near its groups alerts those |
+| Enemy AI fix reaction range (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > EW | `[200, 5000, DEFAULT_AI_RANGE, 0]` | An enemy fix this close to one of its groups is answered; farther fixes are only tracked. |
 
 ## Future Ammunition (`fa_ammo`)
 
@@ -236,6 +301,7 @@ ships with, which a mission or the forced list below can override.
 |---|---|---|---|---|
 | Enable HUD | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > HUD | `true` | Draws the two readout slots on the game screen. Off leaves the screen exactly as it was; the map suite is unaffected either way. |
 | Hide with the map | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > HUD | `true` | Takes the HUD off screen while the map is open, where the tacpad shows the same readings in more detail. Off leaves it up, over the map. |
+| Show in tablet mode | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > HUD | `false` | Keeps the HUD slots on the game screen when the tacpad display mode is TABLET. Off by default there: the device shows the same readouts. |
 | HUD opacity | SLIDER | 1st Joint Multi-Functional Strike Battalion > HUD | `[0, 1, 0.55, 2, true]` | How solid the slot backgrounds are over the world. The text stays fully opaque at any setting. |
 
 ## Init (`init`)
@@ -289,6 +355,15 @@ ships with, which a mission or the forced list below can override.
 | 3 - Right button password | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Main Menu | `"aitd"` | Sent with the connection. Empty for an open server. Stored in your profile in plain text. |
 | 3 - Right button colour | COLOR | 1st Joint Multi-Functional Strike Battalion > Main Menu | `[0.761, 0.659, 0.471, 1]` | Background of the right button. the unit's tan by default. |
 
+## Map Tools (`maptools`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Bearing units | LIST | 1st Joint Multi-Functional Strike Battalion > Map Tools | `[["deg", "mil", "both"], ["Degrees", "Mi` | How the ruler, protractor and route give a bearing: degrees, NATO mils (6400 to the circle), or both. |
+| Share marks with group | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Map Tools | `false` | MARK drops a marker with grid and time. Off keeps it on your map only; on puts it on the group channel. |
+| Viewshed radius | SLIDER | 1st Joint Multi-Functional Strike Battalion > Map Tools | `[VS_RADIUS_MIN, VS_RADIUS_MAX, VS_RADIUS` | How far, in metres, VIEWSHED works out line of sight from the clicked point. |
+| Viewshed resolution | SLIDER | 1st Joint Multi-Functional Strike Battalion > Map Tools | `[VS_CELL_MIN, VS_CELL_MAX, VS_CELL_DEFAU` | The size, in metres, of one VIEWSHED cell. Smaller is finer and slower to fill. |
+
 ## MedBags (`medbags`)
 
 | Setting | Type | Category | Default | What it does |
@@ -326,11 +401,18 @@ ships with, which a mission or the forced list below can override.
 | SITREP marker type | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Messaging | `"b_inf"` | CfgMarkers class for the marker that accompanies an ALiVE-posted SITREP. |
 | Seed test traffic | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Messaging | `false` | Posts three sample threads - a FLASH CASEVAC, a SITREP and a CONTACTREP - shortly after you join, so the reader has something in it. For testing the U |
 
+## Mission (`mission`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Staging zone satellite uplink | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Staging | `true` | Every staging zone carries a radio base station at its centre: it relays the players' nets round the zone and links by satellite to the patrol bases a |
+
 ## Notify (`notify`)
 
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
 | Enable stacked notifications | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Notifications | `true` | Off falls back to the plain hint the caller would otherwise have used. |
+| Hide notifications | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Notifications | `false` | Shows no popup and no hint. Notifications are still kept in the tacpad reader's LOG view. |
 | Corner | LIST | 1st Joint Multi-Functional Strike Battalion > Notifications | `[[0, 1, 2, 3], ["Top left", "Top right",` | Which corner the stack grows from. |
 | Max on screen | SLIDER | 1st Joint Multi-Functional Strike Battalion > Notifications | `[1, SLOT_COUNT, 4, 0, true]` | Notifications shown at once; the rest queue until a slot frees. |
 | Duration (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Notifications | `[2, 30, 8, 0, true]` | How long a notification stays before it fades out. |
@@ -356,11 +438,12 @@ ships with, which a mission or the forced list below can override.
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
 | Enabled | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `true` | Enable the patrol base system. |
+| Patrol base radio relay | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `true` | A built patrol base carries a base station: it relays the side's radio nets round the base and links by satellite to the staging zone and the other ba |
 | Max patrol bases | SLIDER | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `[1, 10, 3, 0, true]` | How many patrol bases may exist at once. |
 | Kits required | SLIDER | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `[1, 10, 4, 0, true]` | How many Patrol Base Kits must be dropped within range to build one base. |
 | Kit gather range (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `[1, 30, 5, 1, true]` | Radius the dropped kits must lie within to count. |
 | Base object | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `"jmfsb_satcom_deployed"` | Class spawned at the base on deploy - it marks the location and carries the Unbuild action. Defaults to jmfsb's own SatCom mast; if that class is not  |
-| On-deploy init (SQF) | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `"params ['_base', '_pos', '_name']; [_ba` | SQF run on the server after a base is built. Passed: [_beacon, _pos, _name, _side, _builder]. Blank = nothing. |
+| On-deploy init (SQF) | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `"params ['_base', '_pos', '_name', '_sid` | SQF run on the server after a base is built. Passed: [_beacon, _pos, _name, _side, _builder]. Blank = nothing. |
 | On-undeploy init (SQF) | EDITBOX | 1st Joint Multi-Functional Strike Battalion > Patrol Base | `"params ['_object']; [_object] remoteExe` | SQF run on the server while the base beacon still exists (before it is deleted). Passed: [_beacon, _pos, _name, _side]. Blank = nothing. |
 
 ## Players (`players`)
@@ -399,6 +482,35 @@ ships with, which a mission or the forced list below can override.
 | Enable respawn | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > 1st Joint Multi-Functional Strike Battalion - Respawn | `false` | Enables respawn with given delay. |
 | Respawn delay | SLIDER | 1st Joint Multi-Functional Strike Battalion > 1st Joint Multi-Functional Strike Battalion - Respawn | `[1, 900, getNumber (configFile >> "CfgRe` | How much time must pass before player will respawn (if respawn is enabled). |
 
+## RF (`rf`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Player tick (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Tick | `[0.5, 10, DEFAULT_TICK_PLAYERS, 1]` | How often links involving a moving node are recomputed. |
+| Static tick (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Tick | `[1, 60, DEFAULT_TICK_STATIC, 0]` | How long a link between nodes that have not moved is reused before it is recomputed. |
+| AI nodes counted | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > RF - Tick | `false` | Off: nodes held by AI men take no part in the mesh unless the node is flagged. Vehicles and placed nodes always count. |
+| Debug map overlay | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > RF - Tick | `false` | Lines on the map between linked nodes, red to green by quality. Sends every link to every client while on. |
+| VHF path-loss exponent | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[2, 6, VHF_EXP, 2]` | Log-distance exponent for the VHF band. |
+| VHF loss at 1 m (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[0, 80, VHF_REF, 0]` | Path loss at the 1 m reference for the VHF band. |
+| VHF noise floor (dBm) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[-130, -80, VHF_FLOOR, 0]` | Receiver noise floor for the VHF band, before any interference. |
+| UHF path-loss exponent | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[2, 6, UHF_EXP, 2]` | Log-distance exponent for the UHF band. |
+| UHF loss at 1 m (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[0, 80, UHF_REF, 0]` | Path loss at the 1 m reference for the UHF band. |
+| UHF noise floor (dBm) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[-130, -80, UHF_FLOOR, 0]` | Receiver noise floor for the UHF band, before any interference. |
+| SAT path-loss exponent | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[2, 5, SAT_EXP, 2]` | Log-distance exponent for ground emitters on the SAT band (jammers, intercept). The satellite link itself has no path loss. |
+| SAT loss at 1 m (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[20, 80, SAT_REF, 0]` | Path loss at the 1 m reference for ground emitters on the SAT band (jammers, intercept). The satellite link itself has no path loss. |
+| SAT noise floor (dBm) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[-130, -80, SAT_FLOOR, 0]` | Receiver noise floor for the SAT band, before any interference. |
+| SAT rain fade (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[0, 20, DEFAULT_SAT_FADE_DB, 1]` | How much the satellite link loses in full rain. An overcast sky with no rain counts a quarter of it. 0 = weather never touches SAT. |
+| VIDEO path-loss exponent | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[2, 5, VIDEO_EXP, 2]` | Log-distance exponent for the VIDEO band. |
+| VIDEO loss at 1 m (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[20, 80, VIDEO_REF, 0]` | Path loss at the 1 m reference for the VIDEO band. |
+| VIDEO noise floor (dBm) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[-130, -80, VIDEO_FLOOR, 0]` | Receiver noise floor for the VIDEO band, before any interference. |
+| Quality threshold (dB SNR) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[0, 20, DEFAULT_THR_DB, 0]` | SNR at which link quality is 0. Open item: the spec says 6 dB, the tablet mockups 3 dB. |
+| Quality span (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Bands | `[5, 40, DEFAULT_SPAN_DB, 0]` | SNR above the threshold at which link quality is 1. |
+| Terrain per blocked sample (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Obstacles | `[0, 40, DEFAULT_TERRAIN_DB, 0]` | Loss for each of the three path samples the ground blocks. |
+| Wall (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Obstacles | `[0, 40, DEFAULT_WALL_DB, 0]` | Loss for each building or structure on the path. |
+| Tree (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Obstacles | `[0, 40, DEFAULT_TREE_DB, 0]` | Loss for each tree or bush on the path. |
+| Prone (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Obstacles | `[0, 40, DEFAULT_PRONE_DB, 0]` | Loss at an end whose holder is prone. |
+| Inside a vehicle (dB) | SLIDER | 1st Joint Multi-Functional Strike Battalion > RF - Obstacles | `[0, 40, DEFAULT_VEHICLE_DB, 0]` | Loss at an end whose holder is inside a vehicle on a handheld set. |
+
 ## Safestart (`safestart`)
 
 | Setting | Type | Category | Default | What it does |
@@ -429,6 +541,7 @@ ships with, which a mission or the forced list below can override.
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
 | Enable tacpad | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | Draws the tacpad panels on the map screen. Off leaves the vanilla map exactly as it was. |
+| Display mode | LIST | 1st Joint Multi-Functional Strike Battalion > Tacpad | `[["native", "tablet"], ["Native", "Table` | NATIVE draws the tacpad on the map screen as it always has. TABLET takes it off the map and puts the same screens inside a device - open it from the A |
 | Colour scheme | LIST | 1st Joint Multi-Functional Strike Battalion > Tacpad | `[ ["jmsb", "light", "olive", "sand", "ni` | Four day grounds and four night ones, in matching pairs: JMSB DAY with JMSB NIGHT (the unit's ranger green and tan; night is the default), FIELD GREY  |
 | Panel opacity | SLIDER | 1st Joint Multi-Functional Strike Battalion > Tacpad | `[0.3, 1, 0.92, 2, true]` | How solid a panel's ground is over the map. The text stays fully opaque at any setting - a translucent panel you cannot read is not a panel. |
 | Keep clear of reserved areas | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | Slides a panel out of the game menu, the chat overlay and the map's scale and contour legend when you drop it on one. Off lets you put a panel anywher |
@@ -448,7 +561,7 @@ ships with, which a mission or the forced list below can override.
 | Show squad list | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | The left rail: one row per man with a health swatch. |
 | Show message reader | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | The docked message reader. Needs the messaging addon - without it the panel says so. |
 | Show troops in contact button | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | The big one under the rail. One press marks the map, alerts the side and files a contact report on the command net. A mission that would rather a cont |
-| Show map tools | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | The tool strip along the bottom. A front end for PLP Map Tools Remastered - without that mod the buttons are greyed. |
+| Show map tools | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | The tool strip along the bottom: centre, ruler, protractor, route, mark, grid, viewshed and clear. |
 | Reader: high density | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `false` | Off is standard density - subject on one line, state under it. On puts one thread per row so a screenful can be scanned at once, which is what a TOC w |
 | Show settings gear | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Tacpad | `true` | The gear under the message reader that opens the settings screen. Off leaves Addon Options as the only way to change the suite. |
 
@@ -486,9 +599,26 @@ ships with, which a mission or the forced list below can override.
 | ALiVE zone radius (m) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Drones | `[0, 3000, 0, 0]` | Orbit radius for a zone taken from an objective. 0 uses the objective's own size, which is what ALiVE thinks that place is worth. |
 | Airframes per ALiVE zone | SLIDER | 1st Joint Multi-Functional Strike Battalion > Drones | `[1, 6, 1, 0]` | How many drones each objective-derived zone tries to hold up. The airframe itself is always the commander's own faction UAV. |
 
+## Voice (`voice`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Grace time (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Mesh | `[0, 10, DEFAULT_GRACE_S, 1]` | How long a speaker whose route drops is still heard at his last quality before he is muted. |
+| Ring time (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Calls | `[5, 60, DEFAULT_RING_S, 0]` | How long a call rings before it counts as no answer (and a callback is offered). |
+| Call drop time (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Calls | `[1, 60, DEFAULT_CALL_DROP_S, 0]` | How long a call member can be without reach on DATA to every other member before he is dropped from the call. |
+| FLASH bump warning (sec) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Calls | `[1, 15, DEFAULT_BUMP_WARN_S, 0]` | How long the priority warning plays on a ROUTINE call before a FLASH call takes its slot. |
+| Callback expiry (min) | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Calls | `[1, 60, DEFAULT_CB_EXPIRE_MIN, 0]` | How long the server holds a callback request before it is dropped. |
+| Callbacks per player | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Calls | `[1, 10, DEFAULT_CB_PER_PLAYER, 0]` | Most pending callback requests one player can be part of at once. |
+| Radio beeps | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Voice - Sounds | `true` | TX chirp, roger beep, squelch, cut, net switch and blocked tones. |
+| Call beeps | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Voice - Sounds | `true` | Dial, ringback, ring, busy, connect, hang-up, join and priority warning tones. |
+| Beep volume | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Sounds | `[0, MAX_BEEP_VOLUME, DEFAULT_BEEP_VOLUME` | Volume of every radio and call tone, and of the static. |
+| Pitch per net | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Voice - Sounds | `true` | C2 low, TEAM mid, A2G high, CALL two-tone, so the net is known before the voice starts. |
+| Static by quality | CHECKBOX | 1st Joint Multi-Functional Strike Battalion > Voice - Sounds | `true` | Static under a radio speaker, louder as his link quality falls. |
+| RTO nets at once | SLIDER | 1st Joint Multi-Functional Strike Battalion > Voice - Calls | `[0, CUSTOM_NETS_MAX_CAP, DEFAULT_CUSTOM_` | How many nets RTOs may have made at one time. Each takes one of the game's ten custom voice channels for the rest of the mission - C2 and A2G hold two |
+
 ## Forced by `cba_settings`
 
-`addons/cba_settings/cba_settings.sqf` force-sets 764 values at mission start.
+`addons/cba_settings/cba_settings.sqf` force-sets 725 values at mission start.
 A forced setting cannot be changed in-game, and overrides the defaults above.
 
 | Variable | Value |
@@ -900,6 +1030,7 @@ A forced setting cannot be changed in-game, and overrides the defaults above.
 | `cba_disposable_dropUsedLauncher` | `2` |
 | `cba_disposable_replaceDisposableLauncher` | `false` |
 | `cba_network_loadoutValidation` | `1` |
+| `cba_optics_usePipOptics` | `false` |
 | `DT_terrainGridMax` | `50` |
 | `DT_viewDistanceMax` | `12000` |
 | `emr_main_allowClimbOnStandingUnits` | `false` |
@@ -1079,46 +1210,6 @@ A forced setting cannot be changed in-game, and overrides the defaults above.
 | `KJW_TwoPrimaryWeapons_Enabled` | `true` |
 | `KJW_TwoPrimaryWeapons_Launchers` | `true` |
 | `KJW_TwoPrimaryWeapons_whitelistedClasses` | `"[]"` |
-| `sss_artillery_autoTerminals` | `true` |
-| `sss_artillery_manualInput` | `true` |
-| `sss_artillery_rangeIndicators` | `true` |
-| `sss_artillery_relocateCooldown` | `true` |
-| `sss_artillery_taskMarkers` | `true` |
-| `sss_artillery_visualAids` | `true` |
-| `sss_cas_manualInput` | `true` |
-| `sss_cas_taskMarkers` | `true` |
-| `sss_cas_visualAids` | `true` |
-| `sss_cas_visualAidsLive` | `true` |
-| `sss_logistics_clearAreaRestriction` | `true` |
-| `sss_logistics_cooldownTrigger` | `"END"` |
-| `sss_logistics_manualInput` | `true` |
-| `sss_logistics_taskMarkers` | `true` |
-| `sss_logistics_visualAids` | `true` |
-| `sss_logistics_visualAidsLive` | `true` |
-| `sss_optionadminAccess` | `true` |
-| `sss_optionadminSide` | `false` |
-| `sss_optioncleanupCrew` | `true` |
-| `sss_optiondebugGeneral` | `false` |
-| `sss_optiondebugPerf` | `false` |
-| `sss_optiondeleteVehicleOnEntityRemoval` | `true` |
-| `sss_optionejectInterval` | `0.5` |
-| `sss_optionmarkerScope` | `"ACCESS"` |
-| `sss_optionnotifyScope` | `"ACCESS"` |
-| `sss_optionremoteControlAddMap` | `true` |
-| `sss_optionremoveEntityOnVehicleDeletion` | `true` |
-| `sss_optionterminalActions` | `"ACE"` |
-| `sss_optionterminalRequireAuth` | `true` |
-| `sss_optionterminalRequireItems` | `false` |
-| `sss_transport_autoTerminals` | `true` |
-| `sss_transport_holdTimeoutStr` | `"-1"` |
-| `sss_transport_manualInput` | `true` |
-| `sss_transport_maxSearchRadiusStr` | `"1000"` |
-| `sss_transport_RTBReset` | `true` |
-| `sss_transport_RTBRestoreCrew` | `true` |
-| `sss_transport_slingloadMassOverride` | `true` |
-| `sss_transport_taskMarkers` | `true` |
-| `sss_transport_visualAids` | `true` |
-| `sss_transport_visualAidsLive` | `true` |
 | `Fat_Lurch_Grid` | `true` |
 | `Fat_Lurch_GridNum` | `10` |
 | `Fat_Lurch_MapSlew` | `true` |

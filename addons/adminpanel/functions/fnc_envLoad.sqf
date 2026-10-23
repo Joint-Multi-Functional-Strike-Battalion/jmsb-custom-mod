@@ -114,6 +114,10 @@ private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 }, ENV_READOUT_TICK, []] call CBA_fnc_addPerFrameHandler;
 
 // --- UI size, as the console and the message box take it --------------------
+// ON THE TABLET IT IS THE TABLET'S SCREEN, not the monitor and not the UI
+// scale - see FUNC(fitHost).
+if ([_display] call FUNC(fitHost)) exitWith {};
+
 private _scale = missionNamespace getVariable [QEGVAR(tacpad,uiScale), 1];
 if (_scale isEqualTo 1) exitWith {};
 

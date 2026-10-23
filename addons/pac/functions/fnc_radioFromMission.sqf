@@ -35,7 +35,8 @@ private _radio = createHashMap;
 
 private _has = (_radio getOrDefault ["srChannels", []]) isNotEqualTo []
     || {(_radio getOrDefault ["mrChannels", []]) isNotEqualTo []}
-    || {(_radio getOrDefault ["tfarNets", []]) isNotEqualTo []};
+    || {(_radio getOrDefault ["tfarNets", []]) isNotEqualTo []}
+    || {(_radio getOrDefault ["vonNets", []]) isNotEqualTo []};
 if (!_has) exitWith {false};
 
 GVAR(structure) set ["radio", _radio];

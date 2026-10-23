@@ -33,5 +33,5 @@ sleep 0.1;
 if (_confirm) then {
     [] remoteExec ["ADMP_fnc_logPlayerShots", 0, false]; // Log players who fire/throw/place stuff after mission end
     [_ending] remoteExec ["BIS_fnc_endMissionServer", 2, false];
-    closeDialog 2;
+    (uiNamespace getVariable ['admp_displayVar', displayNull]) closeDisplay 2;
 };

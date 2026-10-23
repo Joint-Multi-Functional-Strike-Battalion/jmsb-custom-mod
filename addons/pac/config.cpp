@@ -36,6 +36,9 @@ class RscADMPCombo;
 class RscADMPStructuredText;
 // The table with real columns the one dialog draws every list in.
 class RscListNBox;
+// The shell group every control of the one dialog sits in, so the same
+// controls can be created inside the tablet (ui/pac.inc.hpp, GVAR(shell)).
+class RscControlsGroupNoScrollbars;
 
 // ONE DIALOG (2026-09-09): the website's shell - bar, page, actions - and
 // every page drawn in it. The personnel panel, EDIT STRUCTURE, MANAGE and the

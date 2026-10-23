@@ -21,7 +21,7 @@ params [
     ["_radio", "ACRE_PRC148", ["ACRE_PRC148"]]
 ];
 
-if (!EGVAR(Patches,usesACRE)) exitWith {nil}; //ACRE only (TFAR dropped for now)
+if (!EGVAR(Patches,usesACRE)) exitWith {nil}; //ACRE only (game voice tunes nothing)
 
 //empty group = player hasn't joined a dynamic group yet; fall through so the tier default
 //applies (SR fallback / MR + LR = DET) - this is the "before joining a group" default

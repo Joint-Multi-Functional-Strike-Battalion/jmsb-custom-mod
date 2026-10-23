@@ -3,7 +3,8 @@
  * Author: JMSB
  * Server-only. Consumes the dropped kits (items + kit objects) within range and
  * builds a patrol base: a beacon, a named map marker (pencil task icon), an
- * Unbuild action, and the on-deploy hook.
+ * Unbuild action, a radio base station on the beacon (setting "Patrol base
+ * radio relay", jmfsb_pac_fnc_baseStation) and the on-deploy hook.
  *
  * Arguments:
  * 0: Position ATL <ARRAY>
@@ -84,6 +85,14 @@ _mrk setMarkerText _name;
 _bases pushBack [_beacon, _name, _side, _mrk, _req];
 missionNamespace setVariable [QGVAR(bases), _bases, true];
 [_beacon] remoteExec [QFUNC(addUnbuildAction), 0, _beacon];
+
+// --- Radio relay: a base station on the beacon (setting "Patrol base radio
+// relay"). It relays the builder's side's nets round the base and uplinks by
+// satellite to the staging zone and every other base. It goes when the base is
+// unbuilt, or by itself when the beacon is destroyed or deleted.
+if (GVAR(radioRelay) && !isNil QEFUNC(pac,baseStation)) then {
+    [_beacon, _side, QUOTE(ADDON)] call EFUNC(pac,baseStation);
+};
 
 // --- On-deploy hook ---------------------------------------------------------
 [missionNamespace getVariable [QGVAR(onDeployCode), ""], [_beacon, _pos, _name, _side, _builder]] call FUNC(runHook);

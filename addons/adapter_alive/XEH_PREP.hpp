@@ -33,6 +33,7 @@ PREP(requestFire);
 PREP(supportAssets);
 PREP(supportSitrep);
 PREP(supportTask);
+PREP(supportTypes);
 PREP(probe);
 PREP(clusterCandidates);
 PREP(bumpHostility);

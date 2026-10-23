@@ -4,8 +4,8 @@
  * Is this man carrying a radio worth taking off his body?
  *
  * The test is the item's own SIMULATION rather than a list of classnames, so
- * a vanilla ItemRadio, an ACRE PRC-152 and a TFAR rucksack set all answer the
- * same way and no radio mod needs a compatibility entry here. Assigned items
+ * a vanilla ItemRadio, an ACRE PRC-152 and our MPU5 (an ItemRadio) all answer
+ * the same way and no radio mod needs a compatibility entry here. Assigned items
  * and inventory both count - a spare handset in a vest is still a handset.
  *
  * Arguments:

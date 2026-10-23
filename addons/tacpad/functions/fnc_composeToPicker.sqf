@@ -37,16 +37,16 @@ if (isNull _root) exitWith {};
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _h = (ctrlPosition _root) # 3;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
 [
     _root, [_dx + _pad, _top, _dw - 2 * _pad, _rowH],
     "SEND TO - PRESS ONE. EVERYBODY ELSE GOES ON THE CC LINE.",
-    _mute, 0.6, true, "left", true
+    _mute, TEXT_LABEL, true, "left", true
 ] call FUNC(drawText);
 
 private _bodyTop = _top + _rowH;
@@ -69,7 +69,7 @@ private _listW = _bodyW - _scrollW - _pad;
 private _targets = [] call FUNC(composeTargets);
 
 if (_targets isEqualTo []) exitWith {
-    [_body, [0, 0, _listW, _rowH], "NOTHING TO ADDRESS - NO NETS AND NOBODY ON", _dim, 0.85] call FUNC(drawText);
+    [_body, [0, 0, _listW, _rowH], "NOTHING TO ADDRESS - NO NETS AND NOBODY ON", _dim, TEXT_TITLE] call FUNC(drawText);
 };
 
 {
@@ -90,8 +90,8 @@ if (_targets isEqualTo []) exitWith {
         default {"NET"};
     };
 
-    [_body, [_pad, _ry, _listW * 0.68, _rowH], _label, ([_ink, _ground] select _on), 0.85, _on] call FUNC(drawText);
-    [_body, [_listW * 0.7, _ry, _listW * 0.3 - _pad, _rowH], _kind, ([_mute, _ground] select _on), 0.55, true, "right", true] call FUNC(drawText);
+    [_body, [_pad, _ry, _listW * 0.68, _rowH], _label, ([_ink, _ground] select _on), TEXT_TITLE, _on] call FUNC(drawText);
+    [_body, [_listW * 0.7, _ry, _listW * 0.3 - _pad, _rowH], _kind, ([_mute, _ground] select _on), TEXT_LABEL, true, "right", true] call FUNC(drawText);
     [_body, [0, _ry + _rowH - RULE_THIN * pixelH, _listW, RULE_THIN * pixelH], _line] call FUNC(drawFill);
 
     private _hit = [_body, [0, _ry, _listW, _rowH], {

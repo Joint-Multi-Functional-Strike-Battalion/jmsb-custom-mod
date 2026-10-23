@@ -37,10 +37,10 @@ if (isNull _body) exitWith {};
 
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 
-private _labelSize = 0.8;
+private _labelSize = TEXT_BODY;
 private _cellH = ([_labelSize] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _cellY = _padY * 1.5;
 private _cellX = _pad;
@@ -66,4 +66,4 @@ private _hidden = EGVAR(tacpad,hideAll);
     {[] call EFUNC(tacpad,open)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
-[_id, 0, (_cellH + 3 * _padY) / safeZoneH] call EFUNC(tacpad,fit);
+[_id, 0, (_cellH + 3 * _padY) / HOST_H] call EFUNC(tacpad,fit);

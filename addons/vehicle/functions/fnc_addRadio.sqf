@@ -18,7 +18,9 @@
 params [["_vehicle", objNull, [objNull]]];
 
 if (!isServer) exitWith {};
-if (!EGVAR(Patches,usesACRE) && !EGVAR(Patches,usesTFAR)) exitWith {};
+// ACRE racks only. Under game voice a vehicle is the VEH net (crew intercom,
+// jmfsb_voice) and needs nothing put in it.
+if (!EGVAR(Patches,usesACRE)) exitWith {};
 if (!EGVAR(Settings,enableRadios)) exitWith {};
 if (!EGVAR(Settings,enableVehicleRadios)) exitWith {};
 

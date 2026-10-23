@@ -1255,12 +1255,6 @@ class CfgVehicles {
         displayName = "Radio Pack [RU] (Taiga)";
         picture = "\z\jmfsb\addons\uniform_ru\models\uniform\supplies\Bags\Data\UI\icon_B_RadioBag_01_taiga_F_ca.paa";
         hiddenSelectionsTextures[] = {"\z\jmfsb\addons\uniform_ru\models\uniform\supplies\Bags\Data\B_RadioBag_01_RUtaiga_CO.paa"};
-        tf_dialog = "bussole_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_east_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_RadioBag_01_arid_F): B_RadioBag_01_base_F {
         author = "Avery Kaiserin";
@@ -1268,12 +1262,6 @@ class CfgVehicles {
         displayName = "Radio Pack [RU] (Arid)";
         picture = "\z\jmfsb\addons\uniform_ru\models\uniform\supplies\Bags\Data\UI\icon_B_RadioBag_01_arid_F_ca.paa";
         hiddenSelectionsTextures[] = {"\z\jmfsb\addons\uniform_ru\models\uniform\supplies\Bags\Data\B_RadioBag_01_RUarid_CO.paa"};
-        tf_dialog = "bussole_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_east_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_Carryall_taiga_AAA_F): B_Carryall_taiga_F {
         author = "Avery Kaiserin";

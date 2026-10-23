@@ -13,17 +13,18 @@ PREP_RECOMPILE_END;
 GVAR(readerThread) = "";
 GVAR(readerLog) = false;
 
-// Which PLP map tool is running, if any. One at a time: the suite always stops
-// the current one before starting another, so its Draw handler id - see
-// FUNC(panelTools) - is the only one that has to be kept.
-GVAR(activeTool) = "";
-
 // Which net tab the reader is on. "ALL" is every mailbox the player can see.
 GVAR(readerNet) = "ALL";
 
 // Which section of the settings app is open. It survives the app being closed
 // and reopened, because reopening it is how it changes section.
 GVAR(settingsSection) = "scheme";
+
+// SECTIONS ANOTHER ADDON ADDS TO THE SETTINGS APP, in rail order after this
+// addon's own: [key, rail label, code answering the rows]. The rows are the
+// ones FUNC(appSettings) draws - [label, value, action, down action, locked,
+// glyphs]. jmfsb_devices adds DEVICES and DEVICE KEYS in its own preInit.
+GVAR(settingsSections) = [];
 
 // The ACE report the squad app has selected but not sent yet, as three indices
 // into GREEN / YELLOW / RED / BLACK. It survives the app closing, because
@@ -59,6 +60,15 @@ GVAR(alarmAt) = 4 * 3600 + 30 * 60;
 // stopped, reset or moved knows it is stale when it fires.
 GVAR(timerToken) = 0;
 
+// TILES OTHER ADDONS ADD to the band (FUNC(tileData)): id -> code answering
+// a list of tile entries, [] when it has none to show. jmfsb_devices' VEHICLE
+// tile, which exists only on the vehicle tablet, comes in this way.
+GVAR(tileProviders) = createHashMap;
+// Provider tile ids the role gate lets through: tiles their own device gates
+// already (the VEHICLE tile is the vehicle tablet's alone), so a mission's
+// role tiles[] - written before the id existed - cannot hide them.
+GVAR(tileUngated) = [];
+
 // Registered in preInit so the shell knows the whole suite before a map can be
 // opened. Whether any of them is actually drawn is the player's setting, read
 // by the shell at build time - registering is not the same as showing.
@@ -72,13 +82,10 @@ GVAR(timerToken) = 0;
 // map to give up, so the TOOLS button in the strip under the reader turns the
 // bar off without touching the rest of the suite - see FUNC(panelToolsBtn).
 // Shown by default, so a mission that never presses it is unchanged.
-// NO PLP, NO STRIP. The tools are PLP Map Tools Remastered's and this is a front
-// end for them; with the mod absent every button on it is dead except CENTRE and
-// OFF, which is three rows of map given up for two working cells. It drew dimmed
-// with PLP NOT LOADED in the header, which is an explanation where a missing
-// panel is an answer.
+// The tools are jmfsb_maptools' and this is their front end. Not a required
+// addon: a build without it has no strip, rather than a strip of dead buttons.
 ["tools", "MAP TOOLS", DEFAULT_TOOLS, FUNC(panelTools), {}, 2, true, {
-    !isNil "PLP_fnc_SMT_Main" && {missionNamespace getVariable [QGVAR(toolsShown), true]}
+    !isNil QEFUNC(maptools,start) && {missionNamespace getVariable [QGVAR(toolsShown), true]}
 }] call EFUNC(tacpad,register);
 // THE TWO STRIPS ARE BUTTONS, NOT PANELS - registered chromeless, so no title
 // bar, no rule and no title. A header reading SETTINGS over a cell reading

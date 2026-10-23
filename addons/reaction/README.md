@@ -14,8 +14,9 @@ transmission over the wattage threshold all roll the same degrees:
   few hundred metres told where you are.
 
 SATCOM is exempt from radio detection, tested through ACRE's own antenna
-connection rather than a flag jmfsb keeps. TFAR squad sets never reach the
-filter at all.
+connection rather than a flag jmfsb keeps. Under game voice (`jmfsb_voice`) a
+key-up on the TEAM net, the vehicle intercom or direct speech never reaches the
+filter at all; C2, A2G and calls do.
 
     #jmfsbreact    flag and cooldown counts, and whether you are flagged
 

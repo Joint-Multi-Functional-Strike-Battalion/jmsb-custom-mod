@@ -18,7 +18,8 @@
     true
 ] call CBA_fnc_addSetting;
 
-// WHICH RADIOS RELAY. Manpacks and vehicle racks (user, 2026-08-28) - the
+// WHICH RADIOS RELAY. Manpacks and vehicle racks (user, 2026-08-28; ACRE keeps
+// its man packs - no man packs is game voice's rule, 2026-10-21) - the
 // squad handheld is an end point, never a relay. Base class names, comma
 // separated; a radio's base type is matched (ACRE_PRC152_ID_3 is a PRC152).
 //

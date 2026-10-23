@@ -4,9 +4,14 @@
 // map underneath; in a dialog it clips, pans itself only, and CLOSE is a
 // closeDisplay nothing can sit on top of.
 //
-// The panel geometry lives here as literal numbers and FUNC(appSupport)
-// draws to the same numbers - a config value cannot be built from macros
-// with commas, and this addon has been caught by that before.
+// THE VANILLA MAP ONLY. On the tablet the board does not open this dialog -
+// it draws inside the device's app area and picks on its own map
+// (FUNC(appSupport)).
+//
+// The map's numbers below are where it starts; FUNC(appSupport) lays it into
+// the board's map hole every draw (the hole's top moved down under the tab
+// row, which is sized off the text). The board's own geometry is
+// SUP_FRAME_NATIVE / SUP_MAP_L_K / SUP_MAP_B_K in script_component.hpp.
 
 // RscText IS FORWARD-DECLARED, and jmfsb's copy of this file does not do it.
 // `class Backdrop: RscText` fails L-C04 "class's parent is not present"

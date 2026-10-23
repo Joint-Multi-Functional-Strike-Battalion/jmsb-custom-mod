@@ -17,8 +17,7 @@
 params [["_tiles", [], [[]]], ["_y", PAC_UI_TOP, [0]]];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {_y};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {_y};
 
 private _bgs = [PAC_IDC_TILE_BG1, PAC_IDC_TILE_BG2, PAC_IDC_TILE_BG3, PAC_IDC_TILE_BG4, PAC_IDC_TILE_BG5, PAC_IDC_TILE_BG6];
 private _lines = [PAC_IDC_TILE_LINE1, PAC_IDC_TILE_LINE2, PAC_IDC_TILE_LINE3, PAC_IDC_TILE_LINE4, PAC_IDC_TILE_LINE5, PAC_IDC_TILE_LINE6];
@@ -31,7 +30,7 @@ private _h = 0.084;
 
 for "_i" from 0 to 5 do {
     if (_i >= _n) then {
-        {(_display displayCtrl _x) ctrlShow false} forEach [_bgs # _i, _lines # _i, _txts # _i];
+        {([_x] call FUNC(uiCtrl)) ctrlShow false} forEach [_bgs # _i, _lines # _i, _txts # _i];
         continue;
     };
     (_tiles # _i) params ["_value", "_label"];
@@ -43,7 +42,7 @@ for "_i" from 0 to 5 do {
         if (_value isEqualType 0) then {_value toFixed 0} else {str _value}
     };
     _t ctrlSetStructuredText parseText format [
-        "<t size='1.9' font='RobotoCondensedBold'>%1</t><br/><t size='0.68' color='#8b97a3'>%2</t>",
+        "<t size='1.6' font='RobotoCondensedBold'>%1</t><br/><t size='0.7' color='#8b97a3'>%2</t>",
         [_shown] call FUNC(uiEsc), [toUpper _label] call FUNC(uiEsc)
     ];
 };

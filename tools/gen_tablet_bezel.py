@@ -9,7 +9,7 @@ is a per-row fill sampled from clean pixels either side of the wordmark rather
 than a blur or a clone: it leaves the strip's own vertical shading intact.
 
 Run:  python tools/gen_tablet_bezel.py
-      (reads tools/art/tablet_src.paa, writes data/tablet.paa)
+      (reads art/tablet_src.paa, writes data/tablet.paa)
 
 Rerunning is safe - it always starts from the untouched vendored copy.
 """
@@ -25,7 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.normpath(os.path.join(HERE, "..", "addons", "hacking", "data"))
 LOGO = os.path.normpath(os.path.join(HERE, "..", "addons", "media", "images", "newlogo_3_512.png"))
 
-SRC = os.path.normpath(os.path.join(HERE, "art", "tablet_src.paa"))  # untouched vendored art
+SRC = os.path.normpath(os.path.join(HERE, "..", "art", "tablet_src.paa"))  # untouched vendored art
 OUT = os.path.join(DATA, "tablet.paa")         # what the dialog uses
 
 # The wordmark, measured off the 2048² art: x 956..1131, y 1455..1488. Painted

@@ -5,7 +5,8 @@
  * visible and what colour they are were worked out by the per-frame handlers -
  * so a frame costs the projection of what is already known and nothing more.
  * The boxes themselves are UI controls (FUNC(drawBoxes)); when ECOTI is off
- * they are hidden.
+ * they are hidden. The compass (FUNC(drawCompass)) is shown and hidden here too,
+ * on the same test.
  *
  * Arguments:
  * None
@@ -19,7 +20,18 @@
  * Public: No
  */
 
-if ((GVAR(men) isEqualTo [] && {GVAR(vehicles) isEqualTo []}) || {!([] call FUNC(isActive))}) exitWith {
+// NOT THROUGH A DIALOG. The boxes are controls on the mission display and a
+// dialog - the tablet - sits over it; they drew straight through the screen
+// (user, 2026-10-18). Hidden while any dialog is up, back when it closes.
+GVAR(drawFrame) = diag_frameNo;
+
+private _active = !dialog && {[] call FUNC(isActive)};
+
+// The compass shows exactly when the boxes could - whether or not anyone is in
+// range - and only if the player wants it.
+[_active && GVAR(compass)] call FUNC(drawCompass);
+
+if (!_active || {GVAR(men) isEqualTo [] && {GVAR(vehicles) isEqualTo []}}) exitWith {
     if (GVAR(shown) > 0) then {[[]] call FUNC(drawBoxes)};
 };
 

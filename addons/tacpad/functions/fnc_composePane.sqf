@@ -40,11 +40,11 @@ if (!isNull _input) then {ctrlDelete _input};
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _h = (ctrlPosition _root) # 3;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
-private _btnH = ([0.8] call FUNC(textH)) + 2 * _padY;
-private _fontH = ([0.85] call FUNC(textH)) / 1.25;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
+private _btnH = ([TEXT_TITLE] call FUNC(textH)) + 2 * _padY;
+private _fontH = ([TEXT_TITLE] call FUNC(textH)) / 1.25;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
@@ -85,11 +85,11 @@ private _cancelX = _dx + _dw - 2 * _cancelW - 2 * _pad;
 [
     _root, [_dx + _pad, _y, _dw - 2 * _cancelW - 4 * _pad, _rowH * 1.2],
     ["NEW MESSAGE", "REPLY"] select _reply,
-    _ink, 1.25, true
+    _ink, TEXT_TITLE, true
 ] call FUNC(drawText);
 
 [_root, [_cancelX, _y, _cancelW, _btnH], _ink, RULE_THICK] call FUNC(drawFrame);
-[_root, [_cancelX + _pad, _y, _cancelW - 2 * _pad, _btnH], "CANCEL", _ink, 0.75, true, "center"] call FUNC(drawText);
+[_root, [_cancelX + _pad, _y, _cancelW - 2 * _pad, _btnH], "CANCEL", _ink, TEXT_BODY, true, "center"] call FUNC(drawText);
 [_root, [_cancelX, _y, _cancelW, _btnH], {
     GVAR(composeOn) = false;
     GVAR(composePick) = false;
@@ -113,7 +113,7 @@ private _sendLine = if (_reply) then {
 
 [
     _root, [_dx + _pad, _y, _dw - 2 * _pad, _rowH * 0.8],
-    _sendLine, _mute, 0.6, true, "left", true
+    _sendLine, _mute, TEXT_LABEL, true, "left", true
 ] call FUNC(drawText);
 
 _y = _y + _rowH;
@@ -152,14 +152,14 @@ if (!_reply) then {
     private _changeW = _dw * 0.15;
     private _changeX = _dx + _dw - _changeW - _pad;
 
-    [_root, [_dx + _pad, _y, _labW, _btnH], "TO", _mute, 0.62, true, "left", true] call FUNC(drawText);
+    [_root, [_dx + _pad, _y, _labW, _btnH], "TO", _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
     [
         _root, [_fieldX, _y, _changeX - _fieldX - _pad, _btnH],
-        _toLabel, _accent, 0.75, true
+        _toLabel, _accent, TEXT_BODY, true
     ] call FUNC(drawText);
 
     [_root, [_changeX, _y, _changeW, _btnH], _line, RULE_THIN] call FUNC(drawFrame);
-    [_root, [_changeX + _pad, _y, _changeW - 2 * _pad, _btnH], "CHANGE", _mute, 0.68, true, "center"] call FUNC(drawText);
+    [_root, [_changeX + _pad, _y, _changeW - 2 * _pad, _btnH], "CHANGE", _mute, TEXT_BODY, true, "center"] call FUNC(drawText);
     [_root, [_changeX, _y, _changeW, _btnH], {
         [] call FUNC(composeHarvest);
         GVAR(composeToPick) = true;
@@ -172,7 +172,7 @@ if (!_reply) then {
 } else {
     [
         _root, [_dx + _pad, _y, _dw - 2 * _pad, _btnH],
-        "ADDRESSED TO EVERYONE ON THE THREAD", _mute, 0.65, false
+        "ADDRESSED TO EVERYONE ON THE THREAD", _mute, TEXT_BODY, false
     ] call FUNC(drawText);
 };
 
@@ -188,7 +188,7 @@ _y = _y + _btnH + _padY;
 // are built off this box's own KeyUp - see FUNC(composeCcDrop) - and never through
 // a redraw, which would delete the box being typed into.
 if (!_reply) then {
-    [_root, [_dx + _pad, _y, _labW, _btnH], "CC", _mute, 0.62, true, "left", true] call FUNC(drawText);
+    [_root, [_dx + _pad, _y, _labW, _btnH], "CC", _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
     [_root, [_fieldX, _y, _fieldW, _btnH], _line, RULE_THIN] call FUNC(drawFrame);
 
     private _cc = _display ctrlCreate ["RscEdit", -1, _root];
@@ -213,7 +213,7 @@ if (!_reply) then {
 
     [
         _root, [_dx + _dw - _cancelW - _pad, _y, _cancelW, _btnH],
-        "@ TO ADD", _dim, 0.6, true, "right", true
+        "@ TO ADD", _dim, TEXT_LABEL, true, "right", true
     ] call FUNC(drawText);
 
     _y = _y + _btnH + _padY * 0.5;
@@ -225,7 +225,7 @@ if (!_reply) then {
 // read a conversation - but calling somebody into one halfway down is exactly
 // what a net does out loud, and a man who has just been asked for by name on a
 // thread he was not on can answer it.
-[_root, [_dx + _pad, _y, _labW, _btnH], "TAG", _mute, 0.62, true, "left", true] call FUNC(drawText);
+[_root, [_dx + _pad, _y, _labW, _btnH], "TAG", _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
 [_root, [_fieldX, _y, _fieldW, _btnH], _line, RULE_THIN] call FUNC(drawFrame);
 
 private _tags = _display ctrlCreate ["RscEdit", -1, _root];
@@ -240,7 +240,7 @@ _tags ctrlCommit 0;
 
 [
     _root, [_dx + _dw - _cancelW - _pad, _y, _cancelW, _btnH],
-    "ALERTS", _dim, 0.6, true, "right", true
+    "ALERTS", _dim, TEXT_LABEL, true, "right", true
 ] call FUNC(drawText);
 _y = _y + _btnH;
 
@@ -250,7 +250,7 @@ _y = _y + _btnH;
 [
     _root, [_fieldX, _y, _fieldW, _btnH * 0.55],
     "WAKES WHOEVER IT NAMES. TRAFFIC STAYS ON THIS NET. PRESS TO TAG:",
-    _dim, 0.5, false
+    _dim, TEXT_LABEL, false
 ] call FUNC(drawText);
 _y = _y + _btnH * 0.55;
 
@@ -281,7 +281,7 @@ if (_tagSet isNotEqualTo []) then {
         } else {
             [_root, [_sx, _y, _chipW, _chipH], _line, RULE_THIN] call FUNC(drawFrame);
         };
-        [_root, [_sx + _pad * 0.5, _y, _chipW - _pad, _chipH], _x, ([_mute, _ground] select _on), 0.58, true, "center"] call FUNC(drawText);
+        [_root, [_sx + _pad * 0.5, _y, _chipW - _pad, _chipH], _x, ([_mute, _ground] select _on), TEXT_LABEL, true, "center"] call FUNC(drawText);
 
         private _hit = [_root, [_sx, _y, _chipW, _chipH], {
             params ["_ctrl"];
@@ -313,7 +313,7 @@ private _actW = _dw * 0.24;
 [
     _root, [_dx + _pad * 2, _y, _actW - 3 * _pad, _btnH],
     ["+ TEMPLATE", "CHANGE TEMPLATE"] select (_templateId isNotEqualTo ""),
-    _ink, 0.7, true, "center"
+    _ink, TEXT_BODY, true, "center"
 ] call FUNC(drawText);
 [_root, [_dx + _pad, _y, _actW, _btnH], {
     [] call FUNC(composeHarvest);
@@ -330,7 +330,7 @@ if (_templateId isNotEqualTo "") then {
     private _dropW = _dw * 0.16;
 
     [_root, [_dropX, _y, _dropW, _btnH], _line, RULE_THIN] call FUNC(drawFrame);
-    [_root, [_dropX + _pad, _y, _dropW - 2 * _pad, _btnH], "REMOVE", _mute, 0.7, true, "center"] call FUNC(drawText);
+    [_root, [_dropX + _pad, _y, _dropW - 2 * _pad, _btnH], "REMOVE", _mute, TEXT_BODY, true, "center"] call FUNC(drawText);
     [_root, [_dropX, _y, _dropW, _btnH], {
         [] call FUNC(composeHarvest);
         GVAR(composeTemplate) = "";
@@ -342,16 +342,12 @@ if (_templateId isNotEqualTo "") then {
     }] call FUNC(drawHit);
 };
 
+// The template's own name is the card's header now - its tag box and title,
+// FUNC(composeCardHead) - so it is said here only for the plain box.
 private _priority = _template getOrDefault ["priority", "normal"];
-[
-    _root, [_dx + _dw * 0.5, _y, _dw * 0.5 - _pad, _btnH],
-    [
-        "PLAIN MESSAGE",
-        format ["%1%2", _template getOrDefault ["title", _templateId], ["", " - FLASH"] select (_priority isEqualTo "high")]
-    ] select (_templateId isNotEqualTo ""),
-    ([_mute, _accent] select (_priority isEqualTo "high")),
-    0.68, true, "right", true
-] call FUNC(drawText);
+if (_templateId isEqualTo "") then {
+    [_root, [_dx + _dw * 0.5, _y, _dw * 0.5 - _pad, _btnH], "PLAIN MESSAGE", _mute, TEXT_BODY, true, "right", true] call FUNC(drawText);
+};
 
 _y = _y + _btnH + _padY;
 [_root, [_dx + _pad, _y, _dw - 2 * _pad, RULE_THIN * pixelH], _line] call FUNC(drawFill);
@@ -378,17 +374,21 @@ if (_templateId isEqualTo "") then {
         // if/then, not select: select evaluates both halves, and mapGridPosition of
         // an empty pin threw on every redraw with no pin set (rpt 2026-10-08).
         if (_pinned) then {format ["MAP PIN - %1", mapGridPosition GVAR(composePin)]} else {"MAP PIN - NONE"},
-        [_mute, _accent] select _pinned, 0.62, true, "left", true
+        [_mute, _accent] select _pinned, TEXT_LABEL, true, "left", true
     ] call FUNC(drawText);
 
     // One button for both halves: pinning where you stand and taking the pin
     // off again are the same press twice.
     private _hereX = _dx + _dw - 2 * _pinW - 2 * _pad;
     [_root, [_hereX, _y, _pinW, _btnH], [_line, _accent] select _pinned, [RULE_THIN, RULE_THICK] select _pinned] call FUNC(drawFrame);
-    [_root, [_hereX + _pad, _y, _pinW - 2 * _pad, _btnH], ["CURRENT LOC", "CLEAR PIN"] select _pinned, [_ink, _accent] select _pinned, 0.64, true, "center"] call FUNC(drawText);
+    [_root, [_hereX + _pad, _y, _pinW - 2 * _pad, _btnH], ["CURRENT LOC", "CLEAR PIN"] select _pinned, [_ink, _accent] select _pinned, TEXT_LABEL, true, "center"] call FUNC(drawText);
     [_root, [_hereX, _y, _pinW, _btnH], {
         [] call FUNC(composeHarvest);
-        GVAR(composePin) = [[], getPosATL player] select (GVAR(composePin) isEqualTo []);
+        // Pinned where his GPS says he is (jmfsb_ew_fnc_gpsHere): the false
+        // fix when spoofed, no pin and a word on the rail when denied.
+        GVAR(composePin) = if (GVAR(composePin) isNotEqualTo []) then {[]} else {
+            if (isNil QEFUNC(ew,gpsHere)) then {getPosATL player} else {[true] call EFUNC(ew,gpsHere)}
+        };
         GVAR(composePinPick) = false;
         {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
     }] call FUNC(drawHit);
@@ -399,7 +399,7 @@ if (_templateId isEqualTo "") then {
     private _mkX = _dx + _dw - _pinW - _pad;
     private _pickOpen = GVAR(composePinPick);
     [_root, [_mkX, _y, _pinW, _btnH], [_line, _accent] select _pickOpen, [RULE_THIN, RULE_THICK] select _pickOpen] call FUNC(drawFrame);
-    [_root, [_mkX + _pad, _y, _pinW - 2 * _pad, _btnH], "MAP MARKER", [_ink, _accent] select _pickOpen, 0.64, true, "center"] call FUNC(drawText);
+    [_root, [_mkX + _pad, _y, _pinW - 2 * _pad, _btnH], "MAP MARKER", [_ink, _accent] select _pickOpen, TEXT_LABEL, true, "center"] call FUNC(drawText);
     [_root, [_mkX, _y, _pinW, _btnH], {
         [] call FUNC(composeHarvest);
         GVAR(composePinPick) = !GVAR(composePinPick);
@@ -411,14 +411,14 @@ if (_templateId isEqualTo "") then {
     if (GVAR(composePinPick)) then {
         private _markers = [8] call FUNC(markerGrids);
         if (_markers isEqualTo []) then {
-            [_root, [_dx + _pad * 2, _y, _dw - 3 * _pad, _rowH * 0.9], "NO MAP MARKERS", _dim, 0.66] call FUNC(drawText);
+            [_root, [_dx + _pad * 2, _y, _dw - 3 * _pad, _rowH * 0.9], "NO MAP MARKERS", _dim, TEXT_BODY] call FUNC(drawText);
             _y = _y + _rowH * 0.9;
         } else {
             {
                 _x params ["_label", "_pos"];
                 private _my = _y + _forEachIndex * _rowH * 0.9;
-                [_root, [_dx + _pad * 2, _my, _dw * 0.5, _rowH * 0.9], _label, _ink, 0.7] call FUNC(drawText);
-                [_root, [_dx + _dw * 0.55, _my, _dw * 0.4 - _pad, _rowH * 0.9], mapGridPosition _pos, _mute, 0.66, false, "right"] call FUNC(drawText);
+                [_root, [_dx + _pad * 2, _my, _dw * 0.5, _rowH * 0.9], _label, _ink, TEXT_BODY] call FUNC(drawText);
+                [_root, [_dx + _dw * 0.55, _my, _dw * 0.4 - _pad, _rowH * 0.9], mapGridPosition _pos, _mute, TEXT_BODY, false, "right"] call FUNC(drawText);
                 [_root, [_dx + _pad, _my + _rowH * 0.9 - RULE_THIN * pixelH, _dw - 2 * _pad, RULE_THIN * pixelH], _line] call FUNC(drawFill);
                 private _hitP = [_root, [_dx + _pad, _my, _dw - 2 * _pad, _rowH * 0.9], {
                     params ["_ctrl"];
@@ -444,7 +444,7 @@ if (_templateId isEqualTo "") then {
     // here, so renaming the line cannot break sending.
     private _key = ((["freetext"] call EFUNC(messaging,template)) getOrDefault ["order", []]) param [0, "Text.A"];
 
-    [_root, [_dx + _pad, _y, _dw - 2 * _pad, _rowH], "MESSAGE", _mute, 0.62, true, "left", true] call FUNC(drawText);
+    [_root, [_dx + _pad, _y, _dw - 2 * _pad, _rowH], "MESSAGE", _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
 
     private _boxY = _y + _rowH;
     private _boxH = _contentH - _rowH - _padY;
@@ -468,17 +468,33 @@ if (_templateId isEqualTo "") then {
 private _sendY = _h - _footH + _padY;
 [_root, [_dx + _pad, _sendY - _padY, _dw - 2 * _pad, RULE_THICK * pixelH], _ink] call FUNC(drawFill);
 
+// SEND IS AN INK CELL, the handoff's: the accent is the hover, not the rest
+// state - a card is mostly accent-free so REQ and a high-priority tag read.
+// Hover is accent-600 (the theme's accentHover), set on the fill itself by the
+// hit and its label, since a label over a hit takes the mouse as well.
 private _sendW = _dw * 0.22;
-[_root, [_dx + _pad, _sendY, _sendW, _btnH], _accent] call FUNC(drawFill);
-[
+private _sendFill = [_root, [_dx + _pad, _sendY, _sendW, _btnH], _ink] call FUNC(drawFill);
+private _sendLabel = [
     _root, [_dx + _pad * 2, _sendY, _sendW - 3 * _pad, _btnH],
     ["SEND", "SEND - FLASH"] select (_priority isEqualTo "high"),
-    _ground, 0.8, true, "center"
+    _ground, TEXT_TITLE, true, "center"
 ] call FUNC(drawText);
-[_root, [_dx + _pad, _sendY, _sendW, _btnH], {
+private _sendHit = [_root, [_dx + _pad, _sendY, _sendW, _btnH], {
     [] call FUNC(composeHarvest);
     [] call FUNC(composeSend);
 }] call FUNC(drawHit);
+
+{
+    _x setVariable [QGVAR(hoverFill), _sendFill];
+    _x ctrlAddEventHandler ["MouseEnter", {
+        params ["_ctrl"];
+        (_ctrl getVariable [QGVAR(hoverFill), controlNull]) ctrlSetBackgroundColor (["accentHover"] call FUNC(theme));
+    }];
+    _x ctrlAddEventHandler ["MouseExit", {
+        params ["_ctrl"];
+        (_ctrl getVariable [QGVAR(hoverFill), controlNull]) ctrlSetBackgroundColor (["ink"] call FUNC(theme));
+    }];
+} forEach [_sendHit, _sendLabel];
 
 // WHY IT WOULD NOT SEND, where the press was. Anything else is behind this
 // screen - see FUNC(composeSend).
@@ -501,5 +517,5 @@ if (GVAR(composeError) isNotEqualTo "") then {
     _root, [_dx + _sendW + _pad * 3, _sendY, _dw - _sendW - _pad * 4, _btnH],
     _hint,
     ([_mute, _accent] select (GVAR(composeError) isNotEqualTo "" || _link > 0)),
-    0.62, true, "right", true
+    TEXT_LABEL, true, "right", true
 ] call FUNC(drawText);

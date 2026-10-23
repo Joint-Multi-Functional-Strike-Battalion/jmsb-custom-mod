@@ -212,7 +212,7 @@ private _out = switch (_section) do {
     case "welcome": {[
         ["title", "t", "TITLE", "the big line across the top"],
         ["subtitle", "t", "SUBTITLE", "the line under it"],
-        ["text", "t", "TEXT", "the briefing - returns are line breaks, and <t size='1.15' color='#cc4331'>...</t> is a heading"]
+        ["text", "t", "TEXT", "the briefing - returns are line breaks, and <t size='0.85' color='#cc4331'>...</t> is a heading"]
     ]};
     // THE MOTORPOOL - the groups the vehicle menu offers, each a heading and
     // the classes under it (2026-09-09: the website could edit this and the

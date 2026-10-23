@@ -9,14 +9,49 @@ class XtdGearInfos {
         class 11Rnd_45ACP_Mag {
             model = "jmfsb_ammo_11rnd_45acp_mag";
         };
+        class 17Rnd_9x19_Mag_RF {
+            model = "jmfsb_ammo_17rnd_9x19_mag_rf";
+        };
         class 17Rnd_9x21_Mag {
             model = "jmfsb_ammo_17rnd_9x21_mag";
+        };
+        class 1Rnd_40mm_HE_lxWS {
+            model = "jmfsb_ammo_1rnd_40mm_he_lxws";
         };
         class 1Rnd_HE_Grenade_shell {
             model = "jmfsb_ammo_1rnd_he_grenade_shell";
         };
         class 1Rnd_HEDP_Grenade_shell {
             model = "jmfsb_ammo_1rnd_hedp_grenade_shell";
+        };
+        class 1Rnd_Pellet_Grenade_shell_lxWS {
+            model = "jmfsb_ammo_1rnd_pellet_grenade_shell_lxws";
+        };
+        class 1Rnd_RC40_HE_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_he_shell_rf";
+        };
+        class 1Rnd_RC40_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_shell_rf";
+        };
+        class 1Rnd_RC40_SmokeBlue_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_smoke_shell_rf";
+            colour = "blue";
+        };
+        class 1Rnd_RC40_SmokeGreen_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_smoke_shell_rf";
+            colour = "green";
+        };
+        class 1Rnd_RC40_SmokeOrange_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_smoke_shell_rf";
+            colour = "orange";
+        };
+        class 1Rnd_RC40_SmokeRed_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_smoke_shell_rf";
+            colour = "red";
+        };
+        class 1Rnd_RC40_SmokeWhite_shell_RF {
+            model = "jmfsb_ammo_1rnd_rc40_smoke_shell_rf";
+            colour = "white";
         };
         class 1Rnd_SmokeBlue_Grenade_shell {
             model = "jmfsb_ammo_1rnd_smoke_grenade_shell";
@@ -51,6 +86,24 @@ class XtdGearInfos {
         };
         class 2Rnd_12Gauge_Slug {
             model = "jmfsb_ammo_2rnd_12gauge_slug";
+        };
+        class 2rnd_HE_Mag_lxWS {
+            model = "jmfsb_ammo_2rnd_he_mag_lxws";
+        };
+        class 2rnd_Smoke_Mag_lxWS {
+            model = "jmfsb_ammo_2rnd_smoke_mag_lxws";
+        };
+        class 33Rnd_9x19_Mag_RF {
+            model = "jmfsb_ammo_33rnd_9x19_mag_rf";
+            finish = "default";
+        };
+        class 33Rnd_9x19_Mag_Tan_RF {
+            model = "jmfsb_ammo_33rnd_9x19_mag_rf";
+            finish = "tan";
+        };
+        class 33Rnd_9x19_Mag_khk_RF {
+            model = "jmfsb_ammo_33rnd_9x19_mag_rf";
+            finish = "khaki";
         };
         class 3Rnd_HE_Grenade_shell {
             model = "jmfsb_ammo_3rnd_he_grenade_shell";
@@ -134,11 +187,20 @@ class XtdGearInfos {
         class 4Rnd_12Gauge_Slug {
             model = "jmfsb_ammo_4rnd_12gauge_slug";
         };
+        class 65Rnd_9x19_Mag_RF {
+            model = "jmfsb_ammo_65rnd_9x19_mag_rf";
+        };
         class 6Rnd_12Gauge_Pellets {
             model = "jmfsb_ammo_6rnd_12gauge_pellets";
         };
         class 6Rnd_12Gauge_Slug {
             model = "jmfsb_ammo_6rnd_12gauge_slug";
+        };
+        class 6rnd_HE_Mag_lxWS {
+            model = "jmfsb_ammo_6rnd_he_mag_lxws";
+        };
+        class 6rnd_Smoke_Mag_lxWS {
+            model = "jmfsb_ammo_6rnd_smoke_mag_lxws";
         };
         class 8Rnd_12Gauge_Pellets {
             model = "jmfsb_ammo_8rnd_12gauge_pellets";
@@ -275,6 +337,14 @@ class XtdGearInfos {
             model = "jmfsb_ammo_aegis_handflare";
             colour = "red";
         };
+        class Aegis_sgun_AA40_ACO_LP_LxWS {
+            model = "jmfsb_ammo_aegis_sgun_aa40_aco_lp_lxws";
+            finish = "default";
+        };
+        class Aegis_sgun_AA40_tan_ACO_LP_LxWS {
+            model = "jmfsb_ammo_aegis_sgun_aa40_aco_lp_lxws";
+            finish = "tan";
+        };
         class Aegis_SignalFlare_Green {
             model = "jmfsb_ammo_aegis_signalflare";
             colour = "green";
@@ -289,8 +359,38 @@ class XtdGearInfos {
         class AK_762x39 {
             model = "jmfsb_ammo_ak_762x39";
         };
+        class All {
+            model = "jmfsb_ammo_all";
+        };
+        class AllVehicles {
+            model = "jmfsb_ammo_allvehicles";
+        };
+        class arifle_MX_Base_F {
+            model = "jmfsb_ammo_arifle_mx_base_f";
+        };
+        class arifle_MX_F {
+            model = "jmfsb_ammo_arifle_mx_f";
+        };
+        class B_Heli_Transport_03_F {
+            model = "jmfsb_ammo_b_heli_transport_03_f";
+        };
+        class B_Heli_Transport_03_unarmed_F {
+            model = "jmfsb_ammo_b_heli_transport_03_unarmed_f";
+        };
         class B_IR_Grenade {
             model = "jmfsb_ammo_b_ir_grenade";
+        };
+        class B_Mortar_01_F {
+            model = "jmfsb_ammo_b_mortar_01_f";
+        };
+        class B_Soldier_F {
+            model = "jmfsb_ammo_b_soldier_f";
+        };
+        class B_Soldier_recon_base {
+            model = "jmfsb_ammo_b_soldier_recon_base";
+        };
+        class Car_F {
+            model = "jmfsb_ammo_car_f";
         };
         class CBA_127x55_ASh12 {
             model = "jmfsb_ammo_cba_127x55_ash12";
@@ -388,6 +488,1734 @@ class XtdGearInfos {
         };
         class FA_2Rnd_120mm_strix_O {
             model = "jmfsb_ammo_fa_2rnd_120mm_strix_o";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_Mk332_AP_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_Mk332_AP_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_Mk332_AP_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_mk332_ap";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "default";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "default";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "default";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_RF_XM891_CTEP_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "default";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_Tan_RF_XM891_CTEP_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "tan";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Blue_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Blue_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Blue_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "blue";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Green_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Green_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Green_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "green";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_IR_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_IR_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_IR_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ir";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Orange_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Orange_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Orange_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "orange";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Red_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Red_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Red_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "red";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_White_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_White_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_White_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "white";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "base";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Yellow_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Yellow_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_T_Yellow_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "yellow";
+            finish = "khaki";
+            tier = "t4";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_t2 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t2";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_t3 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t3";
+        };
+        class FA_30Rnd_556x45_AP_Stanag_khk_RF_XM891_CTEP_t4 {
+            model = "jmfsb_ammo_fa_30rnd_556x45_ap_stanag_rf_xm891_ctep";
+            tracer = "ball";
+            finish = "khaki";
+            tier = "t4";
         };
         class FA_3Rnd_40mm_Mk380_NRP {
             model = "jmfsb_ammo_fa_3rnd_40mm_mk380_nrp";
@@ -862,6 +2690,11 @@ class XtdGearInfos {
             model = "jmfsb_ammo_fa_adf_adfrc_50rnd_762_belt_tr5";
             tier = "t4";
         };
+        class FA_Aegis_10Rnd_762x54_SVD_HV {
+            model = "jmfsb_ammo_fa_aegis_10rnd_762x54_svd_hv";
+            tracer = "ball";
+            tier = "base";
+        };
         class FA_Aegis_10Rnd_762x54_SVD_HV_T_Blue {
             model = "jmfsb_ammo_fa_aegis_10rnd_762x54_svd_hv";
             tracer = "blue";
@@ -1016,6 +2849,11 @@ class XtdGearInfos {
             model = "jmfsb_ammo_fa_aegis_10rnd_762x54_svd_hv";
             tracer = "ball";
             tier = "t4";
+        };
+        class FA_Aegis_30Rnd_545x39_7N44 {
+            model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7n44";
+            tracer = "ball";
+            tier = "base";
         };
         class FA_Aegis_30Rnd_545x39_7N44_T_Blue {
             model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7n44";
@@ -1172,6 +3010,11 @@ class XtdGearInfos {
             tracer = "ball";
             tier = "t4";
         };
+        class FA_Aegis_30Rnd_545x39_7N48 {
+            model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7n48";
+            tracer = "ball";
+            tier = "base";
+        };
         class FA_Aegis_30Rnd_545x39_7N48_T_Blue {
             model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7n48";
             tracer = "blue";
@@ -1326,6 +3169,11 @@ class XtdGearInfos {
             model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7n48";
             tracer = "ball";
             tier = "t4";
+        };
+        class FA_Aegis_30Rnd_545x39_7U5 {
+            model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7u5";
+            tracer = "ball";
+            tier = "base";
         };
         class FA_Aegis_30Rnd_545x39_7U5_T_Blue {
             model = "jmfsb_ammo_fa_aegis_30rnd_545x39_7u5";
@@ -1482,6 +3330,11 @@ class XtdGearInfos {
             tracer = "ball";
             tier = "t4";
         };
+        class FA_Aegis_45Rnd_545x39_7N44 {
+            model = "jmfsb_ammo_fa_aegis_45rnd_545x39_7n44";
+            tracer = "ball";
+            tier = "base";
+        };
         class FA_Aegis_45Rnd_545x39_7N44_T_Blue {
             model = "jmfsb_ammo_fa_aegis_45rnd_545x39_7n44";
             tracer = "blue";
@@ -1636,6 +3489,11 @@ class XtdGearInfos {
             model = "jmfsb_ammo_fa_aegis_45rnd_545x39_7n44";
             tracer = "ball";
             tier = "t4";
+        };
+        class FA_Aegis_45Rnd_545x39_7N48 {
+            model = "jmfsb_ammo_fa_aegis_45rnd_545x39_7n48";
+            tracer = "ball";
+            tier = "base";
         };
         class FA_Aegis_45Rnd_545x39_7N48_T_Blue {
             model = "jmfsb_ammo_fa_aegis_45rnd_545x39_7n48";
@@ -1792,6 +3650,11 @@ class XtdGearInfos {
             tracer = "ball";
             tier = "t4";
         };
+        class FA_Aegis_5Rnd_127x99_Mk211Mod0 {
+            model = "jmfsb_ammo_fa_aegis_5rnd_127x99_mk211mod0";
+            tracer = "ball";
+            tier = "base";
+        };
         class FA_Aegis_5Rnd_127x99_Mk211Mod0_T_Blue {
             model = "jmfsb_ammo_fa_aegis_5rnd_127x99_mk211mod0";
             tracer = "blue";
@@ -1947,6 +3810,11 @@ class XtdGearInfos {
             tracer = "ball";
             tier = "t4";
         };
+        class FA_Aegis_5Rnd_127x99_Mk258 {
+            model = "jmfsb_ammo_fa_aegis_5rnd_127x99_mk258";
+            tracer = "ball";
+            tier = "base";
+        };
         class FA_Aegis_5Rnd_127x99_Mk258_T_Blue {
             model = "jmfsb_ammo_fa_aegis_5rnd_127x99_mk258";
             tracer = "blue";
@@ -2101,6 +3969,11 @@ class XtdGearInfos {
             model = "jmfsb_ammo_fa_aegis_5rnd_127x99_mk258";
             tracer = "ball";
             tier = "t4";
+        };
+        class FA_Aegis_60Rnd_545x39_7N44 {
+            model = "jmfsb_ammo_fa_aegis_60rnd_545x39_7n44";
+            tracer = "ball";
+            tier = "base";
         };
         class FA_Aegis_60Rnd_545x39_7N44_T_Blue {
             model = "jmfsb_ammo_fa_aegis_60rnd_545x39_7n44";
@@ -32534,6 +34407,134 @@ class XtdGearInfos {
         class FA_rearma_WPF89C_TBX {
             model = "jmfsb_ammo_fa_rearma_wpf89c_tbx";
         };
+        class FA_rf_10Rnd_127x55_7N52 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7n52";
+            tier = "base";
+        };
+        class FA_rf_10Rnd_127x55_7N52_t2 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7n52";
+            tier = "t2";
+        };
+        class FA_rf_10Rnd_127x55_7N52_t3 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7n52";
+            tier = "t3";
+        };
+        class FA_rf_10Rnd_127x55_7N52_t4 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7n52";
+            tier = "t4";
+        };
+        class FA_rf_10Rnd_127x55_7U13 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u13";
+            tier = "base";
+        };
+        class FA_rf_10Rnd_127x55_7U13_t2 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u13";
+            tier = "t2";
+        };
+        class FA_rf_10Rnd_127x55_7U13_t3 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u13";
+            tier = "t3";
+        };
+        class FA_rf_10Rnd_127x55_7U13_t4 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u13";
+            tier = "t4";
+        };
+        class FA_rf_10Rnd_127x55_7U14 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u14";
+            tier = "base";
+        };
+        class FA_rf_10Rnd_127x55_7U14_t2 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u14";
+            tier = "t2";
+        };
+        class FA_rf_10Rnd_127x55_7U14_t3 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u14";
+            tier = "t3";
+        };
+        class FA_rf_10Rnd_127x55_7U14_t4 {
+            model = "jmfsb_ammo_fa_rf_10rnd_127x55_7u14";
+            tier = "t4";
+        };
+        class FA_rf_17Rnd_9x19_Mk422_AP {
+            model = "jmfsb_ammo_fa_rf_17rnd_9x19_mk422_ap";
+            tier = "base";
+        };
+        class FA_rf_17Rnd_9x19_Mk422_AP_t2 {
+            model = "jmfsb_ammo_fa_rf_17rnd_9x19_mk422_ap";
+            tier = "t2";
+        };
+        class FA_rf_17Rnd_9x19_Mk422_AP_t3 {
+            model = "jmfsb_ammo_fa_rf_17rnd_9x19_mk422_ap";
+            tier = "t3";
+        };
+        class FA_rf_17Rnd_9x19_Mk422_AP_t4 {
+            model = "jmfsb_ammo_fa_rf_17rnd_9x19_mk422_ap";
+            tier = "t4";
+        };
+        class FA_rf_20Rnd_127x55_7N52 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7n52";
+            tier = "base";
+        };
+        class FA_rf_20Rnd_127x55_7N52_t2 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7n52";
+            tier = "t2";
+        };
+        class FA_rf_20Rnd_127x55_7N52_t3 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7n52";
+            tier = "t3";
+        };
+        class FA_rf_20Rnd_127x55_7N52_t4 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7n52";
+            tier = "t4";
+        };
+        class FA_rf_20Rnd_127x55_7U13 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u13";
+            tier = "base";
+        };
+        class FA_rf_20Rnd_127x55_7U13_t2 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u13";
+            tier = "t2";
+        };
+        class FA_rf_20Rnd_127x55_7U13_t3 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u13";
+            tier = "t3";
+        };
+        class FA_rf_20Rnd_127x55_7U13_t4 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u13";
+            tier = "t4";
+        };
+        class FA_rf_20Rnd_127x55_7U14 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u14";
+            tier = "base";
+        };
+        class FA_rf_20Rnd_127x55_7U14_t2 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u14";
+            tier = "t2";
+        };
+        class FA_rf_20Rnd_127x55_7U14_t3 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u14";
+            tier = "t3";
+        };
+        class FA_rf_20Rnd_127x55_7U14_t4 {
+            model = "jmfsb_ammo_fa_rf_20rnd_127x55_7u14";
+            tier = "t4";
+        };
+        class FA_rf_33Rnd_9x19_Mk422_AP {
+            model = "jmfsb_ammo_fa_rf_33rnd_9x19_mk422_ap";
+            tier = "base";
+        };
+        class FA_rf_33Rnd_9x19_Mk422_AP_t2 {
+            model = "jmfsb_ammo_fa_rf_33rnd_9x19_mk422_ap";
+            tier = "t2";
+        };
+        class FA_rf_33Rnd_9x19_Mk422_AP_t3 {
+            model = "jmfsb_ammo_fa_rf_33rnd_9x19_mk422_ap";
+            tier = "t3";
+        };
+        class FA_rf_33Rnd_9x19_Mk422_AP_t4 {
+            model = "jmfsb_ammo_fa_rf_33rnd_9x19_mk422_ap";
+            tier = "t4";
+        };
         class FA_RPG32_AB32 {
             model = "jmfsb_ammo_fa_rpg32_ab32";
         };
@@ -32551,6 +34552,1008 @@ class XtdGearInfos {
         };
         class FA_RPG7_TBG7V2 {
             model = "jmfsb_ammo_fa_rpg7_tbg7v2";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_250gr_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr";
+            tracer = "yellow";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_285gr_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr";
+            tracer = "yellow";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_338_Mk371_300gr_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr";
+            tracer = "yellow";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_762x51_M80A2_HV_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv";
+            tracer = "yellow";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_762x51_XM751_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep";
+            tracer = "yellow";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248LV_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv";
+            tracer = "yellow";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2 {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "ball";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_Blue {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "blue";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_Green {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "green";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_IR {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "ir";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_Orange {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "orange";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_Red {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "red";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_White {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "white";
+        };
+        class FA_SPS_AI_AXMC_762x67_Mk248Mod2_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_B_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_300BLK_110_S_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_B_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_S_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep";
+            tracer = "yellow";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "ball";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "blue";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "green";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "ir";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "orange";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "red";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "white";
+        };
+        class FA_SPS_HKG3PMAG_30Rnd_556x45_FDE_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep";
+            tracer = "yellow";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_Blue {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "blue";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_Green {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "green";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_IR {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "ir";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_Orange {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "orange";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_Red {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "red";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_White {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "white";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "yellow";
+            finish = "default";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_Blue {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "blue";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_Green {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "green";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_IR {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "ir";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_Orange {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "orange";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_Red {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "red";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_White {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "white";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LAMG_150rnd_Box_Tan_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_kac_lamg_150rnd_box";
+            tracer = "yellow";
+            finish = "tan";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_Blue {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "blue";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_Green {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "green";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_IR {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "ir";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_Orange {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "orange";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_Red {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "red";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_White {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "white";
+        };
+        class FA_SPS_KAC_LWAMG_100rnd_Box_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box";
+            tracer = "yellow";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "ball";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_Blue {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "blue";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_Green {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "green";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_IR {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "ir";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_Orange {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "orange";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_Red {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "red";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_White {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "white";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire";
+            tracer = "yellow";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "ball";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "blue";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "green";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "ir";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "orange";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "red";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "white";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap";
+            tracer = "yellow";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "ball";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "blue";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "green";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "ir";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "orange";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "red";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "white";
+        };
+        class FA_SPS_P_60Rnd_556x45_Surefire_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep";
+            tracer = "yellow";
+        };
+        class FA_SPS_pmag40rnd_556x45_B {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "ball";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_Blue {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "blue";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_Green {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "green";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_IR {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "ir";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_Orange {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "orange";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_Red {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "red";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_White {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "white";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "yellow";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_S {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "ball";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_Blue {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "blue";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_Green {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "green";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_IR {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "ir";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_Orange {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "orange";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_Red {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "red";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_White {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "white";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45";
+            tracer = "yellow";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "ball";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "blue";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "green";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "ir";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "orange";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "red";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "white";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "yellow";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "ball";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "blue";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_Green {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "green";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_IR {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "ir";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "orange";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_Red {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "red";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_White {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "white";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_Mk332_AP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap";
+            tracer = "yellow";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "ball";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "blue";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "green";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "ir";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "orange";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "red";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "white";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_B_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "yellow";
+            finish = "black";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "ball";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_Blue {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "blue";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_Green {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "green";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_IR {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "ir";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_Orange {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "orange";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_Red {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "red";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_White {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "white";
+            finish = "sand";
+        };
+        class FA_SPS_pmag40rnd_556x45_S_XM891_CTEP_T_Yellow {
+            model = "jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep";
+            tracer = "yellow";
+            finish = "sand";
         };
         class FA_Titan_AA_MIM165_Sentry {
             model = "jmfsb_ammo_fa_titan_aa_mim165_sentry";
@@ -32757,18 +35760,6 @@ class XtdGearInfos {
         class FA_Vorona_9M135PVO {
             model = "jmfsb_ammo_fa_vorona_9m135pvo";
         };
-        class jmfsb_green {
-            model = "jmfsb_ammo_jmfsb";
-        };
-        class jmfsb_blue {
-            model = "jmfsb_ammo_jmfsb_blue";
-        };
-        class jmfsb_fa_Glock19_RF {
-            model = "jmfsb_ammo_jmfsb_fa_glock19_rf";
-        };
-        class jmfsb_red {
-            model = "jmfsb_ammo_jmfsb_red";
-        };
         class GX_1RND_DRONE40_HE_M203 {
             model = "jmfsb_ammo_gx_1rnd_drone40_he_m203";
         };
@@ -32845,6 +35836,12 @@ class XtdGearInfos {
         class GX_DEPLOYABLE_MAGAZINE_UAV_01 {
             model = "jmfsb_ammo_gx_deployable_magazine_uav_01";
         };
+        class GX_DEPLOYABLE_MAGAZINE_UAV_02_IED_lxWS {
+            model = "jmfsb_ammo_gx_deployable_magazine_uav_02_ied_lxws";
+        };
+        class GX_DEPLOYABLE_MAGAZINE_UAV_02_lxWS {
+            model = "jmfsb_ammo_gx_deployable_magazine_uav_02_lxws";
+        };
         class GX_DEPLOYABLE_MAGAZINE_UAV_06 {
             model = "jmfsb_ammo_gx_deployable_magazine_uav_06";
         };
@@ -32857,11 +35854,53 @@ class XtdGearInfos {
         class HandGrenade {
             model = "jmfsb_ammo_handgrenade";
         };
+        class Heli_Attack_02_base_F {
+            model = "jmfsb_ammo_heli_attack_02_base_f";
+        };
+        class Heli_Transport_03_base_F {
+            model = "jmfsb_ammo_heli_transport_03_base_f";
+        };
+        class Heli_Transport_03_unarmed_base_F {
+            model = "jmfsb_ammo_heli_transport_03_unarmed_base_f";
+        };
+        class Helicopter {
+            model = "jmfsb_ammo_helicopter";
+        };
+        class Helicopter_Base_F {
+            model = "jmfsb_ammo_helicopter_base_f";
+        };
+        class Helicopter_Base_H {
+            model = "jmfsb_ammo_helicopter_base_h";
+        };
         class IEDUrbanBig_Remote_Mag {
             model = "jmfsb_ammo_iedurbanbig_remote_mag";
         };
         class IEDUrbanSmall_Remote_Mag {
             model = "jmfsb_ammo_iedurbansmall_remote_mag";
+        };
+        class jmfsb_green {
+            model = "jmfsb_ammo_jmfsb";
+        };
+        class jmfsb_blue {
+            model = "jmfsb_ammo_jmfsb_blue";
+        };
+        class jmfsb_fa_Glock19_RF {
+            model = "jmfsb_ammo_jmfsb_fa_glock19_rf";
+        };
+        class jmfsb_red {
+            model = "jmfsb_ammo_jmfsb_red";
+        };
+        class jmfsb_uniform_pla_B_ViperHarness_hex_LAT_lxWS_A {
+            model = "jmfsb_ammo_jmfsb_uniform_pla_b_viperharness_lat_lxws_a";
+        };
+        class jmfsb_uniform_pla_B_ViperHarness_hex_LAT_lxWS_W {
+            model = "jmfsb_ammo_jmfsb_uniform_pla_b_viperharness_lat_lxws_w";
+        };
+        class Land {
+            model = "jmfsb_ammo_land";
+        };
+        class LandVehicle {
+            model = "jmfsb_ammo_landvehicle";
         };
         class m72a7_mag {
             model = "jmfsb_ammo_m72a7_mag";
@@ -32871,6 +35910,9 @@ class XtdGearInfos {
         };
         class MiniGrenade {
             model = "jmfsb_ammo_minigrenade";
+        };
+        class Mortar_01_base_F {
+            model = "jmfsb_ammo_mortar_01_base_f";
         };
         class PHAN_WP_MAAWS_Mag {
             model = "jmfsb_ammo_phan_wp_maaws_mag";
@@ -32889,6 +35931,12 @@ class XtdGearInfos {
         };
         class Rahim_762x54 {
             model = "jmfsb_ammo_rahim_762x54";
+        };
+        class Rifle_Base_F {
+            model = "jmfsb_ammo_rifle_base_f";
+        };
+        class Rifle_Short_Base_F {
+            model = "jmfsb_ammo_rifle_short_base_f";
         };
         class SatchelCharge_Remote_Mag {
             model = "jmfsb_ammo_satchelcharge_remote_mag";
@@ -32926,6 +35974,12 @@ class XtdGearInfos {
         };
         class STANAG_556x45 {
             model = "jmfsb_ammo_stanag_556x45";
+        };
+        class StaticMortar {
+            model = "jmfsb_ammo_staticmortar";
+        };
+        class StaticWeapon {
+            model = "jmfsb_ammo_staticweapon";
         };
         class Titan_AA {
             model = "jmfsb_ammo_titan_aa";
@@ -32977,6 +36031,9 @@ class XtdGearInfos {
         };
         class West {
             model = "jmfsb_ammo_west";
+        };
+        class Wheeled_APC_F {
+            model = "jmfsb_ammo_wheeled_apc_f";
         };
         class WNZ_EMP40mm_3GL_Grenade_Magazine {
             model = "jmfsb_ammo_wnz_emp40mm_3gl_grenade_magazine";

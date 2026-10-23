@@ -11,6 +11,11 @@ ADDON = false;
 //
 // It is never compacted. A module that is deleted mid-mission leaves a null in
 // place rather than shuffling every id after it onto a different aircraft.
-GVAR(entities) = [];
+//
+// The server fills it and publishes it; a JIP client may already hold the
+// broadcast copy by now, so it is only created when absent.
+if (isNil QGVAR(entities)) then {
+    GVAR(entities) = [];
+};
 
 ADDON = true;

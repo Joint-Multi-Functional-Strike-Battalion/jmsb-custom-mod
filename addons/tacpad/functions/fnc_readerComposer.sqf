@@ -45,12 +45,12 @@ if (isNull _root) exitWith {};
 
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
-private _btnH = ([0.8] call FUNC(textH)) + 2 * _padY;
-private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
-private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
+private _rowH = ROW_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
+private _btnH = ([TEXT_TITLE] call FUNC(textH)) + 2 * _padY;
+private _mute = ["muted"] call FUNC(theme);
+private _dim = ["dim"] call FUNC(theme);
 
 // WHICH BOX THIS TALKS TO. ALL is a view rather than a net, so it falls back to
 // the first mailbox the mission named - FUNC(netBox) is that rule, shared with the
@@ -69,7 +69,7 @@ private _net = _box select [2];
 [
     _root, [_dx + _pad, _cy, _dw - 2 * _pad, _rowH],
     format [["SEND TO %1", "REPLY ON %1"] select (_replyTo isNotEqualTo ""), toUpper _net],
-    _mute, 0.62, true, "left", true
+    _mute, TEXT_LABEL, true, "left", true
 ] call FUNC(drawText);
 _cy = _cy + _rowH;
 
@@ -82,7 +82,7 @@ private _quick = ((GVAR(quickReplies) splitString ",") apply {trim _x}) select {
 private _perRow = 5;
 
 if (_quick isEqualTo []) then {
-    [_root, [_dx + _pad, _cy, _dw - 2 * _pad, _btnH], "NO QUICK REPLIES SET", _dim, 0.7, true] call FUNC(drawText);
+    [_root, [_dx + _pad, _cy, _dw - 2 * _pad, _btnH], "NO QUICK REPLIES SET", _dim, TEXT_BODY, true] call FUNC(drawText);
 } else {
     if (count _quick > _perRow) then {_quick = _quick select [0, _perRow]};
     private _qw = (_dw - 2 * _pad) / (count _quick);
@@ -91,7 +91,7 @@ if (_quick isEqualTo []) then {
         private _qx = _dx + _pad + _forEachIndex * _qw;
 
         [_root, [_qx, _cy, _qw - _pad, _btnH], _ink, RULE_THICK] call FUNC(drawFrame);
-        [_root, [_qx + _pad, _cy, _qw - 3 * _pad, _btnH], toUpper _x, _ink, 0.68, true, "center"] call FUNC(drawText);
+        [_root, [_qx + _pad, _cy, _qw - 3 * _pad, _btnH], toUpper _x, _ink, TEXT_BODY, true, "center"] call FUNC(drawText);
 
         private _hit = [_root, [_qx, _cy, _qw - _pad, _btnH], {
             params ["_ctrl"];
@@ -121,7 +121,7 @@ _cy = _cy + _btnH + _padY;
 // FUNC(composePane) - so the conversation stays on screen behind it.
 private _actW = _dw * 0.24;
 [_root, [_dx + _pad, _cy, _actW, _btnH], _ink, RULE_THIN] call FUNC(drawFrame);
-[_root, [_dx + _pad * 2, _cy, _actW - 3 * _pad, _btnH], "+ TEMPLATE", _ink, 0.68, true, "center"] call FUNC(drawText);
+[_root, [_dx + _pad * 2, _cy, _actW - 3 * _pad, _btnH], "+ TEMPLATE", _ink, TEXT_BODY, true, "center"] call FUNC(drawText);
 
 private _tmpl = [_root, [_dx + _pad, _cy, _actW, _btnH], {
     params ["_ctrl"];
@@ -133,7 +133,7 @@ _tmpl setVariable [QGVAR(quickBox), _box];
 // And the plain message, which is what most traffic on a net actually is.
 private _msgX = _dx + _pad * 2 + _actW;
 [_root, [_msgX, _cy, _actW, _btnH], _accent, RULE_THICK] call FUNC(drawFrame);
-[_root, [_msgX + _pad, _cy, _actW - 3 * _pad, _btnH], "+ MESSAGE", _accent, 0.68, true, "center"] call FUNC(drawText);
+[_root, [_msgX + _pad, _cy, _actW - 3 * _pad, _btnH], "+ MESSAGE", _accent, TEXT_BODY, true, "center"] call FUNC(drawText);
 
 private _new = [_root, [_msgX, _cy, _actW, _btnH], {
     params ["_ctrl"];

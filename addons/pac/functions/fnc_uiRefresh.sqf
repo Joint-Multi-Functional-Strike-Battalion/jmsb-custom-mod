@@ -20,7 +20,9 @@ params [["_what", "", [""]]];
 
 if (!hasInterface) exitWith {};
 disableSerialization;
-if (isNull (uiNamespace getVariable [QGVAR(display), displayNull])) exitWith {};
+// The shell, not the display: inside the tablet the display is the device,
+// which outlives the page (FUNC(uiHost)); the shell goes with the page.
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 if !(missionNamespace getVariable [QGVAR(uiLive), false]) exitWith {};
 
 TRACE_1("redraw",_what);

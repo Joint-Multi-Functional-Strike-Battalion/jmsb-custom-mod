@@ -21,7 +21,9 @@ if (isNil QGVAR(uiData)) then {GVAR(uiData) = createHashMap};
 GVAR(uiData) set [_what, _payload];
 
 disableSerialization;
-if (isNull (uiNamespace getVariable [QGVAR(display), displayNull])) exitWith {};
+// The shell, not the display: inside the tablet the display is the device,
+// which outlives the page (FUNC(uiHost)); the shell goes with the page.
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 if (_what in (missionNamespace getVariable [QGVAR(uiWaiting), []])) then {
     [] call FUNC(uiDraw);
 };

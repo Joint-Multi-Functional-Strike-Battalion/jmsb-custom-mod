@@ -11,5 +11,4 @@ here is what lets the rest compile.
 ## Requires
 
 - `cba_main` _(external)_
-- `diwako_dui_main` _(external)_
 - `A3_Weapons_F` _(external)_

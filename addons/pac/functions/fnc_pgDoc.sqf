@@ -23,16 +23,15 @@ if !(_json isEqualType "") then {_json = ""};
 
 disableSerialization;
 private _head = [PAC_IDC_BIGEDIT_HEAD, PAC_UI_X, PAC_UI_TOP, PAC_UI_W, 0.026] call FUNC(uiPlace);
-_head ctrlSetStructuredText parseText format ["<t color='#93cf72' size='0.75'>JSON  %1 characters</t>", count _json];
+_head ctrlSetStructuredText parseText format ["<t color='#93cf72' size='0.7'>JSON  %1 characters</t>", count _json];
 private _edit = [PAC_IDC_BIGEDIT, PAC_UI_X, PAC_UI_TOP + 0.028, PAC_UI_W, PAC_UI_BOTTOM - PAC_UI_TOP - 0.028] call FUNC(uiPlace);
 _edit ctrlSetText _json;
 
 [[
     ["SAVE", {
         disableSerialization;
-        private _display = uiNamespace getVariable [QGVAR(display), displayNull];
         private _key = GVAR(uiArgs) getOrDefault ["key", ""];
-        private _text = ctrlText (_display displayCtrl PAC_IDC_BIGEDIT);
+        private _text = ctrlText ([PAC_IDC_BIGEDIT] call FUNC(uiCtrl));
         ([_text] call FUNC(fromJson)) params ["", "_ok", "_where"];
         if (!_ok) exitWith {[format ["That is not JSON (error at %1).", _where], true] call FUNC(uiHint)};
         [format ["Write %1 back to the database as it stands?%2", _key, ["", " THIS REPLACES THE STORE DOCUMENT."] select (_key isEqualTo (GVAR(settings) getOrDefault ["unitId", ""]))], {

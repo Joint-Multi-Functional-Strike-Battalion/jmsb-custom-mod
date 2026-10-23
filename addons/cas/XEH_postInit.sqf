@@ -1,16 +1,21 @@
 #include "script_component.hpp"
 
-// ON THE SUPPORT PAGE, THROUGH THE REGISTRY RATHER THAN BY NAME. The page has
-// one way in - the adapter's supportAssets - and it now merges whatever
-// providers have published themselves under a prefix. "jmfsbcas" is ours, and
-// the ids FUNC(entityRow) hands out carry it, so an order comes back to this
-// addon without the page or the adapter ever holding its name.
+// ON THE SUPPORT PAGE, AS A PROVIDER OF THE SUPPORT CORE. The core merges every
+// registered provider's rows and routes an order back by the id's prefix -
+// "cas" is ours, and the ids FUNC(entityRow) hands out carry it, so neither
+// the page nor any other provider ever holds this addon's name.
 //
 // Registered on EVERY machine, not only the server: the page is drawn on the
 // client and reads its rows locally.
-private _providers = missionNamespace getVariable [QEGVAR(adapter_alive,providers), createHashMap];
-_providers set ["jmfsbcas", [FUNC(assets), FUNC(task), FUNC(sitrep)]];
-missionNamespace setVariable [QEGVAR(adapter_alive,providers), _providers];
+[SUPPORT_KIND, createHashMapFromArray [
+    ["assets", FUNC(assets)],
+    ["task", FUNC(task)],
+    ["sitrep", FUNC(sitrep)],
+    ["available", FUNC(assetAvailable)],
+    ["preview", FUNC(preview)],
+    ["overlay", FUNC(overlay)],
+    ["types", SUPPORT_TYPES]
+]] call EFUNC(support,registerProvider);
 
 // THE SERVER FLIES THE RUNS. A request raised on a client lands here.
 if (isServer) then {
@@ -22,6 +27,10 @@ if (isServer) then {
     [QGVAR(abort), {
         params [["_logic", objNull, [objNull]]];
         if (isNull _logic) exitWith {};
+        // Nothing in the air, nothing to recall. A flag raised on an idle
+        // asset (cooling down or expended reads idle here) would sit there
+        // and kill the next run on its first tick.
+        if ((_logic getVariable [QGVAR(status), "idle"]) isEqualTo "idle") exitWith {};
         _logic setVariable [QGVAR(abort), true, true];
     }] call CBA_fnc_addEventHandler;
 };
@@ -52,12 +61,16 @@ if (!hasInterface) exitWith {};
 // airframe is hung with. Nothing on the server decides what that ordnance is
 // for any more - he does.
 //
-// THE MAN WHO ASKED FOR IT GETS IT, AND ONLY IF HE IS ISR. A terminal
-// connection is exclusive - it drops whatever else that player was flying - so
-// connecting every drone controller on the side to a new airframe would take
-// the last one out from under someone mid-task. Everyone else on the side is
-// told it is up there; the aircraft is on their terminal list and they can
-// take it themselves when the man who called it is done.
+// THE MAN WHO ASKED FOR IT GETS IT, AND ONLY IF HE IS ISR. A drone link is
+// exclusive - it drops whatever else that player was flying - so linking every
+// drone controller on the side to a new airframe would take the last one out
+// from under someone mid-task. Everyone else on the side is told it is up
+// there; the aircraft is on their DRONES board and they can take it themselves
+// when the man who called it is done.
+//
+// NO UAV TERMINAL (user, 2026-10-20: out of the arsenal). The link and the seat
+// are the devices' own (jmfsb_devices_fnc_uavControl): the UAV operator trait,
+// the players' side, the DATA link, and remoteControl rather than a terminal.
 [QGVAR(onStation), {
     params [["_logic", objNull, [objNull]], ["_veh", objNull, [objNull]], ["_caller", objNull, [objNull]]];
     if (isNull _logic || {isNull _veh}) exitWith {};
@@ -74,46 +87,48 @@ if (!hasInterface) exitWith {};
     // hacking tablet gates on - so a rifleman who calls a loiter gets an
     // aircraft holding overhead and his ISR gets the seat.
     if !([player] call EFUNC(common,isISR)) exitWith {
-        ["SUPPORT", format ["%1 on station - your ISR operator can take the feed from his terminal", _callsign], "high"] call EFUNC(messaging,notify);
+        ["SUPPORT", format ["%1 on station - your ISR operator can take the feed from his DRONES board", _callsign], "high"] call EFUNC(messaging,notify);
     };
 
-    // The terminal first: without it there is no feed and no seat, and the man
-    // is told which of the two things he is missing rather than nothing.
-    if !(player connectTerminalToUAV _veh) exitWith {
-        WARNING_3("%1 could not be connected to %2's terminal - no UAV terminal, or '%3' is not a UAV",_callsign,name player,typeOf _veh);
-        ["SUPPORT", format ["%1 on station - you have no UAV terminal to take it with", _callsign], "high"] call EFUNC(messaging,notify);
+    // The link first: without it there is no seat, and the man is told why
+    // (uavControl says it - not the UAV operator, no DATA link, ...).
+    if (isNil QEFUNC(devices,uavControl)) exitWith {
+        WARNING_1("%1: jmfsb_devices is not loaded - no drone control without a UAV terminal",_callsign);
+    };
+    if !(["link", _veh] call EFUNC(devices,uavControl)) exitWith {
+        ["SUPPORT", format ["%1 on station - holding; you cannot take it", _callsign], "high"] call EFUNC(messaging,notify);
     };
 
     ["SUPPORT", format ["%1 on station - you have the gunner", _callsign], "high"] call EFUNC(messaging,notify);
 
-    // THE SEAT ONE SECOND LATER. Connecting the terminal is what moves the
-    // aircraft's crew onto this machine; asking for the seat in the same frame
-    // asks an AI that is still somebody else's.
+    // THE SEAT ONE SECOND LATER, as it always was: the airframe and its crew
+    // are a moment old, and a seat asked for in the frame they appear in asks
+    // an AI that is not settled yet.
     [{
         params ["_veh", "_callsign"];
-        if (isNull _veh) exitWith {};
+        if (!alive _veh) exitWith {};
 
         private _gunner = gunner _veh;
         if (isNull _gunner) then {_gunner = _veh turretUnit [0]};
         if (isNull _gunner) exitWith {
-            WARNING_2("'%1' has no gunner's seat - %2 keeps the feed and nothing else",typeOf _veh,_callsign);
+            WARNING_2("'%1' has no gunner's seat - %2 keeps the link and nothing else",typeOf _veh,_callsign);
         };
 
-        player remoteControl _gunner;
+        ["take", _veh, _gunner] call EFUNC(devices,uavControl);
     }, [_veh, _callsign], 1] call CBA_fnc_waitAndExecute;
 }] call CBA_fnc_addEventHandler;
 
 // THE SEAT IS GIVEN BACK BEFORE THE AIRFRAME GOES. Recalled, shot down or out
-// of patience, the run watch says so here first and deletes a beat later - a
-// controller left in the turret of a vehicle that is deleted under him is a
-// black screen he cannot get out of.
+// of patience, FUNC(egress) says so here first - when the run ends, and again
+// before the airframe is deleted off the map edge - because a controller left
+// in the turret of a vehicle that is deleted under him is a black screen he
+// cannot get out of. Dropping the link gives the seat back first.
 [QGVAR(offStation), {
     params [["_veh", objNull, [objNull]]];
-    if (isNull _veh) exitWith {};
-    if ((getConnectedUAV player) isNotEqualTo _veh) exitWith {};
+    if (isNull _veh || {isNil QEFUNC(devices,uavControl)}) exitWith {};
+    if ((["linked"] call EFUNC(devices,uavControl)) isNotEqualTo _veh) exitWith {};
 
-    player remoteControl objNull;
-    player connectTerminalToUAV objNull;
+    ["unlink"] call EFUNC(devices,uavControl);
 }] call CBA_fnc_addEventHandler;
 
 [QGVAR(release), {

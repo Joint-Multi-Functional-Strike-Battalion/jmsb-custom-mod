@@ -18,10 +18,9 @@
 params [["_buttons", [], [[]]]];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
-private _back = _display displayCtrl PAC_IDC_BACK;
+private _back = [PAC_IDC_BACK] call FUNC(uiCtrl);
 if (count GVAR(uiHistory) > 1) then {
     [_back, PAC_UI_X, 0.940, 0.090, 0.034] call FUNC(uiPlace);
     _back setVariable [QGVAR(onClick), {[] call FUNC(uiBack)}];
@@ -33,7 +32,7 @@ private _idcs = [PAC_IDC_BTN1, PAC_IDC_BTN2, PAC_IDC_BTN3, PAC_IDC_BTN4, PAC_IDC
 private _w = 0.140;
 private _gap = 0.008;
 {
-    private _c = _display displayCtrl _x;
+    private _c = [_x] call FUNC(uiCtrl);
     if (_forEachIndex >= count _buttons) then {
         _c ctrlShow false;
         _c setVariable [QGVAR(onClick), nil];

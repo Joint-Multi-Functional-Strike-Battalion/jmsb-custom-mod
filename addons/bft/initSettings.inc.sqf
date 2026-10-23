@@ -36,6 +36,15 @@
 ] call CBA_fnc_addSetting;
 
 [
+    QGVAR(memberVoiceRings),
+    "CHECKBOX",
+    ["Member voice rings", "A ring round a member's mark while he talks: red on a radio net, magenta in direct voice. Needs game voice (jmfsb_voice)."],
+    ["1st Joint Multi-Functional Strike Battalion", "BFT"],
+    true,
+    0
+] call CBA_fnc_addSetting;
+
+[
     QGVAR(hideOwnGroup),
     "CHECKBOX",
     ["Hide own group marker", "Your own group's marker is not drawn on your map - it sits on top of you and hides the ground. Everyone else on the net still sees it, and your own men keep their member marks."],

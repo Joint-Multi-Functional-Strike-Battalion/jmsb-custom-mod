@@ -11,11 +11,14 @@ Parameters:
     _device : OBJECT - what was hacked.
     _kind   : STRING - "tower" | "drone" | "wreck" | "unit".
     _intel  : STRING - the chosen product, or "none" for a drone.
+    _action : STRING - HACK_ACTION_SPOOF to spoof a unit's net's GPS instead
+              of pulling the product (FUNC(canSpoof)); optional, default the
+              kind's own.
 
 Author:
     JMSB
 ---------------------------------------------------------------------------- */
-params ["_device", "_kind", "_intel"];
+params ["_device", "_kind", "_intel", ["_action", HACK_ACTION_DEFAULT, [""]]];
 
 if (isNull _device) exitWith {};
 
@@ -64,7 +67,8 @@ switch (_kind) do {
         // breaking it has to close the group - otherwise the next scan just
         // offers the man standing beside him and the same net can be worked
         // over and over for as many phones as it carries.
-        private _grp = group _device;
+        // A vehicle carrying a set is its crew's net (FUNC(scanDevices)).
+        private _grp = group ([_device, effectiveCommander _device] select !(_device isKindOf "CAManBase"));
         if (!isNull _grp) then {
             _grp setVariable [QGVAR(hacked), true, true];
             { _x setVariable [QGVAR(hacked), true, true] } forEach (units _grp);
@@ -78,6 +82,14 @@ switch (_kind) do {
         if (random 100 < _failChance) exitWith {
             ["Hack", "Intrusion detected - they know someone was in their net.", [1, 0.3, 0.3, 1]] call EFUNC(notify,notify);
             [QGVAR(remoteFail), [player, getPosASL player]] call CBA_fnc_serverEvent;
+        };
+
+        // SPOOF: the net's GPS walks off true (jmfsb_ew's engine, its own
+        // length and drift settings) instead of a product. Past the same
+        // fail roll and the same detection roll as a TAP.
+        if (_action isEqualTo HACK_ACTION_SPOOF && !isNil QEFUNC(ew,spoofNode)) exitWith {
+            [_grp, player] call EFUNC(ew,spoofNode);
+            ["Hack", format ["GPS spoof injected - %1's sets are walking off their true position.", groupId _grp], [0.6, 1, 0.6, 1]] call EFUNC(notify,notify);
         };
 
         [QGVAR(pick), [_intel, _pos, side group player, player, _device]] call CBA_fnc_serverEvent;

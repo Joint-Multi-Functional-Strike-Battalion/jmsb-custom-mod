@@ -1,0 +1,99 @@
+// The MPU5's material: Super shader, specular and gloss from the asset's
+// metalness and roughness (mpu5_smdi.paa, made by tools/gen_radios.py).
+//
+// THE NORMAL MAP IS NOT WIRED YET. mpu5_nohq.paa is generated beside this
+// file, but Arma's _nohq convention (channel swizzle, DXT5) is not what a
+// plain RGB conversion produces, and a wrong normal map looks worse than
+// none. Stage1 is the flat default until the generated one has been seen in
+// game; switch it to QPATHTOF-style path z\jmfsb\addons\radios\data\mpu5_nohq.paa
+// once it has.
+class StageTI
+{
+	texture="#(argb,8,8,3)color(0,0,0,0)";
+};
+ambient[]={1,1,1,1};
+diffuse[]={1,1,1,1};
+forcedDiffuse[]={0,0,0,0};
+emmisive[]={0,0,0,1};
+specular[]={0.4,0.4,0.4,1};
+specularPower=40;
+PixelShaderID="Super";
+VertexShaderID="Super";
+class Stage1
+{
+	texture="#(argb,8,8,3)color(0.5,0.5,1,1,NOHQ)";
+	uvSource="tex";
+	class uvTransform
+	{
+		aside[]={1,0,0};
+		up[]={0,1,0};
+		dir[]={0,0,0};
+		pos[]={0,0,0};
+	};
+};
+class Stage2
+{
+	texture="#(argb,8,8,3)color(0.5,0.5,0.5,1,DT)";
+	uvSource="tex";
+	class uvTransform
+	{
+		aside[]={1,0,0};
+		up[]={0,1,0};
+		dir[]={0,0,0};
+		pos[]={0,0,0};
+	};
+};
+class Stage3
+{
+	texture="#(argb,8,8,3)color(0,0,0,0,MC)";
+	uvSource="tex";
+	class uvTransform
+	{
+		aside[]={1,0,0};
+		up[]={0,1,0};
+		dir[]={0,0,0};
+		pos[]={0,0,0};
+	};
+};
+class Stage4
+{
+	texture="#(argb,8,8,3)color(1,1,1,1,AS)";
+	uvSource="tex";
+	class uvTransform
+	{
+		aside[]={1,0,0};
+		up[]={0,1,0};
+		dir[]={0,0,0};
+		pos[]={0,0,0};
+	};
+};
+class Stage5
+{
+	texture="z\jmfsb\addons\radios\data\mpu5_smdi.paa";
+	uvSource="tex";
+	class uvTransform
+	{
+		aside[]={1,0,0};
+		up[]={0,1,0};
+		dir[]={0,0,0};
+		pos[]={0,0,0};
+	};
+};
+class Stage6
+{
+	texture="#(ai,64,64,1)fresnel(1,0.7)";
+	uvSource="none";
+};
+class Stage7
+{
+	texture="a3\data_f\env_co.paa";
+	useWorldEnvMap="true";
+	uvSource="tex";
+	class uvTransform
+	{
+		aside[]={1,0,0};
+		up[]={0,1,0};
+		dir[]={0,0,0};
+		pos[]={0,0,0};
+	};
+};

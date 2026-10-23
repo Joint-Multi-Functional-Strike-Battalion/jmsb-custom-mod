@@ -25,7 +25,7 @@ Everything drawn *inside* the tablet and scanner screens is jmfsb-original.
 
 `tablet.paa` is **not** the file as vendored: `tools/gen_tablet_bezel.py` paints
 out the "MRHTECH" wordmark on the chin and stamps the jmfsb logo there instead.
-The untouched vendored copy lives at `tools/art/tablet_src.paa` — kept outside
+The untouched vendored copy lives at `art/tablet_src.paa` — kept outside
 `addons/` so a 1.1 MB source image is not packed into the pbo — and the script
 always regenerates from it, so it can be rerun and retuned freely.
 

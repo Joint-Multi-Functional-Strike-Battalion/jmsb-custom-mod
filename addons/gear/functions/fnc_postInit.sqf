@@ -28,11 +28,17 @@ if (hasInterface) then {
         [player, 'BIS'] call EFUNC(players,setRank);
         call (missionNamespace getVariable ["jmfsb_w28fixes_fnc_player_set_name", {}]);
         player linkItem "ItemCompass";
-        if ("B_UavTerminal" in (player getSlotItemName 612)) then { 
-            if !([player, "ItemAndroidMisc"] call ace_common_fnc_hasItem)  
-                then {player addItem "ItemAndroidMisc"}; 
-            } else { 
-                if !([player, "ItemAndroid"] call ace_common_fnc_hasItem) then {player linkItem "ItemAndroid"}; 
+        // THE GPS SLOT IS KEPT when it holds a JMSB device (jmfsb_devices: the
+        // phone and side devices, which also fly drones now that the vanilla
+        // UAV terminal is out of the arsenal) or a UAV terminal a loadout still
+        // carries; the Android goes in the pack then. Otherwise it is linked.
+        private _gps = player getSlotItemName 612;
+        private _keep = _gps isKindOf ["UavTerminal_base", configFile >> "CfgWeapons"]
+            || {!isNil QEFUNC(devices,overlayDevice) && {([] call EFUNC(devices,overlayDevice)) isNotEqualTo ""}};
+        if (_keep) then {
+            if !([player, "ItemAndroidMisc"] call ace_common_fnc_hasItem) then {player addItem "ItemAndroidMisc"};
+        } else {
+            if !([player, "ItemAndroid"] call ace_common_fnc_hasItem) then {player linkItem "ItemAndroid"};
         };
         player call EFUNC(gear,saveLoadout);
     }] call CBA_fnc_addEventHandler;

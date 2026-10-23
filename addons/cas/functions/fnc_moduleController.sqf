@@ -92,5 +92,10 @@ _logic setVariable [QGVAR(vehicle), objNull, true];
 
 GVAR(entities) pushBack _logic;
 _logic setVariable [QGVAR(id), count GVAR(entities) - 1, true];
+// THE BOARD IS READ ON EVERY CLIENT. fnc_assets builds the rows locally, so a
+// list kept only on the server gave every client on a dedicated server an empty
+// CAS-drone board (found 2026-10-19). Published on each registration; JIP
+// clients get the last value.
+publicVariable QGVAR(entities);
 
 INFO_3("asset '%1' on the board for %2 flying %3",toUpper _callsign,_side,_cls);

@@ -392,6 +392,18 @@ class XtdGearModels {
                 class green { label = "Green"; };
             };
         };
+        class jmfsb_ammo_aegis_sgun_aa40_aco_lp_lxws {
+            label = "Aegis sgun AA40 ACO LP LxWS";
+            options[] = {"finish"};
+
+            class finish {
+                label = "Finish";
+                values[] = {"default", "tan"};
+
+                class Default { label = "Default"; };
+                class tan { label = "Tan"; };
+            };
+        };
         class jmfsb_ammo_aegis_signalflare {
             label = "Aegis SignalFlare";
             options[] = {"colour"};
@@ -414,8 +426,58 @@ class XtdGearModels {
             options[] = {};
 
         };
+        class jmfsb_ammo_all {
+            label = "All";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_allvehicles {
+            label = "AllVehicles";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_arifle_mx_base_f {
+            label = "arifle MX Base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_arifle_mx_f {
+            label = "arifle MX";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_b_heli_transport_03_f {
+            label = "B Heli Transport 03";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_b_heli_transport_03_unarmed_f {
+            label = "B Heli Transport 03 unarmed";
+            options[] = {};
+
+        };
         class jmfsb_ammo_b_ir_grenade {
             label = "B IR Grenade";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_b_mortar_01_f {
+            label = "B Mortar 01";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_b_soldier_f {
+            label = "B Soldier";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_b_soldier_recon_base {
+            label = "B Soldier recon base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_car_f {
+            label = "Car";
             options[] = {};
 
         };
@@ -5115,8 +5177,8 @@ class XtdGearModels {
             };
         };
         class jmfsb_ammo_fa_mcc_pmag_556_40_m855_556_mk332_ap {
-            label = "[JMSB] 40Rnd 5.56mm Mk332 AP (PMAG)";
-            rowName = "[JMSB] 40Rnd 5.56mm Mk332 AP (PMAG)";
+            label = "[JMSB] 40Rnd 5.56mm Mk332 AP (PMAG) [MCC]";
+            rowName = "[JMSB] 40Rnd 5.56mm Mk332 AP (PMAG) [MCC]";
             options[] = {"tracer", "finish"};
 
             class tracer {
@@ -5141,8 +5203,8 @@ class XtdGearModels {
             };
         };
         class jmfsb_ammo_fa_mcc_pmag_556_40_m855_556_xm891_ctep {
-            label = "[JMSB] 40Rnd 5.56mm XM891 CTEP (PMAG)";
-            rowName = "[JMSB] 40Rnd 5.56mm XM891 CTEP (PMAG)";
+            label = "[JMSB] 40Rnd 5.56mm XM891 CTEP (PMAG) [MCC]";
+            rowName = "[JMSB] 40Rnd 5.56mm XM891 CTEP (PMAG) [MCC]";
             options[] = {"tracer", "finish"};
 
             class tracer {
@@ -9403,6 +9465,524 @@ class XtdGearModels {
             options[] = {};
 
         };
+        class jmfsb_ammo_fa_sps_ai_axmc_338_mk371_250gr {
+            label = "[JMSB] .338 AI AXMC Mk371 250gr";
+            rowName = "[JMSB] .338 AI AXMC Mk371 250gr";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_ai_axmc_338_mk371_285gr {
+            label = "[JMSB] .338 AI AXMC Mk371 285gr";
+            rowName = "[JMSB] .338 AI AXMC Mk371 285gr";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_ai_axmc_338_mk371_300gr {
+            label = "[JMSB] .338 AI AXMC Mk371 300gr";
+            rowName = "[JMSB] .338 AI AXMC Mk371 300gr";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_ai_axmc_762x51_m80a2_hv {
+            label = "[JMSB] 7.62mm AI AXMC M80A2 HV";
+            rowName = "[JMSB] 7.62mm AI AXMC M80A2 HV";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_ai_axmc_762x51_xm751_ctep {
+            label = "[JMSB] 7.62mm AI AXMC XM751 CTEP";
+            rowName = "[JMSB] 7.62mm AI AXMC XM751 CTEP";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248lv {
+            label = "[JMSB] AI AXMC 762x67 Mk248LV";
+            rowName = "[JMSB] AI AXMC 762x67 Mk248LV";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_ai_axmc_762x67_mk248mod2 {
+            label = "[JMSB] AI AXMC 762x67 Mk248Mod2";
+            rowName = "[JMSB] AI AXMC 762x67 Mk248Mod2";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_b {
+            label = "[JMSB] 30Rnd .300 BLK HKG3PMAG";
+            rowName = "[JMSB] 30Rnd .300 BLK HKG3PMAG";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_300blk_110_s {
+            label = "[JMSB] 30Rnd .300 BLK HKG3PMAG S";
+            rowName = "[JMSB] 30Rnd .300 BLK HKG3PMAG S";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45 {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG [BLUFOR]";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG [BLUFOR]";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_mk332_ap {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG Mk332 AP [BLUFOR]";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG Mk332 AP [BLUFOR]";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_b_xm891_ctep {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG XM891 CTEP [BLUFOR]";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG XM891 CTEP [BLUFOR]";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_mk332_ap {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG Mk332 AP";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG Mk332 AP";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG S";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG S";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_mk332_ap {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG S Mk332 AP";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG S Mk332 AP";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_s_xm891_ctep {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG S XM891 CTEP";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG S XM891 CTEP";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_hkg3pmag_30rnd_556x45_xm891_ctep {
+            label = "[JMSB] 30Rnd 5.56mm HKG3PMAG XM891 CTEP";
+            rowName = "[JMSB] 30Rnd 5.56mm HKG3PMAG XM891 CTEP";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_kac_lamg_150rnd_box {
+            label = "[JMSB] 150Rnd KAC LAMG (Box)";
+            rowName = "[JMSB] 150Rnd KAC LAMG (Box)";
+            options[] = {"tracer", "finish"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+            class finish {
+                label = "Finish";
+                values[] = {"default", "tan"};
+
+                class Default { label = "Default"; };
+                class tan { label = "Tan"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_kac_lwamg_100rnd_box {
+            label = "[JMSB] 100Rnd KAC LWAMG (Box)";
+            rowName = "[JMSB] 100Rnd KAC LWAMG (Box)";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire {
+            label = "[JMSB] 60Rnd 5.56mm (Surefire 60)";
+            rowName = "[JMSB] 60Rnd 5.56mm (Surefire 60)";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_mk332_ap {
+            label = "[JMSB] 60Rnd 5.56mm Mk332 AP (Surefire 60)";
+            rowName = "[JMSB] 60Rnd 5.56mm Mk332 AP (Surefire 60)";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_p_60rnd_556x45_surefire_xm891_ctep {
+            label = "[JMSB] 60Rnd 5.56mm XM891 CTEP (Surefire 60)";
+            rowName = "[JMSB] 60Rnd 5.56mm XM891 CTEP (Surefire 60)";
+            options[] = {"tracer"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_pmag_40rnd_556x45 {
+            label = "[JMSB] 40Rnd 5.56mm (PMAG)";
+            rowName = "[JMSB] 40Rnd 5.56mm (PMAG)";
+            options[] = {"tracer", "finish"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+            class finish {
+                label = "Finish";
+                values[] = {"black", "sand"};
+
+                class black { label = "Black"; };
+                class sand { label = "Sand"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_pmag_40rnd_556x45_mk332_ap {
+            label = "[JMSB] 40Rnd 5.56mm Mk332 AP (PMAG) [SPS]";
+            rowName = "[JMSB] 40Rnd 5.56mm Mk332 AP (PMAG) [SPS]";
+            options[] = {"tracer", "finish"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+            class finish {
+                label = "Finish";
+                values[] = {"black", "sand"};
+
+                class black { label = "Black"; };
+                class sand { label = "Sand"; };
+            };
+        };
+        class jmfsb_ammo_fa_sps_pmag_40rnd_556x45_xm891_ctep {
+            label = "[JMSB] 40Rnd 5.56mm XM891 CTEP (PMAG) [SPS]";
+            rowName = "[JMSB] 40Rnd 5.56mm XM891 CTEP (PMAG) [SPS]";
+            options[] = {"tracer", "finish"};
+
+            class tracer {
+                label = "Tracer";
+                values[] = {"ball", "white", "red", "green", "yellow", "blue", "orange", "ir"};
+
+                class ball { label = "Ball"; };
+                class white { label = "White"; };
+                class red { label = "Red"; };
+                class green { label = "Green"; };
+                class yellow { label = "Yellow"; };
+                class blue { label = "Blue"; };
+                class orange { label = "Orange"; };
+                class ir { label = "IR"; };
+            };
+            class finish {
+                label = "Finish";
+                values[] = {"black", "sand"};
+
+                class black { label = "Black"; };
+                class sand { label = "Sand"; };
+            };
+        };
         class jmfsb_ammo_fa_titan_aa_mim165_sentry {
             label = "[JMSB] Titan AA MIM165 Sentry";
             rowName = "[JMSB] Titan AA MIM165 Sentry";
@@ -9602,26 +10182,6 @@ class XtdGearModels {
             options[] = {};
 
         };
-        class jmfsb_ammo_jmfsb {
-            label = "jmfsb";
-            options[] = {};
-
-        };
-        class jmfsb_ammo_jmfsb_blue {
-            label = "jmfsb blue";
-            options[] = {};
-
-        };
-        class jmfsb_ammo_jmfsb_fa_glock19_rf {
-            label = "jmfsb fa Glock19 RF";
-            options[] = {};
-
-        };
-        class jmfsb_ammo_jmfsb_red {
-            label = "jmfsb red";
-            options[] = {};
-
-        };
         class jmfsb_ammo_gx_1rnd_drone40_he_m203 {
             label = "GX 1RND DRONE40 HE M203";
             options[] = {};
@@ -9742,6 +10302,36 @@ class XtdGearModels {
             options[] = {};
 
         };
+        class jmfsb_ammo_heli_attack_02_base_f {
+            label = "Heli Attack 02 base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_heli_transport_03_base_f {
+            label = "Heli Transport 03 base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_heli_transport_03_unarmed_base_f {
+            label = "Heli Transport 03 unarmed base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_helicopter {
+            label = "Helicopter";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_helicopter_base_f {
+            label = "Helicopter Base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_helicopter_base_h {
+            label = "Helicopter Base H";
+            options[] = {};
+
+        };
         class jmfsb_ammo_iedurbanbig_remote_mag {
             label = "IEDUrbanBig Remote Mag";
             options[] = {};
@@ -9749,6 +10339,46 @@ class XtdGearModels {
         };
         class jmfsb_ammo_iedurbansmall_remote_mag {
             label = "IEDUrbanSmall Remote Mag";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_jmfsb {
+            label = "jmfsb";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_jmfsb_blue {
+            label = "jmfsb blue";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_jmfsb_fa_glock19_rf {
+            label = "jmfsb fa Glock19 RF";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_jmfsb_red {
+            label = "jmfsb red";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_jmfsb_uniform_pla_b_viperharness_lat_lxws_a {
+            label = "jmfsb uniform pla B ViperHarness LAT lxWS A";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_jmfsb_uniform_pla_b_viperharness_lat_lxws_w {
+            label = "jmfsb uniform pla B ViperHarness LAT lxWS W";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_land {
+            label = "Land";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_landvehicle {
+            label = "LandVehicle";
             options[] = {};
 
         };
@@ -9764,6 +10394,11 @@ class XtdGearModels {
         };
         class jmfsb_ammo_minigrenade {
             label = "MiniGrenade";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_mortar_01_base_f {
+            label = "Mortar 01 base";
             options[] = {};
 
         };
@@ -9797,6 +10432,16 @@ class XtdGearModels {
             options[] = {};
 
         };
+        class jmfsb_ammo_rifle_base_f {
+            label = "Rifle Base";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_rifle_short_base_f {
+            label = "Rifle Short Base";
+            options[] = {};
+
+        };
         class jmfsb_ammo_satchelcharge_remote_mag {
             label = "SatchelCharge Remote Mag";
             options[] = {};
@@ -9826,6 +10471,16 @@ class XtdGearModels {
         };
         class jmfsb_ammo_stanag_556x45 {
             label = "STANAG 556x45";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_staticmortar {
+            label = "StaticMortar";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_staticweapon {
+            label = "StaticWeapon";
             options[] = {};
 
         };
@@ -9880,6 +10535,11 @@ class XtdGearModels {
         };
         class jmfsb_ammo_west {
             label = "West";
+            options[] = {};
+
+        };
+        class jmfsb_ammo_wheeled_apc_f {
+            label = "Wheeled APC";
             options[] = {};
 
         };

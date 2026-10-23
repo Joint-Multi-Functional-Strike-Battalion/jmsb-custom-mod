@@ -24,6 +24,19 @@
     false
 ] call CBA_fnc_addSetting;
 
+// OFF BY DEFAULT IN TABLET MODE. The devices carry the same readouts as their
+// own status row, so with the tacpad on a device the HUD is a second copy on
+// the game screen. The player can have it back; the default is the device.
+// Read alongside jmfsb_tacpad_displayMode in FUNC(open).
+[
+    QGVAR(showInTablet), "CHECKBOX",
+    ["Show in tablet mode", "Keeps the HUD slots on the game screen when the tacpad display mode is TABLET. Off by default there: the device shows the same readouts."],
+    ["1st Joint Multi-Functional Strike Battalion", "HUD"],
+    false,
+    false,
+    {[QGVAR(enabled_changed), []] call CBA_fnc_localEvent}
+] call CBA_fnc_addSetting;
+
 [
     QGVAR(opacity), "SLIDER",
     ["HUD opacity", "How solid the slot backgrounds are over the world. The text stays fully opaque at any setting."],

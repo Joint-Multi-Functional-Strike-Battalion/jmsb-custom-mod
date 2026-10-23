@@ -20,3 +20,8 @@ PREP(vehicleBox);
 PREP(boxRect);
 PREP(labelText);
 PREP(drawBoxes);
+PREP(drawCompass);
+
+// EachFrame - hides the boxes when the map or a dialog covers the view,
+// where Draw3D does not run.
+PREP(hideCovered);

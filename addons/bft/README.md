@@ -91,6 +91,11 @@ JMSB's part is the port and the plumbing around it:
 - `mapSettings` was declared but never read upstream; it gates the menu here
 - the unreachable `projected` trailing mode dropped
 - the admin surface: god view, `#jmfsb bft.*`, gated on `jmfsb_common_isAdmin`
+- **positions are GPS positions** (`jmfsb_ew_fnc_gpsOf`, when `jmfsb_ew` is
+  loaded): a member dot is drawn where the man's GPS says he is - the false
+  fix when spoofed, nothing when his GPS is denied, and your own dot reads
+  "- GPS SUSPECT" while an anti-spoof set flags it; group markers are built
+  from the members' GPS positions (a denied man counts at his true one)
 
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
@@ -104,7 +109,7 @@ JMSB's part is the port and the plumbing around it:
 
 ## Ships
 
-21 functions.
+22 functions.
 
 ## CBA settings
 
@@ -113,6 +118,7 @@ JMSB's part is the port and the plumbing around it:
 | `jmfsb_bft_enabled` | CHECKBOX | Enable group markers |
 | `jmfsb_bft_autoEnable` | LIST | Auto enable for |
 | `jmfsb_bft_memberMarkers` | LIST | Member markers |
+| `jmfsb_bft_memberVoiceRings` | CHECKBOX | Member voice rings |
 | `jmfsb_bft_hideOwnGroup` | CHECKBOX | Hide own group marker |
 | `jmfsb_bft_showVirtual` | CHECKBOX | Show virtual friendlies |
 | `jmfsb_bft_updateDelay` | SLIDER | Update delay |
@@ -132,7 +138,7 @@ JMSB's part is the port and the plumbing around it:
 
 ## Functions
 
-<details><summary>21</summary>
+<details><summary>22</summary>
 
 - `jmfsb_bft_fnc_autoEnable`
 - `jmfsb_bft_fnc_describeGroup`
@@ -144,6 +150,7 @@ JMSB's part is the port and the plumbing around it:
 - `jmfsb_bft_fnc_init`
 - `jmfsb_bft_fnc_isAdmin`
 - `jmfsb_bft_fnc_loop`
+- `jmfsb_bft_fnc_memberNumber`
 - `jmfsb_bft_fnc_networkAdd`
 - `jmfsb_bft_fnc_networkAddObserver`
 - `jmfsb_bft_fnc_networkClear`

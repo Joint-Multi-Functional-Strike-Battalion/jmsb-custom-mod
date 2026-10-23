@@ -14,6 +14,7 @@ class CfgPatches {
             "jmfsb_common",
             "cba_xeh",
             "jmfsb_notify",
+            "jmfsb_support",
             "ALiVE_main",
             "ALiVE_x_lib"
         };

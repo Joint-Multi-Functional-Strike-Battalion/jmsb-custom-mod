@@ -1,18 +1,18 @@
         class B_AssaultPack_mcamo {
-            model = QGVAR(jmfsb_AssaultPack);
-            camo = "MC";
+            model = QGVAR(jmfsb_StdAssaultPack);
+            camo = "OCP";
         };
         class B_AssaultPackSpec_mcamo {
             model = QGVAR(jmfsb_AssaultPackSpec);
             camo = "MC";
         };
         class B_Bergen_mcamo_F {
-            model = QGVAR(jmfsb_Bergen);
-            camo = "MC";
+            model = QGVAR(jmfsb_StdBergen);
+            camo = "OCP";
         };
         class B_Carryall_mcamo {
-            model = QGVAR(jmfsb_Carryall);
-            camo = "MC";
+            model = QGVAR(jmfsb_StdCarryall);
+            camo = "OCP";
         };
         class B_GMG_01_A_weapon_F {
             model = QGVAR(jmfsb_Static_GMG_01);
@@ -79,8 +79,8 @@
             camo = "MC";
         };
         class B_RadioBag_01_mtp_F {
-            model = QGVAR(jmfsb_RadioBag);
-            camo = "MTP";
+            model = "jmfsb_backpack_radiobag";
+            camo = "OCP";
         };
         class B_Respawn_RallyPoint_01_bag_F {
             model = QGVAR(jmfsb_RallyPoint);
@@ -97,16 +97,16 @@
             color = "Default";
         };
         class B_TacticalPack_mcamo {
-            model = QGVAR(jmfsb_TacticalPack);
-            camo = "MC";
+            model = QGVAR(jmfsb_StdTacticalPack);
+            camo = "OCP";
         };
         class B_Static_Designator_01_weapon_F {
             model = QGVAR(jmfsb_Designator_01);
             faction = "NATO";
         };
         class B_Kitbag_mcamo {
-            model = QGVAR(jmfsb_Kitbag);
-            camo = "MC";
+            model = QGVAR(jmfsb_StdKitbag);
+            camo = "OCP";
         };
         class B_Mortar_01_weapon_F {
             model = QGVAR(jmfsb_Static_Mortar_01);

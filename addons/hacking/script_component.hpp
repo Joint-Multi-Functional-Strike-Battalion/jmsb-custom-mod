@@ -93,6 +93,14 @@
 #define TAB_REFRESH         1       // sec between device-list refreshes
 #define TAB_SCAN_PAD        50      // m added to the biggest hack range when scanning
 
+// --- RF reach (FUNC(rfReach), the HACK board's NODES IN REACH) -------------
+// Who may hold an RF node worth listening to, how many nodes one answer
+// carries (each is a fresh budget cast), and the friendliness under which a
+// side counts as hostile - FUNC(scanDevices)' own rule.
+#define HACK_RF_HOLDER_KINDS ["Man", "LandVehicle", "Air", "Ship"]
+#define HACK_RF_MAX_NODES   12
+#define HACK_HOSTILE_BELOW  0.6
+
 // --- hand-held scanner ------------------------------------------------------
 // A held device, not a dialog: it stays on screen while you walk, and every
 // reading changes as you move. Behaviour referenced from ACE's MicroDAGR - ACE
@@ -190,3 +198,9 @@
 
 // How often the agent sweep looks for someone new to hand a handset to.
 #define PHONE_SWEEP 30
+
+// WHAT A HACK DOES on completion, beyond the kind's own effect: "" is the
+// kind's default (TAP for a product, DISABLE for a drone); SPOOF walks a broken
+// net's GPS off true through jmfsb_ew's spoof engine (FUNC(canSpoof)).
+#define HACK_ACTION_DEFAULT ""
+#define HACK_ACTION_SPOOF   "spoof"

@@ -18,8 +18,8 @@
  * ONE TABLE. The platoon a squad belongs to, and the net on that platoon.
  * There was a "shared radio nets" table asked first; it is gone, and so is
  * the idea (user, 2026-09-09: "noi fucking shared nets ... acre and tfar tab
- * only for fucking radios"). Radio channels are the ACRE and TFAR plans;
- * messaging nets are mailboxes on the messaging tab.
+ * only for fucking radios"). Radio channels are the ACRE plan and the net
+ * plan (game voice); messaging nets are mailboxes on the messaging tab.
  *
  * A platoon with no net, a unit with no platoons, or a squad in no platoon all
  * answer "" and leave the caller on its default.
@@ -61,9 +61,9 @@ private _fnc_lookup = {
 // THE PLATOON'S NET, AND NOTHING ELSE. There was a "shared nets" table asked
 // first - rows pairing squads across a platoon boundary onto one net - and it
 // is gone (user, 2026-09-09: "no fucking shared nets ... if there is acre use
-// the acre tab to configure all radios, if there is tfar use the tfar tab").
-// A squad's channel is the radio plan's business: ACRE matches this name
-// against an MR channel label, TFAR reads the squad's own row.
+// the acre tab to configure all radios"). A squad's channel is the radio
+// plan's business: ACRE matches this name against an MR channel label, the
+// net plan reads the squad's own row.
 private _net = [_platoons, 3, 4] call _fnc_lookup;
 
 _net

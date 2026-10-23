@@ -204,12 +204,38 @@ _out pushBack [
     }
 ];
 
-// --- RADIO, stubbed ----------------------------------------------------------
-// Deliberately a placeholder, and drawn stale so it reads as one. jmfsb's ACRE
-// rack readout port is in the archive and TFAR reports differently again;
-// picking one before the radio layer is settled would be inventing a source,
-// not reading one.
-_out pushBack ["radio", "RADIO", "NO SRC", "----", "SOURCE NOT WIRED", "stale"];
+// --- RADIO, off game voice ------------------------------------------------------
+// The active net and its state, as jmfsb_voice reports them (netState: [net,
+// name, kind, active, muted, ear, reachable, talkers]). Without jmfsb_voice
+// the tile has no source and is drawn stale so it reads as one. An active net
+// that reaches nobody is "warn": degraded, not gone.
+if (isNil QEFUNC(voice,netState)) then {
+    _out pushBack ["radio", "RADIO", "NO SRC", "----", "NO VOICE", "stale"];
+} else {
+    private _nets = [] call EFUNC(voice,netState);
+    private _i = _nets findIf {_x param [3, false]};
+    if (_i < 0) then {
+        _out pushBack ["radio", "RADIO", "NO NET", "----", format ["%1 NETS", count _nets], "warn"];
+    } else {
+        (_nets select _i) params [["_netId", ""], ["_name", ""], ["_kind", ""], "", ["_muted", false], "", ["_reach", false], ["_talkers", []]];
+        private _detail = switch (true) do {
+            case (!_reach): {"NO LINK"};
+            case (_muted): {"MUTED"};
+            case (_talkers isNotEqualTo []): {format ["%1 TALKING", count _talkers]};
+            default {"QUIET"};
+        };
+        _out pushBack ["radio", "RADIO", toUpper _kind, [_name, _netId] select (_name isEqualTo ""), _detail, ["warn", "rest"] select _reach];
+    };
+};
+
+// --- tiles other addons add ---------------------------------------------------
+// Each provider answers its own tiles, or none - jmfsb_devices' VEHICLE tile
+// answers only while the vehicle tablet is up. They pass the role gate below
+// like every other tile, except the ids a provider has listed in tileUngated:
+// a tile its own device already gates, which no role's tiles[] names.
+{
+    _out append ([] call _y);
+} forEach (missionNamespace getVariable [QGVAR(tileProviders), createHashMap]);
 
 // --- the role gate -----------------------------------------------------------
 // THE ONLY PLACE TILES COME FROM, so it is the only place access has to be
@@ -222,7 +248,8 @@ _out pushBack ["radio", "RADIO", "NO SRC", "----", "SOURCE NOT WIRED", "stale"];
 ([player] call FUNC(roleTiles)) params ["_gated", "_allowed"];
 
 if (_gated) then {
-    _out = _out select {(_x # 0) in _allowed};
+    private _ungated = missionNamespace getVariable [QGVAR(tileUngated), []];
+    _out = _out select {(_x # 0) in _allowed || {(_x # 0) in _ungated}};
 };
 
 // --- band order --------------------------------------------------------------
@@ -242,8 +269,10 @@ if (_gated) then {
 // The side's own count, off the store EFUNC(hacking,productPackage) broadcasts.
 // It reads NO FILES rather than 0 because a zero on a tile looks like a thing
 // that failed, and nothing has failed - nobody has hacked anything yet.
+// `player`, as everywhere else here: ACE is optional, and without it ACE_player
+// is nil and the whole band throws on this line.
 private _intel = (missionNamespace getVariable [QEGVAR(hacking,packageIntel), createHashMap])
-    getOrDefault [str (side group ACE_player), []];
+    getOrDefault [str (side group player), []];
 private _folders = [];
 { _folders pushBackUnique (_x # 0) } forEach _intel;
 
@@ -259,16 +288,16 @@ _out pushBack [
     ["stale", "rest"] select (_intel isNotEqualTo [])
 ];
 
-// --- SUPPORT, over the adapter ----------------------------------------------
-// NO ADAPTER, NO TILE. The app is not registered without it either - a live
+// --- SUPPORT, over the support core ----------------------------------------
+// NO CORE, NO TILE. The app is not registered without it either - a live
 // tile reading NO LINK for a system that is not installed is a permanent
 // apology, and the band is only six wide.
 //
-// ONE COUNT, THREE BACK ENDS. EFUNC(adapter_alive,supportAssets) merges ALiVE's
-// own ATO and NEO assets with every registered provider's rows - jmfsb's CAS
-// module and Simplex - so this does not care which of them is present.
-if (!isNil QEFUNC(adapter_alive,supportAssets)) then {
-    private _support = call EFUNC(adapter_alive,supportAssets);
+// ONE COUNT, ANY NUMBER OF BACK ENDS. EFUNC(support,assets) merges every
+// registered provider's rows - ALiVE's ATO and NEO assets, jmfsb's CAS drones,
+// support_fires and support_air - so this does not care which of them is present.
+if (!isNil QEFUNC(support,assets)) then {
+    private _support = call EFUNC(support,assets);
     private _idle = {(_x param [4, ""]) isEqualTo "idle"} count _support;
     _out pushBack [
         "support",
@@ -284,7 +313,7 @@ if (!isNil QEFUNC(adapter_alive,supportAssets)) then {
 // Structure hash, current OPORD, players on, op window - the handoff's own list
 // for the tile. Read off the summary the server publishes rather than the
 // roster, so the band never walks a player list. Guarded on the addon: a mod
-// built without jmfsb_pac has no tile, the same rule as Simplex and PLP.
+// built without jmfsb_pac has no tile, the same rule as the map tools strip.
 if (!isNil "jmfsb_pac_summary") then {
     private _pac = jmfsb_pac_summary;
     private _opord = _pac getOrDefault ["opord", ""];
@@ -304,7 +333,7 @@ if (!isNil "jmfsb_pac_summary") then {
     ];
 };
 
-private _order = ["drones", "jam", "weather", "timer", "radio", "hack", "intel", "support", "pac"];
+private _order = ["vehicle", "drones", "jam", "weather", "timer", "radio", "medic", "hack", "intel", "support", "pac"];
 
 private _ranked = _out apply {
     private _i = _order find (_x # 0);

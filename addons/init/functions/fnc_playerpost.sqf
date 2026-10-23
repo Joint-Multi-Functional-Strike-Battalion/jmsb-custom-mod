@@ -69,10 +69,12 @@ if (EGVAR(patches,usesACRE) && GVAR(isPlayer)) then {
     }, []] call CBA_fnc_waitUntilAndExecute;
 };
 
-//same login default under TFAR - wait until the SW handheld exists, then tune to the pre-join nets
+//same login default under TFAR - wait until the SW handheld exists, then tune to the net plan
+//(jmfsb_adapter_tfar_fnc_tune through setRadioChannel) and put the plan's handheld in hand
 if (EGVAR(patches,usesTFAR) && GVAR(isPlayer)) then {
     [{ private _r = call TFAR_fnc_activeSwRadio; !isNil "_r" && {_r isEqualType "" && _r isNotEqualTo ""} }, {
         [player] call EFUNC(players,setRadioChannel);
-        [jmfsbFR_radio_tfarActiveRadio] call EFUNC(players,setActiveRadio);
+        [missionNamespace getVariable ["jmfsbFR_radio_tfarActiveRadio", ""]] call EFUNC(players,setActiveRadio);
     }, []] call CBA_fnc_waitUntilAndExecute;
 };
+

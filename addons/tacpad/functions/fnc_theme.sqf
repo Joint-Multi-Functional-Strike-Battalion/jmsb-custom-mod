@@ -17,7 +17,9 @@
  * mode: a light panel at 0200 is a torch in the face.
  *
  * Arguments:
- * 0: Token - "ground", "ink", "accent", "line", or "" for all four <STRING> (optional, default "")
+ * 0: Token - "ground", "ink", "accent", "line", the derived "accentTint", "accentHover",
+ *    "accentText", "accentDeep", "surface", "muted", "dim", the fixed "swatchGreen" / "swatchYellow",
+ *    or "" for the first four <STRING> (optional, default "")
  *
  * Return Value:
  * RGBA <ARRAY>, or [ground, ink, accent, line] when no token is named
@@ -167,10 +169,40 @@ if (_cached isEqualTo [] || {(_cached # 0) != _key}) then {
 
 private _set = _cached # 1;
 
+// THE DERIVED STEPS (docs/PLAN_MESSAGING_UI.md, phase 1). The handoffs use an
+// accent ramp and a neutral ramp; here every step is MIXED from the three
+// tokens, never typed, so Night/NVG and a custom scheme repaint them too.
+// _mix [a, b, t] = a moved t of the way to b, alpha from a.
+private _mix = {
+    params ["_a", "_b", "_t"];
+    ([0, 1, 2] apply {(_a # _x) + ((_b # _x) - (_a # _x)) * _t}) + [_a param [3, 1]]
+};
+private _ground = _set # 0;
+private _ink = _set # 1;
+private _accent = _set # 2;
+private _solidGround = [_ground # 0, _ground # 1, _ground # 2, 1];
+
 switch (_token) do {
-    case "ground": {_set # 0};
-    case "ink": {_set # 1};
-    case "accent": {_set # 2};
+    case "ground": {_ground};
+    case "ink": {_ink};
+    case "accent": {_accent};
     case "line": {_set # 3};
+    // the selected-row wash (accent-100)
+    case "accentTint": {[_solidGround, _accent, TINT_ACCENT] call _mix};
+    // hover / pressed on an accent fill (accent-600)
+    case "accentHover": {[_accent, _ink, MIX_ACCENT_HOVER] call _mix};
+    // accent at body size, where full accent is too light to read (accent-700)
+    case "accentText": {[_accent, _ink, MIX_ACCENT_TEXT] call _mix};
+    // reply meta on a selected row (accent-800)
+    case "accentDeep": {[_accent, _ink, MIX_ACCENT_DEEP] call _mix};
+    // the rail and badge-strip fill (surface / neutral-200)
+    case "surface": {[_solidGround, _ink, TINT_SURFACE] call _mix};
+    // secondary text (neutral-700) and micro-labels (neutral-600)
+    case "muted": {[_ink, _solidGround, MIX_MUTED] call _mix};
+    case "dim": {[_ink, _solidGround, MIX_DIM] call _mix};
+    // a report card's GREEN and YELLOW swatches - fixed hues, the one place a
+    // scheme does not repaint, because GREEN must still read as green on it
+    case "swatchGreen": {SWATCH_GREEN};
+    case "swatchYellow": {SWATCH_YELLOW};
     default {_set};
 };

@@ -3,6 +3,9 @@
  * Author: CPL.Brostrom.A
  * This function creates a staging zone and saves it to a mission name space.
  * The zone can be OBJECT, MARKER or POSITION ARRAY
+ * Every zone also gets a radio base station with a satellite uplink at its
+ * centre, made once by the server whoever adds the zone (FUNC(stagingUplink),
+ * setting "Staging zone satellite uplink").
  *
  * Arguments:
  * 0: Zone <OBJECT/STRING/ARRAY>
@@ -45,6 +48,7 @@ if (_zone isEqualType []) exitWith {
 
     _stagingZones append [[_stagingZone, _zoneSize, _zoneType]];
     missionNamespace setVariable [QEGVAR(Staging,Zones), _stagingZones];
+    [_zonePos] call FUNC(stagingUplink);
 };
 
 // Shape marker zone
@@ -65,6 +69,7 @@ if (_zone isEqualType "") exitWith {
 
     _stagingZones append [[_stagingZone, _zoneSize, _zoneType]];
     missionNamespace setVariable [QEGVAR(Staging,Zones), _stagingZones];
+    [_zonePos] call FUNC(stagingUplink);
 };
 
 // Object type zone
@@ -76,6 +81,7 @@ if (_zone isEqualType objNull) exitWith {
 
     _stagingZones append [[_stagingZone, _zoneSize, _zoneType]];
     missionNamespace setVariable [QEGVAR(Staging,Zones), _stagingZones];
+    [_zone] call FUNC(stagingUplink);
 };
 
 // EVERY BRANCH ABOVE exitWith-s. Reaching this line means _zone was none of

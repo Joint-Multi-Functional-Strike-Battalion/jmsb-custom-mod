@@ -14,6 +14,7 @@
  *
  */
 
+// ACRE or TFAR: game voice has no radio IDs to clear and nothing to re-tune.
 if (!EGVAR(Patches,usesACRE) && !EGVAR(Patches,usesTFAR)) exitWith {};
 if (!EGVAR(Settings,enableRadios)) exitWith {};
 if (!EGVAR(init,isPlayer)) exitWith {};
@@ -38,16 +39,13 @@ if (EGVAR(patches,usesACRE)) exitWith {
     SHOW_CHAT_SERVER_INFO_1("ClearRadioID","%1: Your radios have been reset",name player)
 };
 
-// TFAR - re-apply the channel plan and active radio (TFAR has no stuck radio-ID issue to clear)
-if (EGVAR(patches,usesTFAR)) exitWith {
-    [{
-        [player] call EFUNC(players,setRadioChannel);
-        [jmfsbFR_radio_tfarActiveRadio] call EFUNC(players,setActiveRadio);
-    }] call CBA_fnc_execNextFrame;
+// TFAR - re-tune from the net plan and put the plan's handheld in hand (TFAR
+// has no stuck radio-ID issue to clear)
+[{
+    [player] call EFUNC(players,setRadioChannel);
+    [missionNamespace getVariable ["jmfsbFR_radio_tfarActiveRadio", ""]] call EFUNC(players,setActiveRadio);
+}] call CBA_fnc_execNextFrame;
 
-    ["Radios", "Your radios have been reset.", NOTE_GOOD] call JMFSBFUNC(notify,notify);
+["Radios", "Your radios have been reset.", NOTE_GOOD] call JMFSBFUNC(notify,notify);
 
-    SHOW_CHAT_SERVER_INFO_1("ClearRadioID","%1: Your radios have been reset",name player)
-};
-
-SHOW_CHAT_ERROR("ClearRadioID","Fatal");
+SHOW_CHAT_SERVER_INFO_1("ClearRadioID","%1: Your radios have been reset",name player)

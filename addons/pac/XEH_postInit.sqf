@@ -79,6 +79,9 @@ if (hasInterface) then {
 
 if (!isServer) exitWith {};
 
+// THE PLAN'S NETS INTO RF, once now; FUNC(radioApply) again on every change.
+[] call FUNC(netPlanSync);
+
 // THE STORE AND THE DATABASE ARE THE MISSION'S, NOT THE GAME'S. Only a mission
 // that declares CfgGFA_PAC registers the boot, the mission-end save, the connect
 // handlers and the heartbeat below. The empty editor map the maker opens first,

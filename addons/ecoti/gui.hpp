@@ -30,3 +30,15 @@ class GVAR(label): RscStructuredText {
         shadow = 2;
     };
 };
+
+// The compass's labels and heading readout (FUNC(drawCompass)): one line of
+// centred text, its colour and height set per frame.
+class GVAR(compassText): RscText {
+    idc = -1;
+    style = ST_CENTER;
+    font = "RobotoCondensedBold";
+    shadow = 2;
+    text = "";
+    colorText[] = {1, 1, 1, 1};
+    colorBackground[] = {0, 0, 0, 0};
+};

@@ -24,6 +24,8 @@ if (_slot >= count _devices) exitWith {};
 
 GVAR(session) set ["device", _obj];
 GVAR(session) set ["kind", _kind];
+// A new target starts on the kind's own action; SPOOF is picked per target.
+GVAR(session) set ["action", HACK_ACTION_DEFAULT];
 GVAR(session) set ["range", _range];
 GVAR(session) set ["progress", _obj getVariable [QGVAR(progress), 0]];
 

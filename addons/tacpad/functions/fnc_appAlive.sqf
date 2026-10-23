@@ -22,5 +22,5 @@
 params [["_app", "", [""]]];
 
 !isNull (uiNamespace getVariable [QGVAR(appGroup), controlNull])
-&& {!isNull (findDisplay IDD_MAP)}
+&& {!isNull (HOST_DISPLAY)}
 && {(uiNamespace getVariable [QGVAR(appCurrent), ""]) isEqualTo _app}

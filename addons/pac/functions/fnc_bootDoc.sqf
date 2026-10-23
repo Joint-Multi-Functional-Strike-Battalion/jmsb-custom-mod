@@ -20,6 +20,12 @@
         3: Total <NUMBER> (optional, default 1) - for a family, how many in all
         4: Detail <STRING> (optional) - the key being read, or what came back
 
+        PUBLISHED AT MOST EVERY PAC_BOOT_PUBLISH_EVERY SECONDS (2026-10-19).
+        It is called two or three times per document, and every call sent the
+        whole checklist and the bar to every client - some two hundred
+        broadcasts in one boot. An error goes out at once; FUNC(boot)
+        publishes the final state when the service read returns.
+
     Returns:
         Nothing
 */
@@ -44,5 +50,8 @@ private _t = 0;
 } forEach GVAR(bootDocs);
 GVAR(bootStep) = (2 + ((_d / (_t max 1)) min 1)) / 6;
 
-publicVariable QGVAR(bootDocs);
-publicVariable QGVAR(bootStep);
+if (_state isEqualTo "error" || {diag_tickTime - (missionNamespace getVariable [QGVAR(bootDocsSentAt), -PAC_BOOT_PUBLISH_EVERY]) >= PAC_BOOT_PUBLISH_EVERY}) then {
+    GVAR(bootDocsSentAt) = diag_tickTime;
+    publicVariable QGVAR(bootDocs);
+    publicVariable QGVAR(bootStep);
+};

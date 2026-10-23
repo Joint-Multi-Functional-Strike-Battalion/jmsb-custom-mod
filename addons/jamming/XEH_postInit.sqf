@@ -5,7 +5,6 @@
 // named a victim.
 if (hasInterface) then {
     GVAR(acreJam) = 0;
-    GVAR(hasTFAR) = isClass (configFile >> "CfgPatches" >> "task_force_radio");
     GVAR(hasACRE) = isClass (configFile >> "CfgPatches" >> "acre_main");
 
     [LINKFUNC(jammerLoop), JAM_CHECK_INTERVAL, []] call CBA_fnc_addPerFrameHandler;
@@ -43,6 +42,11 @@ if (hasInterface) then {
 };
 
 if (!isServer) exitWith {};
+
+// RADIO AND DATA ZONES ARE RF NOISE: RF prices them into every link budget on
+// the server, and voice and data degrade by SNR from there. With no zones the
+// hook returns nothing at once.
+[{_this call FUNC(rfNoise)}] call EFUNC(rf,addNoiseSource);
 
 // THE MODULE IS THE ENABLE. This file only sets up state and the report
 // command; FUNC(moduleController) is what arms the system, so a mission with

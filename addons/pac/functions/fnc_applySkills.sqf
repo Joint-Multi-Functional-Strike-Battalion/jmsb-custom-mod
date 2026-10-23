@@ -8,8 +8,7 @@ Description:
 
     A SKILL IS A NAME FOR A SET OF EFFECTS. The handoff lists what an effect can
     be: an ACE medic, engineer or EOD class; a custom trait such as isISR or
-    isJFO; and arbitrary setVariable pairs for anything else, Simplex gates
-    included. So an effect is a string in one of three shapes -
+    isJFO; and arbitrary setVariable pairs for anything else. So an effect is a string in one of three shapes -
 
         "medic:1"                ACE medical class  (0 none, 1 CLS, 2 medic)
         "engineer:2"             ACE engineer class (0, 1, 2)
@@ -89,6 +88,9 @@ private _sessionEffects = [];
 {
     _unit setVariable [_x, nil, true];
 } forEach (_unit getVariable [QGVAR(setVars), []]);
+{
+    _unit setUnitTrait [_x, false];
+} forEach (_unit getVariable [QGVAR(setTraits), []]);
 
 _unit setVariable ["ace_medical_medicClass", 0, true];
 _unit setVariable ["ACE_IsEngineer", 0, true];
@@ -98,6 +100,7 @@ _unit setUnitTrait ["Engineer", false];
 _unit setUnitTrait ["ExplosiveSpecialist", false];
 
 private _setVars = [];
+private _setTraits = [];
 private _quals = [];
 private _applied = 0;
 private _skills = GVAR(structure) getOrDefault ["skills", createHashMap];
@@ -127,9 +130,20 @@ private _fnc_effect = {
             _unit setVariable ["ACE_isEOD", _on, true];
             _unit setUnitTrait ["ExplosiveSpecialist", _on];
         };
+        // AN ENGINE TRAIT IS A TRAIT, NOT A VARIABLE. "trait:UAVHacker" (the UAV
+        // operator skill) used to land as a variable named UAVHacker, which the
+        // engine and jmfsb_devices' drone control (getUnitTrait) never read - a
+        // man with the skill could fly nothing (user, 2026-10-21). The engine's
+        // own traits go through setUnitTrait; anything else (isJFO, isISR) is
+        // the mission flag it always was.
         case "trait": {
-            _unit setVariable [_val, true, true];
-            _setVars pushBackUnique _val;
+            if ((toLower _val) in ENGINE_TRAITS) then {
+                _unit setUnitTrait [_val, true];
+                _setTraits pushBackUnique _val;
+            } else {
+                _unit setVariable [_val, true, true];
+                _setVars pushBackUnique _val;
+            };
         };
         case "arsenal": {
             _quals pushBackUnique toLower _val;
@@ -177,6 +191,7 @@ private _fnc_effect = {
 } forEach _sessionEffects;
 
 _unit setVariable [QGVAR(setVars), _setVars];
+_unit setVariable [QGVAR(setTraits), _setTraits];
 
 // WHAT HE IS QUALIFIED AS, FOR EVERYBODY ELSE TO SEE (user, 2026-10-07: "a
 // medic is seen as a medic"). Arma's own roleDescription is fixed by the slot
@@ -194,6 +209,11 @@ private _tags = [];
 } forEach _held;
 if (_tags isNotEqualTo (_unit getVariable [QGVAR(skillTags), []])) then {
     _unit setVariable [QGVAR(skillTags), _tags, true];
+};
+// The ids too, for what keys on a skill rather than shows it - the VON comm
+// plan's skill based nets (FUNC(netPlanUnit)).
+if (_held isNotEqualTo (_unit getVariable [QGVAR(skillIds), []])) then {
+    _unit setVariable [QGVAR(skillIds), _held, true];
 };
 
 // THE ARSENAL IS REBUILT ONLY WHEN THE QUALIFICATIONS CHANGED - this runs on

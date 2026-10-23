@@ -3,6 +3,7 @@ PREP(autoEnable);
 PREP(loop);
 PREP(draw);
 PREP(drawMembers);
+PREP(memberNumber);
 PREP(remove);
 
 PREP(getGroupPosition);

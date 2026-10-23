@@ -138,9 +138,10 @@ private _seen = createHashMap;
 } forEach _mags;
 
 private _rows = [];
+// Over a hashmap _x is the KEY (the magazine) and _y the value.
 {
-    _x params ["_r", "_rounds", "_name"];
-    _rows pushBack [_r, format ["%1 x%2", _name, _rounds], _y];
+    _y params ["_r", "_rounds", "_name"];
+    _rows pushBack [_r, format ["%1 x%2", _name, _rounds], _x];
 } forEach _seen;
 
 // sort on the leading rank; the name is the tie-break, so two airframes of the

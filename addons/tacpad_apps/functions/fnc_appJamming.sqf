@@ -7,6 +7,13 @@
  * (FUNC(appDrones)); channel, frequency, mesh and net state are the RADIO
  * app's; the whole sweep at once is the EW SCANNER.
  *
+ * WITH THE EW ADDON IT IS THE JAMMER'S CONTROL PANEL (user, 2026-10-21: "I
+ * was hoping for an RF page like this"): the same panel as TAC//EW's EA tab
+ * (jmfsb_ew_fnc_appEa) - his jammer's switch and settings, the spectrum where
+ * he stands, what the side hears, and how jammed he is here - on this app's
+ * own frame, redrawn when his EW slice or the scanner's figures change. The
+ * page below is what is left without the EW addon.
+ *
  * Arguments (app handler):
  * 0: Map display <DISPLAY>
  *
@@ -20,6 +27,41 @@ params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {};
 
+if (!isNil QEFUNC(ew,appEa)) exitWith {
+    ([_display, "JAMMER CONTROL", JAMMER_PANEL_W, JAMMER_PANEL_H] call EFUNC(tacpad,appFrame)) params ["", "_body"];
+    if (isNull _body) exitWith {};
+
+    // What this draw is OF: his slice and, with a scanner, how jammed he is.
+    private _fnc_seen = {
+        private _here = if (isNil QEFUNC(hacking,scannerRead)) then {[]} else {([] call EFUNC(hacking,scannerRead)) select [JAM_READ_FROM, JAM_READ_COUNT]};
+        str [EGVAR(ew,mine), _here, (missionNamespace getVariable [QEGVAR(common,alerts), []]) select {(_x param [4, 0]) > CBA_missionTime}]
+    };
+
+    if (EGVAR(ew,mine) isEqualTo []) then {
+        ([] call EFUNC(tacpad,theme)) params ["", "_ink", "_accent"];
+        private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
+        [_body, [PAD * HOST_W, PAD * HOST_H, (ctrlPosition _body) # 2, _rowH], "NO EW PICTURE YET - EW NEEDS THE RF CORE RUNNING", _accent, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
+    } else {
+        [_body, PAD * HOST_H] call EFUNC(ew,appEa);
+    };
+    uiNamespace setVariable [QGVAR(jamSeen), call _fnc_seen];
+
+    private _existing = uiNamespace getVariable [QGVAR(jamPFH), -1];
+    if (_existing >= 0) then {
+        [_existing] call CBA_fnc_removePerFrameHandler;
+    };
+    uiNamespace setVariable [QGVAR(jamPFH), [{
+        params ["_fnc_seen", "_handle"];
+        if !(["jam"] call EFUNC(tacpad,appAlive)) exitWith {
+            [_handle] call CBA_fnc_removePerFrameHandler;
+            uiNamespace setVariable [QGVAR(jamPFH), -1];
+        };
+        if !([] call EFUNC(tacpad,appIdle)) exitWith {};
+        if ((call _fnc_seen) isEqualTo (uiNamespace getVariable [QGVAR(jamSeen), ""])) exitWith {};
+        ["jam"] call EFUNC(tacpad,openApp);
+    }, 2, _fnc_seen] call CBA_fnc_addPerFrameHandler];
+};
+
 if (isNil QEFUNC(hacking,scannerRead)) exitWith {
     ["JAMMING", "The intrusion suite is not loaded.", "high"] call EFUNC(messaging,notify);
 };
@@ -29,15 +71,15 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _w = (ctrlPosition _body) # 2;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _amber = [0.85, 0.65, 0.15, 1];
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 if !([player] call EFUNC(hacking,hasScanner)) exitWith {
-    [_body, [_pad, _padY, _w - 2 * _pad, _rowH], "NO RECEIVER", _accent, 1.2, true] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _padY, _w - 2 * _pad, _rowH], "NO RECEIVER", _accent, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 };
 
 ([] call EFUNC(hacking,scannerRead)) params ["", "", "", ["_jam", 0], "", "", "", "",
@@ -60,7 +102,7 @@ private _colour = [_ink, _amber, _accent] select _state;
 
 [
     _body, [_pad, _padY, _w - 2 * _pad, _rowH * 1.8],
-    format ["%1%2 JAMMED", _pct, "%"], _colour, 2.2, true
+    format ["%1%2 JAMMED", _pct, "%"], _colour, TEXT_DISPLAY, true
 ] call EFUNC(tacpad,drawText);
 
 // THEN WHICH SERVICE, one row each (user, 2026-08-31). The headline says how
@@ -82,7 +124,7 @@ private _rowY = _padY + _rowH * 2.1;
     [
         _body, [_pad, _top, (_w - 2 * _pad) * 0.42, _rowH],
         format ["%1 %2", _name, ["OK", "DEGRADED", "NONET"] select _s],
-        _c, 0.85, true, "left", true
+        _c, TEXT_TITLE, true, "left", true
     ] call EFUNC(tacpad,drawText);
 
     private _barX = _pad + (_w - 2 * _pad) * 0.46;
@@ -102,7 +144,7 @@ private _barY = _rowY + _rowH * 1.15 * 3;
 private _y = _barY + _rowH * 1.8;
 [_body, [_pad, _y, _w - 2 * _pad, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 _y = _y + _padY;
-[_body, [_pad, _y, _w - 2 * _pad, _rowH], "RECENT ALERTS", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w - 2 * _pad, _rowH], "RECENT ALERTS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 _y = _y + _rowH;
 
 private _alerts = (missionNamespace getVariable [QEGVAR(common,alerts), []]) select {(_x param [4, 0]) > CBA_missionTime};
@@ -116,17 +158,17 @@ uiNamespace setVariable [QGVAR(jamSeen),
 
 if (_alerts isEqualTo []) then {
     private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
-    [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NOTHING IN THE LAST FEW MINUTES", _dim, 0.75] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _y, _w - 2 * _pad, _rowH], "NOTHING IN THE LAST FEW MINUTES", _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
 } else {
     {
         _x params ["_src", "_txt", "_grid", ["_sev", 0]];
         private _ay = _y + _forEachIndex * _rowH;
 
-        [_body, [_pad, _ay, _w * 0.22, _rowH], toUpper _src, ([_mute, _amber, _accent] select (_sev min 2)), 0.62, true, "left", true] call EFUNC(tacpad,drawText);
+        [_body, [_pad, _ay, _w * 0.22, _rowH], toUpper _src, ([_mute, _amber, _accent] select (_sev min 2)), TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
         [
             _body, [_w * 0.24, _ay, _w * 0.76 - _pad, _rowH],
             [_txt, format ["%1 - %2", _txt, _grid]] select (_grid isNotEqualTo ""),
-            _ink, 0.72
+            _ink, TEXT_BODY
         ] call EFUNC(tacpad,drawText);
         if (_forEachIndex >= 5) exitWith {};
     } forEach _alerts;

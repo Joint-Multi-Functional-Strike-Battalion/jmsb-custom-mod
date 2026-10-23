@@ -34,6 +34,22 @@ Description:
     the database "has a config" when at least one document exists. Server
     only, scheduled - every read waits its turn (FUNC(svcLoad)).
 
+    EACH KEY IS READ ONCE (2026-10-19). Every read goes through _fnc_fetch,
+    which keeps what came back for the rest of this read: the variant loops
+    list "<unit>.arsenal." and "<unit>.motorpool." and fetched every key under
+    them - including the version the section loop had just read, so a
+    mission running arsenal "testing" read its 127 KB twice. A key read
+    again is a copy of the first answer.
+
+    EVERY READ IS TIMED into the .rpt (FUNC(bootLog), RPT only): one line per
+    document - waited, parsed, size - one per phase, and one summary in the
+    boot log itself, so the next slow boot says where its time went.
+
+    NEVER THE WEBSITE'S DOCUMENTS. <unit>.web.* (assets, images - half the
+    database by size) belong to the site; nothing here lists or reads them.
+    Every key is "<unit>.<section>[.<version>]" or one of the five prefixes
+    below (orbat., arsenal., motorpool., role., opord.).
+
 Parameters:
     None
 
@@ -52,6 +68,65 @@ private _structure = createHashMap;
 private _settings = createHashMap;
 private _found = 0;
 private _errors = 0;
+
+// THE MISSION SAYS WHICH VERSION IT RUNS, AND IT HAS TO SAY SO HERE. The
+// settings document's currentOrbat / currentArsenal / ... are the unit's
+// defaults; a mission that declares one in its own CfgGFA_PAC wins
+// (FUNC(structureAdopt)). But adopt runs AFTER this fetch, and the fetch is
+// what reads the version - so the cdev mission asked for orbat "testing" and
+// arsenal "testing", the database answered "default" and the common lists,
+// and nothing said why (2026-10-18). Overlaid the moment the settings
+// document lands, so every section fetched after it reads the mission's.
+private _fnc_missionWins = {
+    private _missionSettings = missionConfigFile >> "CfgGFA_PAC" >> "settings";
+    private _versionSettings = ((([] call FUNC(svcSections)) apply {_x # 2}) select {_x isNotEqualTo ""})
+        + ["currentOrbat", "currentWelcome", "currentOpord"];
+    {
+        if (isText (_missionSettings >> _x) && {(getText (_missionSettings >> _x)) isNotEqualTo ""}) then {
+            _settings set [_x, getText (_missionSettings >> _x)];
+        };
+    } forEach _versionSettings;
+};
+
+// ---- EVERY READ, once, and timed --------------------------------------------
+// "get|<key>" / "list|<prefix>" -> [document, status]. Only answers are kept:
+// an error is asked again by whoever asks next, as before.
+private _fetched = createHashMap;
+private _stats = [0, 0, 0, 0, 0];   // requests, reused, seconds waiting, seconds parsing, characters
+private _fnc_fetch = {
+    params ["_fkey", ["_ffn", "get"]];
+    private _id = _ffn + "|" + _fkey;
+    if (_id in _fetched) exitWith {
+        _stats set [1, (_stats # 1) + 1];
+        ["3/6", format ["  %1 %2: already read this boot - reused", _ffn, _fkey], true] call FUNC(bootLog);
+        (_fetched get _id) params ["_fdoc", "_fstatus"];
+        [+_fdoc, _fstatus]
+    };
+    ([_fkey, _ffn] call FUNC(svcLoad)) params ["_fdoc", "_fstatus", ["_timing", [0, 0, 0]]];
+    _timing params ["_wait", "_parse", "_chars"];
+    _stats set [0, (_stats # 0) + 1];
+    _stats set [2, (_stats # 2) + _wait];
+    _stats set [3, (_stats # 3) + _parse];
+    _stats set [4, (_stats # 4) + _chars];
+    ["3/6", format ["  %1 %2: %3 - %4 chars, waited %5 s, parsed %6 s", _ffn, _fkey, _fstatus, _chars, _wait toFixed 2, _parse toFixed 2], true] call FUNC(bootLog);
+    if (_fstatus in ["ok", "empty"]) then {_fetched set [_id, [_fdoc, _fstatus]]};
+    [_fdoc, _fstatus]
+};
+
+// One .rpt line per phase: what it cost since the last one.
+private _readAt = diag_tickTime;
+private _phaseAt = _readAt;
+private _phaseStats = +_stats;
+private _fnc_phase = {
+    params ["_name"];
+    ["3/6", format ["service read, %1: %2 s - %3 request(s), %4 reused, %5 s waiting, %6 s parsing, %7 chars",
+        _name, (diag_tickTime - _phaseAt) toFixed 2,
+        (_stats # 0) - (_phaseStats # 0), (_stats # 1) - (_phaseStats # 1),
+        ((_stats # 2) - (_phaseStats # 2)) toFixed 2, ((_stats # 3) - (_phaseStats # 3)) toFixed 2,
+        (_stats # 4) - (_phaseStats # 4)], true] call FUNC(bootLog);
+    _phaseAt = diag_tickTime;
+    _phaseStats = +_stats;
+};
 
 // ---- every section the database holds, from ONE table --------------------
 // FUNC(svcSections) is the contract: section, shape, and the setting a mission
@@ -79,10 +154,10 @@ private _fnc_load = {
     params ["_section", "_setting"];
     private _key = [_section, _setting] call _fnc_key;
     [_section, "run", 0, 1, _key] call FUNC(bootDoc);
-    ([_key] call FUNC(svcLoad)) params ["_doc", "_status"];
+    ([_key] call _fnc_fetch) params ["_doc", "_status"];
     if (_status isNotEqualTo "ok" && _key isNotEqualTo (_unit + "." + _section)) then {
         WARNING_2("%1 names a version that is not there - the common %2 is used",_setting,_section);
-        ([_unit + "." + _section] call FUNC(svcLoad)) params ["_doc", "_status"];
+        ([_unit + "." + _section] call _fnc_fetch) params ["_doc", "_status"];
     };
     [_section, _status, 1, 1, _key] call FUNC(bootDoc);
     [_doc, _status]
@@ -107,13 +182,15 @@ GVAR(bootDocs) = [];
     ([_section, _setting] call _fnc_load) params ["_doc", "_status"];
     if (_status isEqualTo "ok") then {
         private _items = _doc getOrDefault ["items", createHashMap];
-        if (_items isEqualType createHashMap) then {_settings = _items};
+        if (_items isEqualType createHashMap) then {_settings = _items; call _fnc_missionWins};
     };
 } forEach ([] call FUNC(svcSections));
+["settings"] call _fnc_phase;
 
 ["orbat", "run", 0, 1, _unit + ".orbat"] call FUNC(bootDoc);
 #include "svcOrbat.inc.sqf"
 ["orbat", ["ok", "empty"] select (count ((_structure getOrDefault ["orbat", createHashMap]) getOrDefault ["groups", []]) isEqualTo 0), 1, 1, ""] call FUNC(bootDoc);
+["orbat"] call _fnc_phase;
 
 {
     _x params ["_section", "_shape", "_setting"];
@@ -156,7 +233,7 @@ GVAR(bootDocs) = [];
                             } forEach _ids;
                         };
                     };
-                    if (_section isEqualTo "settings") then {_settings = _items} else {_structure set [_section, _items]};
+                    if (_section isEqualTo "settings") then {_settings = _items; call _fnc_missionWins} else {_structure set [_section, _items]};
                     _found = _found + 1;
                 };
             };
@@ -169,6 +246,7 @@ GVAR(bootDocs) = [];
         default {_errors = _errors + 1};
     };
 } forEach ([] call FUNC(svcSections));
+["sections"] call _fnc_phase;
 
 // WHICH ORDERS OF BATTLE EXIST. The structure carries the one this mission
 // runs; the editors need the names of all of them to offer a choice, and only
@@ -176,7 +254,7 @@ GVAR(bootDocs) = [];
 // fetched when one is switched to.
 private _orbatIds = [];
 ["orbat versions", "run", 0, 1, _unit + ".orbat.*"] call FUNC(bootDoc);
-([_unit + ".orbat.", "list"] call FUNC(svcLoad)) params ["_okeys", "_okstatus"];
+([_unit + ".orbat.", "list"] call _fnc_fetch) params ["_okeys", "_okstatus"];
 ["orbat versions", ["ok", "error"] select (_okstatus isEqualTo "error"), 1, 1, format ["%1 listed", [0, count _okeys] select (_okeys isEqualType [])]] call FUNC(bootDoc);
 if (_okstatus isNotEqualTo "error" && _okeys isEqualType []) then {
     {
@@ -201,12 +279,12 @@ if (_wantWelcome isEqualType "" && _wantWelcome isNotEqualTo "") then {
     _welcomeKey = _unit + ".welcome." + _wantWelcome;
 };
 ["welcome", "run", 0, 1, _welcomeKey] call FUNC(bootDoc);
-([_welcomeKey] call FUNC(svcLoad)) params ["_wdoc", "_wstatus"];
+([_welcomeKey] call _fnc_fetch) params ["_wdoc", "_wstatus"];
 // A named welcome that is not there falls back to the common one rather than
 // leaving the mission with no briefing at all - the ORBAT's rule.
 if (_wstatus isNotEqualTo "ok" && _welcomeKey isNotEqualTo (_unit + ".welcome")) then {
     WARNING_1("currentWelcome names '%1' and there is no such welcome - the common one is used",_wantWelcome);
-    ([_unit + ".welcome"] call FUNC(svcLoad)) params ["_wdoc", "_wstatus"];
+    ([_unit + ".welcome"] call _fnc_fetch) params ["_wdoc", "_wstatus"];
 };
 ["welcome", _wstatus, 1, 1, _welcomeKey] call FUNC(bootDoc);
 if (_wstatus isEqualTo "error") exitWith {[createHashMap, "error"]};
@@ -231,6 +309,8 @@ if (_wstatus isEqualTo "ok") then {
     };
 };
 
+["orbat versions and welcome"] call _fnc_phase;
+
 // ---- the NAMED VARIANTS of the list-shaped documents ----------------------
 // The loop above fetched each one's common lists (or the version a mission
 // named). This lists the "<unit>.<doc>." prefix for the rest, because the
@@ -242,12 +322,12 @@ if (_wstatus isEqualTo "ok") then {
 
     private _variants = createHashMap;
     [_doc + " versions", "run", 0, 1, _unit + "." + _doc + ".*"] call FUNC(bootDoc);
-    ([_unit + "." + _doc + ".", "list"] call FUNC(svcLoad)) params ["_vkeys", "_vstatus"];
+    ([_unit + "." + _doc + ".", "list"] call _fnc_fetch) params ["_vkeys", "_vstatus"];
     if (_vstatus isNotEqualTo "error" && _vkeys isEqualType []) then {
         [_doc + " versions", "run", 0, (count _vkeys) max 1, format ["%1 listed", count _vkeys]] call FUNC(bootDoc);
         {
             [_doc + " versions", "run", _forEachIndex, (count _vkeys) max 1, _x] call FUNC(bootDoc);
-            ([_x] call FUNC(svcLoad)) params ["_vdoc", "_vst"];
+            ([_x] call _fnc_fetch) params ["_vdoc", "_vst"];
             if (_vst isEqualTo "ok") then {
                 private _vl = _vdoc getOrDefault ["lists", createHashMap];
                 private _vid = _vdoc getOrDefault ["id", ""];
@@ -270,6 +350,7 @@ if (_wstatus isEqualTo "ok") then {
 // radar network is a CBA setting and the vehicle spawner was removed from the
 // mod (2026-09-09).
 } forEach ["arsenal"];
+["arsenal versions"] call _fnc_phase;
 
 // ---- the motorpool's variants (2026-09-09) -------------------------------
 // The motorpool is items-shaped, so the loop above - which reads "lists"
@@ -278,12 +359,12 @@ if (_wstatus isEqualTo "ok") then {
 // name the mission used ("MotorPool_Nomad"), the same rule as the arsenal.
 private _mpVariants = createHashMap;
 ["motorpool", "run", 0, 1, _unit + ".motorpool.*"] call FUNC(bootDoc);
-([_unit + ".motorpool.", "list"] call FUNC(svcLoad)) params ["_mpKeys", "_mpStatus"];
+([_unit + ".motorpool.", "list"] call _fnc_fetch) params ["_mpKeys", "_mpStatus"];
 if (_mpStatus isNotEqualTo "error" && _mpKeys isEqualType []) then {
     ["motorpool", "run", 0, (count _mpKeys) max 1, format ["%1 listed", count _mpKeys]] call FUNC(bootDoc);
     {
         ["motorpool", "run", _forEachIndex, (count _mpKeys) max 1, _x] call FUNC(bootDoc);
-        ([_x] call FUNC(svcLoad)) params ["_vdoc", "_vst"];
+        ([_x] call _fnc_fetch) params ["_vdoc", "_vst"];
         if (_vst isEqualTo "ok") then {
             private _vitems = _vdoc getOrDefault ["items", createHashMap];
             private _vid = _vdoc getOrDefault ["id", ""];
@@ -301,19 +382,20 @@ if (count _mpVariants > 0) then {
     _structure set ["motorpoolVariants", _mpVariants];
     _found = _found + 1;
 };
+["motorpool versions"] call _fnc_phase;
 
 if (_errors > 0) exitWith {[createHashMap, "error"]};
 
 // ---- the roles, one document each ------------------------------------------
 private _roles = createHashMap;
 ["roles", "run", 0, 1, _unit + ".role.*"] call FUNC(bootDoc);
-([_unit + ".role.", "list"] call FUNC(svcLoad)) params ["_rkeys", "_rlstatus"];
+([_unit + ".role.", "list"] call _fnc_fetch) params ["_rkeys", "_rlstatus"];
 if (_rlstatus isEqualTo "error") exitWith {["roles", "error", 0, 1, "the list did not come"] call FUNC(bootDoc); [createHashMap, "error"]};
 if (_rkeys isEqualType []) then {
     ["roles", "run", 0, (count _rkeys) max 1, format ["%1 listed", count _rkeys]] call FUNC(bootDoc);
     {
         ["roles", "run", _forEachIndex, (count _rkeys) max 1, _x] call FUNC(bootDoc);
-        ([_x] call FUNC(svcLoad)) params ["_doc", "_status"];
+        ([_x] call _fnc_fetch) params ["_doc", "_status"];
         if (_status isEqualTo "ok") then {
             if ((_doc getOrDefault ["deleted", false]) isEqualTo true) then {continue};
             private _role = _doc getOrDefault ["role", createHashMap];
@@ -329,7 +411,7 @@ if (_rkeys isEqualType []) then {
 };
 // the shape before roles had documents of their own: <unit>.roles {items}
 if (count _roles isEqualTo 0) then {
-    ([_unit + ".roles"] call FUNC(svcLoad)) params ["_doc", "_status"];
+    ([_unit + ".roles"] call _fnc_fetch) params ["_doc", "_status"];
     if (_status isEqualTo "ok") then {
         private _items = _doc getOrDefault ["items", createHashMap];
         if (_items isEqualType createHashMap) then {
@@ -340,17 +422,18 @@ if (count _roles isEqualTo 0) then {
 };
 ["roles", ["ok", "empty"] select (count _roles isEqualTo 0), count _roles, (count _roles) max 1, format ["%1 read", count _roles]] call FUNC(bootDoc);
 _structure set ["roles", _roles];
+["roles"] call _fnc_phase;
 
 // ---- the orders, one document each ----------------------------------------
 private _opords = createHashMap;
 ["orders", "run", 0, 1, _unit + ".opord.*"] call FUNC(bootDoc);
-([_unit + ".opord.", "list"] call FUNC(svcLoad)) params ["_keys", "_lstatus"];
+([_unit + ".opord.", "list"] call _fnc_fetch) params ["_keys", "_lstatus"];
 if (_lstatus isEqualTo "error") exitWith {["orders", "error", 0, 1, "the list did not come"] call FUNC(bootDoc); [createHashMap, "error"]};
 if (_keys isEqualType []) then {
     ["orders", "run", 0, (count _keys) max 1, format ["%1 listed", count _keys]] call FUNC(bootDoc);
     {
         ["orders", "run", _forEachIndex, (count _keys) max 1, _x] call FUNC(bootDoc);
-        ([_x] call FUNC(svcLoad)) params ["_doc", "_status"];
+        ([_x] call _fnc_fetch) params ["_doc", "_status"];
         if (_status isEqualTo "ok") then {
             // an order removed in game is a tombstone, as a removed role is
             if ((_doc getOrDefault ["deleted", false]) isEqualTo true) then {continue};
@@ -367,6 +450,10 @@ if (_keys isEqualType []) then {
 };
 ["orders", ["ok", "empty"] select (count _opords isEqualTo 0), count _opords, (count _opords) max 1, format ["%1 read", count _opords]] call FUNC(bootDoc);
 _structure set ["opords", _opords];
+["orders"] call _fnc_phase;
+
+["3/6", format ["service read: %1 s for %2 request(s) and %3 reused - %4 s waiting on the database, %5 s parsing, %6 chars (per document in the .rpt)",
+    (diag_tickTime - _readAt) toFixed 2, _stats # 0, _stats # 1, (_stats # 2) toFixed 2, (_stats # 3) toFixed 2, _stats # 4]] call FUNC(bootLog);
 
 if (_found isEqualTo 0) exitWith {[createHashMap, "empty"]};
 

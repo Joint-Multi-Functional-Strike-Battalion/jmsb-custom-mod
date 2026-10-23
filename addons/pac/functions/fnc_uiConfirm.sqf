@@ -20,14 +20,13 @@
 params [["_text", "", [""]], ["_code", {}, [{}]], ["_arg", []]];
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
 GVAR(uiConfirmCode) = _code;
 GVAR(uiConfirmArg) = _arg;
-(_display displayCtrl PAC_IDC_CONFIRM_TEXT) ctrlSetStructuredText parseText format [
+([PAC_IDC_CONFIRM_TEXT] call FUNC(uiCtrl)) ctrlSetStructuredText parseText format [
     "<t color='#e4574a'>ARE YOU SURE?</t><br/><br/>%1", [_text] call FUNC(uiEsc)
 ];
-{(_display displayCtrl _x) ctrlShow true} forEach [
+{([_x] call FUNC(uiCtrl)) ctrlShow true} forEach [
     PAC_IDC_CONFIRM_DIM, PAC_IDC_CONFIRM_BOX, PAC_IDC_CONFIRM_TEXT, PAC_IDC_CONFIRM_YES, PAC_IDC_CONFIRM_NO
 ];

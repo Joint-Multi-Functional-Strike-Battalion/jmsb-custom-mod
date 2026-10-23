@@ -74,6 +74,10 @@ GVAR(siteObjectives) = [_logic getVariable ["siteObjectives", false]] call _bool
 // its watts threshold. burnRef needs no broadcast: it is stamped into each
 // zone's model at spawn and travels with the registry.
 GVAR(jamBurnRef) = _logic getVariable ["burnRef", 500];
+
+// The zones' noise in the RF link budget. Server only: FUNC(rfNoise) runs
+// inside RF's server tick and nowhere else.
+GVAR(rfNoiseDbm) = _logic getVariable ["rfNoise", JAM_RF_CORE_DBM];
 missionNamespace setVariable [
     QGVAR(jamBurnthrough), [_logic getVariable ["burnThrough", true]] call _bool, true];
 

@@ -21,8 +21,7 @@
 */
 
 disableSerialization;
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
 private _svc = "service" in ((missionNamespace getVariable [QGVAR(summary), createHashMap]) getOrDefault ["backend", ""]);
 
@@ -71,11 +70,11 @@ private _under = switch (GVAR(uiPage)) do {
 private _idcs = [PAC_IDC_NAV1, PAC_IDC_NAV2, PAC_IDC_NAV3, PAC_IDC_NAV4, PAC_IDC_NAV5, PAC_IDC_NAV6, PAC_IDC_NAV7, PAC_IDC_NAV8, PAC_IDC_NAV9, PAC_IDC_NAV10];
 private _w = 0.090;
 private _gap = 0.006;
-private _ul = _display displayCtrl PAC_IDC_NAV_UL;
+private _ul = [PAC_IDC_NAV_UL] call FUNC(uiCtrl);
 _ul ctrlShow false;
 
 {
-    private _c = _display displayCtrl _x;
+    private _c = [_x] call FUNC(uiCtrl);
     if (_forEachIndex >= count _items) then {
         _c ctrlShow false;
         _c setVariable [QGVAR(onClick), nil];

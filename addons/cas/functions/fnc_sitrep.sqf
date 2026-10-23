@@ -9,7 +9,7 @@
  * to fly into the same triple-A that took the last one.
  *
  * Arguments:
- * 0: Asset id, "jmfsbcas:<n>" <STRING>
+ * 0: Asset id, "cas:<n>" <STRING>
  *
  * Return Value:
  * 0: Readable <BOOL>

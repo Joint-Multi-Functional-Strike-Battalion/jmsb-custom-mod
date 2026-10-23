@@ -8,7 +8,6 @@ class CfgPatches {
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "cba_main",
-            "diwako_dui_main",
             "A3_Weapons_F" // defines ItemCore, parent of our root ItemInfo definition
         };
         author = QAUTHOR;

@@ -39,19 +39,21 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * safeZoneH;
+private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
 private _h = _pos # 3;
-private _pad = PAD * safeZoneW;
-private _padY = PAD * safeZoneH;
+private _pad = PAD * HOST_W;
+private _padY = PAD * HOST_H;
 private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
 // EVERYTHING THIS SIDE HOLDS. Broadcast by the server as it is recovered - see
 // EFUNC(hacking,productPackage) - so this is a read, never a request.
 private _store = missionNamespace getVariable [QEGVAR(hacking,packageIntel), createHashMap];
-private _held = _store getOrDefault [str (side group ACE_player), []];
+// `player`, as in FUNC(tileData): ACE is optional, and without it ACE_player
+// is nil and the whole screen throws on this line.
+private _held = _store getOrDefault [str (side group player), []];
 
 // Grouped into folders in the order they were first recovered, which is the
 // order the unit learned things in and the only order that means anything.
@@ -74,12 +76,12 @@ private _listW = _w * 0.38;
 [_body, [_listW, 0, RULE_THICK * pixelW, _h], _ink] call EFUNC(tacpad,drawFill);
 
 // -------------------------------------------------------------- the folders --
-[_body, [_pad, 0, _listW - 2 * _pad, _rowH], "RECOVERED", _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, 0, _listW - 2 * _pad, _rowH], "RECOVERED", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 [_body, [_pad, _rowH, _listW - 2 * _pad, RULE_THICK * pixelH], _ink] call EFUNC(tacpad,drawFill);
 
 if (_folders isEqualTo []) then {
-    [_body, [_pad, _rowH * 1.4, _listW - 2 * _pad, _rowH], "NOTHING RECOVERED", _dim, 0.8, false] call EFUNC(tacpad,drawText);
-    [_body, [_pad, _rowH * 2.4, _listW - 2 * _pad, _rowH * 3], "Break into a terminal carrying files and what comes off it is filed here.", _dim, 0.65, false] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _rowH * 1.4, _listW - 2 * _pad, _rowH], "NOTHING RECOVERED", _dim, TEXT_TITLE, false] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _rowH * 2.4, _listW - 2 * _pad, _rowH * 3], "Break into a terminal carrying files and what comes off it is filed here.", _dim, TEXT_BODY, false] call EFUNC(tacpad,drawText);
 };
 
 // every row below - folder or file - steps down onto itself before it draws
@@ -95,8 +97,8 @@ private _y = _rowH * 1.3 - _rowH;
         [_body, [_pad, _y, _listW - 2 * _pad, _rowH], [ARR_4(_accent # 0,_accent # 1,_accent # 2,0.14)]] call EFUNC(tacpad,drawFill);
     };
 
-    [_body, [_pad * 2, _y, _listW * 0.72, _rowH], _label, ([_ink, _mute] select (!_on)), 0.85, _on] call EFUNC(tacpad,drawText);
-    [_body, [_listW * 0.72, _y, _listW * 0.28 - _pad * 2, _rowH], str count _entries, _mute, 0.75, false, "right"] call EFUNC(tacpad,drawText);
+    [_body, [_pad * 2, _y, _listW * 0.72, _rowH], _label, ([_ink, _mute] select (!_on)), TEXT_TITLE, _on] call EFUNC(tacpad,drawText);
+    [_body, [_listW * 0.72, _y, _listW * 0.28 - _pad * 2, _rowH], str count _entries, _mute, TEXT_BODY, false, "right"] call EFUNC(tacpad,drawText);
 
     private _hit = [_body, [_pad, _y, _listW - 2 * _pad, _rowH], {
         params ["_ctrl"];
@@ -116,7 +118,7 @@ private _y = _rowH * 1.3 - _rowH;
             private _sel = _id isEqualTo _openEntry;
             private _text = ["- ", "> "] select _sel;
 
-            [_body, [_pad * 4, _y, _listW - _pad * 5, _rowH], _text + (["UNTITLED", _title] select (_title isNotEqualTo "")), ([_mute, _ink] select _sel), 0.75, _sel] call EFUNC(tacpad,drawText);
+            [_body, [_pad * 4, _y, _listW - _pad * 5, _rowH], _text + (["UNTITLED", _title] select (_title isNotEqualTo "")), ([_mute, _ink] select _sel), TEXT_BODY, _sel] call EFUNC(tacpad,drawText);
 
             private _eh = [_body, [_pad * 3, _y, _listW - _pad * 4, _rowH], {
                 params ["_ctrl"];
@@ -148,10 +150,10 @@ if (_open isEqualTo []) exitWith {};
 
 _open params ["", "_folderLabel", "", "_title", "_text", "_image"];
 
-[_body, [_rx, _ry, _rw, _rowH], _folderLabel, _mute, 0.65, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_rx, _ry, _rw, _rowH], _folderLabel, _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH;
 
-[_body, [_rx, _ry, _rw, _rowH], (["UNTITLED", _title] select (_title isNotEqualTo "")), _ink, 1, true] call EFUNC(tacpad,drawText);
+[_body, [_rx, _ry, _rw, _rowH], (["UNTITLED", _title] select (_title isNotEqualTo "")), _ink, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH + _padY;
 [_body, [_rx, _ry, _rw, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 _ry = _ry + _padY * 2;
@@ -174,7 +176,7 @@ if (_image isNotEqualTo "") then {
 };
 
 if (_text isNotEqualTo "") then {
-    [_body, [_rx, _ry, _rw, _h - _ry], _text, _ink, 0.8, false, "left"] call EFUNC(tacpad,drawText);
+    [_body, [_rx, _ry, _rw, _h - _ry], _text, _ink, TEXT_TITLE, false, "left"] call EFUNC(tacpad,drawText);
 };
 
 nil

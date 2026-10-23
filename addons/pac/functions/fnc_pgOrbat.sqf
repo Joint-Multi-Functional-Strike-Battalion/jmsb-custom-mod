@@ -3,7 +3,7 @@
     File: fnc_pgOrbat.sqf
     Author: YonV
     Description: The ORBAT - the website's ?page=orbat and its tabs: ORDERS
-        OF BATTLE (the versions), COMMUNICATIONS (nets, ACRE, TFAR), ROLES,
+        OF BATTLE (the versions), COMMUNICATIONS (nets, ACRE, net plan), ROLES,
         SQUADS, PLATOONS, VARIABLES. Each a table; a row opens the thing.
 
     Parameters:
@@ -90,7 +90,7 @@ switch (_s) do {
             [[str (_n getOrDefault ["order", 0]), _netId, _n getOrDefault ["name", ""], format ["%1 role(s)", _readers]], _netId]
         };
         if (_netRows isEqualTo []) then {_netRows = [[["", "No nets", "", ""], "", [0.545, 0.592, 0.639, 1]]]};
-        // the nets get half the page - there are fourteen; ACRE is four rows and TFAR two
+        // the nets get half the page - there are fourteen; ACRE is four rows and the net plan two
         private _third = (_h - 0.024) * 0.25;
         private _netsH = (_h - 0.024) * 0.5;
         [PAC_IDC_LIST, ["Order", "Net", "What it is for", "Read by"], [0, 0.10, 0.36, 0.76], _netRows, {
@@ -111,14 +111,15 @@ switch (_s) do {
             ["radioChannels", createHashMapFromArray [["band", _what]]] call FUNC(uiGo);
         }, PAC_UI_TOP + _netsH + 0.012, _third, format ["ACRE  -  %1.radio", _unit]] call FUNC(uiList);
 
-        [PAC_IDC_LIST3, ["TFAR", "", ""], [0, 0.30, 0.60], [
-            [["Channels 1 - 8", format ["%1 short / %2 long", "tfarSrFreqs" call _fnc_n, "tfarLrFreqs" call _fnc_n], "short range and long range frequencies"], "tfar"],
-            [["Radio and fallbacks", _radio getOrDefault ["tfarActiveRadio", ""], "radio in hand on spawn, fallback channels"], "tfarSettings"]
+        // THE NET PLAN (game voice): nets on slots, per squad - no frequencies.
+        // A squad's slots are edited on the squad (SQUADS tab); the fallbacks here.
+        [PAC_IDC_LIST3, ["NET PLAN", "", ""], [0, 0.30, 0.60], [
+            [["Fallbacks", format ["%1 squad row(s), %2 net(s)", "tfarNets" call _fnc_n, count ([] call FUNC(netPlan))], "net slots before a man joins a squad"], "nets"]
         ], {
             params ["_what"];
-            if (_what isEqualTo "tfarSettings") exitWith {["radioSettings", createHashMapFromArray [["which", "tfar"]]] call FUNC(uiGo)};
-            ["radioChannels", createHashMapFromArray [["band", "tfar"]]] call FUNC(uiGo);
-        }, PAC_UI_TOP + _netsH + _third + 0.024, _third, "TFAR  -  TFAR is not ACRE: channel indexes, not frequencies, per squad"] call FUNC(uiList);
+            if (_what isEqualTo "") exitWith {};
+            ["radioSettings", createHashMapFromArray [["which", "nets"]]] call FUNC(uiGo);
+        }, PAC_UI_TOP + _netsH + _third + 0.024, _third, "NET PLAN  -  game voice: nets, not frequencies; squad slots on the SQUADS tab"] call FUNC(uiList);
         if !(["nets"] call FUNC(fileFed)) then {_btns pushBack ["NEW NET", {["recordItem", createHashMapFromArray [["sec", "nets"], ["id", ""]]] call FUNC(uiGo)}]};
     };
 
@@ -176,7 +177,7 @@ switch (_s) do {
             ], _name, [[], [0.894, 0.341, 0.290, 1]] select (_bad > 0)];
         } forEach _groups;
         if (_rows isEqualTo []) then {_rows = [[["No squads", "", "", "", "", "", ""], "", [0.545, 0.592, 0.639, 1]]]};
-        [PAC_IDC_LIST, ["Squad", "Slots", "Platoon", "ACRE", "TFAR sw / lr", "Offered when", ""], [0, 0.22, 0.30, 0.48, 0.56, 0.68, 0.88], _rows, {
+        [PAC_IDC_LIST, ["Squad", "Slots", "Platoon", "ACRE", "Net sr / lr", "Offered when", ""], [0, 0.22, 0.30, 0.48, 0.56, 0.68, 0.88], _rows, {
             params ["_name"];
             if (_name isEqualTo "") exitWith {};
             ["squad", createHashMapFromArray [["name", _name]]] call FUNC(uiGo);

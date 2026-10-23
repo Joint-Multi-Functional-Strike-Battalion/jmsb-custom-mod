@@ -73,6 +73,18 @@ it** - and turning it off makes the mission's list the only way in.
 A mission with no list at all is therefore not locked out: the host can still
 open the console and grant access with **TOGGLE ADMIN**.
 
+## On a tablet
+
+In tablet mode, with a device open, the console (ADMIN on the tablet, or the
+key), the message box and TIME / WEATHER open as their own dialogs but sized
+and placed to the tablet's screen - the map area the tacpad draws in
+(`jmfsb_tacpad_host`) - instead of the whole monitor (`fitHost`): every
+control's safe-zone rectangle mapped onto that rectangle, type scaled with it.
+The console is not drawn into the device: it is two hundred declared controls
+driven by idc from the ported panel, a live map and a PiP camera. ESC closes
+it back to the tablet. Its TAC//PAC button closes the console and opens
+TAC//PAC inside the tablet (`openPac`).
+
 ## What is on the screen
 
 **Left rail** - the player list with a filter over it, the four utility toggles
@@ -167,7 +179,7 @@ See [LICENSE](LICENSE) for the full text.
 
 ## Ships
 
-27 functions.
+30 functions.
 
 ## CBA settings
 
@@ -178,7 +190,7 @@ See [LICENSE](LICENSE) for the full text.
 
 ## Functions
 
-<details><summary>27</summary>
+<details><summary>30</summary>
 
 - `jmfsb_adminpanel_fnc_adminList`
 - `jmfsb_adminpanel_fnc_confirmEnd`
@@ -197,6 +209,7 @@ See [LICENSE](LICENSE) for the full text.
 - `jmfsb_adminpanel_fnc_execTabs`
 - `jmfsb_adminpanel_fnc_execTarget`
 - `jmfsb_adminpanel_fnc_filterList`
+- `jmfsb_adminpanel_fnc_fitHost`
 - `jmfsb_adminpanel_fnc_infoRow`
 - `jmfsb_adminpanel_fnc_isAdmin`
 - `jmfsb_adminpanel_fnc_mapCursor`
@@ -204,6 +217,8 @@ See [LICENSE](LICENSE) for the full text.
 - `jmfsb_adminpanel_fnc_mapTabs`
 - `jmfsb_adminpanel_fnc_mapTargets`
 - `jmfsb_adminpanel_fnc_open`
+- `jmfsb_adminpanel_fnc_openDisplay`
+- `jmfsb_adminpanel_fnc_openPac`
 - `jmfsb_adminpanel_fnc_panelAdmin`
 - `jmfsb_adminpanel_fnc_style`
 - `jmfsb_adminpanel_fnc_styleMessage`

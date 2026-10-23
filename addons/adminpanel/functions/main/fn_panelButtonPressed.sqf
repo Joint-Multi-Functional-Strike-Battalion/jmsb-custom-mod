@@ -16,11 +16,7 @@
 private _shift = _this#2;
 
 if (player call admp_fnc_isAdmin) then {
-    if (_shift) then {
-        createDialog "jmfsb_adminpanel_message";
-    } else {
-        createDialog "jmfsb_adminpanel_console";
-    };
+    [_shift] call jmfsb_adminpanel_fnc_open;
 } else {
-    createDialog "jmfsb_adminpanel_message";
+    [true] call jmfsb_adminpanel_fnc_open;
 };

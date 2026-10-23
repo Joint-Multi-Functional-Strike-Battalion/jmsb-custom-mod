@@ -36,7 +36,7 @@ if (isNil "_panel") exitWith {};
 private _slot = _panel get "slot";
 
 private _scale = GVAR(textScale) * GVAR(uiScale);
-private _rowH = ROW_H * _scale * safeZoneH;
+private _rowH = ROW_H * _scale * HOST_H;
 private _bx = RULE_THICK * pixelW;
 private _by = RULE_THICK * pixelH;
 
@@ -44,7 +44,7 @@ private _by = RULE_THICK * pixelH;
 // one - see FUNC(build) - so counting them here would leave a strip a header
 // taller than its own contents, with the gap at the bottom.
 private _chrome = _panel getOrDefault ["chrome", true];
-private _headerH = [0, HEADER_H * _scale * safeZoneH] select _chrome;
+private _headerH = [0, HEADER_H * _scale * HOST_H] select _chrome;
 private _ruleH = [0, RULE_THICK * pixelH] select _chrome;
 
 private _gp = ctrlPosition _group;
@@ -54,7 +54,7 @@ _gp params ["_x", "_y", "_w"];
 // gets a single row, so an empty panel is still a labelled strip you can find
 // rather than a sliver.
 private _floor = parseNumber (_extra <= 0);
-private _bodyH = ((_rows max _floor) * _rowH) + (_extra * safeZoneH);
+private _bodyH = ((_rows max _floor) * _rowH) + (_extra * HOST_H);
 private _h = _bodyH + _headerH + _ruleH + 2 * _by;
 
 // THE FLOOR A PANEL MAY GROW TO. The bottom of the safe zone, and - unless the
@@ -66,18 +66,18 @@ private _h = _bodyH + _headerH + _ruleH + 2 * _by;
 // back down over the chat: a sixteen-row roster starting at 0.20 ends at 0.87,
 // and the chat overlay starts at 0.80. Covering a player's only text channel is
 // exactly the failure the zones are declared for, so the clamp reads them too.
-private _bottom = safeZoneY + safeZoneH;
+private _bottom = HOST_Y + HOST_H;
 
-if (GVAR(respectZones)) then {
+if (GVAR(respectZones) && HOST_NATIVE) then {
     private _left = _x;
     private _right = _x + _w;
 
     {
         _x params ["_zx", "_zy", "_zw", "_zh"];
 
-        private _zLeft = safeZoneX + _zx * safeZoneW;
-        private _zRight = _zLeft + _zw * safeZoneW;
-        private _zTop = safeZoneY + _zy * safeZoneH;
+        private _zLeft = HOST_X + _zx * HOST_W;
+        private _zRight = _zLeft + _zw * HOST_W;
+        private _zTop = HOST_Y + _zy * HOST_H;
 
         // Only a zone this panel is over, and only one it is above: a panel
         // already sitting inside a zone is the player's business - see

@@ -1196,12 +1196,6 @@
         displayName = "Radio Pack [CSAT] (Desert Hex)";
         picture = "\z\jmfsb\addons\uniform\models\supplies\Bags\Data\UI\icon_B_RadioBag_01_oicamo_F_ca.paa";
         hiddenSelectionsTextures[] = {"\z\jmfsb\addons\uniform\models\supplies\Bags\Data\B_RadioBag_01_oicamo_CO.paa"};
-        tf_dialog = "bussole_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_east_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_Soldier_JSOC_base): B_Soldier_recon_base {
         scope = 0;
@@ -1272,12 +1266,6 @@
         displayName = "Radio Pack [HIMF] (Jungle)";
         picture = "\z\jmfsb\addons\uniform\models\supplies\Bags\Data\UI\icon_B_RadioBag_01_jungle_F_ca.paa";
         hiddenSelectionsTextures[] = {"\z\jmfsb\addons\uniform\models\supplies\Bags\Data\B_RadioBag_01_jungle_CO.paa"};
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_TacticalPack_oli_BHLAT_F): B_TacticalPack_oli {
         author = "Avery Kaiserin";
@@ -1309,12 +1297,6 @@
         displayName = "Radio Pack [HIMF-C] (Jungle)";
         picture = "\z\jmfsb\addons\uniform\models\supplies\Bags\Data\UI\icon_B_RadioBag_01_jungle_F_ca.paa";
         hiddenSelectionsTextures[] = {"\z\jmfsb\addons\uniform\models\supplies\Bags\Data\B_RadioBag_01_commando_CO.paa"};
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(B_TacticalPack_rgr_BAReconMedic_F): B_TacticalPack_rgr {
         author = "Avery Kaiserin";
@@ -1369,12 +1351,6 @@
         displayName = "Radio Pack (Coyote)";
         picture = "\z\jmfsb\addons\uniform\models\supplies\Bags\Data\UI\icon_B_RadioBag_01_coyote_F_ca.paa";
         hiddenSelectionsTextures[] = {"\z\jmfsb\addons\uniform\models\supplies\Bags\Data\B_RadioBag_01_Coyote_CO.paa"};
-        tf_dialog = "rt1523g_radio_dialog";
-        tf_dialogUpdate = "call TFAR_fnc_updateLRDialogToChannel;";
-        tf_encryptionCode = "tf_west_radio_code";
-        tf_hasLRradio = 1;
-        tf_range = 20000;
-        tf_subtype = "digital_lr";
     };
     class GVAR(O_R_Soldier_diver_base): O_R_Soldier_Base_F {
         author = "Avery Kaiserin";

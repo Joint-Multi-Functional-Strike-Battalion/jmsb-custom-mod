@@ -36,7 +36,8 @@ private _held = [
     [IDC_ADMINPANEL_PLAYER_SKILLS_UAV_CHECKBOX, "UAV" in _tags || (_player getVariable ["UAVHacker", _player getUnitTrait "UAVHacker"]) isEqualTo true],
     [IDC_ADMINPANEL_PLAYER_SKILLS_MKS_CHECKBOX, "MKS" in _tags],
     [IDC_ADMINPANEL_PLAYER_SKILLS_SNP_CHECKBOX, "SNP" in _tags],
-    [IDC_ADMINPANEL_PLAYER_SKILLS_HVY_CHECKBOX, "HVY" in _tags]
+    [IDC_ADMINPANEL_PLAYER_SKILLS_HVY_CHECKBOX, "HVY" in _tags],
+    [IDC_ADMINPANEL_PLAYER_SKILLS_RTO_CHECKBOX, "RTO" in _tags || (_player getVariable ["isRTO", false]) isEqualTo true]
 ];
 
 {

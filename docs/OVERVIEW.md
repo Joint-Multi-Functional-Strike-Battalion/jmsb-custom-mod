@@ -31,7 +31,7 @@ this page is the plain-language answer to "what does jmfsb actually add".
   car, finite once players spend them; trapped houses, internet pops, prison delivery
 - **Hacking / intel economy** - towers, phones, wrecks, remote net breaks, and
   the intel products they buy (locate AA, artillery, caches, radars, TRACE NETWORK)
-- **Jamming / EW** - zones that degrade TFAR and ACRE, held up by destructible emitters
+- **Jamming / EW** - zones that degrade game voice (through RF) and ACRE, held up by destructible emitters
 - **Air defence** - sited AA batteries and MANPAD teams inside TAORs
 - **Anti-ship** - coastal Burevestnik batteries with radars, decoys and rearm
 - **Ambience** - ambient artillery shelling and one-way kamikaze drones near players

@@ -51,8 +51,8 @@ _pos params ["_x", "_y", "_w", "_h"];
 
 private _bx = RULE_THICK * pixelW;
 private _by = RULE_THICK * pixelH;
-private _pad = PAD * safeZoneW;
-private _headerH = HEADER_H * GVAR(textScale) * GVAR(uiScale) * safeZoneH;
+private _pad = PAD * HOST_W;
+private _headerH = HEADER_H * GVAR(textScale) * GVAR(uiScale) * HOST_H;
 
 private _group = _display ctrlCreate [QGVAR(panel), IDC_PANEL(_slot)];
 // TAGGED AS OURS. FORCE CLOSE sweeps the display for this mark, so a group
@@ -111,9 +111,9 @@ if (_chrome) then {
     // size nobody could read. Bold uppercase carries it on its own.
     private _title = _display ctrlCreate [QGVAR(cell), IDC_TITLE(_slot), _group];
     _title ctrlSetPosition [_bx + _pad, _by, (_w - 2 * _bx) * 0.58, _headerH];
-    _title ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * GVAR(textScale) * GVAR(uiScale));
+    _title ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale) * GVAR(uiScale));
     _title ctrlSetStructuredText parseText format [
-        "<t font='RobotoCondensedBold' size='0.9' color='%1'>%2</t>",
+        "<t font='RobotoCondensedBold' size='0.85' color='%1'>%2</t>",
         _ink call BIS_fnc_colorRGBAtoHTML,
         [toUpper (_panel get "title")] call FUNC(xmlSafe)
     ];
@@ -124,7 +124,7 @@ if (_chrome) then {
     // the title's box ends, so the two can never print over each other.
     private _meta = _display ctrlCreate [QGVAR(cell), IDC_META(_slot), _group];
     _meta ctrlSetPosition [_bx + (_w - 2 * _bx) * 0.58, _by, (_w - 2 * _bx) * 0.42 - _pad, _headerH];
-    _meta ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * GVAR(textScale) * GVAR(uiScale));
+    _meta ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale) * GVAR(uiScale));
     _meta ctrlCommit 0;
 };
 

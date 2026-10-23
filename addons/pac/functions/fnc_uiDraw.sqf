@@ -19,8 +19,7 @@
 
 disableSerialization;
 
-private _display = uiNamespace getVariable [QGVAR(display), displayNull];
-if (isNull _display) exitWith {};
+if (isNull (uiNamespace getVariable [QGVAR(shell), controlNull])) exitWith {};
 
 // ---- blank the shell ------------------------------------------------------
 private _hide = [
@@ -38,13 +37,13 @@ for "_i" from 0 to (PAC_IDC_FORM_ROWS - 1) do {
     _hide append [PAC_IDC_FORM_LABEL(_i), PAC_IDC_FORM_EDIT(_i), PAC_IDC_FORM_COMBO(_i)];
 };
 {
-    private _c = _display displayCtrl _x;
+    private _c = [_x] call FUNC(uiCtrl);
     _c ctrlShow false;
     _c setVariable [QGVAR(onClick), nil];
     _c setVariable [QGVAR(onRow), nil];
     _c setVariable [QGVAR(onChange), nil];
 } forEach _hide;
-{lnbClear (_display displayCtrl _x)} forEach [PAC_IDC_LIST, PAC_IDC_LIST2, PAC_IDC_LIST3];
+{lnbClear ([_x] call FUNC(uiCtrl))} forEach [PAC_IDC_LIST, PAC_IDC_LIST2, PAC_IDC_LIST3];
 
 GVAR(uiFormKeys) = [];
 GVAR(uiFormNext) = 0;

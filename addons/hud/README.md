@@ -71,7 +71,7 @@ slot by pressing past the end, the way the vanilla panels work.
 | --- | --- |
 | **DRONES** | Contact count large, then bearing and range. Its own tile because it is the one readout that means *move*. |
 | **JAMMING** | Percentage large, a bar under it, and the affected band. |
-| **RADIO** | The set in your hand and its channel, with the jam percentage beside it - a channel is only worth reading next to whether anyone will hear it. |
+| **RADIO** | The active voice net (game voice, VON, from `jmfsb_voice_fnc_netState`; never a frequency), `TX` while the player transmits on it, `NO ROUTE` when it is out of reach (never hidden), `MUTED`, or the ear its beeps pan to; under it who is talking on it, or the call - `CALL RINGING`, `CALL <n> ON` - and the jam percentage. Without the voice addon it reads NO VOICE ADDON. |
 | **EW** | Drones, jamming and radio on one tile, small. |
 | **SQUAD** | `ALL OK` and a headcount, or the casualty list the moment somebody is hit. |
 | **TIMER** | World clock, the stopwatch or countdown when one is running, and the next armed alarm. |
@@ -151,6 +151,7 @@ a minute is how a HUD starts flickering. Switchable off in settings.
 |---|---|---|
 | `jmfsb_hud_enabled` | CHECKBOX | Enable HUD |
 | `jmfsb_hud_hideOnMap` | CHECKBOX | Hide with the map |
+| `jmfsb_hud_showInTablet` | CHECKBOX | Show in tablet mode |
 | `jmfsb_hud_opacity` | SLIDER | HUD opacity |
 
 ## Functions

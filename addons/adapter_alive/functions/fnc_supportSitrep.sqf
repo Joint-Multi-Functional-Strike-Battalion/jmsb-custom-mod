@@ -14,7 +14,9 @@
  * ledger is already on the screen.
  *
  * Arguments:
- * 0: Asset id from FUNC(supportAssets), "type:index" <STRING>
+ * 0: Asset id from FUNC(supportAssets), "alive:type:index" or "alive:ato"
+ *    <STRING> - the "alive" provider's sitrep code, called through
+ *    EFUNC(support,sitrep)
  *
  * Return Value:
  * 0: Answered <BOOL>
@@ -25,18 +27,13 @@
 
 params [["_assetId", "", [""]]];
 
-// A registered provider answers for its own assets - see the note in
-// FUNC(supportAssets). Before the NEO check, so a jmfsb asset still reports in
-// a mission with no ALiVE combat support at all.
-private _prefix = (_assetId splitString ":") param [0, ""];
-private _provider = (missionNamespace getVariable [QGVAR(providers), createHashMap]) getOrDefault [_prefix, []];
-if (_provider isNotEqualTo []) exitWith {
-    [_assetId] call (_provider param [2, {[false, "no report"]}])
+if (_assetId isEqualTo SUPPORT_ATO_ID) exitWith {
+    [true, "The ATO answers requests as its airframes come free."]
 };
 
 if (isNil "NEO_radioLogic") exitWith {[false, "ALiVE combat support is not running"]};
 
-(_assetId splitString ":") params [["_type", ""], ["_idxText", "-1"]];
+(_assetId splitString ":") params ["", ["_type", ""], ["_idxText", "-1"]];
 if (!(_type in ["cas", "transport"])) exitWith {[false, "SITREP is for airframes"]};
 
 private _arrName = ["NEO_radioTrasportArray_%1", "NEO_radioCasArray_%1"] select (_type isEqualTo "cas");

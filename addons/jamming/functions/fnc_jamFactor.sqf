@@ -4,9 +4,14 @@ Function: jmfsb_jamming_fnc_jamFactor
 
 Description:
     Jamming strength at a position, 0 (clear) to 1 (fully smothered). One shared
-    calculator for every consumer - the TFAR and ACRE appliers, the jamming HUD,
+    calculator for every consumer - the RF noise source, the ACRE applier, the jamming HUD,
     the RDF scanner, UAV jamming. They can disagree about what to DO with the
     number, never about what the number is.
+
+    STILL ZONE-BASED (2026-10-19). RF prices the same zones as noise through
+    FUNC(rfNoise), which calls this, so a zone's reach is one shape in both.
+    It knows the zones only: a noise source registered with RF directly (the
+    Drone40 Jammer) is not in this number.
 
     Concept adapted from WaldosMissionPack (Adam Waldie, MIT) - one shared
     propagation function rather than each system rolling its own. Implementation

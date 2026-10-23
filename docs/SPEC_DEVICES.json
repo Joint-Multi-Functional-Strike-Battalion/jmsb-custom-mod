@@ -1,0 +1,250 @@
+{
+  "spec": "TAC//APP devices",
+  "version": "0.2.1",
+  "date": "2026-10-20",
+  "parent": "SPEC_TACNET.json",
+  "status": "handoff - reference frame images attached separately",
+  "ui_modes": {
+    "setting": "gfa_tacapp_displayMode",
+    "values": {
+      "native": "the UI as it is in the mod today; unchanged",
+      "tablet": "same screens re-hosted on device frames; keep layout and formatting, rescale to the device content rect"
+    },
+    "tablet_mode_side_effects": [
+      "existing on-screen HUD tiles default OFF, player can re-enable",
+      "game/mod/TFAR notifications stay as upper-right popups on the player screen in every mode (user, 2026-10-18); the phone notification row mirrors them, it does not replace them",
+      "vanilla GPS mini-map stays available (not hidden)"
+    ]
+  },
+  "devices": [
+    {
+      "id": "large",
+      "item": null,
+      "availability": "every player, always",
+      "open": [
+        "ACE self-interaction",
+        "keybind"
+      ],
+      "mode": "fullscreen dialog",
+      "screen": "native layout rescaled; tablet drawn as large as the screen allows",
+      "frame": "tablet_fixed_cut.png",
+      "content_rect": [
+        286,
+        483,
+        1797,
+        1591
+      ],
+      "apps": "all native apps",
+      "drone_control": "later"
+    },
+    {
+      "id": "vehicle",
+      "item": null,
+      "availability": "every vehicle",
+      "open": [
+        "ACE vehicle interaction"
+      ],
+      "mode": "fullscreen dialog",
+      "screen": "same as large; vehicle-specific tiles later",
+      "frame": "vehicle_body_cut.png",
+      "content_rect": [
+        286,
+        483,
+        1797,
+        1591
+      ],
+      "apps": "all native apps + vehicle tiles (TBD)",
+      "drone_control": "later"
+    },
+    {
+      "id": "phone",
+      "item": "GPS slot item (replaces vanilla GPS; vanilla GPS removed from arsenal mission-side)",
+      "availability": "player picks ONE of phone | side | side2",
+      "open": [
+        "always on screen - walking view",
+        "toggle key",
+        "ACE self-interaction -> fullscreen for settings only"
+      ],
+      "mode": "on-screen overlay, display + keybinds; fullscreen only for settings",
+      "screen": "custom phone UI (see phone_ui)",
+      "frame": "phone_body_cut.png",
+      "content_rect": [
+        286,
+        483,
+        1797,
+        1316
+      ],
+      "apps": "phone-specific set, decided app by app later; no messaging app for now; no large-screen apps",
+      "is_gps": true,
+      "drone_control": true
+    },
+    {
+      "id": "side",
+      "item": "GPS slot item",
+      "availability": "player picks ONE of phone | side | side2",
+      "open": [
+        "always on screen",
+        "toggle key",
+        "player chooses LEFT or RIGHT screen position when bringing it up (Micro DAGR style)"
+      ],
+      "mode": "on-screen overlay",
+      "screen": "same functions as phone, different frame/format",
+      "frame": "mini2_body_cut.png (or dedicated side frame when supplied)",
+      "content_rect": [
+        456,
+        285,
+        1358,
+        1797
+      ],
+      "is_gps": true,
+      "drone_control": true
+    },
+    {
+      "id": "side2",
+      "item": "GPS slot item",
+      "availability": "player picks ONE of phone | side | side2",
+      "open": [
+        "always on screen",
+        "toggle key",
+        "player chooses LEFT or RIGHT"
+      ],
+      "mode": "on-screen overlay",
+      "screen": "same functions as phone, different frame/format",
+      "frame": "second side frame image (to be supplied)",
+      "content_rect": "from image",
+      "is_gps": true,
+      "drone_control": true
+    }
+  ],
+  "phone_ui": {
+    "layout_top_to_bottom": [
+      {
+        "row": "status_icons",
+        "style": "icons, not tiles or tabs",
+        "icons": [
+          "net",
+          "mesh/link",
+          "jam",
+          "drones",
+          "fires",
+          "messages",
+          "timer",
+          "gps",
+          "battery"
+        ],
+        "behaviour": "quick status glance; tap/key opens detail where one exists"
+      },
+      {
+        "row": "notifications",
+        "style": "scrolling line, small font",
+        "source": "mirror of the upper-right popups: mod notifications and TFAR notifications",
+        "log": "every notification kept in a scrollable log the player can open and read back",
+        "note": "upper-right popups are NOT suppressed in any mode - the row is a second copy plus the log (user, 2026-10-18)"
+      },
+      {
+        "row": "map",
+        "style": "centre of screen, largest area",
+        "behaviour": [
+          "always auto-centred on the player",
+          "draws our BFT: everyone around the player",
+          "GPS function of the device"
+        ]
+      },
+      {
+        "row": "nets",
+        "style": "rounded rectangles, one per net the player can access",
+        "cell": {
+          "text": "<name> + ear tag (no numbers)",
+          "max_chars": 12,
+          "number": 1,
+          "name_max": 10,
+          "outline_ok": "green",
+          "outline_issue": "red"
+        },
+        "behaviour": "only nets you are on are shown (VEH in a vehicle, CALL when live); numpad 0 / . move the active net left / right; red outline = on the net but no route; ear tag L/B/R per net; frequencies never shown"
+      }
+    ],
+    "squad_radar": {
+      "source": "DUI Squad Radar feature set (diwako) - repo link to follow",
+      "elements": [
+        "radar",
+        "name list",
+        "indicators",
+        "buddy",
+        "name tags",
+        "who is talking, live"
+      ]
+    },
+    "radio": {
+      "shows": [
+        "all nets the player has access to",
+        "active net",
+        "who is talking and when"
+      ],
+      "hides": [
+        "frequencies",
+        "voice-system notifications and dialogs"
+      ],
+      "rule": "all radio information goes through the phone UI"
+    },
+    "fonts": "needs small-font work; phone is wide enough for two top rows"
+  },
+  "tfar_override": {
+    "base": "TFAR standalone unmodified (DLL, relay, SQF, items)",
+    "layer": "gfa_voice_tfrs: nets -> hidden frequencies from the signal plan, channels programmed from the fill, TFAR UI/hints/keybinds suppressed and replaced, state rendered on our devices, rf link quality -> TFAR per-unit multipliers",
+    "spec": "SPEC_TACNET.json",
+    "status": "optional adapter only (D14)"
+  },
+  "ace_interactions": {
+    "large": "self -> open tablet",
+    "vehicle": "vehicle -> open vehicle tablet",
+    "phone_side": "self -> settings (fullscreen); side devices: choose left/right"
+  },
+  "defaults_assumed": [
+    "notifications also mirror on large and vehicle tablets; the upper-right popups stay regardless",
+    "phone walking view is display-only with keybinds; fullscreen only for settings",
+    "vehicle tablet is dialog only",
+    "side left/right chosen each time it is brought up"
+  ],
+  "open": [
+    "phone app list (app by app; messaging to be tried, may be too small)",
+    "vehicle-specific tiles",
+    "DUI repo link",
+    "side2 frame image"
+  ],
+  "voice": {
+    "base": "game voice (VON) through the voice adapter; TFAR standalone optional",
+    "spec": "SPEC_TACNET.json voice_adapter",
+    "doc": "DESIGN_VOICE.md"
+  },
+  "keys": {
+    "numpad": {
+      "1-4": "device F1-F4",
+      "0 / .": "device arrows: active net (walking) / cursor (apps)",
+      "5": "open/close tablet",
+      "6": "radio app on carried device",
+      "7 / 8": "prev / next tab (small devices)",
+      "9": "TROOPS IN CONTACT"
+    },
+    "walking_view_F": {
+      "F1": "accept call",
+      "F2": "ear for active net; during a call: quick add",
+      "F3": "mute active net",
+      "F4": "decline / hang up"
+    }
+  },
+  "radio_app_small": {
+    "devices": [
+      "phone",
+      "side",
+      "side2"
+    ],
+    "open": "numpad 6, full screen; mouse works",
+    "tabs": {
+      "NETS": "F1 MUTE · F2 EAR · F3 SET ACTIVE · F4 BACK",
+      "CALLS": "F1 ADD · F2 CALL · F3 GROUP + · F4 HANG UP",
+      "MANAGE": "F1 ADD · F2 REMOVE · F3 REKEY · F4 BACK"
+    },
+    "doc": "DESIGN_VOICE.md"
+  }
+}
