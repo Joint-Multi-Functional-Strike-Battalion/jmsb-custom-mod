@@ -17,7 +17,7 @@
  * Example:
  * [_veh, _pos, "FULL"] call jmfsb_support_air_fnc_moveTo
  *
- * Public: No
+ * Public: Yes
  */
 
 params [["_veh", objNull, [objNull]], ["_pos", [], [[]]], ["_speed", "NORMAL", [""]], ["_type", "MOVE", [""]], ["_radius", 0, [0]]];

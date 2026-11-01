@@ -57,6 +57,7 @@
 // The creating client waits this long before telling the server, so the
 // object has reached the server and GX has crewed it.
 #define DEPLOY_DELAY_S      2
+#define SERVER_OWNER        2
 
 // The server tick: cleanup and power state.
 #define TICK_S              5

@@ -34,8 +34,8 @@ if (isNull _body) exitWith {};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * HOST_H;
+// The rows FUNC(row) draws: the row rhythm's own height.
+private _rowH = ROW_H_SCREEN;
 private _w = (ctrlPosition _body) # 2;
 private _pad = PAD * HOST_W;
 private _padY = PAD * HOST_H;
@@ -227,21 +227,6 @@ if !(_active in _nets) then {_active = "ALL"; GVAR(readerNet) = "ALL"};
 // UNLESS THE SPECTRUM HAS SOMETHING TO SAY. Inside a jammer's field the link
 // state takes the readout - a man whose rail has gone quiet reads WHY in the
 // same place he reads how busy it is when it has not.
-([] call EFUNC(messaging,linkState)) params ["_link"];
-if (_link > 0) then {
-    [_id, ["LINK DEGRADED", "LINK NONET"] select (_link > 1), true] call EFUNC(tacpad,headerMeta);
-} else {
-    [_id, [format ["%1 NETS", count _nets - 1], format ["%1 THREADS", count _index]] select (count _nets < 2)] call EFUNC(tacpad,headerMeta);
-};
-
-// DROPDOWN, NOT A ROW OF TABS. Five squads plus ALL made a strip too narrow to
-// read; the net selector is one chip now - the active net and its unread count,
-// a caret, and a click that drops the full list over the traffic (drawn last,
-// at the end of this function, so it sits on top). The open state is UI-scoped:
-// it closes on its own when the panel is rebuilt for any other reason.
-private _tabH = _rowH * 0.95;
-private _tabY = _padY;
-
 private _netCount = {
     params ["_net"];
     private _c = 0;
@@ -255,30 +240,55 @@ private _netCount = {
     _c
 };
 
-private _activeLabel = _active;
-private _adot = _activeLabel find ".";
-if (_adot > -1) then {_activeLabel = _activeLabel select [_adot + 1]};
-private _activeCount = [_active] call _netCount;
+// THE HEADER'S LIVE NUMBER (notes, 2026-10-30): what is unread, before how
+// many nets or threads there are.
+([] call EFUNC(messaging,linkState)) params ["_link"];
+private _newCount = ["ALL"] call _netCount;
+if (_link > 0) then {
+    [_id, ["LINK DEGRADED", "LINK NONET"] select (_link > 1), true] call EFUNC(tacpad,headerMeta);
+} else {
+    [_id, switch (true) do {
+        case (_newCount > 0): {format ["%1 NEW", _newCount]};
+        case (count _nets < 2): {format ["%1 THREADS", count _index]};
+        default {format ["%1 NETS", count _nets - 1]};
+    }] call EFUNC(tacpad,headerMeta);
+};
 
-[_body, [0, _tabY, _w, _tabH], _accent] call EFUNC(tacpad,drawFill);
-[
-    _body, [_pad, _tabY, _w * 0.12, _tabH],
-    ([">", "v"] select (uiNamespace getVariable [QGVAR(readerNetOpen), false])),
-    _ground, TEXT_TITLE, true, "center"
-] call EFUNC(tacpad,drawText);
-[
-    _body, [_w * 0.12, _tabY, _w * 0.88 - _pad, _tabH],
-    toUpper (format ["%1%2", _activeLabel, [format [" (%1)", _activeCount], ""] select (_activeCount == 0)]),
-    _ground, TEXT_TITLE, true, "left"
-] call EFUNC(tacpad,drawText);
-[_body, [0, _tabY, _w, _tabH], {
-    uiNamespace setVariable [QGVAR(readerNetOpen), !(uiNamespace getVariable [QGVAR(readerNetOpen), false])];
-    {["reader"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
-}] call EFUNC(tacpad,drawHit);
+// NET TABS AS CHIPS (notes, 2026-10-30): ALL first, then every net with a
+// tab, each a chip with its unread count - the selected one the accent
+// filled - wrapping to a second row when the rail is too narrow for one. It
+// was a dropdown; a row of chips says where the traffic is without a press.
+private _tabH = _rowH * CHIP_H_K;
+private _tabY = _padY;
+private _chipX = _pad;
+private _chipY = _tabY;
+private _chipStep = _tabH + _padY * 0.5;
+{
+    private _net = _x;
+    private _lab = _net;
+    private _d = _lab find ".";
+    if (_d > -1) then {_lab = _lab select [_d + 1]};
+    private _c = [_net] call _netCount;
+    private _label = toUpper (format ["%1%2", _lab, ["", format [" %1", _c]] select (_c > 0)]);
+    private _cw = [_label, TEXT_BODY] call EFUNC(tacpad,chipWidth);
+    if (_chipX + _cw > _w - _pad && _chipX > _pad) then {
+        _chipX = _pad;
+        _chipY = _chipY + _chipStep;
+    };
+    [_body, [_chipX, _chipY], _tabH, _label, [CHIP_OUTLINE, CHIP_ACCENT_FILL] select (_net == _active), _cw, TEXT_BODY] call EFUNC(tacpad,drawChip);
+    private _hit = [_body, [_chipX, _chipY, _cw, _tabH], {
+        params ["_ctrl"];
+        GVAR(readerNet) = _ctrl getVariable [QGVAR(net), "ALL"];
+        {["reader"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
+    }] call EFUNC(tacpad,drawHit);
+    _hit setVariable [QGVAR(net), _net];
+    _chipX = _chipX + _cw + _pad;
+} forEach (["ALL"] + (_nets - ["ALL"]));
 
-[_body, [0, _tabY + _tabH, _w, RULE_THICK * pixelH], _ink] call EFUNC(tacpad,drawFill);
+private _ruleY = _chipY + _tabH + _padY * 0.5;
+[_body, [0, _ruleY, _w, RULE_THICK * pixelH], _ink] call EFUNC(tacpad,drawFill);
 
-private _top = _tabY + _tabH + RULE_THICK * pixelH;
+private _top = _ruleY + RULE_THICK * pixelH;
 _row = _top / _rowH;
 
 // -------------------------------------------------------------- traffic -----
@@ -374,7 +384,6 @@ private _logW = _w - _logX - _pad * 2;
 [_body, [_logX, _footY, _logW, _btnH], "LOG", _ink, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 [_body, [_logX, _footY, _logW, _btnH], {
     GVAR(readerLog) = true;
-    uiNamespace setVariable [QGVAR(readerNetOpen), false];
     {["reader"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
@@ -387,35 +396,6 @@ if (_flash > 0) then {_tally pushBack format ["%1 FLASH", _flash]};
     ([_mute, _accent] select (_flash > 0)),
     TEXT_LABEL, true, "center", true
 ] call EFUNC(tacpad,drawText);
-
-// THE OPEN DROPDOWN, DRAWN LAST so it overlays the traffic beneath it. One row
-// per net, the active one accented; a click picks it and closes the list.
-if (uiNamespace getVariable [QGVAR(readerNetOpen), false]) then {
-    private _optH = _rowH * 0.95;
-    {
-        private _net = _x;
-        private _oy = _tabY + _tabH + RULE_THICK * pixelH + _forEachIndex * _optH;
-        private _on = _net == _active;
-        [_body, [0, _oy, _w, _optH], ([_ground, _accent] select _on)] call EFUNC(tacpad,drawFill);
-        [_body, [0, _oy, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
-        private _lab = _net;
-        private _d = _lab find ".";
-        if (_d > -1) then {_lab = _lab select [_d + 1]};
-        private _c = [_net] call _netCount;
-        [
-            _body, [_pad * 2, _oy, _w - _pad * 3, _optH],
-            toUpper (format ["%1%2", _lab, [format ["  (%1)", _c], ""] select (_c == 0)]),
-            ([_ink, _ground] select _on), TEXT_TITLE, true, "left"
-        ] call EFUNC(tacpad,drawText);
-        private _hit = [_body, [0, _oy, _w, _optH], {
-            params ["_ctrl"];
-            GVAR(readerNet) = _ctrl getVariable [QGVAR(net), "ALL"];
-            uiNamespace setVariable [QGVAR(readerNetOpen), false];
-            {["reader"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
-        }] call EFUNC(tacpad,drawHit);
-        _hit setVariable [QGVAR(net), _net];
-    } forEach _nets;
-};
 
 // NO fit. The reader keeps the height it was placed at - it is the docked rail
 // down the right of the design, and a rail that shrinks to its contents is a

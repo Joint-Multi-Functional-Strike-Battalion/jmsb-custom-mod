@@ -109,7 +109,7 @@ JMSB's part is the port and the plumbing around it:
 
 ## Ships
 
-22 functions.
+23 functions.
 
 ## CBA settings
 
@@ -138,13 +138,14 @@ JMSB's part is the port and the plumbing around it:
 
 ## Functions
 
-<details><summary>22</summary>
+<details><summary>23</summary>
 
 - `jmfsb_bft_fnc_autoEnable`
 - `jmfsb_bft_fnc_describeGroup`
 - `jmfsb_bft_fnc_draw`
 - `jmfsb_bft_fnc_drawMembers`
 - `jmfsb_bft_fnc_findGroups`
+- `jmfsb_bft_fnc_friendlies`
 - `jmfsb_bft_fnc_getGroupMarkerShape`
 - `jmfsb_bft_fnc_getGroupPosition`
 - `jmfsb_bft_fnc_init`

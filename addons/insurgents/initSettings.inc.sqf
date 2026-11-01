@@ -5,7 +5,7 @@
         GEAR_SETTING(_class),
         "CHECKBOX",
         [format ["Use gear from ""%1""", _class], "If disabled gear from this configFile class will be not used. Mission defined gear will be not disabled."],
-        ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Insurgents"],
+        ["JMSB - Mission & Admin", "Insurgents"],
         true,
         1,
         {},

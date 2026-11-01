@@ -34,6 +34,7 @@ private _took = false;
 
 if (!isNil QGVAR(structureSvc)) then {
     GVAR(structure) = GVAR(structureSvc);
+    [] call FUNC(adminsPublish);
     GVAR(structureHash) = [] call FUNC(structureHash);
     [] call FUNC(templatesApply);     // the deck, if the structure carries one
     [GVAR(structure) getOrDefault ["radio", createHashMap]] call FUNC(radioApply);

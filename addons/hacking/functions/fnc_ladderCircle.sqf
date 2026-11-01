@@ -100,11 +100,11 @@ if (!isNil "jmfsb_adapter_alive_fnc_reportIntel") then {
 
 // One marker per product per side, so a new circle REPLACES the last rather
 // than leaving a trail of stale ones the player can triangulate from.
-[QGVAR(product), ["circle",
+["circle",
     format [QGVAR(%1_%2), _key, _sk],
     _centre, _radius, _colour, "",
     format ["%1 T%2", _label, _tier + 1], _side
-]] call CBA_fnc_globalEvent;
+] call FUNC(sendProduct);
 
 INFO_4("%1: site %2 tier %3, %4 m circle",_label,_id,_tier + 1,round _radius);
 true

@@ -10,6 +10,22 @@ PREP(moduleIntelPackage);
 PREP(packageEntries);
 PREP(productPackage);
 PREP(serverPick);
+// The server's end of a hack and a deposit, reached by remoteExec (review S7).
+PREP(hackDuration);
+PREP(srvMayHack);
+PREP(srvHackStart);
+PREP(srvHackComplete);
+PREP(srvDeposit);
+PREP(depositTake);
+// Scanner alarms from clients, by remoteExec, and the copy for screens.
+PREP(srvAlarmAdd);
+PREP(srvAlarmDelete);
+PREP(srvAlarmsClear);
+PREP(alarmPublish);
+// The server's pushes, taken on a client only from the server.
+PREP(sendProduct);
+PREP(pickResult);
+PREP(rfReached);
 PREP(remoteHackFail);
 PREP(scanDevices);
 PREP(towersInRange);
@@ -68,3 +84,6 @@ PREP(packDrop);
 
 // What RF says an operator's set can hear - the HACK board's NODES IN REACH.
 PREP(rfReach);
+
+// A target put on the board from outside - an ACE action on the thing itself.
+PREP(selectTarget);

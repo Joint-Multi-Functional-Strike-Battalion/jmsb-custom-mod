@@ -6,8 +6,13 @@ Description:
     Writes the store to the server's profile - and, when the service is up,
     to the service - at most once every PAC_SAVE_DEBOUNCE seconds. It is
     written when something changed: a connect, a disconnect, an admin's
-    edit, a window started or stopped, an import, the mission ending.
-    Never on a timer.
+    edit, a window started or stopped, an import, the mission ending. A
+    save the debounce held back leaves GVAR(dirty) set, and the heartbeat
+    (XEH_postInit) writes it then.
+
+    NOTHING IS WRITTEN BEFORE GVAR(storeReady) - the boot sets it once the
+    store is loaded (FUNC(boot) step 6). Before that the in-memory store is
+    empty, and a write would overwrite the real one.
 
     THE DEBOUNCE IS NOT AN OPTIMISATION, IT IS THE FEATURE. saveProfileNamespace
     serialises the whole profile and writes it to disk, on the main thread. An
@@ -52,6 +57,14 @@ Author:
 params [["_force", false, [false]], ["_toService", false, [false]]];
 
 if (!isServer) exitWith {false};
+
+// NOTHING BEFORE THE STORE IS LOADED. Until the boot sets storeReady the
+// in-memory store is preInit's empty one; writing it would blank the profile
+// and its meta, so the lost-store check could not catch it.
+if !(GVAR(storeReady)) exitWith {
+    TRACE_1("store not loaded yet - not writing",_force);
+    false
+};
 
 GVAR(dirty) = true;
 

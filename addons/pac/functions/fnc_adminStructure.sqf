@@ -43,7 +43,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_section", "", [""]], ["_op", "", [""]], ["_id", "", [""]], ["_rec", createHashMap, [createHashMap]]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
     WARNING_2("adminStructure refused: %1 is not an admin (%2)",name _caller,_section);
     false
 };
@@ -306,6 +306,8 @@ if (_section isEqualTo "welcome") then {
 // the mission never declared is simply gone. The rest of every role - nets,
 // loadout, tiles - rides along untouched under the three gate fields.
 if (_section isEqualTo "roles") then {[] call FUNC(rolesFromMission)};
+// The server's admin list follows the admins section at once (review S1/S5).
+if (_section isEqualTo "admins") then {[] call FUNC(adminsPublish)};
 
 [getPlayerUID _caller, name _caller, "structure", "", format ["%1 %2 '%3'", ["set", "removed"] select (_op isEqualTo "remove"), _section, _id]] call FUNC(logAction);
 [_section, _id] call FUNC(structurePersist);

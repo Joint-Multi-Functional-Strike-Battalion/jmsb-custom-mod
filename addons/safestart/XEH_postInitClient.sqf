@@ -2,7 +2,7 @@
 
 if (is3DEN) exitWith {};
 
-[QGVAR(enableSafety), player] call CBA_fnc_localEvent;
+[player] call FUNC(enableSafety);
 
 // The grenade-bind warner is safe_grenades' job now - this addon shipped a
 // byte-identical copy with its OWN don't-ask-again flag, so players got two

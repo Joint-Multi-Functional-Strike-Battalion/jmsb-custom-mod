@@ -29,17 +29,12 @@ private _icon = "\A3\ui_f\data\IGUI\Cfg\simpleTasks\types\meet_ca.paa";
             ["Patrol Base", "Could not read a drop position.", [1, 0.3, 0.3, 1]] call EFUNC(notify,notify);
         };
 
-        private _n = missionNamespace getVariable [QGVAR(kitCount), 4];
-
-        // A CBA SERVER EVENT, not a raw remoteExec of our own function.
-        // remoteExec of a named function is subject to the MISSION's
-        // CfgRemoteExec policy, and a mission that whitelists (rather than
-        // allows everything) drops the call on the floor with no error and no
-        // kits - which is exactly what "did not drop kits" looks like. CBA's
-        // event channel is always reachable, and it is what the rest of this
-        // mod already uses.
-        [QGVAR(dropKits), [_pos, _n, player]] call CBA_fnc_serverEvent;
-        diag_log text format ["[jmfsb_patrol_base] zeus drop requested: %1 kit(s) at %2", _n, mapGridPosition _pos];
+        // BY remoteExec, NOT A CBA SERVER EVENT (review S7): a CBA event
+        // carries no sender, so the server could not tell a Zeus from anyone
+        // else. A mission that whitelists CfgRemoteExec must list
+        // jmfsb_patrol_base_fnc_dropKits, or the drop is silently dropped.
+        [_pos] remoteExecCall [QFUNC(dropKits), SERVER_OWNER];
+        diag_log text format ["[jmfsb_patrol_base] zeus drop requested at %1", mapGridPosition _pos];
     },
     _icon
 ] call zen_custom_modules_fnc_register;

@@ -33,7 +33,10 @@
 params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {false};
-if (HOST_NATIVE || {isNull (HOST_DISPLAY)}) exitWith {false};
+// Fitted whenever the device dialog is up - it hands its screen rectangle to
+// the tacpad on open whatever the display mode - not only in tablet mode
+// (user, 2026-10-24: the console came up without the frame).
+if (isNull (findDisplay ADMIN_TABLET_IDD) && {HOST_NATIVE || {isNull (HOST_DISPLAY)}}) exitWith {false};
 
 private _sx = HOST_W / safeZoneW;
 private _sy = HOST_H / safeZoneH;

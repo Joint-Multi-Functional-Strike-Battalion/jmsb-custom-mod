@@ -54,8 +54,26 @@ if (!isNull _best) then {
     GVAR(overlayTalker) = [_best, _bestVoice, time, _bestNet];
 };
 
+// THE LIVE CALL'S CLOCK lives here now (notes, 2026-10-30: the call strip
+// only while a key is wanted): "CALL 02:14 - NAMES" whenever nobody has
+// talked lately.
+private _liveLine = "";
+private _live = _calls select {(_x param [1, ""]) isEqualTo CALL_LIVE};
+if (_live isNotEqualTo []) then {
+    (_live select 0) params ["", "", ["_members", [], [[]]], "", ["_startedAt", CBA_missionTime, [0]]];
+    private _s = floor ((CBA_missionTime - _startedAt) max 0);
+    _liveLine = format [
+        "<t color='%1'>%2</t> <t font='%3' color='%4'>%5:%6</t> <t color='%7'>%8</t>",
+        HTML_OK, DOT_TEXT, FONT_MONO, HTML_TEXT,
+        [floor (_s / SECONDS_PER_MINUTE), 2] call CBA_fnc_formatNumber,
+        [_s mod SECONDS_PER_MINUTE, 2] call CBA_fnc_formatNumber,
+        HTML_DIM,
+        [toUpper (((_members select {!isNull _x && _x isNotEqualTo _unit}) apply {name _x}) joinString ", ")] call EFUNC(tacpad,xmlSafe)
+    ];
+};
+
 GVAR(overlayTalker) params [["_who", objNull, [objNull]], ["_how", 0, [0]], ["_at", 0, [0]], ["_netId", "", [""]]];
-if (isNull _who || {time - _at > TALK_HOLD}) exitWith {""};
+if (isNull _who || {time - _at > TALK_HOLD}) exitWith {_liveLine};
 
 private _number = if (isNil QEFUNC(bft,memberNumber)) then {
     ((units group _who) find _who) + 1

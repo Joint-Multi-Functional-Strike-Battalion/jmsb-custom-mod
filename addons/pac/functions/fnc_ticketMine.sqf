@@ -18,6 +18,8 @@
 params [["_caller", objNull, [objNull]]];
 
 if (!isServer || isNull _caller) exitWith {};
+// Only the sender's own requests (review S5).
+if !([_caller] call EFUNC(common,senderIs)) exitWith {};
 if ((GVAR(settings) getOrDefault ["sync", "off"]) isNotEqualTo "service") exitWith {
     [[], false] remoteExec [QFUNC(ticketMineRecv), owner _caller];
 };

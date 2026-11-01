@@ -3,7 +3,9 @@
  * Author: JMSB
  * Fires one engagement, on the machine where the gunner is local - the firing
  * commands take a local unit. Called directly by the server for its own AI,
- * or by the server's targeted event for a headless client's crew.
+ * or sent by the server by remoteExec for a headless client's crew, and then
+ * taken only from the server (review S7: it was a CBA event, so any client
+ * could make a gun fire where he liked).
  *
  * The gunner watches the aim point; after ADS_SLEW the weapon is fired with
  * forceWeaponFire - once for a missile, a burst of ADS_BURST_ROUNDS for a gun
@@ -28,6 +30,10 @@
  */
 
 params ["_veh", "_gunner", "_weapon", "_fireMode", "_aim", "_isMissile"];
+
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("fire: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
 
 if (!alive _veh || {!alive _gunner} || {!local _gunner}) exitWith {};
 

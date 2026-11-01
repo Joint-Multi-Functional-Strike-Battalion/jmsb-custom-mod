@@ -46,7 +46,9 @@ if (!isServer || {isNull _veh}) exitWith {};
 // the delete.
 private _reclaim = {
     params ["_veh"];
-    [QGVAR(offStation), [_veh]] call CBA_fnc_globalEvent;
+    // By remoteExec, taken only from the server (review S7); only the
+    // machine linked to this aircraft acts on it.
+    [_veh] remoteExecCall [QFUNC(offStation), 0];
     if (!local _veh) then {_veh setOwner 2};
     private _grp = group driver _veh;
     if (!isNull _grp && {!local _grp}) then {_grp setGroupOwner 2};

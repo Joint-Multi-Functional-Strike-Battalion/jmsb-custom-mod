@@ -12,7 +12,7 @@
  * - NET: how much of game voice's ten custom channels is still FREE, as a
  *   percent (jmfsb_voice_fnc_channelUse; user: "reverse the % to available so
  *   it should read 70%") - amber at CHANNEL_WARN_PCT or less, red at none;
- *   dim under TFAR / ACRE, which use none.
+ *   dim when nothing is counted (voice unavailable).
  * - MESH: hops to the nearest relay on RF's data net ("2H"), "DIR" when only
  *   direct peers are in reach, red "--" with no path at all. From the RF
  *   client slice via FUNC(overlayRf), cached in GVAR(overlayRf).
@@ -95,6 +95,19 @@ createHashMapFromArray [
             [str count _mine, format ["%1+%2", count _mine, _others]] select (_others > 0),
             [STATE_OK, STATE_ALERT] select (_others > 0)
         ]
+    }],
+
+    ["BATT", {
+        // The player's own sets, as RF's server last told him; the lowest.
+        private _sets = ((call CBA_fnc_currentUnit) getVariable [QEGVAR(rf,batteries), []]) select {(_x param [1, -1]) >= 0};
+        if (_sets isEqualTo []) exitWith {[BATT_ICON, "--", STATE_OFF]};
+        private _low = selectMin (_sets apply {_x select 1});
+        private _state = switch (true) do {
+            case (_low <= BATT_ALERT_K): {STATE_ALERT};
+            case (_low <= BATT_WARN_K): {STATE_WARN};
+            default {STATE_OK};
+        };
+        [BATT_ICON, format ["%1%2", round (_low * PERCENT), "%"], _state]
     }],
 
     ["MSG", {

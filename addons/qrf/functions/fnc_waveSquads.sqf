@@ -32,15 +32,21 @@ private _n = round (GVAR(squadsMin) + random ((GVAR(squadsMax) max GVAR(squadsMi
 if (_n <= 0) exitWith {};
 
 // WHO comes from the commander's faction, never from a class list here.
-private _kinds = [];
-{
-    private _cls = configName _x;
-    if (getNumber (_x >> "scope") == 2
-        && {getText (_x >> "faction") == _faction}
-        && {_cls isKindOf "CAManBase"}) then {
-        _kinds pushBack _cls;
-    };
-} forEach ("true" configClasses (configFile >> "CfgVehicles"));
+// Walked once per faction per mission (review P10, 2026-10-31): the walk of all
+// of CfgVehicles on every capture was a server hitch.
+if (isNil QGVAR(infantry)) then {GVAR(infantry) = createHashMap};
+private _kinds = GVAR(infantry) getOrDefault [_faction, []];
+if !(_faction in GVAR(infantry)) then {
+    {
+        private _cls = configName _x;
+        if (getNumber (_x >> "scope") == 2
+            && {getText (_x >> "faction") == _faction}
+            && {_cls isKindOf "CAManBase"}) then {
+            _kinds pushBack _cls;
+        };
+    } forEach ("true" configClasses (configFile >> "CfgVehicles"));
+    GVAR(infantry) set [_faction, _kinds];
+};
 
 if (_kinds isEqualTo []) exitWith {
     WARNING_1("QRF squads: faction '%1' fields no infantry - sending nobody",_faction);

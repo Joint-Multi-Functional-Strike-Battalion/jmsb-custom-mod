@@ -137,13 +137,23 @@ There is no UAV terminal (2026-10-20: out of the arsenal): the link and the seat
 are the devices' own (`jmfsb_devices_fnc_uavControl` - remoteControl, no
 terminal item). A link is exclusive — it drops whatever else that player was
 flying — so only the man who asked is linked automatically. Nobody else's
-drone is taken out from under them.
+drone is taken out from under them. The server says ON STATION to the side by
+`remoteExec` (`jmfsb_cas_fnc_onStation`), which a client takes only from the
+server (review S7): as a CBA event any client could name any drone and himself.
 
 It holds for an hour, or until **RTB** on the support page, or until it is shot
 down. Whatever ends it, the seat is given back first - and again before the
 airframe is deleted off the map edge, in case someone took it on the way out:
 a controller left in the turret of a vehicle that is deleted under him is a
 black screen he cannot get out of.
+
+Everything the server says about a run goes by `remoteExec` and a client takes
+it only from the server (review S7): INBOUND (`jmfsb_cas_fnc_inbound`) and IN
+HOT (`jmfsb_cas_fnc_release`) to the side, ON STATION (`jmfsb_cas_fnc_onStation`)
+to the side, and the seat given back (`jmfsb_cas_fnc_offStation`) to every
+machine, where only the one linked to that aircraft drops its link. They were
+CBA events, and any client could raise them - a false "inbound" on a side's
+screens, or another player's drone link dropped.
 
 ## Tasking
 
@@ -159,6 +169,17 @@ declaration field 7, slots 8 and 9 - the same points support_air's CAS reads),
 and its rows carry the airframe while it is out and the run it is flying
 (row fields 7 and 8), so the board's map shows the drone and its run.
 
+**Who may order a run (review S6).** The page's checks run on the client, so
+the server asks again. An order goes by `remoteExecCall` to
+`jmfsb_cas_fnc_request`, a recall to `jmfsb_cas_fnc_abort` - no CBA event,
+which carries no sender. Both start with `jmfsb_cas_fnc_mayTask`: the caller is
+the sending machine's own player (never a unit in the arguments), the module
+is a registered CAS module of his side (his group's side), and the support
+tasking gate (`jmfsb_support_fnc_canTask`) lets him. The order is then checked
+again for availability, a known mode and a store the airframe carries. A
+refused call does nothing but write a WARNING in the server RPT. A server whose
+CfgRemoteExec is a whitelist must list both functions.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -169,7 +190,7 @@ and its rows carry the airframe while it is out and the run it is flying
 
 ## Ships
 
-1 unit class, 17 functions.
+1 unit class, 23 functions.
 
 ## Eden modules
 
@@ -195,8 +216,9 @@ One taskable CAS drone on the support page. Place one module per airframe - many
 
 ## Functions
 
-<details><summary>17</summary>
+<details><summary>23</summary>
 
+- `jmfsb_cas_fnc_abort`
 - `jmfsb_cas_fnc_acquire`
 - `jmfsb_cas_fnc_assetAvailable`
 - `jmfsb_cas_fnc_assets`
@@ -205,11 +227,16 @@ One taskable CAS drone on the support page. Place one module per airframe - many
 - `jmfsb_cas_fnc_entityRow`
 - `jmfsb_cas_fnc_fireAt`
 - `jmfsb_cas_fnc_fmtEta`
+- `jmfsb_cas_fnc_inbound`
 - `jmfsb_cas_fnc_killed`
+- `jmfsb_cas_fnc_mayTask`
 - `jmfsb_cas_fnc_moduleController`
 - `jmfsb_cas_fnc_nearestTo`
+- `jmfsb_cas_fnc_offStation`
+- `jmfsb_cas_fnc_onStation`
 - `jmfsb_cas_fnc_overlay`
 - `jmfsb_cas_fnc_preview`
+- `jmfsb_cas_fnc_release`
 - `jmfsb_cas_fnc_request`
 - `jmfsb_cas_fnc_sitrep`
 - `jmfsb_cas_fnc_stores`

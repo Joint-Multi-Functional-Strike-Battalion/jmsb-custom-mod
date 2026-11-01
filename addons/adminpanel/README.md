@@ -107,7 +107,13 @@ machine with the server forcing the change through, ZEN's split - so no
 for one) moves the weather on again at its own next cycle.
 
 **Right rail** - the live camera feed on the selected man with his grid, height
-and heading under it; his info and skills; his vehicle and his medical state.
+and heading under it; his info and skills; his vehicle and his medical state,
+with three buttons under it: **STABILIZE** (2026-10-31) brings him to what
+ACM's casualty conversion asks of the patient - bleeding stopped, 1 g of
+Ertapenem IV when ACM requires antibiotics - and nothing more: he is not woken
+or healed, and the medic's side of ACM's rule (skill, place, tickets) is
+untouched; the answer names what was done, in red while he still bleeds.
+**WAKE UP** and **HEAL FULL** are the panel's own.
 
 ## What changed from the mission version
 
@@ -141,11 +147,46 @@ medical readout - is the original, under its original `admp_fnc_` tag.
 
 ## Server whitelisting
 
+**Every server door checks the sender itself (2026-10-31, code review S1-S4).**
+The code box, Zeus, GRANT ADMIN, rank, role access, TIME / WEATHER and STABILIZE
+go to the server by `remoteExec`, and the server refuses a machine that is not
+an admin by its own records (`jmfsb_common_fnc_senderIsAdmin`). Code for another
+player's machine goes through the server, which checks and forwards it; a client
+runs console code only from the server or itself. GRANT ADMIN is the server's
+too (`fnc_adminGrant`): it needs the logged-in admin or the host, as before, and
+only a grant made there can be taken back there.
+
+**SECRETS (2026-10-31, code review R4).** `#jmfsb secrets` opens a small
+dialog over the console for the voice server's API key and secret and the
+database's connection string and service key. Each row's SET sends the typed
+value to the server alone (`jmfsb_common_fnc_secretSet`; the logged-in admin or
+the host only), which keeps it in its own profile, never publishes it, and
+answers each row with SET and the last four characters or NOT SET. The field is
+emptied after SET. An empty field and SET clears that secret. Used when the CBA
+setting is empty (every setting reaches every player); the database string at
+the next mission start. Not yet seen in game.
+
 If your server runs a `CfgRemoteExec` whitelist rather than allowing everything,
-two functions need to be on it:
+these functions need to be on it:
 
 - `admp_fnc_compileAndExec` - the code box, targeting client or server
 - `jmfsb_adminpanel_fnc_execLog` - the return value coming back
+- `admp_fnc_createZeusModule`, `jmfsb_adminpanel_fnc_adminGrant`,
+  `jmfsb_adminpanel_fnc_envTime`, `jmfsb_adminpanel_fnc_envWeather`,
+  `jmfsb_adminpanel_fnc_stabilizeLocal`, `jmfsb_adminpanel_fnc_stabilizeDone`
+- `jmfsb_players_fnc_setRankOverride`, `jmfsb_groups_fnc_toggleRoleGrant`
+- `jmfsb_common_fnc_adminClaim`, `jmfsb_common_fnc_debugRunServer`
+- `jmfsb_notify_fnc_srvBroadcast`, `jmfsb_notify_fnc_notify` - the "X did this
+  to you" lines
+
+**The lines told to the man acted on (review R1)** go through notify's
+`broadcast`, which a client's console sends to the server and the server posts
+only for an admin. They were the notify post CBA event, which any client could
+aim at anyone. STABILIZE's answer comes back from the patient's machine to the
+server (`fnc_stabilizeDone`), which tells only the admin it kept for that
+patient.
+
+docs/SETUP.md has the whole mod's list.
 
 JMSB does not ship a `CfgRemoteExec` of its own; that is the mission's or the
 server's call, and it should be.
@@ -179,19 +220,19 @@ See [LICENSE](LICENSE) for the full text.
 
 ## Ships
 
-30 functions.
+37 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_adminpanel_enabled` | CHECKBOX | Enable admin console |
-| `jmfsb_adminpanel_honourJmfsbAdmin` | CHECKBOX | JMSB admins may open it |
 
 ## Functions
 
-<details><summary>30</summary>
+<details><summary>37</summary>
 
+- `jmfsb_adminpanel_fnc_adminGrant`
 - `jmfsb_adminpanel_fnc_adminList`
 - `jmfsb_adminpanel_fnc_confirmEnd`
 - `jmfsb_adminpanel_fnc_envApply`
@@ -220,6 +261,12 @@ See [LICENSE](LICENSE) for the full text.
 - `jmfsb_adminpanel_fnc_openDisplay`
 - `jmfsb_adminpanel_fnc_openPac`
 - `jmfsb_adminpanel_fnc_panelAdmin`
+- `jmfsb_adminpanel_fnc_secretsLoad`
+- `jmfsb_adminpanel_fnc_secretsSet`
+- `jmfsb_adminpanel_fnc_secretsShow`
+- `jmfsb_adminpanel_fnc_stabilize`
+- `jmfsb_adminpanel_fnc_stabilizeDone`
+- `jmfsb_adminpanel_fnc_stabilizeLocal`
 - `jmfsb_adminpanel_fnc_style`
 - `jmfsb_adminpanel_fnc_styleMessage`
 

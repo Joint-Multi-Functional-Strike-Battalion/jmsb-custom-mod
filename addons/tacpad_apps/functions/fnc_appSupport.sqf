@@ -6,7 +6,7 @@
  * support_fires / support_air - itself. Rows from
  * EFUNC(support,assets), asset types and their tasks from
  * EFUNC(support,types) / EFUNC(support,tasks), orders through
- * EFUNC(support,request), receipts on the jmfsb_support_ack event.
+ * EFUNC(support,request), receipts through EFUNC(support,onAck).
  *
  * THE LAYOUT (docs/DESIGN_SUPPORT.md, "The screen"):
  *
@@ -381,13 +381,25 @@ private _missing = _checks select {!(_x select 2)};
 private _ready = _missing isEqualTo [];
 uiNamespace setVariable [QGVAR(supportMissing), _missing apply {format ["%1 - %2", _x select 0, _x select 1]}];
 
+// DANGER CLOSE (user, 2026-10-30): the question CONFIRM raised and nobody has
+// answered yet - [what it was asked about, who is near]. It is about one
+// selection and one point; a change to either drops it unanswered.
+private _dangerSel = missionNamespace getVariable [QGVAR(supportSel), ["cas", "", ""]];
+private _dangerStamp = [_dangerSel # 0, _dangerSel # 1, _dangerSel # 2, _pt];
+private _danger = missionNamespace getVariable [QGVAR(supportDanger), []];
+if (_danger isNotEqualTo [] && {(_danger select 0) isNotEqualTo _dangerStamp}) then {
+    _danger = [];
+    missionNamespace setVariable [QGVAR(supportDanger), []];
+};
+
 // The marker list takes the whole form column; the checklist and CONFIRM
-// belong to the form and stand down with it.
+// belong to the form and stand down with it. The danger-close question
+// takes the checklist's place at its own height.
 private _picking = missionNamespace getVariable [QGVAR(supportPickMarker), false];
 private _checkH = _rowH * SUP_CHECK_K;
 private _groupH = _rowH * 0.85;
 private _footH = if (_picking) then {0} else {
-    _groupH + _padY + count _checks * _checkH + _padY * 2 + _btnH + _padY * 2
+    _groupH + _padY + ([count _checks, SUP_DANGER_ROWS] select (_danger isNotEqualTo [])) * _checkH + _padY * 2 + _btnH + _padY * 2
 };
 
 // --------------------------------------------------------------- the slabs --
@@ -1120,75 +1132,89 @@ if (_scroll isEqualType [] && {(_scroll param [0, 0]) > 0}) then {
 // CONFIRM is the accent cell only when nothing is missing.
 [_foot, [0, 0, _fw, _footH], _ground] call EFUNC(tacpad,drawFill);
 [_foot, [0, 0, _fw, _ruleY], _ink] call EFUNC(tacpad,drawFill);
-private _ckY = [_foot, 0, _fw, "READY", ["All set - confirm to send", format ["%1 missing", count _missing]] select (!_ready)] call FUNC(supportGroup);
-_ckY = _ckY + _padY;
 
-private _box = _checkH * 0.45;
-{
-    _x params ["_cLabel", "_cSays", "_cDone"];
-    private _bx = _pad * 2;
-    private _byy = _ckY + (_checkH - _box) / 2;
-    private _boxW = _box * (pixelW / pixelH);
-    if (_cDone) then {
-        [_foot, [_bx, _byy, _boxW, _box], _ink] call EFUNC(tacpad,drawFill);
-    } else {
-        [_foot, [_bx, _byy, _boxW, _box], _accent, RULE_THICK] call EFUNC(tacpad,drawFrame);
-    };
-    [_foot, [_bx + _boxW + _pad * 2, _ckY, _fw * 0.3, _checkH], _cLabel, ([_accentText, _ink] select _cDone), TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
-    [_foot, [_fw * 0.36, _ckY, _fw * 0.64 - _pad * 2, _checkH], toUpper _cSays, ([_accentText, _mute] select _cDone), TEXT_LABEL, true, "right"] call EFUNC(tacpad,drawText);
+if (_danger isNotEqualTo []) then {
+    // DANGER CLOSE (user, 2026-10-30: "a pop up and a button to say yes or
+    // no"). The checklist's place: who is inside the distance, nearest
+    // first, and YES - FIRE or NO - CANCEL. YES remembers the answer for
+    // this selection and point and sends; NO drops the question and nothing
+    // goes out.
+    _danger params ["", "_near"];
+    private _ckY = [_foot, 0, _fw, "DANGER CLOSE", format ["%1 friendl%2 within %3 m of the target", count _near, ["ies", "y"] select (count _near isEqualTo 1), GVAR(dangerClose)]] call FUNC(supportGroup);
+    _ckY = _ckY + _padY;
+    private _names = (_near select [0, SUP_DANGER_NAMES_MAX]) apply {format ["%1 %2 M", toUpper name (_x select 0), round (_x select 1)]};
+    if (count _near > SUP_DANGER_NAMES_MAX) then {_names pushBack format ["+%1 MORE", count _near - SUP_DANGER_NAMES_MAX]};
+    [_foot, [_pad * 2, _ckY, _fw - 4 * _pad, _checkH], _names joinString ", ", _accentText, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
     _ckY = _ckY + _checkH;
-} forEach _checks;
-_ckY = _ckY + _padY * 2;
+    [_foot, [_pad * 2, _ckY, _fw - 4 * _pad, _checkH], "SEND THE FIRE MISSION ANYWAY?", _ink, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+    _ckY = _ckY + _checkH + _padY * 2;
 
-[_foot, _ax, _ckY, _fw - 4 * _pad, _btnH, "CONFIRM TASKING", ["off", "pri"] select _ready] call _fnc_action;
+    private _half = (_fw - 5 * _pad) / 2;
+    [_foot, _ax, _ckY, _half, _btnH, "YES - FIRE", "pri"] call _fnc_action;
+    [_foot, _ax + _half + _pad, _ckY, _half, _btnH, "NO - CANCEL", "act"] call _fnc_action;
+    _hotspots pushBack [_x0 + _ax, _y0 + _h - _footH + _ckY, _half, _btnH, {
+        private _asked = missionNamespace getVariable [QGVAR(supportDanger), []];
+        missionNamespace setVariable [QGVAR(supportDangerAck), _asked param [0, []]];
+        missionNamespace setVariable [QGVAR(supportDanger), []];
+        INFO("appSupport: danger close - YES, sending");
+        [] call FUNC(supportConfirm);
+    }, "DANGER YES"];
+    _hotspots pushBack [_x0 + _ax + _half + _pad, _y0 + _h - _footH + _ckY, _half, _btnH, {
+        missionNamespace setVariable [QGVAR(supportDanger), []];
+        missionNamespace setVariable [QGVAR(supportFlash), ["Fire mission not sent", false, CBA_missionTime]];
+        INFO("appSupport: danger close - NO");
+        {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+    }, "DANGER NO"];
+} else {
+    private _ckY = [_foot, 0, _fw, "READY", ["All set - confirm to send", format ["%1 missing", count _missing]] select (!_ready)] call FUNC(supportGroup);
+    _ckY = _ckY + _padY;
 
-private _fnc_confirm = if (_ready) then {{
-    private _sel = missionNamespace getVariable [QGVAR(supportSel), ["cas", "", ""]];
-    // INGRESS, EGRESS AND EVERY DECLARED POINT RIDE IN THE PARAMETER ARRAY,
-    // past everything ALiVE's own tasking reads, so one array serves every
-    // kind of asset - see FUNC(supportRequestParams).
-    private _prm = [] call FUNC(supportRequestParams);
-
-    (
-        [
-            _sel # 1, _sel # 2,
-            missionNamespace getVariable [QGVAR(supportPoint), []],
-            _prm
-        ] call EFUNC(support,request)
-    ) params ["_ok", "_why"];
-
-    // WHAT WAS ACCEPTED, IN THE WORDS OF THE THING THAT ACCEPTED IT - the
-    // callsign read back off the asset list. An accepted order also becomes
-    // the committed tasking, which lights its task row in the accent.
-    private _said = if (_ok) then {
-        missionNamespace setVariable [QGVAR(supportCommitted), [_sel # 1, _sel # 2, CBA_missionTime]];
-        private _assets = call EFUNC(support,assets);
-        private _row = _assets param [_assets findIf {(_x param [0, ""]) isEqualTo (_sel # 1)}, []];
-        private _cs = _row param [2, "UNIT"];
-        private _at = missionNamespace getVariable [QGVAR(supportPoint), []];
-
-        if (_at isEqualTo []) then {
-            format ["%1 ACCEPTED - %2", _cs, _sel # 2]
+    private _box = _checkH * 0.45;
+    {
+        _x params ["_cLabel", "_cSays", "_cDone"];
+        private _bx = _pad * 2;
+        private _byy = _ckY + (_checkH - _box) / 2;
+        private _boxW = _box * (pixelW / pixelH);
+        if (_cDone) then {
+            [_foot, [_bx, _byy, _boxW, _box], _ink] call EFUNC(tacpad,drawFill);
         } else {
-            format ["%1 ACCEPTED - %2 ON %3", _cs, _sel # 2, mapGridPosition _at]
-        }
-    } else {
-        _why
-    };
-    missionNamespace setVariable [QGVAR(supportFlash), [_said, _ok, CBA_missionTime]];
-    ["SUPPORT", _said, ["high", "normal"] select _ok] call EFUNC(messaging,notify);
-    {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
-}} else {{
-    // A press on CONFIRM that is not ready sends nothing and names the first
-    // missing line instead of sitting silent.
-    private _missing = uiNamespace getVariable [QGVAR(supportMissing), []];
-    private _say = _missing param [0, "Not ready"];
-    INFO_1("appSupport: confirm pressed not ready - '%1'",_say);
-    missionNamespace setVariable [QGVAR(supportFlash), [_say, false, CBA_missionTime]];
-    {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
-}};
+            [_foot, [_bx, _byy, _boxW, _box], _accent, RULE_THICK] call EFUNC(tacpad,drawFrame);
+        };
+        [_foot, [_bx + _boxW + _pad * 2, _ckY, _fw * 0.3, _checkH], _cLabel, ([_accentText, _ink] select _cDone), TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+        [_foot, [_fw * 0.36, _ckY, _fw * 0.64 - _pad * 2, _checkH], toUpper _cSays, ([_accentText, _mute] select _cDone), TEXT_LABEL, true, "right"] call EFUNC(tacpad,drawText);
+        _ckY = _ckY + _checkH;
+    } forEach _checks;
+    _ckY = _ckY + _padY * 2;
 
-_hotspots pushBack [_x0 + _ax, _y0 + _h - _footH + _ckY, _fw - 4 * _pad, _btnH, _fnc_confirm, "CONFIRM"];
+    [_foot, _ax, _ckY, _fw - 4 * _pad, _btnH, "CONFIRM TASKING", ["off", "pri"] select _ready] call _fnc_action;
+
+    private _fnc_confirm = if (_ready) then {{
+        // DANGER CLOSE FIRST: a friendly inside the distance of the target,
+        // and the question not yet answered YES for this selection and point,
+        // and the board asks instead of sending (FUNC(supportDangerClose)).
+        // The send itself is FUNC(supportConfirm), YES's too.
+        private _sel = missionNamespace getVariable [QGVAR(supportSel), ["cas", "", ""]];
+        private _at = missionNamespace getVariable [QGVAR(supportPoint), []];
+        private _stamp = [_sel # 0, _sel # 1, _sel # 2, _at];
+        private _near = [_sel # 0, _at] call FUNC(supportDangerClose);
+        if (_near isNotEqualTo [] && {(missionNamespace getVariable [QGVAR(supportDangerAck), []]) isNotEqualTo _stamp}) exitWith {
+            INFO_1("appSupport: danger close - %1 near the target, asking",count _near);
+            missionNamespace setVariable [QGVAR(supportDanger), [_stamp, _near]];
+            {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+        };
+        [] call FUNC(supportConfirm);
+    }} else {{
+        // A press on CONFIRM that is not ready sends nothing and names the first
+        // missing line instead of sitting silent.
+        private _missing = uiNamespace getVariable [QGVAR(supportMissing), []];
+        private _say = _missing param [0, "Not ready"];
+        INFO_1("appSupport: confirm pressed not ready - '%1'",_say);
+        missionNamespace setVariable [QGVAR(supportFlash), [_say, false, CBA_missionTime]];
+        {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+    }};
+
+    _hotspots pushBack [_x0 + _ax, _y0 + _h - _footH + _ckY, _fw - 4 * _pad, _btnH, _fnc_confirm, "CONFIRM"];
+};
 
 // ORDER UNIT RTB DOUBLE-CONFIRMS. The first press arms it and the label
 // becomes CONFIRM RTB; a second press inside SUP_RTB_ARM_WINDOW seconds

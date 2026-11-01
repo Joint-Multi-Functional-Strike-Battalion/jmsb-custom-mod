@@ -8,7 +8,7 @@
  * HUD and the timer app can never disagree about how long is left.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -16,12 +16,13 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetTimer
+ *
  * Public: No
  */
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
@@ -55,14 +56,14 @@ private _fnc_clock = {
 
 // The world's clock, which is the one an order is written against.
 private _dt = dayTime;
-[
-    _ctrl, [_pad, _y, _w - 2 * _pad, _rowH * 1.4],
+_ops pushBack [HUD_OP_TEXT, [
+    [_pad, _y, _w - 2 * _pad, _rowH * 1.4],
     format ["%1:%2",
         [floor _dt, 2] call CBA_fnc_formatNumber,
         [floor ((_dt - floor _dt) * 60), 2] call CBA_fnc_formatNumber
     ],
     _ink, (1.6 * _k), true
-] call EFUNC(tacpad,drawText);
+]];
 private _row = _y + _rowH * 1.5;
 
 // The stopwatch, only while it has something to say. A row reading 00:00 for the
@@ -70,12 +71,12 @@ private _row = _y + _rowH * 1.5;
 if (!isNil QEFUNC(tacpad_apps,timerState)) then {
     ([] call EFUNC(tacpad_apps,timerState)) params ["_secs", "_running", "_down", "_expired"];
     if (_running || _secs > 0) then {
-        [_ctrl, [_pad, _row, _w * 0.42, _rowH], ["STOPWATCH", "COUNTDOWN"] select _down, _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
-        [
-            _ctrl, [_w * 0.42, _row, _w * 0.58 - _pad, _rowH],
+        _ops pushBack [HUD_OP_TEXT, [[_pad, _row, _w * 0.42, _rowH], ["STOPWATCH", "COUNTDOWN"] select _down, _mute, (0.62 * _k), true, "left", true]];
+        _ops pushBack [HUD_OP_TEXT, [
+            [_w * 0.42, _row, _w * 0.58 - _pad, _rowH],
             [_secs] call _fnc_clock,
             ([_ink, _accent] select _expired), (0.95 * _k), true, "right"
-        ] call EFUNC(tacpad,drawText);
+        ]];
         _row = _row + _rowH;
     };
 };
@@ -92,17 +93,17 @@ private _soonest = 1e9;
 } forEach _alarms;
 
 private _hot = _soonest < 120;
-[_ctrl, [_pad, _row, _w * 0.42, _rowH], "NEXT ALARM", _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
-[
-    _ctrl, [_w * 0.42, _row, _w * 0.58 - _pad, _rowH],
+_ops pushBack [HUD_OP_TEXT, [[_pad, _row, _w * 0.42, _rowH], "NEXT ALARM", _mute, (0.62 * _k), true, "left", true]];
+_ops pushBack [HUD_OP_TEXT, [
+    [_w * 0.42, _row, _w * 0.58 - _pad, _rowH],
     [_soonest] call _fnc_clock,
     ([_ink, _accent] select _hot), (0.95 * _k), true, "right"
-] call EFUNC(tacpad,drawText);
+]];
 
 if (count _alarms > 1) then {
-    [
-        _ctrl, [_pad, _row + _rowH, _w - 2 * _pad, _rowH],
+    _ops pushBack [HUD_OP_TEXT, [
+        [_pad, _row + _rowH, _w - 2 * _pad, _rowH],
         format ["%1 ARMED", count _alarms],
         _mute, (0.62 * _k), false, "left", true
-    ] call EFUNC(tacpad,drawText);
+    ]];
 };

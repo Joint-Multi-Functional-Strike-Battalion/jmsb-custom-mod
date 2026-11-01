@@ -12,9 +12,10 @@
  * Players and AI alike: a player is kept by his UID (FUNC(publish) calls this
  * for him every DF tick), an AI man by his hash while he is off true
  * (FUNC(spoofTick)). The state and offset are hung on the man (QGVAR(gps),
- * public, on a 10 m grid, only when they change) so every machine draws his
- * BFT dot where his GPS says (FUNC(gpsOf)) and his DF cuts are plotted from
- * there (FUNC(tick)).
+ * on a 10 m grid, only when they change) so his DF cuts are plotted from
+ * there (FUNC(tick)); for a player it is public, so every machine draws his
+ * BFT dot where his GPS says (FUNC(gpsOf)). An AI man's stays on the server
+ * (review P8): no screen draws the AI that gets spoofed.
  *
  * Arguments:
  * 0: Unit <OBJECT>
@@ -79,7 +80,10 @@ if (!_player && _mag <= 0 && _state isEqualTo GPS_GOOD) then {
 
 private _offset = [round (_mag * sin _dir), round (_mag * cos _dir)];
 private _shown = [_state, _offset apply {round (_x / SLICE_GRID_M) * SLICE_GRID_M}];
+// Public for a player only (review P8): BFT screens draw players and their
+// own side's men, and the AI spoofed here is the AI EW side's and hacked
+// nets'. The server's own readers (FUNC(tick), FUNC(aiSensors)) read it here.
 if ((_unit getVariable [QGVAR(gps), [GPS_GOOD, [0, 0]]]) isNotEqualTo _shown) then {
-    _unit setVariable [QGVAR(gps), _shown, true];
+    _unit setVariable [QGVAR(gps), _shown, _player];
 };
 [_state, _offset]

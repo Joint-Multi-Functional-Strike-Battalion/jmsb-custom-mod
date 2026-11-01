@@ -4,10 +4,11 @@ class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;
         units[] = {};
-        weapons[] = {QGVAR(phone), QGVAR(side), QGVAR(side2)};
+        weapons[] = {QGVAR(phone), QGVAR(side), QGVAR(side2), QGVAR(rdc)};
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_tacpad",
             "jmfsb_tacpad_apps",
             "cba_xeh"

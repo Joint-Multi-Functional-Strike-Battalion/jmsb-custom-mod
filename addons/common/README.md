@@ -22,13 +22,40 @@ through `addDebugCommand`; `#jmfsb help` lists what is loaded. The message is
 swallowed — it is never broadcast, and a non-admin typing the same thing gets no
 reply and no hint that the surface is there.
 
-**Who is an admin.** Anyone who has `#login`-ed, *and* the machine running the
-server — a host or a single player is already the admin and has nothing to log in
-to. That second half was missing, and `#login` waits on
-`serverCommandAvailable "#kick"`, which never becomes true in single player: on a
-dev box the flag was never set, so every `#jmfsb` command was silently swallowed.
-Because the surface is deliberately silent to non-admins, that looks exactly like
-a broken mod rather than a permission you have not got.
+**Who is an admin - the server decides (2026-10-31, code review S1-S7).** The
+server alone answers it, from its own records (`adminCheck`): the machine running
+the server (a host or a single player has nothing to log in to), anyone logged in
+with `#login`, and the Steam ids on the server's admin list. That list lives in
+the server's `localNamespace`, which is not networked, and is built from sources
+(`adminSource`): the mod's list and the console's grants (adminpanel), TAC//PAC's
+admins (pac). The admin panel's testing switch is read once when the server
+loads.
+
+The public flag `jmfsb_common_isAdmin` is the server's copy for screens. A
+client asks for it at start, after `#login` / `#logout` and on a change of unit
+(`adminClaim`); the server sets it (`adminFlags`). No server check reads it: a
+client can still set it on himself.
+
+**Who sent a request.** CBA events carry no sender. A request that needs trust
+comes by `remoteExec`, and the server function checks at its top, before any
+`spawn`:
+
+- `sender` - the sending machine, its player and Steam id, from
+  `remoteExecutedOwner`, never from the arguments;
+- `senderIs [unit]` - the unit a request names is the sender's own;
+- `senderIsAdmin` - the sender is an admin by the server's records;
+- `fromServer` - on a client, the call came from the server (the server checks,
+  then forwards by `remoteExec`).
+
+The ALERT BUS follows it too: the server's `alert` sends `onAlert` by
+`remoteExec` to the players it concerns, and `onAlert` takes a remote call only
+from the server - a machine's own alert (the tacpad's TIMER) is a plain local
+call. It was the `alert` CBA event, which any client could raise to put a red
+danger popup on every screen.
+
+The `#jmfsb` surface follows the same rule: only the typer's machine runs a
+command, and a server command goes by `remoteExec` to `debugRunServer`, which
+checks the sender.
 
 ## The pre-spawn gate
 
@@ -66,32 +93,40 @@ whose ground is whose starts there.
 
 ## Ships
 
-54 functions.
+71 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_common_isrVariable` | EDITBOX | ISR unit variable |
+| `jmfsb_common_perfLog` | CHECKBOX | Log tick timings |
 | `jmfsb_common_boardDebug` | CHECKBOX | Threat Board Debug |
 
 ## Functions
 
-<details><summary>54</summary>
+<details><summary>71</summary>
 
 - `jmfsb_common_fnc_addDebugCommand`
 - `jmfsb_common_fnc_addItem`
 - `jmfsb_common_fnc_addMultipleParachutesToObject`
 - `jmfsb_common_fnc_addParachuteToObject`
+- `jmfsb_common_fnc_adminCheck`
+- `jmfsb_common_fnc_adminClaim`
+- `jmfsb_common_fnc_adminFlags`
+- `jmfsb_common_fnc_adminSource`
 - `jmfsb_common_fnc_alert`
+- `jmfsb_common_fnc_artyGroups`
 - `jmfsb_common_fnc_bloodType`
 - `jmfsb_common_fnc_conditionalPFEH`
 - `jmfsb_common_fnc_contactBest`
 - `jmfsb_common_fnc_contactGet`
 - `jmfsb_common_fnc_contactReport`
 - `jmfsb_common_fnc_createPlayerMarker`
+- `jmfsb_common_fnc_daysFromCivil`
 - `jmfsb_common_fnc_debugCommand`
 - `jmfsb_common_fnc_debugReply`
+- `jmfsb_common_fnc_debugRunServer`
 - `jmfsb_common_fnc_easterDate`
 - `jmfsb_common_fnc_edenClassPickLoad`
 - `jmfsb_common_fnc_edenClassPickSave`
@@ -101,6 +136,7 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_ensureSafeLanding`
 - `jmfsb_common_fnc_findSite`
 - `jmfsb_common_fnc_fireBarrage`
+- `jmfsb_common_fnc_fromServer`
 - `jmfsb_common_fnc_hudMove`
 - `jmfsb_common_fnc_hudPos`
 - `jmfsb_common_fnc_hudSetPos`
@@ -114,8 +150,11 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_modal`
 - `jmfsb_common_fnc_objectFromString`
 - `jmfsb_common_fnc_onAlert`
+- `jmfsb_common_fnc_onBarrage`
 - `jmfsb_common_fnc_onModalClose`
 - `jmfsb_common_fnc_onModalOpen`
+- `jmfsb_common_fnc_perfAdd`
+- `jmfsb_common_fnc_perfReport`
 - `jmfsb_common_fnc_playerSides`
 - `jmfsb_common_fnc_putContainerInVehicle`
 - `jmfsb_common_fnc_readConfigToNamespace`
@@ -125,6 +164,12 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_returnDepth`
 - `jmfsb_common_fnc_runAfterSettingsInit`
 - `jmfsb_common_fnc_scatterPosition`
+- `jmfsb_common_fnc_secret`
+- `jmfsb_common_fnc_secretSet`
+- `jmfsb_common_fnc_secretStatus`
+- `jmfsb_common_fnc_sender`
+- `jmfsb_common_fnc_senderIs`
+- `jmfsb_common_fnc_senderIsAdmin`
 - `jmfsb_common_fnc_setCtrlHeightToText`
 - `jmfsb_common_fnc_setDatalink`
 - `jmfsb_common_fnc_sideFromText`

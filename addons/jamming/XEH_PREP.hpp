@@ -21,3 +21,10 @@ PREP(start);
 PREP(zoneOnObject);
 PREP(removeZone);
 PREP(emitters);
+
+// ACE on the terminal itself: disable by hand, or hack it (user, 2026-10-24).
+PREP(isLiveJammer);
+PREP(canDisable);
+PREP(disableStart);
+PREP(disableSite);
+PREP(hackStart);

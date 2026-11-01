@@ -16,3 +16,7 @@
 #endif
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
+
+// The rope-top helper a lowered chestpack hangs from (FUNC(actionLower)). The
+// server deletes only this class when it lands (review S7).
+#define ROPE_TOP_CLASS "ace_fastroping_helper"

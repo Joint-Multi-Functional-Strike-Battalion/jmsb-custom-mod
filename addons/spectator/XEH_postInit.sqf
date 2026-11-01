@@ -1,17 +1,9 @@
 #include "script_component.hpp"
 
 if (hasInterface) then {
-    [QGVAR(start), {
-        _this call FUNC(start);
-    }] call CBA_fnc_addEventHandler;
-
-    [QGVAR(stop), {
-        _this call FUNC(stop);
-    }] call CBA_fnc_addEventHandler;
-
-    [QGVAR(reloadLocal), {
-        _this call FUNC(reloadLocal);
-    }] call CBA_fnc_addEventHandler;
+    // No start / stop / reloadLocal CBA events (review R1): any client could
+    // raise them to force every player in or out of spectator. This machine
+    // calls the functions itself; the server sends them by remoteExec.
 
     // State change event handlers to detect dying, respawning  and unconscious state change
     player addEventHandler ["Killed", {
@@ -21,14 +13,14 @@ if (hasInterface) then {
         if (SPECTATOR_KILLED_DELAY > (missionNamespace getVariable [QEGVAR(respawn,time), 1e10])) exitWith {};
 
         [{
-            [QGVAR(start)] call CBA_fnc_localEvent;
+            [] call FUNC(start);
         }, [], SPECTATOR_KILLED_DELAY] call CBA_fnc_waitAndExecute;
     }];
 
     player addEventHandler ["Respawn", {
         if (!GVAR(enabled)) exitWith {};
         WARNING("Player respawned!");
-        [QGVAR(stop)] call CBA_fnc_localEvent;
+        [] call FUNC(stop);
     }];
 
     if (EGVAR(common,aceMedical)) then {
@@ -41,13 +33,13 @@ if (hasInterface) then {
                     LOG("Unconscious canSpectate 'false'");
                 }, [], GVAR(unconsciousDelay), {
                     WARNING("Player unconscious!");
-                    [QGVAR(start)] call CBA_fnc_localEvent;
+                    [] call FUNC(start);
                 }] call CBA_fnc_waitUntilAndExecute;
 
                 GVAR(unconsciousKilledEH) = player addEventHandler ["Killed", {
                     LOG("Unconscious killed EH");
                     player removeEventHandler ["Killed", _thisEventHandler];
-                    [QGVAR(reloadLocal)] call CBA_fnc_localEvent;
+                    [] call FUNC(reloadLocal);
                 }];
             } else {
                 WARNING("Player no longer unconscious!");
@@ -58,7 +50,7 @@ if (hasInterface) then {
                 [{
                     !isNull (uiNamespace getVariable "RscEGSpectator_display");
                 }, {
-                    [QGVAR(stop)] call CBA_fnc_localEvent;
+                    [] call FUNC(stop);
                 }, [], 3] call CBA_fnc_waitUntilAndExecute;
             };
         }] call CBA_fnc_addEventHandler;

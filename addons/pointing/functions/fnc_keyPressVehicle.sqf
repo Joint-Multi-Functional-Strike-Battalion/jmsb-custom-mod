@@ -27,6 +27,8 @@ GVAR(lastPointTime) = diag_tickTime;
 
 private _pointPosASL = AGLtoASL positionCameraToWorld [0, 0, POINT_DISTANCE];
 
-[QGVAR(pointed), [ACE_player, _pointPosASL], crew _vehicle] call CBA_fnc_targetEvent;
+// By the server, which takes the pointer and his crew from the sender
+// (review R1: the pointed CBA event let any client show any man pointing).
+[_pointPosASL] remoteExecCall [QFUNC(srvPoint), SERVER_OWNER];
 
 true // return

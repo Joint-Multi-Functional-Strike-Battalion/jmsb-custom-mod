@@ -49,7 +49,7 @@ params [["_caller", objNull, [objNull]], ["_mode", "", [""]], ["_name", "", [""]
 if !(_kind in ["operation", "training", "special"]) then {_kind = "operation"};
 
 if (!isServer) exitWith {""};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
     WARNING_2("windowSet refused: %1 is not an admin (%2)",name _caller,_mode);
     ""
 };

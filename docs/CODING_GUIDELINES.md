@@ -58,6 +58,48 @@ mission, group and camo entry that refers to them. Inside an addon that owns its
 - Only name an editor subcategory the game or this mod defines. Inventing one logs
   `No entry 'bin\config.bin/CfgEditorSubcategories...'` at every start.
 
+## Trust: the server never believes a client (code review R1/R2, 2026-10-31)
+
+- CBA events carry no sender (they travel as public variables): any client can raise any of them. A request the
+  server must trust goes by `remoteExec` / `remoteExecCall` to a PREP'd function.
+- That function checks at its top, before any `spawn` (inside spawned code the sender is unknown):
+  `EFUNC(common,sender)` (the real machine, unit and Steam id), `[_unit] call EFUNC(common,senderIs)` (a unit
+  named in the arguments is the sender's own), `EFUNC(common,senderIsAdmin)` (an admin by the server's records).
+- Never take a unit, side, requester, callsign, Steam id or count from the arguments when the server can work it
+  out. Re-run the client's own checks (canTask, side, range, cooldown, "did the hack finish") on the server.
+- Work the server pushes to a client goes by `remoteExec`, and the client checks `EFUNC(common,fromServer)`.
+- What the server decides on (admin list, grants, cooldowns, ledgers) lives in `localNamespace`, which is not
+  networked. Any client can `publicVariable` any `missionNamespace` name over the server's copy; a public copy is
+  for screens only and the server never reads it back.
+- Admin is `EFUNC(common,senderIsAdmin)` on the server. The public flag `jmfsb_common_isAdmin` is for screens.
+- Secrets never go in a CBA setting (every server setting reaches every client): the server's environment.
+- A new client-to-server function goes on the whitelist list in docs/SETUP.md.
+
+## Locality (code review R5)
+
+- Never use `player` in server code; use the unit passed in, or the sender.
+- Fired handlers act only where the projectile or the shooter is local (`local _projectile`).
+- AI orders, `moveOut`, `setDamage` on a unit and similar run on the machine that owns the unit: send them there.
+- Killed handlers: `MPKilled`, or register where the unit is local and decide on the server.
+- No `waitUntil` or `sleep` in anything a handler or a `call` can reach; use `CBA_fnc_waitUntilAndExecute` /
+  `CBA_fnc_waitAndExecute`.
+- Read another addon's variables only after its init: list it in `requiredAddons`, and read every cross-addon
+  flag that may be absent with `getVariable [name, default]`. Functions of an optional mod (ACE, ACM, ALiVE through
+  adapter_alive, messaging) are checked with `isNil` first (R6).
+- Read settings only after `CBA_settingsInitialized`; never overwrite a setting's value after the settings include.
+
+## The network budget (code review R7)
+
+- Broadcast only what another machine reads, only when it changes, and only to who needs it:
+  `publicVariableClient` / `remoteExec` to one owner beats a public variable to all.
+- No public `setVariable` inside a loop, a per-frame handler or a damage handler; compare first and set only on a
+  change.
+- Progress and timers go out in coarse steps (start, quarters, done), not every second.
+- A server-only handler gets a server event, not a global one.
+- Big tables (the PAC roster) send what changed, and clients re-apply only what changed.
+- UI: build controls once, change text, colour and visibility on a tick, recreate only when a change key differs,
+  one redraw per frame, never recreate a render-to-texture picture on a tick (R8).
+
 ## Before you say it is done
 
 `python tools/check_all.py` is the gate: `hemtt check` plus nine project checks (SQF validation, config style,

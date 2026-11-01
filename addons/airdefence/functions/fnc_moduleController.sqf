@@ -79,8 +79,7 @@ GVAR(classes) set [str independent, [
 // objective this reads comes from it. Both paths are covered - a module is
 // normally placed long before ALiVE finishes initialising, but one armed
 // afterwards would otherwise wait forever on an event that has already fired.
-if (EGVAR(adapter_alive,ready)) exitWith {
-    [] call FUNC(start);
-};
-
-[QEGVAR(adapter_alive,ready), { [] call FUNC(start) }] call CBA_fnc_addEventHandler;
+// The adapter's whenReady runs it now in that case, and once only - not the
+// ready CBA event any client could raise again (review R1).
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {};
+[{ [] call FUNC(start) }] call EFUNC(adapter_alive,whenReady);

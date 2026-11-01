@@ -3,7 +3,7 @@
 [
     QGVAR(disabled), "CHECKBOX",
     ["Disable BackpackOnChest", "Prohibit BackpackOnChest features"],
-    ["1st Joint Multi-Functional Strike Battalion", "Backpack On Chest"],
+    ["JMSB - Gear & Vision", "Backpack On Chest"],
     false, // default value
     true // isGlobal
 ] call CBA_fnc_addSetting;
@@ -11,7 +11,7 @@
 [
     QGVAR(walk), "CHECKBOX",
     ["Force Walking", "Player is forced to walk when backpack is on chest"],
-    ["1st Joint Multi-Functional Strike Battalion", "Backpack On Chest"],
+    ["JMSB - Gear & Vision", "Backpack On Chest"],
     true, // default value
     true // isGlobal
 ] call CBA_fnc_addSetting;

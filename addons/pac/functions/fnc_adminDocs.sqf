@@ -30,7 +30,7 @@
 params [["_caller", objNull, [objNull]], ["_what", "", [""]], ["_args", [], [[]]]];
 
 if (!isServer || isNull _caller || _what isEqualTo "") exitWith {};
-if !([_caller] call jmfsb_adminpanel_fnc_isAdmin) exitWith {
+if !([_caller] call FUNC(isAdminCaller)) exitWith {
     WARNING_2("adminDocs refused: %1 is not an admin (%2)",name _caller,_what);
 };
 if (isNil QGVAR(docCache)) then {GVAR(docCache) = createHashMap};

@@ -31,4 +31,6 @@ _list pushBack [round CBA_missionTime, _kind, _detail, _advice];
 if (count _list > THREATS_KEPT) then {_list deleteRange [0, count _list - THREATS_KEPT]};
 GVAR(threats) set [_key, _list];
 
-[QGVAR(threat), [_kind, _detail, _advice], _unit] call CBA_fnc_targetEvent;
+// By remoteExec, taken only from the server (review R1: a CBA event any client
+// could raise to put a fake EW warning on anyone's screen).
+[_kind, _detail, _advice] remoteExecCall [QFUNC(onThreat), _unit];

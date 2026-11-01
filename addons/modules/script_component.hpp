@@ -16,3 +16,6 @@
 #endif
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
+
+// A full blood volume in ACE medical, litres (the heal area treats a man below it).
+#define HEAL_FULL_BLOOD 6

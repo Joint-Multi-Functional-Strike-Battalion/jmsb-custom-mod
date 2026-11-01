@@ -29,6 +29,10 @@
 #define AA_REGISTER_MAX     3
 #define READY_REPORT        60
 
+// The server's machine. The probe chat commands and the ATO's CAS request
+// reach it by remoteExec, which checks the sender (review S7).
+#define SERVER_OWNER        2
+
 // Probe 4's test objective: how big, and how long it must be held.
 #define PROBE_RADIUS        100
 #define PROBE_HOLD          10

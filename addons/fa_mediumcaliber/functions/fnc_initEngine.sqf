@@ -38,7 +38,9 @@ GVAR(params) = createHashMap;
 
 ["AllVehicles", "fired", {
     params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_mag", "_proj"];
-    if (GVAR(enableAirburst) && {_ammo in GVAR(params)}) then {
+    // Fired runs on every machine; only the shooter's tracks the round, or
+    // the burst and its damage happen once per client.
+    if (GVAR(enableAirburst) && {_ammo in GVAR(params)} && {local _proj}) then {
         [_proj, _ammo, _unit] call FUNC(trackShell);
     };
 }] call CBA_fnc_addClassEventHandler;

@@ -2736,3 +2736,684 @@ NOT RUN IN GAME.
      is not touched.
   Changed in source; not seen in game - test: make a net, then the ADD NET
   form, the squad chips and the MEMBERS people rows must all still draw.
+
+## 2026-10-24 - voice keys, calls, jammer ACE, drones, AiTR ranges, tiles, settings
+
+Changed in source, none of it seen in game. One session of asks:
+
+- **Voice** (`adapter_von`): radio voice volume (setting, RADIO app slider,
+  numpad - / +); TALK NET (hold, numpad Enter) and TALK LOCAL (hold, numpad *)
+  move the current channel; a **voice activation** setting makes the current
+  channel the open mic - LOCAL by default, OPEN CHANNEL NET / LOCAL on numpad /
+  and the RADIO app, a live call taking it while it lasts (setting). The engine
+  owns the mic: nothing here starts a transmission. Test: PTT unchanged with the
+  setting off; with Arma on voice activation, hold Enter and talk on the net,
+  release and only the people round you hear.
+- **Calls**: an incoming call pops a notification naming the caller and the
+  keys as bound; numpad 9 (TIC) answers while a call rings, F1 still does; the
+  call strip says "NUM 9 answer".
+- **RTO nets**: the server refused a net the client allowed (host / mod admin
+  flag; `canFlash`), and the maker was not put on his own net. Both fixed.
+- **Jammers**: ACE > Disable jammer (engineer, EOD or ISR, 20 s, zone gone for good)
+  and ACE > Hack jammer (opens the HACK board on it) on the three terminal
+  classes.
+- **Drone patrols**: a rotor UAV (the AR-2 fallback included) flew a LOITER and
+  hovered wobbling; it now flies a cycled ring of MOVE waypoints at 90-160 m.
+  Planes keep the loiter.
+- **AiTR**: ranges split - AI 100 m, players 250 m, vehicles 250 m, 750 m
+  through a Vector.
+- **TAC//MSG**: press a man on the reader rail to message him, MSG on a squad
+  row to message the squad, press a sender's line in a net view to message him.
+- **Tiles**: MSG tile (unread, newest subject; opens the reader); every tile
+  AUTO / slot / OFF per player (SETTINGS > LIVE TILES, one setting string);
+  PAC tile text larger.
+- **Settings**: larger rows and text; NETS & ALERTS has notification time on
+  screen and NOTICES LOG; SUPPORT cells and steppers read larger and each
+  section opens with a solid band.
+- **BFT**: nothing drawn - group markers or member icons - while GPS is
+  jammed (`jmfsb_jamming_gpsDenied`), admin god view excepted.
+- **Addon Options split into seven pages** ("the big single page is hard to
+  tell folks where to find things"): JMSB - Tablet & Map, Radio & Voice, EW,
+  Drones & Intel, Gear & Vision, Medical & Respawn, Vehicles & Defence,
+  Mission & Admin. Each addon keeps its section header inside its page; ECOTI's
+  is "AiTR (ECOTI)". Saved and forced values are keyed by setting name, so
+  nothing resets. Keybinds (Configure Addons) are unchanged, one list.
+- **Vehicle tablet**: shows from just under the handle down (the red box on
+  art/devices/vehicle_src_edit.png); the handle runs off the top of the monitor.
+  Drawn 30% wider than tall-to-scale, clamped to the monitor width
+  (`DEVICE_VIEWS` in devices, applied in `fnc_layout`). Keys and screen follow.
+- **Live tiles dropdown**: SETTINGS > LIVE TILES has a dropdown per tile -
+  AUTO, POSITION 1-10, OFF; taking a position another tile holds sends that
+  one to AUTO.
+- **Medic app**: the tablet reads BP (ACE) and resp rate (ACM) live when no
+  device is on the man, as it does HR and SpO2; the patient list has BP and RR
+  columns.
+- **App text**: label and body text in every app 2 px larger (APP_TEXT_PX 3).
+- **Counter-battery back** (2026-10-25), inside `reaction` - the purged name
+  `counter_battery` is not revived. Player-crewed guns only; the players'
+  virtual (TAC//SUPPORT) artillery is the exception, AI arty never. Values on
+  the Enemy Reaction module (chance, rounds to fix, window, delay, rounds,
+  spread, cooldown, warning).
+- **CB radar to the arty team, all enemy shells**: an enemy AI gun firing, and
+  every virtual barrage (from a kept virtual battery 3-7 km off), sends the
+  players' artillery team (ORBAT squad kind `art` / `mortar` - the map icon on
+  the squad's row, already in the website's squad editor) a TAC//MSG thread
+  from CB RADAR, pinned on the map. No new notification system.
+- **ARTY calculator extras**: map-marker targets, MRSI (up to 3 timed
+  solutions), any gun with the vanilla artillery computer, and three player
+  settings (MRSI on/off, reload gap, gun search range).
+- **ARTY tile and calculator** (`tacpad_apps`): the tile shows on artillery
+  teams only - the radar's last fix, alert for 2 min; the app solves for the
+  gun he crews or stands at and a typed grid or the radar fix, with ACE's own
+  `ace_artillerytables_fnc_calculateSolution` (ACE's charges and air friction,
+  Advanced Corrections respected; vacuum arc without ACE). New
+  `jmfsb_maptools_fnc_gridToPos` reads the typed grid.
+- **Artillery carriers** (new addon `artydeploy`): M-ATV GMG / HMG, AMV-7
+  Marshall (APC) and DAGOR XM312 / AT, in each US faction's paint, each in a
+  Mortar Carrier and a Rocket Artillery version (40 classes). The driver's ACE
+  ARTILLERY menu: pre-deploy (an `ace_csw_mortarBaseplate` 2.5 m behind the
+  rear, at once), deploy (60 s, CBA setting) swaps it for the gun - the Mk6
+  mortar, or the Hunter-SP launcher (the mortar without the CDLC) - pack, and
+  clear. Test: needs ACE CSW for the baseplate
+  (a warning sign stands in without it), Western Sahara for the launcher.
+- **TAC//ADMIN on the tablet**: the console opened without the frame. The
+  opener now takes the device dialog (idd 8970) as its parent whenever it is
+  up, and fits to it, whatever the display mode; before, a tablet opened on
+  its key in native mode fell through to createDialog, which closed the device
+  under the console. Not seen in game - if it still comes up bare, the next
+  thing to read is `jmfsb_tacpad_displayMode` on that profile.
+
+- **2026-10-25 - tablet arrows scroll.** "would be nice if they scrolled
+  screens like notification logs". On the tablet, numpad 0 / . (and the
+  frame's LEFT / RIGHT) now scroll the open screen up / down
+  (`jmfsb_devices_fnc_scrollScreen`): the scrolling list under the mouse, else
+  the biggest list of an open app, message view or notices log. With nothing
+  to scroll they step the active net as before, so the home screen is
+  unchanged. The phone and side screens have no lists, so their arrows are
+  unchanged. New board `numpad_tablet` (tools/gen_signs.py, also in the field
+  manual's Radio voice topic); the arrows on both numpad boards now read
+  PREV NET / NEXT NET. Not seen in game.
+
+- **2026-10-25 - Alt + numpad 1-4 are device F1-F4; LOCAL on the signs.**
+  "on the phone can we set alt 1-4 to the f keys side devices also": the
+  device F1-F4 keybinds default to Alt + numpad 1-4 (BUTTON_MODS_F), on the
+  phone, the side devices and the tablet frame alike. The signs call talking
+  to the men around you LOCAL (was DIRECT on the radio boards, "to the men
+  round you" on the numpad board), matching the / key. The radio boards'
+  "Num 5 opens it" now reads Num 8. Not seen in game.
+
+- **2026-10-25 - LOCAL is a key, not a net.** "talking in local so that
+  everyone can hear you should not be a chip just a key bind". No device ever
+  drew a LOCAL chip (the net rows skip it), but the voice addon could still
+  make DIRECT the active net: the arrows stepped onto it, and holding / was
+  taken for a net switch by the active-net tick. `jmfsb_voice_fnc_setActive`
+  now refuses it and `fnc_checkActive` leaves it out, so LOCAL is only ever
+  the held / key. DIRECT stays in the net list underneath, because the
+  talking chip and BFT use its kind to show who is speaking out loud. Not
+  seen in game.
+
+- **2026-10-25 - Field Manual pages were empty.** The generator wrote three
+  levels (1st JMSB >> topic >> page); the game reads CfgHints as topic >>
+  page, so it showed the groups as pages with no text. Each group is now its
+  own root topic, "1st JMSB - Radio voice" and so on, with the boards as its
+  pages (tools/gen_fieldmanual.py). Also on the signs today: Arma's Push To
+  Talk (Direct) key is named as the other LOCAL key, with where to bind it.
+  Not seen in game.
+
+- **2026-10-28 - Call picture; LiveKit picked for our own voice.** "1 yes
+  ... but able to flip to show the players view": a game camera on the other
+  man on a live call, his FACE or his VIEW, the sender's choice (SEND VIEW /
+  SEND FACE, phone F2 in a call, and the Call camera: face / view keybind, no
+  default key). It floats over the tablet ("over top", numpad 0 / . step it
+  round the corners, kept in the profile) and top right of the walking view.
+  Two sliders move the FACE and VIEW cameras 0.2 m either way
+  (jmfsb_tacpad_apps_fnc_callFeed, jmfsb_devices_fnc_callWindow;
+  DESIGN_VOICE.md "Call picture"). Builds; not seen in game. Our own voice
+  server: LiveKit (user, after the options; Mumble out, nothing for the
+  player to download, a Pelican egg) - docs/DESIGN_VOICE_LIVEKIT.md, design
+  only.
+
+- **2026-10-28 - Voice on LiveKit, phase 1.** "get to work": the extension
+  crate extensions/jmsb_voice (Rust: livekit 0.9.5 pinned set, arma-rs,
+  cpal) - mic capture, a per-speaker mixer (gain, ear, master), microphone-only
+  join tokens, the Arma commands and callbacks - and `voicetest`, the no-Arma
+  test exe. Run on one machine against LiveKit v1.13.9 for Windows: audio at
+  48000 samples a second, events right. The Pelican egg and its Dockerfile are
+  in ghosts-of-battle/pelican-eggs livekit-voice/ (image
+  yonvclaw/jmsb-livekit:v1.13.9, not built or pushed: Docker was not running).
+  Its start line was run as-is and gave the egg's done string. Not heard with
+  real microphones yet.
+- **2026-10-29 - Voice server: echo test, egg start fixed.** The first start
+  under Pelican failed: the yolk entrypoint turns `}}` into `}`, so the inline
+  LiveKit config lost a brace. The config is now built by `jmsb-voice-start`
+  in the image (which also keeps the secret out of the console). New: an echo
+  bot in the room `ECHO_ROOM` (default `echo`) plays back what you said;
+  tested on one machine against LiveKit for Windows (3 s of tone in, the same
+  3 s back). voicetest `--stats` now also counts audible samples, as LiveKit
+  streams silence. Fixed in the extension (and the bot): a speaker's reader
+  now stops when his track or he goes; LiveKit reuses the receiver, so a
+  left-over reader played the next speaker under the old name, twice over.
+  Image `yonvclaw/jmsb-livekit:v1.13.9-1` on the Pelican
+  Debian yolk. Mission Task_Force_Roomba.Tanoa: every text and voice channel
+  blocked except Direct voice (`disableChannels`).
+- **2026-10-29 - Echo test, called from in game.** "the test is designed to be
+  called form in game", "not radom users", "lod it in to the mod". New addon
+  `adapter_livekit` (the only caller of the jmsb_voice extension): ECHO TEST
+  is the first row of the call list on the phone (RADIO > CALLS, F2 / F4) and
+  the tablet (RADIO > CONTACTS). The Arma server signs a token for the
+  caller's own room `echo-<UID>` from `jmsb_voice_server.json` and sends it to
+  him alone; the extension joins, the mic opens when the bot answers, talk and
+  pause to hear it back. Ends on hang-up, no answer in 15 s, after 3 min, or
+  at mission end. The echo bot now answers `echo-` rooms on demand (room list
+  every second, participants checked; answers in under 0.5 s, tested twice in
+  one room and two rooms at once on one machine). The Arma server is Linux, so
+  the extension has a `client` feature: without it, `jmsb_voice_x64.so`,
+  tokens only (built in Docker, token checked by loading it and decoding the
+  JWT). Both builds ship in the mod root (`.hemtt/project.toml`). Egg
+  variable ECHO_ROOM -> ECHO_TEST (true/false). TESTS.md P20. Driving the DLL
+  through RVExtensionArgs / RVExtensionRegisterCallback (desktop PowerShell)
+  found a game-killing crash: `talk` from Arma's thread made LiveKit spawn
+  outside the runtime, and a panic in an extension call aborts the process.
+  Fixed: every client command runs inside the runtime and catches panics.
+  After: token, connect, bot answered in 0.4 s, talk, hang-up, all clean.
+  (Store-installed Python and pwsh cannot open the mic - packaged apps; Arma
+  is a desktop app.) Not run in game.
+- **2026-10-30 - Voice server settings from CBA.** "jmsb_voice_server.json
+  pull from cba". The json is gone: adapter_livekit has three server CBA
+  settings (JMSB - Radio & Voice > Voice server (LiveKit)): address, API key,
+  API secret. The extension's `token` now takes key and secret as arguments.
+  CBA copies server values to every client (cba_settings fnc_set: server
+  values set public), so every client holds the secret; asked, the user chose
+  all three in CBA anyway.
+- **2026-10-30 - Voice server: `latest` image, optional TLS.** "the latest
+  docker image", "set up lets encrypt on the docker", "encryption need to be
+  optional with good instructions", "we will use game9001.ghostsofbattle.com".
+  The egg names `yonvclaw/jmsb-livekit:latest`. New egg variable Encryption
+  (TLS), default false: Caddy 2.10.2 in the image serves wss on the primary
+  port with the node's certbot certificate (host deploy hook -> Pelican mount
+  /mnt/voice-cert); HTTP/1.1 only, for the websocket upgrade. Steps in
+  pelican-eggs `livekit-voice/README.md`. Tested in Docker with a self-signed
+  certificate: plain and TLS both serve, websocket upgrade 101 with a token
+  through Caddy, echo bot answers in both modes, certificate swap reloads
+  without restart, missing mount stops with a clear message. Not tested with
+  the real certificate or the DLL over wss.
+- **2026-10-30 - DLLs: BattlEye, file properties, signing.** "these dlls will
+  need to pass a test from battleye", "i jsut do not want any questions on the
+  dll", "let have the signed". VirusTotal: jmsb_voice_x64.dll 1/70 (Jiangmin
+  only), ghostd_pacdb_x64.dll 3/71 (Defender `Wacatac.C!ml`, likely its
+  api.ipify.org lookup; DIVINER source, not changed here). jmsb_voice now has
+  Windows file properties (build.rs, winresource). Trimming its 440 exports
+  (LiveKit's cxx bridge) to the 6 RVExtension ones with a /DEF failed to link:
+  left. `tools/sign_dlls.py` signs every unsigned `*_x64.dll` in the mod root
+  with Azure Artifact Signing and prints hashes; setup, release order and the
+  reviewer notes (`GetAsyncKeyState` is WebRTC's typing detection) in
+  docs/SIGNING.md. Not signed yet: needs the user's Azure account and
+  identity check.
+- **2026-10-30 - The DLL frozen.** "no flase reports and signed is the goal",
+  "we need to make sure the dll is not going to change also". Signing: one
+  Azure month per DLL change (timestamped signatures outlive the
+  certificate). The client DLL gets one more build with the full command set
+  (DESIGN_VOICE_LIVEKIT.md "Frozen DLL": slots, subscribe, the fixed effect
+  chain with every parameter from SQF, devices, processing, data messages,
+  stats), then is frozen. Voice messages and recording move to a bot on the
+  voice server, so the DLL needs no record command. `tools/dlls.sha256` +
+  `tools/check_dll_lock.py` (in check_all): a mod-root DLL that differs from
+  its locked hash fails the checks.
+- **2026-10-30 - The pac DLL stays in the mod.** "for other none it liek users
+  the solution is self contaioned now". Only the server loads it (every call
+  is behind `isServer`), but a Windows host (editor, single player, player
+  hosted) is the server, and installing a DLL by hand is too much to ask. So
+  it ships, gets signed with jmsb_voice, and is locked in tools/dlls.sha256.
+- **2026-10-30 - pacdb 0.6.0 (DIVINER).** "yes fixe diviner also". The
+  extension's `netcheck` (it asked api.ipify.org for the server's IP, the
+  likely cause of Defender's `Wacatac.C!ml`) and the CBA setting `netCheck`
+  ("Log this server's public IP at boot") are gone, in DIVINER and here
+  (addons/pac initSettings, fnc_boot, XEH_postInit, fnc_bootFail). The DLL
+  has file properties (Ghosts of Battle PAC). DIVINER's Linux build moved to
+  ubuntu:20.04 (the bullseye .NET image is gone). Both builds copied to the
+  mod root; new hash in tools/dlls.sha256. Loaded and called with ctypes:
+  version 0.6.0, ping answers, netcheck unknown. Details: DIVINER CHANGES.md.
+- **2026-10-30 - PTT 1-4.** "we want more than one ppt 4 avaible cba keybinds
+  kapslock is the defauult"; "PTT 1 active, 2-4 set". Like the MPU5's Dual
+  PTT. jmfsb_voice: `fnc_pttNet` (the net a key talks on: 1 the active net,
+  2-4 the net set for it, else net 2/3/4 of his list) and `fnc_pttKey` (which
+  key a net is on; stepping it 2 -> 3 -> 4 -> none). adapter_von: four CBA
+  keybinds `ptt_1..4` replace `talkNet`; PTT 1 is Caps Lock - the same key
+  as Arma's Push To Talk, which is what opens the mic under VON, so the bind
+  is not consumed and both run; PTT 2-4 have no default key and under VON
+  must also be bound under Push To Talk (or held with Caps Lock) - a script
+  cannot open the mic; under voice activation the key alone is the radio.
+  Held keys are a stack, the last pressed talks (`heldPtt`). The tablet's
+  RADIO app NETS has a PTT column (a button that steps the net's key); the
+  phone's NETS tab shows the key. Not run in game.
+- **2026-10-30 - The RDC.** "make an rdc", "look at the mpu5 textures".
+  Persistent Systems' Rugged Display Controller, the MPU5's chest screen.
+  `jmfsb_devices_rdc`, a GPS-slot item like the phone: its walking view sits
+  bottom centre like the phone's, and the tablet its carrier opens wears the
+  RDC frame (Tablet frame Auto picks it; the setting can force it) - a 16:9
+  screen, A B X Y as F1-F4, the two sticks as LEFT / RIGHT. The frame is
+  the MPU5 asset's own paint: `tools/gen_rdc_src.py` cuts the front face
+  out of the (gitignored) base-colour atlas, drops the neighbouring islands,
+  repaints the screen and its recess white in a black ring, finds the keys
+  (A B X Y by their white letters, the sticks as the dark discs above the
+  columns) and writes `art/devices/rdc_src.png` + `rdc_src.json`;
+  `gen_devices.py` takes a render's sidecar keys when it has one. The RDC's
+  3D model (`jmfsb_radios` data\rdc.p3d, Tablet_Mesh, the MPU5's textures)
+  is generated and not worn, like the MPU5's. `tools/pac_devices_gps.py`
+  lists it for the arsenals (not run). Not run in game.
+- **2026-10-30 - POINT MAN.** "a navigation app to way points would be cool
+  call it point man, where you open an app drop down of waypoints or type in
+  grids, have an add to keep adding waypoints then draw on the map and
+  update the phone with distance when using". New addon `jmfsb_pointman`: a
+  tablet app (tile, and `app:pointman` on a device F-key) with a GRID box +
+  ADD (maptools gridToPos), PICK ON MAP (the tacpad map claim, left adds in
+  order, right ends), the waypoints with distance and bearing from the GPS
+  fix (EW's when loaded), USE / STOP, CLEAR ALL, DEL and press-to-make-next.
+  The route is drawn on every map (Draw EH on the vanilla map and the
+  tablet's, maptools' drawLeg / label made public). USE moves on inside the
+  arrival radius (CBA setting, 25 m) and ends at the last; while walking,
+  PM leads the phone's status row (put first in jmfsb_devices' order) and
+  the tablet bar gets a nav fact. Not run in game.
+- **2026-10-30 - JUMPMASTER.** The user's spec: HALO / HAHO (CBA altitude,
+  6 km default, above the air defences) and static line (much lower: the
+  lowest a chute opens from without injury + 50 m, the line pulling it 1 s
+  after exit); squad leaders only; a readiness check (HALO mask and
+  parachute, class lists in CBA); a flight path with a red light then a
+  green light and a number of passes (half the team per pass when the
+  window is small; the choice's default a CBA setting); players teleported
+  into a moving aircraft at altitude, auto drop or manual exit; "support
+  for walkable moving object". New addon `jmfsb_jumpmaster`: the page
+  (type, passes, exit, PICK PATH ON MAP red then green, the stick with
+  mask / chute / pass, LAUNCH or ABORT), the path drawn on every map; the
+  server spawns the aircraft 3 km short of the red light at the type's
+  altitude, boards everyone where he is local (seats, or "stand": fixed to
+  the hull - the engine does not carry a walking man in a moving aircraft),
+  flies the line, RED LIGHT (JUMP open), GREEN LIGHT (auto: one out every
+  0.7 s, that pass's share), circles for more passes, holds over the DZ
+  while men remain, leaves and is removed. Static line reuses support_air's
+  chuteTick (made public, with moveTo). Settings: haloAltitude,
+  staticAltitude, maskClasses, chuteClasses, passesDefault, exitDefault,
+  aircraft (empty = the side's Blackfish / Xi'an), bay. Not run in game:
+  the static altitude (150 m) and the stand offsets need a look.
+- **2026-10-30 - THE FEATURE ROUND** (user: MEDEVAC as a 9-line, danger
+  close "a pop up with yes or no", busy tone, follow a contact, "and all
+  the worth doing", "add a battery to the arsenal for the mpu5").
+  - MEDEVAC: the deck is PAC data, not mod code, so it is a data tool:
+    `tools/pac_medevac_9line.py` (dry run, `--apply`, `--id`) rewrites the
+    card's lines as the NATO 9-line plus REMARKS, keeps its other options,
+    anchor Line1.A. Not run (no JMSB_PAC_URI in this shell).
+  - DANGER CLOSE on TAC//SUPPORT: `jmfsb_tacpad_apps_dangerClose` (600 m,
+    0 off); CONFIRM on an arty or CAS task with a BFT friendly
+    (`jmfsb_bft_fnc_friendlies`, new: players on the side and the AI of
+    groups with a player) inside it draws the question in the checklist's
+    place - who, how far, YES - FIRE / NO - CANCEL. YES remembers the
+    answer for that selection and point; the send moved to
+    `fnc_supportConfirm` so both presses share it.
+  - Busy tone: `fnc_transmit` plays "busy" in place of the TX chirp when
+    another man is talking on the net (jmfsb_voice_talkers); the key still
+    goes through.
+  - Point Man FOLLOW: a waypoint carries a target (`WP_TARGET`); `fnc_wpPos`
+    reads his position and writes it back as the last seen; the page's
+    FOLLOW lists the friendlies nearest first (`fnc_contacts`). ELEVATION
+    PROFILE: `fnc_profile` samples the terrain 60 times along the route;
+    the page draws bars with the waypoints' in the accent.
+  - Map tools: RINGS (settings ringStep / ringCount), LOS (`fnc_losCheck`:
+    terrainIntersectASL then lineIntersectsSurfaces, the blocked point
+    found by sampling), GO TO GRID box + GO on the TOOLS strip in the last
+    row's free cells (`fnc_goTo`).
+  - Jumpmaster: `fnc_drift` = wind x seconds under canopy (the engine moves a
+    canopy with the wind and a falling man not at all; CANOPY_SINK_MS 5),
+    settings haloOpenAltitude (300) and windFactor (1); LAND drawn from the
+    green light; SHIFT PATH FOR WIND moves both lights upwind. ALT readout:
+    `fnc_altCell` as a devices status provider, `fnc_altWatch` puts it first
+    from `fnc_jump` until the man is down.
+  - Batteries: RF `fnc_batteryTick` per node per tick (`batteryHours`, 8;
+    keyed x4; charges in a running vehicle, full in 1 h; flat = state on
+    false + `jmfsb_rf_batteryFlat`; back on with charge or
+    `fnc_batterySwap`), `fnc_batteryPublish` sets `jmfsb_rf_batteries` on
+    the holder in 5 % steps, `fnc_battery` reads it. `jmfsb_mpu5_battery`
+    (CBA_MiscItem, radios now requires cba_common; picture = the MPU5's,
+    placeholder). voice: `batteryClasses` setting, batteryLevel / Spares /
+    Swap / Tick (warnings 20 % / 5 % / flat on the client tick). RADIO >
+    NETS: BATTERY n% + SWAP BATTERY (n SPARE). devices: BATT provider, led
+    into the status row only while low (overlayTick). PAC arsenal:
+    `tools/pac_add_items.py itemsTools tools/mpu5_battery.json --apply`.
+  - Night display: not built - NIGHT / RED already exists (`dark`).
+  Nothing run in game.
+- **2026-10-30 - THE TAC//APP UI NOTES PASS** (the user's design notes, 16
+  items, in their order; answers: numpad 1-5 nets, 6 7 8 9 the device
+  F1-F4, - TIC, * answer, / decline, 0 . arrows; tile icons off the band,
+  on the HUD; "the battery % on the tablet and phone display needs to
+  work"). Two type roles (FONT_LABEL / FONT_MONO, drawText arg 8); the one
+  chip primitive (drawChip / chipWidth) under readerChip, the compose
+  tags, radioTick and the reader's new net-tab chips with counts (the
+  dropdown is gone); the row rhythm (ROW_PX_FULL 28, ROW_PX_DEVICE 24,
+  ROW_H_SCREEN, fnc_row holds its type to the row); tile state as a 4 px
+  left edge bar, stale a dashed outline (drawFrame arg 4), no icon on the
+  band, the qualifiers filled; header meta in mono (N NEW, CANCEL RULER);
+  net rows six equal cells with dim empties at 40 / 38 / 34 px and a
+  tooltip legend on the tablet; the numpad standard moved (VA on +, tablet
+  on Enter are my fill-in - the user named neither; talk local and volume
+  unbound); the call strip quiet on a live call (clock in the talking
+  box); the squad list and talking box on a 0.85 ground wash; portrait map
+  at 44 %; deviceClass in frames.hpp with fnc_deviceClass; LIVE TILES
+  lists provider tiles (fnc_tileChoices); BATT a permanent seventh status
+  cell and a tablet-bar fact. Not run in game: the 28 px rows on the tablet
+  and the six-cell rows want a look.
+- **2026-10-30 - THE VOICE SETTINGS PAGES** (user: "the cba settings for
+  voice need to be broken up in to an acre page tfar page and built in page
+  and a place to select the default"). Four pages: JMSB - Voice (the choice,
+  `jmfsb_voice_defaultSystem` LIST Automatic / Built-in / TFAR / ACRE,
+  server-forced, restart), JMSB - Voice (Built-in) (voice's Batteries /
+  Mesh / Calls / Sounds, adapter_von's VON, adapter_livekit's Voice server),
+  JMSB - Voice (TFAR) (adapter_tfar's Range from RF, Radio UI and fill),
+  JMSB - Voice (ACRE) (radio_mesh's Radio Mesh). RF's own stay on JMSB -
+  Radio & Voice. The choice meant moving the decision off preInit: voice
+  `fnc_selectSystem` (Automatic in preInit from `jmfsb_voice_loaded`, the
+  setting at `CBA_settingsInitialized`, whose handler is registered in
+  preInit so it runs first; a radio chosen but not loaded falls back to
+  Automatic with a warning, Built-in runs beside a loaded radio), every
+  adapter registers in preInit into `jmfsb_voice_adapters` and
+  `fnc_applyAdapter` takes the system's (under VON the last VON-mode adapter
+  over `von`); voice's and adapter_von's postInits now start everything
+  inside `CBA_settingsInitialized`, gated on `jmfsb_voice_active`. Not run
+  in game: a server set to TFAR / ACRE / Built-in with the other loaded
+  wants a look at the RPT's "carries the voice" line on a client.
+- **2026-10-30 - THE MISSION LOADING SCREEN** (user, two marked screenshots:
+  "move logo up to be aligned with the mission box double size"; "add a
+  quick mission brief window - may need to add a pac field in the oporder
+  section for this"). jmfsb_loading's `XEH_loadingDisplay` now hangs off the
+  engine's own mission box (`RscDisplayLoadMission`'s `Mission` group, idc
+  2300; its black title bar `MissionBackgroundTop`, 1005) instead of the
+  screen corners - CBA's display handlers run after `BIS_fnc_initDisplay`,
+  so the box is placed, filled and fitted by then. The crest: 512 px square
+  (was 256), safe zone left edge, top on the bar's top; the old bottom-left
+  corner only when there is no `Mission` group. The QUICK BRIEF panel: right
+  of the box, 3 GUI grid columns off its edge (the engine's own DLC-column
+  gap) to 4 columns short of the safe zone's right edge, top on the box's
+  top, drawn in the box's hand (2.7-row black bar, 1.5-row title, the
+  0.8-row half-white light subtitle 1.3 rows down, a 0.8-size structured
+  body on 60 % black fitted to its text + 0.01 and capped at the group's
+  bottom); skipped under the splash, when the engine faded the box (no
+  mission), when its DLC notice is up, when there is nothing to say, or
+  under 10 columns of room (4:3). `fnc_quickBrief` (new, PREP'd at preStart
+  so it is in uiNamespace for the display handler) reads `missionConfigFile`
+  only: `CfgGFA_PAC >> opords >> <settings.currentOpord> >> quickBrief` (new
+  optional text attribute on the OPORD class, beside its six sections;
+  subtitle = the OPORD's header title, its id without one), else
+  `overviewText` (subtitle MISSION OVERVIEW); `$STR_` keys through
+  `BIS_fnc_localize`. TAC//PAC's loader, editor and viewer are untouched -
+  the loading screen is up before PAC boots, so a database OPORD cannot
+  feed it and a `sync = "service"` unit still writes it into
+  `config_pac.hpp`. Documented in addons/pac/README.md with the example;
+  no mission template in the repo carries a `CfgGFA_PAC` to add it to. Not
+  run in game: the 512 px crest meets the box's left edge on a 1080p screen
+  at the user's interface size and overlaps it at larger interface sizes,
+  where the box starts further left - wants a look.
+- **2026-10-30 - THE 17:03 RPT, THE FOUR SCREENSHOTS AND THE TALK KEYS**
+  (user: "look at the last rpt and fix all issues", "fix and or do please",
+  "make specific keybinds for our built in von to use for push to talk and
+  local"). RPT: the 41 drawFill errors were the tile badge's colour wrapped
+  in one extra array (panelTiles); the profile's renamed scheme id
+  `nightBrass` is rewritten to `nightJmsb` once from tacpad's postInit,
+  through CBA's hash API, so the next start is quiet; ACE's view-restriction
+  warning was our own forced settings (selective with every sub-mode off -
+  now off); the drone swarm takes a variant of a listed airframe (isKindOf)
+  and the shipped list carries the two Switchblades; the quadbike "no
+  loadout" and "Stopping spectator" lines are INFO. Left alone, with the
+  reason: the enemy patrol drones shot down seconds after spawn by a B_UAV_AI
+  (the coroner working as designed - the player's armed drones); the china
+  tanks' and the Pandur's "unknown animation source" (the parent models'
+  model.cfg, our classes add no sources); the uniform p3d's geometry and
+  bone lines (the model); ACE's "Item doesn't exist" (another mod's
+  registerItemReplacement); the PAC warnings (the mission has no
+  CfgGFA_PAC). Screenshots: the tile badge sized to its word at chip size
+  (TILE_BADGE_GLYPH, the kicker takes the rest; the SUPPORT qualifier in
+  five letters, "TRANS 1"); the PAC tile green, not amber, while the op is
+  open; the bar's text at 0.95, the clock in the middle with the facts split
+  round it, and MENU - a hotspot opening the new menu app, every app in band
+  order plus SETTINGS (fnc_appMenu); LIVE TILES has one position per tile
+  showing what stands there (no AUTO; "-" where nothing does), RESET TO
+  DEFAULT ORDER, and the band pages TILE_SLOTS at a time with < > arrows at
+  its ends (fnc_tileOrder, one algorithm for the band and the settings; the
+  device arrows keep stepping the net); the phone's status row in two rows
+  with a measured fit and a 1 px border, and its seventh cell, which never
+  drew (agent); the weather values at 40 % of the row (agent; fnc_row got an
+  optional value column nobody calls yet); the loading-screen crest and quick
+  brief (agent, the entry above). VON: every talk key is Caps Lock with a
+  modifier - Ctrl / Alt / Shift+Ctrl for PTT 2-4, Shift for TALK LOCAL - so
+  each works on its own under push to talk with Arma's Push To Talk left on
+  Caps Lock; a modifier released before the key still ends the hold
+  (fnc_hold). Not run in game: the badge and kicker widths, the centred clock
+  against long facts, the menu app's rows, the page arrows, and the
+  Shift + Caps Lock release order want a look.
+- **2026-10-30 - THE HOLIDAY CRESTS** (user: "set up these holiday logos, in
+  most cases run them 7 days before the holiday; Christmas takes priority
+  over New Year's; run New Year's the 26th to Jan 2"). art/JMSB-holidays has
+  eleven crests in three sizes; the 1024s go to
+  addons/loading/ui/holidays/<class>.paa through tools/gen_holiday_logos.py
+  (2.7 MB in all - the crest draws at 512 px, so one doubling of headroom).
+  CfgLoadingScreen.hpp gained Holidays: one class per crest with its date
+  (month + day; month + weekday + nth, NTH_LAST for the month's last -
+  Memorial Day, Indigenous Peoples' Day and Thanksgiving float; easter = 1 is
+  the computus) and its window (daysBefore 7, daysAfter 0; New Year's 6 and
+  1). fnc_holidayDate turns a class and a year into a day count; fnc_holiday
+  picks today's: every window is tried against last, this and next year's
+  date, so Dec 26 - Jan 2 holds across New Year, and where two overlap the
+  holiday nearer today wins (Christmas Day over a New Year run-up, St
+  Patrick's over an early Easter's). Day counts are the new
+  jmfsb_common_fnc_daysFromCivil (Hinnant's days_from_civil, the maths pac's
+  stampMinutes carries inline; dateToNumber breaks across New Year). The
+  loading screen's month switch, which picked the unit crest in all four of
+  its branches, is gone; the bunny background still goes by Easter's month.
+  The date maths was checked outside the game against Python's calendar
+  (every month 1990-2100; the floating holidays and Easter 2024-2060; the
+  window edges of every holiday) - the crest itself was not seen in game.
+  Today is inside Halloween's window, so the next loading screen shows the
+  pumpkin. TESTS.md P21. 2026-10-31 (user: "put the holiday logos on the pac
+  loading screen also"): the TAC//PAC boot overlay's mark asks the same
+  table (fnc_bootScreen sets the Logo control once the display is up; pac
+  now requires jmfsb_loading), so the two screens never disagree. "And the
+  menu page": the main menu's crest (RscDisplayMain.hpp's logo61, now with
+  an idc) is swapped by XEH_mainDisplay the same way; main_menu requires
+  jmfsb_loading. Three screens, one table.
+- **2026-10-31 - LIVEKIT IS THE VON, AND THE TWO SCREENSHOTS** (user:
+  "livekit was to be the fucking von", "no ingame von, use what was supposed
+  to be built"; "fix the key binds"; the tablet's status "one line ... the
+  same font"; "overlapping text"; "the arrows on the tablet should move the
+  live tiles, the von chips should be clickable"). THE VOICE: the design's
+  "VON stays the default, LiveKit a fourth adapter" was my reading and
+  wrong, now corrected in DESIGN_VOICE_LIVEKIT.md and DESIGN_VOICE.md and
+  in memory. Built: adapter_livekit's voice adapter "livekit" - one room
+  per mission named by the server, a token per client from the server
+  (srvRoomToken, the UID the identity), the talk keys open the extension's
+  mic on the key's net (hold, mic; the core's ptt hook sends the key edge),
+  and the mix: every speaker's gain and ear sent to the extension on change
+  (tick 0.2 s, speaker, gainOf) - the core's quality while keyed on a net
+  you are on, in the net's ear; local by distance always (full in one
+  vehicle, to nothing at the local voice range setting, the ear he stands
+  to); a new track set silent on joined; a drop rejoined after 10 s; the
+  echo test takes the session and the room is rejoined after. The core:
+  SYSTEM_LIVEKIT, Automatic = TFAR, ACRE, LiveKit (the adapter announces
+  itself in jmfsb_voice_loaded when the extension answers version), else
+  game VON; jmfsb_voice_active true for both game-voice systems;
+  applyAdapter takes the system's own adapter under LiveKit. adapter_von
+  runs only while "von" is the system (VON_IS_THE_SYSTEM), as does the
+  tablet's GLOBAL cell. Seven missions (jmfs-missions and 2040): game voice
+  off on every channel unless the system is "von". NOT RUN IN GAME; and
+  the DLL at the mod root answers version 0.0.0 with the phase 1 command
+  set (connect, talk, speaker, disconnect) - the API 1 of the design
+  (slots, subscribe, fx) is not in it, so the adapter uses gain 0 for
+  "not heard" and has no radio effect yet. TESTS.md P22. THE KEY BINDS: the
+  profile keeps the first default a keybind ever had (CBA's registry), so
+  Device button F1-F4 were still on numpad 1-4 beside the nets, and Open
+  Tablet blank; devices' postInit now moves a stored bind that is an old
+  default or empty to today's (KEYBIND_MIGRATIONS) before registering.
+  THE PHONE: the status facts in one row of seven at one size - the row
+  shrunk by its widest cell, not each cell on its own; the net chip's label
+  stops where the ear tag begins (the tag carries the fill on) and shrinks
+  to its room. THE TABLET: the device arrows turn the live tiles' page
+  (tilePageStep; the band keeps its last draw's arguments) and with one page
+  scroll; they no longer step the net; every net chip is a button
+  (drawHit > netSelect); the legend says so.
+- **2026-10-31 - THE FIRST RUN OF THE VOICE** (user: the echo test ran
+  and "went to my speakers and not the audio devices picked in game which
+  is a headset"; "crashed on game exit"; "look at last rpt and fix all
+  errors"; two more marked screenshots). THE DLL, rebuilt (0.1.0): the
+  engine listed it as 0.0.0 because the builder never set its version;
+  `devices` lists the microphones and speakers by name and `device [input,
+  output]` picks them (part of the name; empty = Windows default) for every
+  connect and at once when a session is live - cpal 0.18 names a device in
+  its description(); two CBA settings of the player's own (Microphone,
+  Speakers; applyDevices) and the RPT prints the names at start. On this
+  machine the Windows default output is the monitor and the headset is a
+  second device, which is what the echo went to. THE EXIT CRASH: the RPT
+  ends at the engine's Extensions list; the mission's end disconnects, the
+  session's close reports Disconnected, and that callback into an engine
+  that is shutting down is the likely cause - the DLL now aborts its
+  callback task before closing a session (and before replacing one). No
+  dump was written, so not proven. New hash in tools/dlls.sha256 - unsigned,
+  not sent to BattlEye. THE RPT: the keybind migration moved netSelect_6
+  every start (an unbound default is "empty" - a stored bind equal to the
+  new default is now skipped); CBA's "Invalid value nightBrass" stayed
+  because CBA keeps [value, priority] in the profile hash, not the bare
+  value - tacpad's migration compares the pair now; the rest is mission
+  data (tanoa_intro1 has no CfgGFA_PAC; Roomba's currentOpord op_ironveil
+  is not in its structure), the coroner, and models. THE SCREENSHOTS: the
+  phone's NET cell is gone (it gauged the game VON's ten channels) and the
+  status line gives each cell its own text's width at the one size, so the
+  type is as large as the line allows; the net chips sit a gutter in from
+  the edge; the tablet bar's device label took 0.22 of the bar and wrapped
+  the right-hand facts - 0.12 now, three spaces between facts; two-letter
+  tile badges and the reader's chips wrapped because the glyph estimates
+  (0.66, 0.55) ignore the structured text's side margins - 0.8 and 0.68;
+  the frame textures carried the studio white under their transparent
+  pixels and the game's filtering drew it as a hairline down the bezel -
+  gen_devices.py now bleeds the device's colour BLEED_PX out under the cut
+  (every frame, icon and corner regenerated; rdc's frame was never
+  generated before and is now). TESTS.md P22.12-14. Then (user: "on the
+  phone change radio chips to 4"): the phone's net row holds four cells
+  (NET_ROW_CELLS_PHONE); the portrait screens and the tablet keep six. And
+  "make the phone 15% smaller": the Phone size default is 0.255 of the
+  screen's height, from 0.3 (PHONE_FILL_DEFAULT) - a profile that moved
+  the slider keeps its own number.
+- **2026-10-31 - THE SECOND RUN** (user: "the echo test still played the
+  audio via my speakers and not my headset, and crashed on exit again").
+  The RPT: the rebuilt DLL ran (0.1.0), the Speakers setting was empty
+  ("-> kept"), so the DLL opened Windows' default device, the monitor; and
+  the crash came with the callbacks already stopped - no dump, the RPT
+  ending in the engine's shutdown lines, before its Extensions list. The
+  DLL again: with no name set it opens Windows' default COMMUNICATIONS
+  device of each kind (the headset) - asked of WASAPI through the windows
+  crate cpal already builds with, the name matched against cpal's list;
+  it writes %LOCALAPPDATA%\Arma 3\jmsb_voice.log (the devices opened, each
+  connect and disconnect, the exit); and once a room was joined it ends the
+  process itself at DLL detach (DllMain + TerminateProcess): libwebrtc's
+  C++ statics are otherwise unwound after Windows killed their threads,
+  which fits a crash that leaves nothing behind. The engine is done by
+  then. The adapter's duplicate applyDevices at settings init is gone (the
+  settings' own scripts run at init). New hash; unsigned. TESTS.md P22.12
+  and P22.13 reworded.
+- **2026-10-31 - STABILIZE** (user: "in the admin panel add a stable button
+  above wake up, this stabilizes the patient to the requirements of ACM for
+  conversion"). The console's medical block has a third button, STABILIZE,
+  above WAKE UP (`jmfsb_adminpanel_fnc_stabilize`). ACM's own rule is
+  `ACM_evacuation_fnc_canConvert` (D:\work\acm, 1.4.8): of the patient it
+  asks alive, unconscious, a player, not yet converted, no wound bleeding
+  and - under its Require antibiotics setting, on by default - 0.9 of a
+  1 g Ertapenem dose in him; the rest (medic skill, medical vehicle or
+  facility, casualty tickets, a reinforce point) is the medic's and the
+  mission's. The button does the patient's half and nothing else: a CBA
+  target event to his machine (`fnc_stabilizeLocal`, no CfgRemoteExec
+  entry) bandages every body part with ACM's pressure bandage pass after
+  pass until ACE's wound bleeding is nil (20 passes at most), then - when
+  ACM requires it and less than 0.9 of a dose is in him - pushes 1 g of
+  Ertapenem IV into the torso through ACM's medicationLocal override (the
+  dose its syringes label; the torso because a tourniquet never occludes
+  it), on his triage card and log. ACM counts the drug's effect, which
+  ramps up over 5 s, so the medic's Convert action follows within a few
+  seconds. He is not woken, not healed; the admin's notification names what
+  was done, red while he still bleeds, and adds that a conscious man is not
+  a casualty ACM converts. Layout: three buttons of 0.028 in the room of
+  the two, the medical box ends under BLOOD TYPE, TAC//PAC grows to the
+  three's height (the 2026-09-10 rule). Also today: the holiday crests
+  regenerated from the new art in art/JMSB-holidays (all eleven PAAs
+  changed), BUILD 1343. TESTS.md P2.2j.
+- **2026-10-31 - THE CODE REVIEW, WORKED THROUGH** (user handed over
+  docs/REVIEW_CODE_2026-10-31.json and docs/RECOMMENDATIONS_2026-10-31.json).
+  Every finding checked against the code before it was changed. False, no
+  change: B23 (CBA getKeybind index 5 is the live bind), B26 (ALiVE resolves
+  a string listener and objectivesByID is a hashmap). Partly: P9 (the search
+  radius is ~30 m, not 2 km), B25 (ACE's frag event takes [posASL, ammo];
+  only the AGL position was wrong).
+  - TRUST (S1-S9, R1-R4): CBA events carry no sender, so every request the
+    server must trust goes by remoteExec and the server function checks at
+    its top: jmfsb_common_fnc_sender / senderIs / senderIsAdmin / fromServer.
+    Who is an admin is the server's alone (fnc_adminCheck: the host, #login,
+    a Steam-id list in localNamespace built from sources - the mod's list,
+    console grants, TAC//PAC's admins); the public flag is its copy for
+    screens. Done in adminpanel (code box forwarded through the server, Zeus,
+    GRANT ADMIN now fnc_adminGrant, rank, role, time, weather, stabilize),
+    every PAC entry point (fnc_isAdminCaller), support, support_air,
+    support_fires, cas, artydeploy, evac, hacking, messaging, curator,
+    respawn (it ran the client's filter code on the server), teleport,
+    patrol_base, devices uavOrder, zenmodules ENDEX, #jmfsb commands. The
+    mod ships no CfgRemoteExec (a mode-1 whitelist in a mod would block
+    ALiVE's and BI's own remote calls on every mission); the list a
+    whitelisting mission needs is in docs/SETUP.md. Secrets: the LiveKit key
+    and secret now come from JMSB_LIVEKIT_KEY / JMSB_LIVEKIT_SECRET in the
+    server's environment when the settings are empty; PAC warns every start
+    when its Database setting holds a credential. Every build so far sent
+    both to every player: rotate them.
+  - WILL-BREAK BUGS: B5-B13, B16-B22, B24 fixed (vehicle racks, fired
+    handlers once per round, QRF without ALiVE, endex, boarding, CAS crew,
+    artillery pack, APS off switch, attendance...).
+  - PAC (B1-B4, P4): no store write before the boot has loaded it, joins
+    during the boot queued and replayed; a roster publish re-applies rank
+    and skills only; extension requests one at a time; totals on the
+    heartbeat.
+  - VOICE (B14, B15, V1-V8): speakers start silent and keep their gain;
+    hearing follows the nets you are on now; subscribe only who could be
+    heard; one connect at a time; listen without a mic; game VON off under
+    LiveKit; the server picks the system for everyone ("none" says VOICE
+    UNAVAILABLE). New DLL 1a1bc4b4...; the Linux .so rebuilt (token reads the
+    environment). VirusTotal: 1/69 (Jiangmin, Trojan.Agent.fcgj) on the new
+    DLL - unsigned, and it now calls TerminateProcess from DllMain (the exit
+    guard); not signed, not sent to BattlEye.
+  - PERFORMANCE: RF edge casts staggered (jittered life, 150 a tick) and
+    the mesh search memoised while edges and relays are unchanged; APS
+    quiet/hot scanning; viewshed at most 4000 cells; heal area treats only
+    the hurt; console FPS every 5 s on change; boat damage public on change;
+    EW noise in 2 dB steps; QRF infantry cached per faction. Not done: P5
+    and P6 (HUD and device screens rebuilt from scratch each tick) - each
+    widget needs a build/update split that cannot be judged without seeing it.
+  - THE REST (L1-L4) and DEC1 (TFAR and ACRE removed; backups in
+    backups/dec1-2026-10-31). TESTS.md P23.
+- **2026-11-01 - THE REVIEW FINISHED** (user: "finish ever thing form the
+  doc"). P5 and P6 done after all: the HUD (fnc_paint, op lists, a change
+  key per slot) and the device and tablet screens (tacpad fnc_changed,
+  retext, liveStore / liveApply, nextFrameOnce; the call window's
+  render-to-texture picture no longer recreated twice a second) build once
+  and update values; the TIMER page now ticks every second under the
+  pointer. R5 and R7 written into docs/CODING_GUIDELINES.md (Trust,
+  Locality, Network budget). R9: jmfsb_common_fnc_perfAdd / perfReport,
+  the RF tick and the APS watch timed against budgets, once a minute in
+  the RPT (Log tick timings, on). R4's in-game entry: `#jmfsb secrets`
+  (logged-in admin), stored in the server's profile, shown back only as
+  SET ...last four; used after the setting and before the environment.
+  R1 to the end: three more passes closed every client-raisable event
+  that changed shared state or other screens - the review's open S7 list,
+  then a sweep of every addon (notify's post event: any text on every
+  screen; spectator; rf nodes; boc cargo wipes; adapter_alive ready /
+  capture; reaction; EW; AD threat bursts; jammer disable; enemy-position
+  reports; mission tasks; boarding; uplinks; ACM evac; RPT forgery; and a
+  dozen small ones). Left on purpose: voice's keyed light and tanks' heat
+  (cosmetic, per key edge / per shot). The #jmfsb command table moved to
+  localNamespace (a client could swap a command's code for the server to
+  run); assignPlayer and debugReply checked. tools/check_all.py now fails
+  on hemtt help[] hints too ("why do you keep doing this, fix it"); none
+  left. ghostd_pacdb_x64.dll left out of the release (server-only, flagged
+  by ClamAV / Gridinsoft unsigned). Signing: SignPath Foundation (free):
+  extensions/jmsb_voice now MIT, .github/workflows/jmsb_voice.yml builds it
+  on GitHub Actions and signs once SignPath's IDs are set; the user pushes
+  and applies (docs/SIGNING.md). TESTS.md P23.55-P23.81.

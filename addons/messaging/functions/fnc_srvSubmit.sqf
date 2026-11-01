@@ -6,14 +6,13 @@
  * in srvThreadFor, and nowhere else. The client validated first as a courtesy
  * to the player; this is the validation that decides.
  *
- * The sender is taken from the unit that was handed in, after checking it is a
- * live player. The spec asks for the sending machine to be read off the engine
- * instead, which needs a raw remoteExec - and the rest of the mod deliberately
- * travels on CBA's event channel, which a mission's CfgRemoteExec cannot close.
- * Impersonating another player from here already requires a client running
- * arbitrary code, so the stricter check buys nothing it does not already cost.
+ * A client sends it by remoteExecCall to the server (FUNC(submit)). The unit
+ * handed in must be the sending machine's own (review S7: a CBA event carries
+ * no sender, so anyone could file as anyone), checked at the top before
+ * anything else. The server's own calls - the counter-battery radar, the msg.*
+ * test commands - pass as the server's.
  *
- * Arguments (CBA event):
+ * Arguments:
  * 0: Sending player <OBJECT>
  * 1: Draft nonce, one per press of send <STRING>
  * 2: Template id <STRING>
@@ -30,10 +29,15 @@
  * system does not use proves nothing about the live system. A message filed
  * under another call sign is also NOT pre-read by the sender, so it arrives
  * unread with a notification - which is the half of the system a man testing on
- * his own can otherwise never see. See the msg.* admin commands.
+ * his own can otherwise never see. See the msg.* admin commands. Only the
+ * server and an admin by the server's records may use it (review S7); from
+ * anyone else it is dropped and the message is filed under his own call sign.
  *
  * Return Value:
  * None
+ *
+ * Example:
+ * [player, _nonce, "freetext", [["Text.A", "hello"]], ["B:HQ"], "", "", "", [], []] remoteExecCall ["jmfsb_messaging_fnc_srvSubmit", 2]
  *
  * Public: No
  */
@@ -51,6 +55,16 @@ params [
     ["_pin", [], [[]]]
 ];
 
+if (!isServer) exitWith {};
+// WHO SENT IT, from the engine (review S7) - before anything else reads _unit.
+if !([_unit] call EFUNC(common,senderIs)) exitWith {
+    WARNING_2("srvSubmit: refused - machine %1 tried to file as %2",remoteExecutedOwner,_unit);
+};
+if (_asCallsign isNotEqualTo "" && {!([] call EFUNC(common,senderIsAdmin))}) then {
+    WARNING_2("srvSubmit: call sign '%1' from machine %2 dropped - not an admin",_asCallsign,remoteExecutedOwner);
+    _asCallsign = "";
+};
+
 // The client tidies these, but the client is not who decides. A tag that
 // arrives as a number or an empty string would go on to be asked of every
 // player on the server once per delivery.
@@ -58,7 +72,7 @@ _tags = (_tags select {_x isEqualType ""}) apply {toUpper (trim _x)};
 _tags = _tags select {_x isNotEqualTo ""};
 if (count _tags > TAG_MAX) then {_tags resize TAG_MAX};
 
-if (!isServer || {!GVAR(enabled)}) exitWith {};
+if (!GVAR(enabled)) exitWith {};
 if (!isPlayer _unit || {!alive _unit}) exitWith {};
 
 // The nonce is what makes a double-click harmless: a repeat is dropped rather
@@ -70,7 +84,7 @@ private _uid = getPlayerUID _unit;
 
 private _fnc_refuse = {
     params ["_why"];
-    [QGVAR(reject), [_templateId, _why], _unit] call CBA_fnc_targetEvent;
+    [_templateId, _why] remoteExecCall [QFUNC(cltReject), _unit];
     INFO_3("refused '%1' from %2 - %3",_templateId,_uid,_why);
 };
 
@@ -148,7 +162,6 @@ if (!_isRoot && _transition != "") then {
     if (_transition in ["CLOSED", "ABORTED"]) then {
         _thread set ["closed", true];
     };
-    [QGVAR(taskStateChanged), [_thread get "id", _transition, _uid]] call CBA_fnc_globalEvent;
 };
 
 [_unit, _thread, _message, _addressees] call FUNC(srvDeliver);

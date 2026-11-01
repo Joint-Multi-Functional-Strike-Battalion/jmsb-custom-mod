@@ -184,6 +184,7 @@
 // settlement's hostility toward the hacker's side rises per sighting.
 #define POP_WITNESS_RANGE   60
 #define POP_HOSTILITY_BUMP  10
+#define POP_WITNESS_SIGHT   0.3     // share of a civilian's view that must reach the hacker
 
 // Alarm. Dialled in like a kitchen timer - each press adds a step, and it arms
 // itself once the presses stop - because a handset has one spare key, not a
@@ -204,3 +205,29 @@
 // net's GPS off true through jmfsb_ew's spoof engine (FUNC(canSpoof)).
 #define HACK_ACTION_DEFAULT ""
 #define HACK_ACTION_SPOOF   "spoof"
+// A unit hack the net noticed (FUNC(hackComplete)'s detection roll): the
+// server sends the failure package instead of a product.
+#define HACK_OUTCOME_DETECTED "detected"
+
+// THE SERVER'S RE-CHECK of a hack and a deposit (review S7). A client says
+// what it hacked and what it banks; the server checks it against its own view
+// first (FUNC(srvMayHack), FUNC(srvHackComplete), FUNC(srvDeposit)).
+#define SERVER_OWNER            2
+#define HACK_SERVER_RANGE_PAD   25      // m: the operator moved while the request travelled
+#define HACK_SERVER_TIME_SLACK  0.9     // share of the hack's clock that must have passed since the server saw it start
+#define DEPOSIT_RANGE           8       // m: the drop's ACE action reaches 4 m, plus movement in flight
+#define DEPOSIT_LOCK            3       // sec between two deposits by one man - the removal is still travelling
+#define HACK_REFUSED_COLOR      [1, 0.3, 0.3, 1]
+#define HACK_RESULT_COLOR       [0.914, 0.651, 0.235, 1]
+#define HACK_SEEN_COLOR         [1, 0.3, 0.3, 1]
+
+// What clients may ask of the server, bounded (review S7).
+#define POP_SEEN_LOCK           60      // sec: one sighting per pop, however often START is pressed
+#define RF_REACH_MIN_GAP        2       // sec between two RF reach answers for one man (the board asks every 5)
+#define SCN_ALARM_MIN_DELAY     1       // sec: the shortest alarm the server arms
+#define SCN_ALARM_MAX_DELAY     86400   // sec: the longest, a day
+#define SCN_ALARM_MAX_ARMED     20      // alarms armed at once, server-wide
+
+// Hack progress on a device goes public in steps, not every tick (review P8):
+// another operator picking the device up resumes from the last quarter.
+#define HACK_PROGRESS_STEPS     4

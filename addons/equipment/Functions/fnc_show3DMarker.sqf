@@ -2,8 +2,8 @@
 /*
  * Author: YonV
  * Shows an in-world (3D) marker name at a Vector target position for
- * GVAR(marker3DDuration) seconds. Runs on every client via the
- * QGVAR(marker3D) CBA event raised by FUNC(placeTargetMarker).
+ * GVAR(marker3DDuration) seconds. Sent to every client by the server
+ * (FUNC(srvMarker3D)) by remoteExec and taken only from it (review R1).
  *
  * Arguments:
  * 0: Target position ASL <ARRAY>
@@ -14,12 +14,18 @@
  * None
  *
  * Example:
- * [[1000, 2000, 30], "YonV (750m)", "ColorRed"] call jmfsb_equipment_fnc_show3DMarker
+ * [[1000, 2000, 30], "YonV (750m)", "ColorRed"] remoteExecCall ["jmfsb_equipment_fnc_show3DMarker", 0]
+ *
+ * Public: No
  */
 
-params ["_posASL", "_text", ["_colorName", "Default"]];
+params [["_posASL", [], [[]], 3], ["_text", "", [""]], ["_colorName", "Default", [""]]];
 
 if (!hasInterface) exitWith {};
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("show3DMarker: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
+if (_posASL isEqualTo []) exitWith {};
 if (GVAR(marker3DDuration) <= 0) exitWith {};
 
 private _color = getArray (configFile >> "CfgMarkerColors" >> _colorName >> "color");

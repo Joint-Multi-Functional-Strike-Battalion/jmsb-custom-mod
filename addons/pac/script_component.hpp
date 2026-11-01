@@ -11,6 +11,10 @@
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
 
+// TAC//PAC's admins as one source of the server's admin list
+// (jmfsb_common_fnc_adminSource, FUNC(adminsPublish); review S1/S5).
+#define ADMIN_SOURCE_PAC "pac"
+
 // The tacpad's drawing grammar - row heights, padding, rule weights - so the
 // PAC app is drawn in the same hand as every other app in the suite.
 #include "\z\jmfsb\addons\tacpad\shared.inc.hpp"
@@ -47,6 +51,10 @@
 // How long the boot waits for the pacdb service before running on the local copy.
 #define PAC_SVC_TIMEOUT   20
 
+// How long a new service request waits for the late answer to one that timed
+// out before asking anyway (FUNC(svcLoad)). Past the extension's own timeouts.
+#define PAC_SVC_STALE     60
+
 // The boot checklist (FUNC(bootDoc)) goes to clients at most this often, in
 // seconds - it changes two or three times per document read.
 #define PAC_BOOT_PUBLISH_EVERY 0.5
@@ -60,6 +68,14 @@
 // The attendance heartbeat, for crash safety: a session that never saw a
 // disconnect is closed at the last beat rather than lost.
 #define PAC_HEARTBEAT     60
+
+// getUserInfo's "is a headless client" field. A headless client connects like
+// a player and is never one (review L1).
+#define PAC_USERINFO_IS_HC 7
+
+// How long the admin asked to post the OPORD has to say it went out before
+// the next admin to spawn is asked instead (FUNC(opordAsk), review L1).
+#define PAC_OPORD_ASK_WAIT 120
 
 // Application questions: the gap between two stored "order" values (the
 // website numbers them 10, 20, ...), and how many checkboxes a "skills"

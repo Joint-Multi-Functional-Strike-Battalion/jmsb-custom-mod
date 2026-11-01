@@ -39,16 +39,20 @@ private _fnc_call = {
     _err isEqualTo 0 && _text isEqualTo "queued"
 };
 
-if !(["put.begin", [_key, str _n]] call _fnc_call) exitWith {
-    WARNING("pacdb extension refused put.begin - store not pushed to the service");
-    false
+// THE WHOLE PUT IN ONE STEP (isNil). The extension holds one put at a time, so
+// a scheduled save suspended between chunks, then a second save from an event
+// handler, would mix two documents. Unscheduled, nothing can run in between.
+private _ok = false;
+isNil {
+    if !(["put.begin", [_key, str _n]] call _fnc_call) exitWith {
+        WARNING("pacdb extension refused put.begin - store not pushed to the service");
+    };
+    _ok = true;
+    for "_i" from 0 to (_n - 1) do {
+        if !(["put.chunk", [str _i, _json select [_i * PAC_SVC_CHUNK, PAC_SVC_CHUNK]]] call _fnc_call) then {_ok = false};
+    };
+    if !(["put.end", []] call _fnc_call) then {_ok = false};
 };
-
-private _ok = true;
-for "_i" from 0 to (_n - 1) do {
-    if !(["put.chunk", [str _i, _json select [_i * PAC_SVC_CHUNK, PAC_SVC_CHUNK]]] call _fnc_call) then {_ok = false};
-};
-if !(["put.end", []] call _fnc_call) then {_ok = false};
 
 TRACE_3("pushed to service",_key,_n,_ok);
 _ok

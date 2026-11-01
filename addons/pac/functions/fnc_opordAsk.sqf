@@ -17,8 +17,15 @@ Description:
     NOTHING TO POST IS THE COMMON CASE: no currentOpord, no messaging
     addon, or already posted.
 
+    POSTED ON CONFIRMATION (review L1). The flag is set when the asked
+    admin's machine says the message went out (FUNC(opordPost) calls back
+    with arg 1 true), not when it is asked - an admin who never posts (no
+    link, left at once) used to leave the OPORD unposted for the mission.
+    While one admin is asked, nobody else is, for PAC_OPORD_ASK_WAIT seconds.
+
 Parameters:
     0: The unit <OBJECT>
+    1: Posted - the asked admin reporting it went out <BOOL> (optional, default false)
 
 Returns:
     Whether this unit was told to post <BOOL>
@@ -27,15 +34,22 @@ Author:
     YonV
 ---------------------------------------------------------------------------- */
 
-params [["_unit", objNull, [objNull]]];
+params [["_unit", objNull, [objNull]], ["_posted", false, [false]]];
 
 if (!isServer || isNull _unit) exitWith {false};
 if (GVAR(opordPosted)) exitWith {false};
 if ((GVAR(settings) getOrDefault ["currentOpord", ""]) isEqualTo "") exitWith {false};
 if (isNil "jmfsb_messaging_fnc_submit") exitWith {false};
-if !([_unit] call jmfsb_adminpanel_fnc_isAdmin) exitWith {false};
+if !([_unit] call FUNC(isAdminCaller)) exitWith {false};
 
-GVAR(opordPosted) = true;
+if (_posted) exitWith {
+    GVAR(opordPosted) = true;
+    INFO_1("%1 posted the OPORD",name _unit);
+    false
+};
+
+if (time < GVAR(opordAskedAt) + PAC_OPORD_ASK_WAIT) exitWith {false};
+GVAR(opordAskedAt) = time;
 [] remoteExec [QFUNC(opordPost), owner _unit];
 
 INFO_1("%1 asked to post the OPORD",name _unit);

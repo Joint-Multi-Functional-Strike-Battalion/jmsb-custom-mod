@@ -33,7 +33,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_target", objNull, [objNull]], ["_effects", [], [[]]]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
     WARNING_1("sessionSkills refused: %1 is not an admin",name _caller);
     false
 };

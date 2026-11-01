@@ -1,0 +1,4 @@
+# The static C runtime: libwebrtc's prebuilt library is built with it (/MT), and
+# it means players need no VC++ redistributable (docs/DESIGN_VOICE_LIVEKIT.md).
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

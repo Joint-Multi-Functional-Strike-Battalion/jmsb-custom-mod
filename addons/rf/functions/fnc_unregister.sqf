@@ -18,8 +18,10 @@
 
 params [["_id", "", [""]]];
 
+// A client's call goes to the server by remoteExec, which takes it only for a
+// node the client holds (FUNC(srvRequest), review R1).
 if (!isServer) exitWith {
-    [QGVAR(unregister), [_id]] call CBA_fnc_serverEvent;
+    ["unregister", [_id]] remoteExecCall [QFUNC(srvRequest), SERVER_OWNER];
 };
 
 GVAR(nodes) deleteAt _id;

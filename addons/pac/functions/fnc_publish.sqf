@@ -22,7 +22,13 @@ Description:
 
     PUBLISHED ON CHANGE, NOT ON A TIMER. Nothing changes the roster except an
     admin action or a connect, and both call this. A poll would be a broadcast a
-    second for a list that changes twice an evening.
+    second for a list that changes twice an evening. The heartbeat calls it
+    only when the promotion-due list changed (FUNC(rosterTotals)).
+
+    A client's roster handler re-applies only rank and skills
+    (FUNC(reapplyLocal)); seeding, slotting and the kept loadout are first
+    spawn and respawn work (FUNC(applyOnClient)), so a publish never resets
+    anybody's gear.
 
 Parameters:
     None
@@ -38,19 +44,10 @@ if (!isServer) exitWith {};
 
 private _out = [];
 
-// Own attendance, all time, per player: [minutes, joins]. Totalled here so a
-// client can show "time on" without ever holding the sessions. Open rows count
-// to lastSeenAt, the way FUNC(attendanceReport) counts them.
-private _totals = createHashMap;
-{
-    _x params ["_uid", "", "_joined", "_seen", "_left"];
-    private _end = [_left, _seen] select (_left isEqualTo "");
-    private _mins = (([_end] call FUNC(stampMinutes)) # 0) - (([_joined] call FUNC(stampMinutes)) # 0);
-    private _t = _totals getOrDefault [_uid, [0, 0]];
-    _t set [0, (_t # 0) + (_mins max 0)];
-    _t set [1, (_t # 1) + 1];
-    _totals set [_uid, _t];
-} forEach GVAR(sessions);
+// Own attendance, all time, per player: [minutes, joins], so a client can show
+// "time on" without ever holding the sessions. Totalled on the heartbeat by
+// FUNC(rosterTotals), not here - the session list only grows.
+private _totals = GVAR(rosterTotals);
 
 {
     private _rec = _y;
@@ -84,17 +81,10 @@ _out = _byName apply { _x # 1 };
 GVAR(roster) = _out;
 publicVariable QGVAR(roster);
 
-// WHO IS DUE A PROMOTION, worked out here because FUNC(promotionPoints) is
-// server-only - it reads GVAR(players), which a client does not have. The
-// website's dashboard has this block and the game's had nowhere to show it
-// (2026-09-09). One row per man: [name, rankId, nextRankId, points, needed].
-private _due = [];
-{
-    ([_x] call FUNC(promotionPoints)) params ["_pts", "", "_next", "_need"];
-    if (_next isNotEqualTo "" && _need <= 0) then {
-        _due pushBack [_y getOrDefault ["name", ""], _y getOrDefault ["rankId", ""], _next, _pts, _need, _x];
-    };
-} forEach GVAR(players);
+// WHO IS DUE A PROMOTION, worked out on the server because FUNC(promotionPoints)
+// reads GVAR(players), which a client does not have (2026-09-09). Kept by
+// FUNC(rosterTotals) on the heartbeat, which walks every session per player.
+private _due = +GVAR(promotable);
 
 // how many have no Discord id on file - the website's "needs attention" row
 private _noDiscord = 0;
@@ -125,7 +115,13 @@ GVAR(summary) = createHashMapFromArray [
     ["docs", missionNamespace getVariable [QGVAR(docsCount), 0]]
 ];
 publicVariable QGVAR(summary);
-publicVariable QGVAR(opordArchive);
+// The archive only when it changed: it is every cached order, whole. Compared
+// as text because its writers replace it or set into it in several places.
+private _archive = str GVAR(opordArchive);
+if (_archive isNotEqualTo GVAR(archiveSent)) then {
+    GVAR(archiveSent) = _archive;
+    publicVariable QGVAR(opordArchive);
+};
 
 // The host does not hear its own publicVariable - run its handlers by hand.
 ["roster"] call FUNC(hostRefresh);

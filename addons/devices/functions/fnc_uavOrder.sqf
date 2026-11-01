@@ -4,9 +4,18 @@
  * An order to a drone's AI - the DRONES board's ORBIT, GO TO, RTB and LASE.
  * Waypoints and the designator are the crew's, and a UAV's crew is usually
  * the server's (a hand-thrown one its launcher's), so an order given anywhere
- * else is sent on to the machine that owns the drone's group
- * (CBA targetEvent jmfsb_devices_uavOrder, handled on every machine) and runs
- * there. What can be refused is refused on the caller first, from config.
+ * else is sent on, by remoteExec, to the machine that owns the drone's group
+ * and runs there. What can be refused is refused on the caller first, from
+ * config.
+ *
+ * THE SERVER CHECKS WHO ORDERS (review S7). A client's order for a crew it
+ * does not own goes to the server, never straight to the owner: the server
+ * takes the sender from the sending machine and runs the board's own gate on
+ * him - he holds the drone's link (FUNC(uavOperator)) and FUNC(uavCan) lets
+ * him have it (operator trait, his side, nobody else on it; the DATA link is
+ * his machine's to judge) - then sends it on to the crew's owner, which takes
+ * it only from the server. It was a CBA target event any client could aim at
+ * any drone.
  *
  *   "orbit"  [radius]             a LOITER circle where the drone is now
  *   "goto"   [position, radius]   a MOVE to the point at the drone's current
@@ -23,8 +32,8 @@
  *                                 (FUNC(uavLaser)). The lased point is public on
  *                                 the drone as jmfsb_devices_uavLase.
  *
- * Who may give an order is the caller's business (FUNC(uavCan)); this only
- * carries it out.
+ * Who may give an order is the caller's gate (FUNC(uavCan)), asked again on
+ * the server for an order a client sends.
  *
  * Arguments:
  * 0: Order <STRING>
@@ -42,6 +51,25 @@
  */
 
 params [["_mode", "", [""]], ["_uav", objNull, [objNull]], ["_args", [], [[]]]];
+
+// Who sent it, before anything else (review S7). On the server, a client's
+// order passes the board's gate for the sender; on a client, a remote order
+// is taken only from the server.
+private _refused = false;
+if (isRemoteExecuted && {!([] call EFUNC(common,fromServer))}) then {
+    if (isServer) then {
+        private _sender = ([] call EFUNC(common,sender)) select 1;
+        _refused = isNull _sender
+            || {([_uav] call FUNC(uavOperator)) isNotEqualTo _sender}
+            || {!(([_uav, _sender, false] call FUNC(uavCan)) select 0)};
+    } else {
+        _refused = true;
+    };
+};
+if (_refused) exitWith {
+    WARNING_2("uavOrder: refused '%1' from machine %2",_mode,remoteExecutedOwner);
+    [false, "Refused."]
+};
 
 if (!alive _uav) exitWith {[false, "That drone is gone."]};
 if !(_mode in UAV_ORDERS) exitWith {
@@ -63,11 +91,15 @@ if (_laseOn && (_args param [1, []]) in [[], objNull]) exitWith {
 private _grp = group _uav;
 if (isNull _grp) exitWith {[false, "That drone has no crew."]};
 
-// NOT OURS: on to the machine that owns the crew.
+// NOT OURS: a client sends it to the server, which checks it (above) and
+// sends it on to the machine that owns the crew. A forward that finds the
+// crew moved on again is dropped rather than bounced back.
 if (!local _grp) exitWith {
-    private _owner = leader _grp;
-    if (isNull _owner) then {_owner = _uav};
-    [QGVAR(uavOrder), [_mode, _uav, _args], _owner] call CBA_fnc_targetEvent;
+    if (!isServer && isRemoteExecuted) exitWith {
+        WARNING_1("uavOrder: '%1' arrived after the crew changed machine - dropped",_mode);
+        [false, "That drone changed hands."]
+    };
+    [_mode, _uav, _args] remoteExecCall [QFUNC(uavOrder), [SERVER_OWNER, groupOwner _grp] select isServer];
     [true, ""]
 };
 

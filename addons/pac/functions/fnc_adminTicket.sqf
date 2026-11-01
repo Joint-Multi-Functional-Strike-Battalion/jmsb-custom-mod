@@ -21,7 +21,7 @@
 params [["_caller", objNull, [objNull]], ["_id", "", [""]], ["_text", "", [""]], ["_status", "", [""]], ["_private", false, [false]]];
 
 if (!isServer || isNull _caller || _id isEqualTo "") exitWith {};
-if !([_caller] call jmfsb_adminpanel_fnc_isAdmin) exitWith {WARNING_1("adminTicket refused: %1 is not an admin",name _caller)};
+if !([_caller] call FUNC(isAdminCaller)) exitWith {WARNING_1("adminTicket refused: %1 is not an admin",name _caller)};
 if (_text isEqualTo "" && _status isEqualTo "") exitWith {};
 if (_status isNotEqualTo "" && {!(_status in ["open", "accepted", "declined", "closed"])}) exitWith {};
 

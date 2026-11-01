@@ -19,11 +19,7 @@ params ["_enabled"];
 
 if (!isServer) exitWith {};
 
-// Trigger apropriate event on clients
-if (_enabled) then {
-    [QGVAR(enable)] call CBA_fnc_globalEvent;
-} else {
-    [QGVAR(disable)] call CBA_fnc_globalEvent;
-};
+// To every player by remoteExec, taken only from the server (review S7).
+[] remoteExecCall [[QFUNC(disable), QFUNC(enable)] select _enabled, 0];
 
 nil

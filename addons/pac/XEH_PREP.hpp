@@ -11,6 +11,9 @@ PREP(applyRank);
 PREP(rankOf);
 PREP(applySkills);
 PREP(applyOnClient);
+// Every admin request's door check, and the admins handed to the server's list (review S5)
+PREP(isAdminCaller);
+PREP(adminsPublish);
 PREP(adminSet);
 PREP(adminAddOperator);
 PREP(adminGet);
@@ -24,6 +27,8 @@ PREP(uid);
 PREP(sessionStart);
 PREP(sessionEnd);
 PREP(sessionTick);
+PREP(playerJoin);
+PREP(rosterTotals);
 PREP(windowSet);
 PREP(windowCurrent);
 PREP(windowName);

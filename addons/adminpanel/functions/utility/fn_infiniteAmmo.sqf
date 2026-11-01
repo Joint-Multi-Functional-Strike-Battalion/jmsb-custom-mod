@@ -48,7 +48,7 @@ if (admp_returnValue == 1) then { // EH was created
 
     if (_player != player) then { // show selected player a message
         private _message = format ["%1 enabled infinite ammo on you!", name player];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
     };
 } else {
     ["Admin Panel", format ["Removed %1's infinite ammo!", name _player], [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);
@@ -59,7 +59,7 @@ if (admp_returnValue == 1) then { // EH was created
 
     if (_player != player) then { // show selected player a message
         private _message = format ["%1 disabled infinite ammo on you!", name player];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
     };
 };
 

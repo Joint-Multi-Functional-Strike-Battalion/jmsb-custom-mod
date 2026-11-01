@@ -22,4 +22,4 @@ params [["_callId", "", [""]], ["_units", [], [[]]]];
 
 if (!GVAR(active)) exitWith {};
 if (_callId isEqualTo "" || isNull player) exitWith {};
-[QGVAR(srvAdd), [_callId, _units, player]] call CBA_fnc_serverEvent;
+[_callId, _units, player] remoteExecCall [QFUNC(srvAdd), SERVER_OWNER];

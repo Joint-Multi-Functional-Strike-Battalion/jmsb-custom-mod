@@ -138,11 +138,9 @@ private _fnc_push = {
     };
 
     private _entry = [_thread, _primary, _who] call FUNC(srvIndexFor);
-    [
-        QGVAR(receive),
-        [[[], _messageArray] select _body, _entry toArray false],
-        _who
-    ] call CBA_fnc_targetEvent;
+    // By remoteExecCall, which the client takes only from the server (review
+    // S7) - a CBA target event could be raised by any client at anyone.
+    [[[], _messageArray] select _body, _entry toArray false] remoteExecCall [QFUNC(cltReceive), _who];
 };
 
 {
@@ -203,7 +201,7 @@ if ((_thread getOrDefault ["pinned", false]) && {(_thread getOrDefault ["marker"
 
         {
             if (isNull _x) then {continue};
-            [QGVAR(marker), [_name, _pos, _label], _x] call CBA_fnc_targetEvent;
+            [_name, _pos, _label] remoteExecCall [QFUNC(cltMarker), _x];
         } forEach _bodySeen;
 
         // The thread carries its marker name so FUNC(srvSweep) takes it away

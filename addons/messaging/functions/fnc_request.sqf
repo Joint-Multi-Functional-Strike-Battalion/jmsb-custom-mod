@@ -20,4 +20,6 @@
 
 if (isNull player) exitWith {};
 
-[QGVAR(requestIndex), [player]] call CBA_fnc_serverEvent;
+// By remoteExecCall, so the server can check the player named is the sender's
+// own (review S7).
+[player] remoteExecCall [QFUNC(srvRequestIndex), SERVER_OWNER];

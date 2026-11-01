@@ -9,7 +9,10 @@
  * for both halves of a marker's life - the alternative is two handlers and one
  * of them eventually not being called.
  *
- * Arguments (CBA event):
+ * Sent by remoteExecCall from the server (FUNC(srvDeliver), FUNC(srvTic),
+ * FUNC(srvSweep)), and taken only from the server (review S7).
+ *
+ * Arguments:
  * 0: Marker name <STRING>
  * 1: Position, [] to remove <ARRAY>
  * 2: Marker text <STRING> (optional, default "")
@@ -17,12 +20,16 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_name, _pos, "TIC"] remoteExecCall ["jmfsb_messaging_fnc_cltMarker", _unit]
+ *
  * Public: No
  */
 
 params [["_name", "", [""]], ["_pos", [], [[]]], ["_text", "", [""]]];
 
 if (!hasInterface || _name == "") exitWith {};
+if !([] call EFUNC(common,fromServer)) exitWith {};
 
 if (_pos isEqualTo []) exitWith {
     deleteMarkerLocal _name;

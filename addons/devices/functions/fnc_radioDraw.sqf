@@ -10,8 +10,13 @@
  *
  * A TITLE LAYER TAKES NO MOUSE, so this is keys only: numpad 0 / . move the
  * cursor, the device keys F1-F4 are the soft keys, numpad 7 / 8 the tabs
- * (FUNC(radioKey)). Controls are made fresh on each draw and the last draw's
- * removed, as the rows of the walking view are redrawn whole each tick.
+ * (FUNC(radioKey)).
+ *
+ * DRAWN ON CHANGE, NOT ON THE TICK (code review R8). Everything the app shows
+ * - the rows, the tab, the cursor, the scheme, the rows' geometry and the fade
+ * - is its change key; while the key is the same and its controls are all
+ * there, the tick leaves them be. A new key throws the last draw's controls
+ * away and makes the app whole again.
  *
  * Arguments:
  * 0: The walking view's display <DISPLAY>
@@ -29,14 +34,26 @@
 params [["_display", displayNull, [displayNull]], ["_rows", createHashMap, [createHashMap]]];
 
 if (isNull _display) exitWith {false};
-{ctrlDelete _x} forEach (_display getVariable [QGVAR(radioCtrls), []]);
-_display setVariable [QGVAR(radioCtrls), []];
-if (!GVAR(radioOpen) || {isNil QEFUNC(voice,netState)}) exitWith {false};
+private _old = _display getVariable [QGVAR(radioCtrls), []];
+if (!GVAR(radioOpen) || {isNil QEFUNC(voice,netState)}) exitWith {
+    {ctrlDelete _x} forEach _old;
+    _display setVariable [QGVAR(radioCtrls), []];
+    false
+};
 
 private _view = [] call FUNC(radioRows);
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 private _muted = ["muted"] call EFUNC(tacpad,theme);
 private _tint = ["accentTint"] call EFUNC(tacpad,theme);
+private _fade = 1 - (GVAR(overlayOpacity) max 0 min 1);
+
+// The same key draws the same app: leave it, if every control is still there.
+private _key = [_view, _ground, _ink, _accent, _line, _muted, _tint, _rows, GVAR(radioTab), GVAR(radioCursor), GVAR(radioGroupMode), _fade, pixelW, pixelH];
+private _fresh = [_display, QGVAR(radioDraw), _key] call EFUNC(tacpad,changed);
+if (!_fresh && {_old isNotEqualTo []} && {(_old findIf {isNull _x}) < 0}) exitWith {true};
+{ctrlDelete _x} forEach _old;
+_display setVariable [QGVAR(radioCtrls), []];
+
 private _solid = [_ground # 0, _ground # 1, _ground # 2, 1];
 private _tones = createHashMapFromArray [["ink", _ink], ["dim", _muted], ["ok", COLOUR_NET_OK], ["alert", COLOUR_ALERT], ["warn", COLOUR_WARN]];
 
@@ -48,7 +65,6 @@ private _gapX = _rows get "gapX";
 private _gapY = _rows get "gapY";
 private _textH = _rows get "textH";
 private _lineH = _rows get "lineH";
-private _fade = 1 - (GVAR(overlayOpacity) max 0 min 1);
 private _made = [];
 
 private _fnc_box = {
@@ -104,6 +120,7 @@ if (_header isNotEqualTo "") then {
     [[_ax + _gapX, _y, _aw - 2 * _gapX, _lineH], [_header, _ink, true] call _fnc_t] call _fnc_text;
     _y = _y + _lineH * 1.2;
 };
+
 if (!_portrait) then {
     {
         _x params ["_label", "_at"];

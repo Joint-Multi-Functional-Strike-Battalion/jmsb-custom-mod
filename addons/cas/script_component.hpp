@@ -15,6 +15,16 @@
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
 
+// WHO MAY ORDER A RUN (review S6). A client's order and recall go by
+// remoteExec to the server (SERVER_OWNER), which checks the real sender
+// (FUNC(mayTask)): the module named must be this addon's own class, and the
+// tasks it flies the two modes FUNC(task) sends.
+#define SERVER_OWNER        2
+#define CAS_MODULE          "jmfsb_moduleCAS"
+#define STATUS_IDLE         "idle"
+#define MODE_STRIKE         "strike"
+#define MODE_LOITER         "loiter"
+
 // How long the run is allowed to take before the airframe is written off and
 // swept, whatever it is doing. A drone that loses its waypoints to terrain or
 // a stall would otherwise circle for the rest of the mission holding its
@@ -59,6 +69,10 @@
 // gunner's seat to the drone controller. Wide, because an orbit this size
 // never puts the aircraft on the point itself.
 #define CAS_STATION_RING    1600
+
+// Seconds after ON STATION before the drone controller is put in the seat -
+// the airframe and its crew are a moment old (FUNC(onStation)).
+#define SEAT_DELAY          1
 
 // THE WAY OUT. A run that is over - egressed, recalled, out of patience - flies
 // on its egress heading off the map and is deleted once it is outside it (see

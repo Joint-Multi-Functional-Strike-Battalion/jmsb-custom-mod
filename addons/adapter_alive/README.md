@@ -19,6 +19,22 @@ Each probe prints what it READ as well as what it did, so a wrong assumption
 about ALiVE's internals is falsified in one run instead of silently producing
 an empty system three phases later.
 
+The probes are admins only (review S7): the chat commands (`#jmfsbreads`,
+`#jmfsbsquad`, `#jmfsbfire`, `#jmfsbcapture`, `#jmfsbdamage`, `#jmfsbperf`) go
+by `remoteExec` to `probe`, which runs only for an admin by the server's records
+(a host and a single player pass; on a dedicated server, `#login` first) and
+takes the caller from the sender. An ATO task from TAC//SUPPORT goes by
+`remoteExec` to `srvRequestATO`, which takes the requester and his side from the
+sender and asks the support tasking gate again.
+
+Ready and capture are server hooks, not CBA events (review R1): any client
+could raise `jmfsb_adapter_alive_ready` again to restart air defence, leaders,
+QRF and UAS, or `jmfsb_adapter_alive_capture` to put a fake FRONT line on every
+screen. `whenReady [code, args]` runs code once ALiVE is up (at once when it
+already is), `onCapture [code]` on every objective a commander takes; both
+keep their hooks in the server's `localNamespace` and take local calls only.
+`jmfsb_adapter_alive_ready` stays as the public flag for readers.
+
 ## Whose ground is whose
 
 `taorFor` answers "where is this side's ground", and eight systems steer off
@@ -60,11 +76,11 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-40 functions.
+43 functions.
 
 ## Functions
 
-<details><summary>40</summary>
+<details><summary>43</summary>
 
 - `jmfsb_adapter_alive_fnc_aaTargets`
 - `jmfsb_adapter_alive_fnc_artyTargets`
@@ -81,6 +97,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_adapter_alive_fnc_logisticsHubs`
 - `jmfsb_adapter_alive_fnc_nearProfiles`
 - `jmfsb_adapter_alive_fnc_objectivesFor`
+- `jmfsb_adapter_alive_fnc_onCapture`
 - `jmfsb_adapter_alive_fnc_postReport`
 - `jmfsb_adapter_alive_fnc_probe`
 - `jmfsb_adapter_alive_fnc_profileAlive`
@@ -100,11 +117,13 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_adapter_alive_fnc_respawnGearManaged`
 - `jmfsb_adapter_alive_fnc_sendHint`
 - `jmfsb_adapter_alive_fnc_setData`
+- `jmfsb_adapter_alive_fnc_srvRequestATO`
 - `jmfsb_adapter_alive_fnc_supportAssets`
 - `jmfsb_adapter_alive_fnc_supportSitrep`
 - `jmfsb_adapter_alive_fnc_supportTask`
 - `jmfsb_adapter_alive_fnc_supportTypes`
 - `jmfsb_adapter_alive_fnc_taorFor`
 - `jmfsb_adapter_alive_fnc_virtualFriendlies`
+- `jmfsb_adapter_alive_fnc_whenReady`
 
 </details>

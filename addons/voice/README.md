@@ -2,58 +2,75 @@
 
 `jmfsb_voice`
 
-Voice on Arma 3's own VON (docs/DESIGN_VOICE.md, SPEC_TACNET D14 / D16 /
-`voice_adapter`). RF decides who hears whom; a voice adapter carries the
-audio - `jmfsb_adapter_von` (VON) by default. This addon knows nets, calls,
-callbacks and sounds; it never names a VON command. NOT RUN IN GAME.
+The voice core (docs/DESIGN_VOICE.md, DESIGN_VOICE_LIVEKIT.md, SPEC_TACNET
+D14 / D16 / `voice_adapter`). RF decides who hears whom; a voice adapter
+carries the audio - **`jmfsb_adapter_livekit`, our voice server, by default**
+(user, 2026-10-31: "livekit was to be the VON", "no in-game VON");
+`jmfsb_adapter_von`, Arma's own VON, only where the voice extension does not
+load. This addon knows nets, calls, callbacks and sounds; it never names a
+VON command nor the extension. NOT RUN IN GAME.
 
-**VON only without TFAR or ACRE; then external-radio mode** (user,
-2026-10-20: "our in game VoIP setup should only run if there is no TFAR or
-ACRE", then "keep the ACRE and TFAR"). Set once in preInit, on every machine,
-from its own CfgPatches (one RPT line says which):
+**LiveKit, with game VON as the server's fallback** (2026-10-30: "a place to
+select the default"). **TFAR and ACRE were removed on 2026-10-31 (DEC1)**:
+no radio-mod choice, no external-radio mode. The CBA setting **JMSB - Voice >
+Voice system** (`jmfsb_voice_defaultSystem`, server-forced, read at mission
+start) is Automatic, Voice server (LiveKit) or Game VON (fallback); a server
+or profile that still holds `"tfar"` or `"acre"` gets Automatic, with a
+warning. Decided by `fnc_selectSystem`: the automatic answer in preInit, from
+the LiveKit adapter's announcement, and the setting's at
+`CBA_settingsInitialized` (one RPT line says which). **The server's answer is
+everyone's** (2026-10-31, PLAN_VOICE_EW_PLAY V1): the server publishes it
+(`jmfsb_voice_serverSystem`) and each client takes it (`fnc_followServer`) -
+or `"none"` when it cannot run it (the server chose LiveKit and this
+machine's extension did not load): VOICE UNAVAILABLE, said once in the
+upper-right notification, no voice of any system (its game VON off too),
+text messages still work - rather than alone on the game VON where nobody
+hears him. No answer from the server in 60 s: the client keeps its own.
+Every client-side start of every game-voice system waits for the local
+event `jmfsb_voice_systemReady` [system] (the server's start for
+`CBA_settingsInitialized`):
 
-- `jmfsb_voice_system` - `"von"`, `"tfar"` (`task_force_radio` or `tfar_core`
-  loaded) or `"acre"` (`acre_main`); TFAR wins if both are loaded (a warning).
-- `jmfsb_voice_active` - true only for `"von"`: VON is running.
+- `jmfsb_voice_system` - `"livekit"` (`jmfsb_adapter_livekit` loaded and its
+  extension answering), `"von"` or `"none"` (above: no adapter, no nets).
+  Automatic: LiveKit, else game VON. Game VON by choice runs whatever is
+  loaded; LiveKit chosen but not loaded falls back to Automatic (a warning).
+- `jmfsb_voice_active` - true for `"livekit"` and `"von"`: a game-voice
+  system is running, the core's own nets, calls and cut-offs with it.
 
-Under TFAR or ACRE nothing of VON is set up, exactly as before: `jmfsb_adapter_von`
-does not register, no channels, no enableChannel, no PTT / KeyDown / frame
-handlers, no VON toggle block, no volume ticks, no server call logic, no
-sounds. The core runs in **external-radio mode** instead: only that radio's
-adapter is taken (`jmfsb_adapter_tfar` registers `"tfar"`, `jmfsb_adapter_acre`
-`"acre"`), and a client tick (`fnc_externalTick`, every 0.1 s; the nets every
-second) mirrors it: `nets`, `netState`, `activeNet`, `setActive` /
-`stepActive`, `setEar` / `setMute` (where the radio has them), `quality`,
-`talking` and the `jmfsb_voice_talk` event are served from it, so the RADIO
-app, the HUD widget, the net rows, the talking box, BFT rings, reaction, the
-scanner and the RADIO tile keep working. **Calls are VON only**: `call`,
-`calls`, `callSlots`, `callbacks`, `contacts` and the rest answer empty and
-do nothing, and the screens say so in words. `members` and `playCue` are VON
-only too.
+The settings: JMSB - Voice (the choice) and JMSB - Voice (Built-in) (this
+addon's, `jmfsb_adapter_von`'s and `jmfsb_adapter_livekit`'s). RF's own stay
+on JMSB - Radio & Voice.
+
+Under `"none"` nothing is set up: the net functions answer no nets (`[]`,
+`""`, `false`, 0), the call functions answer empty, and the net row, the HUD
+radio widget and every RADIO tab say VOICE UNAVAILABLE.
+
+**Requests to the server carry their sender** (review S5/S7, R1; the
+"Who sent a request" rule in addons/common/README.md). A call, callback or
+RTO-net request names a unit, so it goes by `remoteExecCall` to the server
+function - `srvCall`, `srvAdd`, `srvAnswer`, `srvLeave`, `srvCallback`,
+`srvNetAdd`, `srvNetMembers`, `srvNetRemove` - which first checks that unit
+is the sender's own (`jmfsb_common_fnc_senderIs`). `canFlash` asks
+`jmfsb_common_fnc_senderIsAdmin` for the sender. The server's answers go back
+by `remoteExecCall` to `callFailed`, `netFailed` and `note`, which take them
+only from the server (`jmfsb_common_fnc_fromServer`). There are no CBA
+handlers for these any more.
 
 ## API
 
 The contract agents and devices code against. All functions are
 `jmfsb_voice_fnc_<name>`; client calls act for the local player.
 
-`jmfsb_voice_system` - `"von"`, `"tfar"` or `"acre"`. `jmfsb_voice_active` -
-VON is running (system `"von"`). Under TFAR / ACRE the net functions answer
-for that radio (nets for the local player only; voiceChannel -1) and the call
-functions answer empty (`[]`, `""`, `false`, 0 or -1) and do nothing.
-
-**External radio adapters** (`"tfar"`, `"acre"`; `registerAdapter` takes only
-the one whose id is `jmfsb_voice_system`, and refuses them under VON).
-Required hooks: `"nets"` `[] -> [[net, name, kind, -1], ...]` (the local
-player's), `"netState"` `[] -> [[net, name, kind, active, muted, ear,
-reachable], ...]` (the core adds the talkers), `"talking"` `[] -> [[unit,
-net], ...]` (others). Optional: `"current"` `[] -> net`, `"setActive"` `[net]
--> bool`, `"ptt"` `[] -> [down, net]` (his own key), `"setEar"` `[net, ear] ->
-bool`, `"setMute"` `[net, muted] -> bool`, `"linkQuality"` `[speaker, net] ->
-0..1`, `"selfTest"`.
+`jmfsb_voice_system` - `"livekit"`, `"von"` or `"none"`. `jmfsb_voice_active`
+- a game-voice system is running (`"livekit"` or `"von"`). Under `"none"` the
+net and call functions answer empty (`[]`, `""`, `false`, 0 or -1) and do
+nothing. `registerAdapter` keeps every adapter, and the one in use is the
+system's: under LiveKit `"livekit"`, under VON the last adapter registered
+that is not LiveKit's, else `"von"`.
 
 | Function | Arguments | Returns |
 |---|---|---|
-| `registerAdapter` | `[id, hooks]`; hooks is a hashmap of code. Required: `"join"` `[unit, net]`, `"leave"` `[unit, net]` (server), `"quality"` `[unit, net, q 0..1]`, `"talking"` `[] -> [[unit, net], ...]` (client, every frame: other speakers). Optional: `"channel"` `[net] -> number`, `"setActive"` `[net] -> bool`, `"current"` `[] -> net`, `"block"` `[level 0..3]` (0 none, 1 radio silence, 2 unconscious, 3 dead / no air), `"ptt"` `[] -> [down, net]` (his own key, every frame), `"keyed"` `[unit, net, on]` (a speaker's pushed key event), `"audience"` `[unit, net] -> units` (who hears him there; default `members`), `"selfTest"` `[]` | bool |
+| `registerAdapter` | `[id, hooks]`; hooks is a hashmap of code. Required: `"join"` `[unit, net]`, `"leave"` `[unit, net]` (server), `"quality"` `[unit, net, q 0..1]`, `"talking"` `[] -> [[unit, net], ...]` (client, every frame: other speakers). Optional: `"channel"` `[net] -> number`, `"setActive"` `[net] -> bool`, `"current"` `[] -> net`, `"block"` `[level 0..3]` (0 none, 1 radio silence, 2 unconscious, 3 dead / no air), `"ptt"` `[] -> [down, net]` (his own key, every frame), `"keyed"` `[unit, net, on]` (a speaker's pushed key event), `"audience"` `[unit, net] -> units` (who hears him there; default everyone the server has on that net, `fnc_audience`), `"selfTest"` `[]` | bool |
 | `nets` | `[unit]` | `[[netId, name, kind, voiceChannel], ...]`; kind `"team"`, `"c2"`, `"a2g"`, `"veh"`, `"call"`, `"direct"`; voiceChannel -1 when none yet |
 | `netState` | `[]` | per net of the local player `[netId, name, kind, active, muted, ear "L"/"B"/"R", reachable, talkers [[unit, quality], ...]]` |
 | `activeNet` | `[]` | netId (`""` none) |
@@ -64,6 +81,7 @@ bool`, `"setMute"` `[net, muted] -> bool`, `"linkQuality"` `[speaker, net] ->
 | `quality` | `[speaker, netId]` | 0..1 for the local listener (grace applied, mute not) |
 | `talking` | `[]` | `[[unit, netId], ...]` heard by the local player now, himself included |
 | `members` | `[netId, unit (optional: whose vehicle VEH means)]` | the players on that net, by the voice layer |
+| `rosterNets` | `[unit]` | his nets as the server has them: the radio nets of his RF fill (published roster) and his CALL nets (published call table); no VEH / DIRECT |
 | `call` | `[[units], priority "ROUTINE"/"FLASH"]` | callId, or `""` with a reason notified |
 | `callAdd` | `[callId, [units]]` | nothing - only the call's owner may add; anyone else gets `"notOwner"` |
 | `callAccept` / `callDecline` / `hangUp` | `[callId]` | nothing |
@@ -74,15 +92,16 @@ bool`, `"setMute"` `[net, muted] -> bool`, `"linkQuality"` `[speaker, net] ->
 | `contacts` | `[]` | `[[unit, name, callsign, roleTags, reachable, inCall], ...]`; tags from `"SL"`, `"RTO"` (by `isRto`), `"MEDIC"`, `"HQ"` |
 | `isRto` | `[unit]` | bool: he holds the RTO job - the one RTO test (see The RTO job); answers whether or not voice is active |
 | `playCue` | `[cue, netId, volumeFactor (optional, 1)]` | sound id (for `stopSound`), -1 when nothing played |
-| `selfTest` | `[]` | nothing (logs to the RPT; first line: `jmfsb_voice_system`, `jmfsb_voice_active` and the TFAR / ACRE patches found; under TFAR / ACRE the radio's nets, then its adapter's `selfTest`) |
+| `selfTest` | `[]` | nothing (logs to the RPT; first line: `jmfsb_voice_system`, `jmfsb_voice_active`, the setting and what is loaded; under `"none"` only a warning; then the adapter's `selfTest`) |
 | `customList` | `[]` | the RTO nets, `[[id, name, squads, uids, owner uid, owner name], ...]` |
 | `customNets` | `[unit]` | the RTO net ids he is on (his squad's callsign or his UID named) |
 | `canManageNets` | `[unit]` | bool: the RTO job, or a logged-in admin - what a client may draw; the server re-checks with `canFlash` |
-| `netAdd` | `[name, squads, uids]` | bool sent; the server answers with the net published or `jmfsb_voice_netFailed` |
+| `netAdd` | `[name, squads, uids]` | bool sent; the server answers with the net published or `jmfsb_voice_fnc_netFailed` (by remoteExec) |
 | `netMembers` | `[id, squads, uids]` | bool sent; both lists replaced |
 | `netRemove` | `[id]` | bool sent |
 
-CBA local events: `jmfsb_voice_talk` `[unit, netId, on]`, `jmfsb_voice_netsChanged`
+CBA local events: `jmfsb_voice_systemReady` `[system]` (once, when this
+machine's system is final - the server's choice taken), `jmfsb_voice_talk` `[unit, netId, on]`, `jmfsb_voice_netsChanged`
 `[]`, `jmfsb_voice_callRing` `[callId, fromUnit]`, `jmfsb_voice_callState`
 `[callId, state]` - state is `"ringing"`, `"outgoing"`, `"live"`, `"warning"`
 (a FLASH call is about to take the slot), `"ended"`, or a failure reason
@@ -215,7 +234,11 @@ VEH, Direct = DIRECT, untouched).
 **Speaker-pushed keying.** On his key-down and key-up the speaker himself
 sends `jmfsb_voice_keyed` `[speaker, net, on]` - one event per edge, never per
 frame - to everyone who can hear him there (the adapter's `audience`, without
-him; nobody for DIRECT). Each listener's client sets his volume at once from
+him; nobody for DIRECT). The default audience (`fnc_audience`, what LiveKit
+uses) and VON's custom channels go by the nets THE SERVER has each player on
+(`fnc_rosterNets`: his RF fill from the roster, his calls from the call
+table), not the speaker's own reading of everyone's nets, which a stale or
+JIP view could get wrong (PLAN_VOICE_EW_PLAY V6). Each listener's client sets his volume at once from
 its current quality (the adapter's `keyed`), raises `jmfsb_voice_talk` and
 plays the squelch and static. So talking indicators, sounds and volume do not
 depend on the engine reporting remote players; the adapter's per-frame check
@@ -296,10 +319,11 @@ one like C2 - except that each has its own VON custom channel for the rest of
 the mission (the adapter's `reserve` hook; a removed net's channel is kept by
 name and reused), so the calls get what is left of the ten. `jmfsb_voice_customNetsMax`
 (server, default 2) caps how many exist at once. Every request is re-checked
-on the server with `canFlash`; a refusal comes back as `jmfsb_voice_netFailed`
-(`notRto`, `badName`, `taken`, `full`, `noChannel`, `unknown`) and is said in
-words. The id is the name, upper-cased: 2-10 letters, digits, spaces or
-dashes, none of the reserved ids. Under TFAR / ACRE there are none.
+on the server with `canFlash` after the sender check; a refusal comes back by
+remoteExec to `jmfsb_voice_fnc_netFailed` (`notRto`, `badName`, `taken`,
+`full`, `noChannel`, `unknown`) and is said in words. The id is the name,
+upper-cased: 2-10 letters, digits, spaces or dashes, none of the reserved
+ids. Under `"none"` there are none.
 
 ## Not built
 
@@ -316,6 +340,7 @@ dashes, none of the reserved ids. Under TFAR / ACRE there are none.
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_rf`
 - `jmfsb_notify`
 - `cba_main` _(external)_
@@ -324,12 +349,14 @@ dashes, none of the reserved ids. Under TFAR / ACRE there are none.
 
 ## Ships
 
-89 functions.
+100 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
+| `jmfsb_voice_defaultSystem` | LIST | Voice system |
+| `jmfsb_voice_batteryClasses` | EDITBOX | Spare batteries |
 | `jmfsb_voice_grace` | SLIDER | Grace time (sec) |
 | `jmfsb_voice_ringTime` | SLIDER | Ring time (sec) |
 | `jmfsb_voice_callDrop` | SLIDER | Call drop time (sec) |
@@ -345,12 +372,18 @@ dashes, none of the reserved ids. Under TFAR / ACRE there are none.
 
 ## Functions
 
-<details><summary>89</summary>
+<details><summary>100</summary>
 
 - `jmfsb_voice_fnc_a2gNet`
 - `jmfsb_voice_fnc_activeNet`
 - `jmfsb_voice_fnc_airSeat`
+- `jmfsb_voice_fnc_applyAdapter`
 - `jmfsb_voice_fnc_applyBlock`
+- `jmfsb_voice_fnc_audience`
+- `jmfsb_voice_fnc_batteryLevel`
+- `jmfsb_voice_fnc_batterySpares`
+- `jmfsb_voice_fnc_batterySwap`
+- `jmfsb_voice_fnc_batteryTick`
 - `jmfsb_voice_fnc_blockLevel`
 - `jmfsb_voice_fnc_blockNeed`
 - `jmfsb_voice_fnc_c2Net`
@@ -375,8 +408,8 @@ dashes, none of the reserved ids. Under TFAR / ACRE there are none.
 - `jmfsb_voice_fnc_customNets`
 - `jmfsb_voice_fnc_customValid`
 - `jmfsb_voice_fnc_dataReach`
-- `jmfsb_voice_fnc_externalTick`
 - `jmfsb_voice_fnc_fill`
+- `jmfsb_voice_fnc_followServer`
 - `jmfsb_voice_fnc_frame`
 - `jmfsb_voice_fnc_global`
 - `jmfsb_voice_fnc_hangUp`
@@ -396,10 +429,13 @@ dashes, none of the reserved ids. Under TFAR / ACRE there are none.
 - `jmfsb_voice_fnc_netState`
 - `jmfsb_voice_fnc_nets`
 - `jmfsb_voice_fnc_nodeIds`
+- `jmfsb_voice_fnc_note`
 - `jmfsb_voice_fnc_planNet`
 - `jmfsb_voice_fnc_planRefresh`
 - `jmfsb_voice_fnc_playCue`
 - `jmfsb_voice_fnc_playSound`
+- `jmfsb_voice_fnc_pttKey`
+- `jmfsb_voice_fnc_pttNet`
 - `jmfsb_voice_fnc_quality`
 - `jmfsb_voice_fnc_radios`
 - `jmfsb_voice_fnc_reachable`
@@ -409,6 +445,8 @@ dashes, none of the reserved ids. Under TFAR / ACRE there are none.
 - `jmfsb_voice_fnc_rfNet`
 - `jmfsb_voice_fnc_ringTick`
 - `jmfsb_voice_fnc_roles`
+- `jmfsb_voice_fnc_rosterNets`
+- `jmfsb_voice_fnc_selectSystem`
 - `jmfsb_voice_fnc_selfTest`
 - `jmfsb_voice_fnc_serverTick`
 - `jmfsb_voice_fnc_setActive`

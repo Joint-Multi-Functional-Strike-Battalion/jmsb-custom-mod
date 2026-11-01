@@ -2,28 +2,24 @@
 
 [] call FUNC(arsenal_postInit);
 
-// These events try to optimize network usage
-// by sending a single CBA Event then each machine running local commands,
-// as opposed to 4 global commands for a single backpack when using
-//      clearItemCargoGlobal _container;
-//      clearWeaponCargoGlobal _container;
-//      clearMagazineCargoGlobal _container;
-//      clearBackpackCargoGlobal _container;
-// and 4 per backpack when clearing backpacks created inside a backpack.
-// Clear inventory of a container
-[QGVAR(clearAllCargo), {call FUNC(clearAllCargo)}] call CBA_fnc_addEventHandler;
-// Clear inventory of every backpack in a container
-[QGVAR(clearCargoBackpacks), {call FUNC(clearCargoBackpacks)}] call CBA_fnc_addEventHandler;
+// No clearAllCargo / clearCargoBackpacks CBA events (review R1): any client
+// could raise them to empty any container on the map. The machine moving the
+// pack clears it with global commands (FUNC(clearAllCargo)).
 
 if (isServer) then {
-    [QGVAR(handleDisconnect), {
-        addMissionEventHandler ["HandleDisconnect", FUNC(EHHandleDisconnect)];
-    }] call CBA_fnc_addEventHandler;
+    // Once, here (review R1): it was added on a CBA event any client could
+    // raise, a duplicate handler on every raise.
+    addMissionEventHandler ["HandleDisconnect", FUNC(EHHandleDisconnect)];
 
     // PFH to check when the helper object _ropeTop and the WeaponHolderSimulated
     // holding the backpack have landed
     [QGVAR(checkLandedPFH), {
-        params ["_ropeTop", "_holder"];
+        params [["_ropeTop", objNull, [objNull]], ["_holder", objNull, [objNull]]];
+        // A CBA event carries no sender, so the objects are checked: only the
+        // rope-top helper is ever deleted and only a ground weapon holder is
+        // ever moved - not whatever object a client names (review S7).
+        if (typeOf _ropeTop isNotEqualTo ROPE_TOP_CLASS) exitWith {};
+        if !(_holder isKindOf "WeaponHolderSimulated" || {_holder isKindOf "GroundWeaponHolder"}) then {_holder = objNull};
         [{
             params ["_ropeTop", "_pfhID"];
             if (speed _ropeTop < 1 && {((getPos _ropeTop) select 2) < 1}) exitWith {

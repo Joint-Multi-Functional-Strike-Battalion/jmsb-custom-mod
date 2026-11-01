@@ -8,7 +8,7 @@
  * prefiltered and cached (see there for the cost).
  *
  * SEARCH: the widest path - the route whose weakest leg is strongest -
- * ported from radio_mesh's fnc_signal: a Dijkstra on max-min quality, settling
+ * ported from the old radio_mesh's fnc_signal (removed, DEC1): a Dijkstra on max-min quality, settling
  * one relay at a time. Only relays are settled and extended from: a node that
  * cannot relay (profile, relay switched off, EMCON >= EMCON_NO_RELAY) is an
  * endpoint only. Cost per source is relays x nodes, not nodes squared.
@@ -56,6 +56,8 @@ for "_i" from 0 to (_n - 1) do {
 for "_i" from 0 to (_n - 2) do {
     for "_j" from (_i + 1) to (_n - 1) do {
         private _q = [_ids select _i, _ids select _j, _band, _net, _ctx] call FUNC(edge);
+        // quantised here, so an unchanged mesh compares equal (MEMO below)
+        _q = (round (_q / QUALITY_STEP)) * QUALITY_STEP;
         (_adj select _i) set [_j, _q];
         (_adj select _j) set [_i, _q];
         if (_q > 0 && GVAR(debugOverlay)) then {
@@ -81,6 +83,17 @@ private _limit = [];
     _limit pushBack _lim;
     _relay pushBack ((_prof get "relayCapable") && {_state get "relay"} && {(_state get "emcon") < EMCON_NO_RELAY} && _lim > 0);
 } forEach _ids;
+
+// MEMO (review P1, 2026-10-31): the search is the costly part - up to n^3 when
+// every node relays - and its answer depends only on the nodes, the quantised
+// edges and the relays. When none of them changed since the last tick, the
+// last answer stands.
+private _memoKey = format ["%1|%2|%3", _ids joinString ",", _band, _net];
+private _memo = GVAR(meshMemo) getOrDefault [_memoKey, []];
+if (_memo isNotEqualTo [] && {(_memo select 0) isEqualTo _adj} && {(_memo select 1) isEqualTo _relay} && {(_memo select 2) isEqualTo _limit}) exitWith {
+    _memo set [4, CBA_missionTime];
+    +(_memo select 3)
+};
 
 // WIDEST PATH from every source
 private _out = createHashMap;
@@ -137,4 +150,5 @@ for "_s" from 0 to (_n - 1) do {
     _out set [_ids select _s, _peers];
 };
 
+GVAR(meshMemo) set [_memoKey, [_adj, _relay, _limit, +_out, CBA_missionTime]];
 _out

@@ -11,13 +11,12 @@
 
 INFO("InitEventHandlers","Creating Global EventHandlers");
 
-[QGVAR(getAttendance), {
-    call EFUNC(systems,getAttendance);
-}] call CBA_fnc_addEventHandler;
-
 // Player Events
 if (GVAR(isPlayer)) then {
     INFO("InitEventHandlers","Creating Client EventHandlers");
+
+    // Attendance comes back by remoteExec (FUNC(attendance)), not a CBA
+    // event (review S7).
 
     // Map drawing restriction: DIRECT channel only, admins exempt
     call EFUNC(init,mapDrawing);
@@ -27,7 +26,8 @@ if (GVAR(isPlayer)) then {
 
     ["ACM_casualtyEvacuated", {
         params ["_unit", "_originalUnit"];
-        ["YMF_casualtyEvacuatedserver", [_unit, _originalUnit]] call CBA_fnc_serverEvent;
+        // By remoteExec, so the server knows who sent it (review R1).
+        [_unit, _originalUnit] remoteExecCall [QFUNC(srvEvacuated), SERVER_OWNER];
         [_originalUnit] call EFUNC(groups,removeFromGroup);
         call EFUNC(init,playerpost);
         call EFUNC(groups,initGroupMenu);
@@ -38,59 +38,25 @@ if (GVAR(isPlayer)) then {
 if (!isServer) exitWith {};
 INFO("InitEventHandlers","Creating Server EventHandlers");
 
-[QEGVAR(log,text), {
-    diag_log text _this;
-}] call CBA_fnc_addEventHandler;
+// A client's RPT line comes by remoteExec to jmfsb_diag_fnc_srvLog, tagged with
+// its sender - not the "jmfsb_log_text" CBA event, which let any client write
+// any line into the server's RPT (review R1).
 
-[QEGVAR(log,player), {
-    params ["_guid","_name"];
-    private _unit = [_guid] call BIS_fnc_getUnitByUID;
-    private _playerLog = missionNamespace getVariable [QEGVAR(log,players), createHashMap];
-    INFO_3("PlayerLog","Connected %1 [%2] (GUID: %3)",_name,_unit,_guid);
+// Attendance is read where the connection log is kept and sent back to the
+// machine that asked, an admin or a Zeus: by remoteExec to
+// FUNC(srvAttendance), which checks the sender (review S7).
 
-    // HOISTED. This was computed inside the "existing entry" branch and read
-    // inside the "new entry" one, so every player logging in for the first time
-    // got a nil loadout written to their record.
-    private _loadout = [_unit getVariable [QEGVAR(Gear,LoadoutClass), typeOf _unit], "Trooper"] select (isNull _unit);
-    
-    if (!isNil{_playerLog get _guid}) then {
-        INFO_1("PlayerLog","Updating Log Entry [%1]",isNil{_playerLog get _guid});
-        private _data = _playerLog get _guid;
-        
-        private _connections = _data get "connections";
-        _connections pushBack systemTimeUTC;
-        _data set ["connections", _connections];
-
-        _data set ["loadout", _loadout];
-        
-        _playerLog set [_guid,_data];
-    } else {
-        INFO_1("PlayerLog","Creating Log Entry [%1]",isNil{_playerLog get _guid});
-        private _entry = createHashMapFromArray [
-            ['name', _name],
-            ['loadout', _loadout],
-            ['connectTime', systemTimeUTC],
-            ['connections', [systemTimeUTC]]
-        ];
-        _playerLog set [_guid,_entry];
-    };
-    missionNamespace setVariable [QEGVAR(log,players), _playerLog];
-}] call CBA_fnc_addEventHandler;
-
+// The connection log is written by the server's own handler, straight to
+// FUNC(logPlayer) - not the "jmfsb_log_player" CBA event, which let any client
+// forge attendance (review R1).
 addMissionEventHandler ["PlayerConnected", {
-    params ["_id", "_uid", "_name", "_jip", "_owner", "_idstr"];
-    [QEGVAR(log,player), [_uid, _name]] call CBA_fnc_serverEvent;
+    params ["", "_uid", "_name"];
+    [_uid, _name] call FUNC(logPlayer);
 }];
 
-// ACM Events
-INFO("InitEventHandlers","Creating ACM Server EventHandlers");
-
-["YMF_casualtyEvacuatedserver", {
-    params ["_unit", "_originalUnit"];
-    // Server side, so this was never a message anyone could read - it is a log line, and now says so.
-    SHOW_SERVER_INFO("CasualtyEvac",FORMAT_2("Unit %1 has been evacuated. Original unit: %2",_unit,_originalUnit));
-    [_originalUnit] call EFUNC(groups,removeFromGroup);
-}] call CBA_fnc_addEventHandler;
+// ACM: a client's evacuation reaches the server by remoteExec to
+// FUNC(srvEvacuated), which checks the sender - not the
+// "YMF_casualtyEvacuatedserver" CBA event (review R1).
 
 
 

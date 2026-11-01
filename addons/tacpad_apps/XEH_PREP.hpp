@@ -19,19 +19,29 @@ PREP(panelHide);
 PREP(panelTic);
 PREP(ticSend);
 
-// Tile contents, in one place so the band has one source
+// Tile contents, in one place so the band has one source, and the band's
+// order of them, shared with the settings
 PREP(tileData);
+// ...and a tile's live words and colours, written in place on refresh (R8)
+PREP(tileLive);
+PREP(tileOrder);
+// ...and the device arrows' page turn (user, 2026-10-31)
+PREP(tilePageStep);
 
 // Full-size apps
 PREP(appComms);
 PREP(appHack);
 PREP(appIntel);
 PREP(appScanner);
+PREP(scannerLive);
 PREP(appTimer);
+PREP(timerLive);
+PREP(timerClock);
 PREP(timerState);
 PREP(timerSet);
 PREP(alarmAtDelay);
 PREP(appSettings);
+PREP(appMenu);
 PREP(appSquad);
 PREP(appSupport);
 PREP(appWeather);
@@ -54,6 +64,10 @@ PREP(supportMapLive);
 PREP(supportPointVars);
 PREP(supportPointSet);
 PREP(supportRequestParams);
+// CONFIRM TASKING's send, and the danger-close question asked before it
+// (user, 2026-10-30: a popup with a yes or no).
+PREP(supportConfirm);
+PREP(supportDangerClose);
 
 // RADIO / DRONES / HACK boards (docs/DESIGN_TABLET_APPS.md) - the shared panel
 // vocabulary, then each board's pages and readers.
@@ -76,6 +90,10 @@ PREP(appRadioSounds);
 PREP(appRadioCalls);
 PREP(appRadioContacts);
 PREP(appRadioLive);
+// the call's picture (user, 2026-10-28: a camera on the caller, flips to his view)
+PREP(callFeed);
+PREP(callFeedUnit);
+PREP(callCamFlip);
 PREP(appRadioManage);
 // the RTO's nets on MANAGE (user, 2026-10-22: "allow rtos to add custom channels")
 PREP(radioCustom);
@@ -97,3 +115,15 @@ PREP(appHackList);
 PREP(appHackAction);
 PREP(appHackLog);
 PREP(appHackTrack);
+
+// The notices log, opened from settings, the MSG tile and the reader rail.
+PREP(openLog);
+// The player's live-tile layout: which tiles, in which slots.
+PREP(tileLayout);
+PREP(tileLayoutSet);
+// ...and every tile it can place, the providers' included (notes, 2026-10-30).
+PREP(tileChoices);
+// ARTY: the artillery team's calculator on ACE's solver, and its gun.
+PREP(appArty);
+PREP(artyGun);
+PREP(artySolve);

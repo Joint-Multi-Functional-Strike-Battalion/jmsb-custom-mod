@@ -21,7 +21,7 @@ _beacon addAction [
     "<t color='#ff5555'>Unbuild Patrol Base (recover kits)</t>",
     {
         params ["_target"];
-        [_target] remoteExec [QFUNC(serverUnbuild), 2];
+        [_target] remoteExecCall [QFUNC(serverUnbuild), SERVER_OWNER];
         ["Patrol Base", "Unbuilding...", [1, 0.8, 0.3, 1]] call EFUNC(notify,notify);
     },
     nil,

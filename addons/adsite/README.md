@@ -27,7 +27,12 @@ Site and the game ran at about 4 FPS. This version does not scan for anything. I
   watches the lead point, and after 1.5 s the vehicle's own weapon fires (`forceWeaponFire`): one missile, steered
   at the point with `setMissileTargetPos`, or a 12-round burst. The kill follows the Air Defenses PLUS pattern:
   when the interceptor's flight time runs out, the **intercept chance** is rolled. On a hit, the machine that fired
-  the threat deletes it and leaves a harmless blast in its place. On a miss, another unit may still try.
+  the threat deletes it and leaves a harmless blast in its place. On a miss, another unit may still try. The
+  server sends the fire order and the kill by `remoteExec` (`jmfsb_adsite_fnc_fire`, `jmfsb_adsite_fnc_kill`) and
+  each is taken only from the server (review S7); they were CBA events any client could raise. A fired round is
+  reported by `remoteExec` to `jmfsb_adsite_fnc_threat` (review R1: it was a CBA event any client could raise with
+  fake rounds); the server takes it only when the shooter belongs to the sending machine and the round leaves
+  within 150 m of him, and reads the shooter's side itself. The server's own rounds are a plain call.
 - **Targeting mode per vehicle**: Off / Random / Closest threat (default) / Highest threat (soonest impact). Players
   on a friendly side set it with the scroll action *Air defence: next targeting mode* or with ACE *Air Defence >
   Targeting*, and mute the vehicle's alarm the same way.
@@ -87,7 +92,7 @@ An air defence Site: sync the AA guns, CIWS and SAM launchers that make it. They
 
 | Setting | Type | Name |
 |---|---|---|
-| `jmfsb_adsite_1st Joint Multi-Functional Strike Battalion` | Air Defence"]
+| `jmfsb_adsite_JMSB - Vehicles & Defence` | Air Defence"]
 
 [
     QGVAR(enabled) | CHECKBOX |

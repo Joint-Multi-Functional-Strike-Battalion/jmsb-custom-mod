@@ -6,10 +6,17 @@
  *
  * A SCRIPT, NOT A PREP'D FUNCTION, and deliberately - the same shape as
  * XEH_multiplayerDisplay beside it. The config handler runs inside
- * "with uiNamespace do", so a FUNC() there is a variable lookup in a namespace
- * the functions are not in; COMPILE_SCRIPT compiles this file by path and asks
- * nothing of any namespace. Nothing in here calls out to a FUNC for the same
- * reason.
+ * "with uiNamespace do"; COMPILE_SCRIPT compiles this file by path and asks
+ * nothing of any namespace. A PREP'd function IS reachable here all the same:
+ * CBA_fnc_compileFunction sets every function in uiNamespace as well as
+ * missionNamespace (cba_xeh fnc_compileFunction.sqf, read 2026-10-31), and
+ * preStart has run before this display draws - which is how the holiday
+ * crest asks jmfsb_loading below.
+ *
+ * THE CREST (user, 2026-10-31: "and the menu page"): the picture above the
+ * buttons is the holiday's in its window - the mission loading screen's
+ * Holidays table, EFUNC(loading,holiday) - and the config's unit crest
+ * otherwise.
  *
  * WHAT THIS REPLACED. Three buttons in RscDisplayMain.hpp, each with its name in
  * a text property and its whole connection in a config string:
@@ -41,6 +48,12 @@
 params ["_display"];
 
 TRACE_1("Main menu display",_display);
+
+private _holiday = [] call EFUNC(loading,holiday);
+TRACE_1("Main menu crest",configName _holiday);
+if (!isNull _holiday) then {
+    (_display displayCtrl IDC_MAINMENU_LOGO) ctrlSetText getText (_holiday >> "logo");
+};
 
 // #C2A878, the unit's tan (user, 2026-10-08: the buttons match the unit's colours)
 #define JMFSB_TAN [ARR_4(0.761,0.659,0.471,1)]

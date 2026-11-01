@@ -5,8 +5,7 @@ Function: jmfsb_pac_fnc_radioApply
 Description:
     Writes a radio plan - the structure's "radio" section, the shape
     config_radio.hpp used to set by hand - into the jmfsbFR_radio_*
-    globals this machine's readers use, and re-programs the ACRE presets
-    when the plan actually changed under them.
+    globals this machine's readers use.
 
     THREE MOMENTS. This addon's preInit, with an empty plan and
     onlyMissing = true: every global the mod reads exists from then on
@@ -19,14 +18,10 @@ Description:
 
     NETS. The plan's nets (FUNC(netPlan)) are made in RF on the server
     whenever the plan changed (FUNC(netPlanSync)); nothing is tuned - voice
-    is game VoIP and the plan names nets, not frequencies.
-
-    RE-PROGRAMMING (ACRE only). gear's setupRadios wrote the ACRE presets from the
-    globals at postInit, on every machine; a plan that arrives after that
-    would leave the presets stale, so when a channel list changed and a
-    plan is present the presets are written again. A radio already in
-    somebody's hands keeps what it was issued with until it is re-tuned -
-    which taking a slot does.
+    is game VoIP and the plan names nets, not frequencies. The plan's
+    TFAR / ACRE fields (frequencies, channel labels) are still written to
+    their globals for the website's editors, but nothing in game programs a
+    TFAR or ACRE radio from them any more (DEC1, 2026-10-31).
 
 Parameters:
     0: The plan {key -> value} <HASHMAP> (optional, default empty)
@@ -52,15 +47,6 @@ private _changed = false;
         _changed = true;
     };
 } forEach ([] call FUNC(radioKeys));
-
-private _hasPlan = (_radio getOrDefault ["srChannels", []]) isNotEqualTo []
-    || {(_radio getOrDefault ["mrChannels", []]) isNotEqualTo []}
-    || {(_radio getOrDefault ["tfarNets", []]) isNotEqualTo []};
-
-if (_changed && _hasPlan && {!isNil "jmfsb_gear_fnc_setupRadios"} && {!isNil "jmfsb_Settings_enableRadios"}) then {
-    call jmfsb_gear_fnc_setupRadios;
-    INFO("radio plan from the structure applied - presets re-programmed");
-};
 
 if (_changed && isServer) then {[] call FUNC(netPlanSync)};
 

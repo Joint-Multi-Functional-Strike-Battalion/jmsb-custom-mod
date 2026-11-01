@@ -42,6 +42,6 @@ if ((_units findIf {([_x, NET_DATA] call FUNC(linkQuality)) > 0}) < 0) exitWith 
 
 GVAR(callSeq) = GVAR(callSeq) + 1;
 private _id = format ["%1_%2", getPlayerUID player, GVAR(callSeq)];
-[QGVAR(srvCall), [_id, player, _units, _priority]] call CBA_fnc_serverEvent;
+[_id, player, _units, _priority] remoteExecCall [QFUNC(srvCall), SERVER_OWNER];
 ["dialTone", ""] call FUNC(playCue);
 _id

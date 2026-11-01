@@ -70,7 +70,7 @@ _missile setPosASL _from;
 _missile setVectorDirAndUp [[0, 0, 1], [0, 1, 0]];
 _missile setVelocity [0, 0, CM_BOOST_SPEED];
 
-[QGVAR(say), [_logic, "missile away", "normal"]] call CBA_fnc_globalEvent;
+[_logic, "missile away", "normal"] call FUNC(say);
 
 [{
     params ["_args", "_handle"];
@@ -108,7 +108,7 @@ _missile setVelocity [0, 0, CM_BOOST_SPEED];
     // SPLASH, once per salvo, from whichever missile gets there first.
     if (_d / _speed <= SPLASH_LEAD && {(_logic getVariable [QGVAR(splashed), -1]) isNotEqualTo _token}) then {
         _logic setVariable [QGVAR(splashed), _token];
-        [QGVAR(say), [_logic, format ["splash grid %1, over", mapGridPosition ASLToAGL _tgt], "high"]] call CBA_fnc_globalEvent;
+        [_logic, format ["splash grid %1, over", mapGridPosition ASLToAGL _tgt], "high"] call FUNC(say);
     };
 
     private _d2 = _p distance2D _tgt;

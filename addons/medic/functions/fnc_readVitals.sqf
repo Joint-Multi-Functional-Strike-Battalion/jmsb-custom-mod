@@ -130,6 +130,11 @@ private _bp = switch (true) do {
         private _nibp = _unit getVariable [ACMV_AED_NIBP, [0, 0]];
         [[[_nibp] call _fnc_nibp, "AED NIBP - LIVE", true], ["--", "AED NIBP - CYCLING", false]] select ((_nibp param [0, 0]) isEqualTo 0)
     };
+    // THE TABLET READS PRESSURE TOO (user, 2026-10-24: "bp resp rate and o2
+    // need to be in the medical app"), off ACE medical, like its HR and SpO2.
+    case (_alive && {!isNil {_unit getVariable ACEV_BLOOD_PRESSURE}}): {
+        [[_unit getVariable [ACEV_BLOOD_PRESSURE, [0, 0]]] call _fnc_pressure, "TABLET NIBP - LIVE", true]
+    };
     default {[1, _fnc_pressure] call _fnc_manual};
 };
 
@@ -156,6 +161,10 @@ private _rr = switch (true) do {
     case (_capno isEqualTo true): {
         private _rate = round (_unit getVariable [ACMV_AED_RR, 0]);
         [[str _rate, "CAPNOGRAPH - LIVE", true], ["--", "CAPNOGRAPH - NO SIGNAL", false]] select (_rate isEqualTo 0)
+    };
+    // And respiration, off ACM's own rate (user, 2026-10-24).
+    case (_alive && {!isNil {_unit getVariable ACMV_RESP_RATE}}): {
+        [str round (_unit getVariable [ACMV_RESP_RATE, 0]), "TABLET RESP - LIVE", true]
     };
     default {[2, _fnc_number] call _fnc_manual};
 };

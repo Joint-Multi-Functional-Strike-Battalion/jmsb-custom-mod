@@ -8,12 +8,18 @@
  * silence rather than an error, because "that thread exists but is not yours"
  * is itself information.
  *
- * Arguments (CBA event):
+ * Sent by remoteExecCall from the server (FUNC(srvRequestThread)), and taken
+ * only from the server (review S7).
+ *
+ * Arguments:
  * 0: Thread <ARRAY> - array form of a thread HashMap, [] when refused
  * 1: Messages <ARRAY> - array forms of message HashMaps, in seq order
  *
  * Return Value:
  * None
+ *
+ * Example:
+ * [_threadArray, _messageArrays] remoteExecCall ["jmfsb_messaging_fnc_cltThread", _unit]
  *
  * Public: No
  */
@@ -21,6 +27,7 @@
 params [["_threadArray", [], [[]]], ["_messageArrays", [], [[]]]];
 
 if (!hasInterface) exitWith {};
+if !([] call EFUNC(common,fromServer)) exitWith {};
 if (_threadArray isEqualTo []) exitWith {};
 
 private _thread = createHashMapFromArray _threadArray;
@@ -45,4 +52,4 @@ if (_callback isNotEqualTo {}) then {
     [_thread, _messages] call _callback;
 };
 
-[QGVAR(markRead), [player, _thread get "id"]] call CBA_fnc_serverEvent;
+[player, _threadId] remoteExecCall [QFUNC(srvMarkRead), SERVER_OWNER];

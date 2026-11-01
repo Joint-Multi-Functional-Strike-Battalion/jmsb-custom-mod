@@ -64,8 +64,11 @@ _at set [2, _alt];
 private _zones = [_side] call FUNC(zonesFor);
 private _home = _zones select {(_pos distance2D (_x # 1)) <= (_x # 2)};
 
+// The ground a rotor's ring is sized to, handed to the flight set-up below.
+private _orbit = UAS_ORBIT_RADIUS;
 if (_home isNotEqualTo []) then {
     (_home # 0) params ["", "_centre", "_radius"];
+    _orbit = _radius;
     private _try = 0;
     while {_try < 8 && {(_at distance2D _centre) > _radius}} do {
         _at = _pos getPos [200 + random (_radius max 200), random 360];
@@ -102,7 +105,7 @@ createVehicleCrew _veh;
 // aircraft and got nothing back - which is exactly what the four "would not
 // profile" warnings were.
 [{
-    params ["_veh", "_grp", "_side", "_pos"];
+    params ["_veh", "_grp", "_side", "_pos", ["_orbit", UAS_ORBIT_RADIUS, [0]]];
 
     if (isNull _veh) exitWith {};
 
@@ -255,12 +258,37 @@ createVehicleCrew _veh;
         // own - ON THE CREW'S GROUP. A waypoint on the empty group this
         // function used to make was an order nobody was in a position to
         // follow, so even a drone that kept its AI just sat there.
-        private _wp = _flyGrp addWaypoint [_pos, 300];
-        _wp setWaypointType "LOITER";
-        _wp setWaypointLoiterRadius 800;
-        _wp setWaypointBehaviour "SAFE";
-        _flyGrp setBehaviour "SAFE";
-        _veh flyInHeight (getPosATL _veh select 2);
+        //
+        // A PLANE LOITERS; A ROTOR FLIES A RING. A LOITER waypoint is a
+        // fixed-wing order: a quadcopter or helicopter UAV given one parks over
+        // the point and its autopilot hunts the hover - the "wobbling in place
+        // in the air" the user saw on 2026-10-24, on the AR-2 fallback and
+        // every rotor class. A rotor gets a ring of MOVE waypoints round the
+        // orbit ground, cycled, at a rotor's height - so it patrols the zone
+        // instead of hovering one spot.
+        if (_veh isKindOf "Plane") then {
+            private _wp = _flyGrp addWaypoint [_pos, 300];
+            _wp setWaypointType "LOITER";
+            _wp setWaypointLoiterRadius UAS_ORBIT_RADIUS;
+            _wp setWaypointBehaviour "SAFE";
+            _flyGrp setBehaviour "SAFE";
+            _veh flyInHeight (getPosATL _veh select 2);
+        } else {
+            private _ring = (_orbit * UAS_ROTOR_RING_FRAC) max UAS_ROTOR_RING_MIN;
+            private _alt = UAS_ROTOR_ALT_MIN + random (UAS_ROTOR_ALT_MAX - UAS_ROTOR_ALT_MIN);
+            private _start = random 360;
+            for "_k" from 0 to (UAS_ROTOR_RING_POINTS - 1) do {
+                private _wp = _flyGrp addWaypoint [_pos getPos [_ring, _start + _k * (360 / UAS_ROTOR_RING_POINTS)], 0];
+                _wp setWaypointType "MOVE";
+                _wp setWaypointCompletionRadius UAS_ROTOR_WP_RADIUS;
+                _wp setWaypointSpeed "NORMAL";
+                _wp setWaypointBehaviour "AWARE";
+            };
+            private _cycle = _flyGrp addWaypoint [_pos getPos [_ring, _start], 0];
+            _cycle setWaypointType "CYCLE";
+            _flyGrp setBehaviour "AWARE";
+            _veh flyInHeight _alt;
+        };
     };
 
     // NOTHING FOLLOWS. There is no profiled path any more: YOU CANNOT
@@ -269,6 +297,6 @@ createVehicleCrew _veh;
     // airframe in the air, which is why its own blacklist covers UAV crew
     // and why handing it one only ever got the aircraft deleted. Aircraft
     // are flown live, tracked by object, and bounded by the ceiling.
-}, [_veh, _grp, _side, _pos]] call CBA_fnc_execNextFrame;
+}, [_veh, _grp, _side, _pos, _orbit]] call CBA_fnc_execNextFrame;
 
 true

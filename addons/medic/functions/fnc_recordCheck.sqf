@@ -18,8 +18,8 @@
  *
  * NOT READ HERE. A remote patient's vitals on this machine are the last values
  * his owner synced, up to twenty seconds old - so the reading is taken on the
- * patient's machine, where they are exact, and published from there. See
- * FUNC(measureLocal).
+ * patient's machine, where they are exact, and published from there. The
+ * request goes through the server (FUNC(srvMeasure)), then FUNC(measureLocal).
  *
  * Arguments:
  * 0: Medic <OBJECT>
@@ -49,4 +49,7 @@ private _kind = switch (true) do {
 
 if (_kind isEqualTo "") exitWith {};
 
-[QGVAR(measure), [_patient, _kind, toLowerANSI _bodyPart, name _medic], _patient] call CBA_fnc_targetEvent;
+// By the server, which names the medic itself and checks his reach, then
+// sends it to the patient's machine (review R1: the measure CBA event let any
+// client stamp a check with any medic's name on anyone).
+[_patient, _kind, toLowerANSI _bodyPart] remoteExecCall [QFUNC(srvMeasure), SERVER_OWNER];

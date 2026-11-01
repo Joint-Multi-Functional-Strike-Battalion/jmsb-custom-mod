@@ -49,7 +49,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_path", "pac_roster.csv", [""]]];
 
 if (!isServer) exitWith {0};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {0};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {0};
 
 private _red = [0.831, 0.267, 0.267, 1];
 private _green = [0.4, 0.702, 0.4, 1];

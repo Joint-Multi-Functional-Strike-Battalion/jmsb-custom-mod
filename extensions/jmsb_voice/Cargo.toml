@@ -1,0 +1,50 @@
+[package]
+name = "jmsb_voice"
+version = "0.1.0"
+edition = "2021"
+description = "JMSB voice: the Arma 3 extension that carries radio voice over LiveKit (docs/DESIGN_VOICE_LIVEKIT.md)"
+license = "MIT"
+publish = false
+
+[lib]
+name = "jmsb_voice"
+crate-type = ["cdylib", "rlib"]
+
+# "client" is the audio side: joining rooms, the microphone, the mixer. Without
+# it the extension only signs tokens - the Linux server build
+# (jmsb_voice_x64.so), which needs no audio libraries.
+[features]
+default = ["client"]
+client = ["dep:livekit", "dep:cpal", "dep:tokio", "dep:futures-util", "dep:windows"]
+
+[[bin]]
+name = "voicetest"
+required-features = ["client"]
+
+# The DLL's file properties (build.rs).
+[target.'cfg(windows)'.build-dependencies]
+winresource = "0.1"
+
+[dependencies]
+livekit = { version = "=0.9.5", default-features = false, features = ["native", "rustls-tls-native-roots"], optional = true }
+livekit-api = { version = "=0.9.0", default-features = false, features = ["access-token"] }
+arma-rs = "1.13"
+cpal = { version = "0.18", optional = true }
+tokio = { version = "1.51", features = ["rt-multi-thread", "macros", "sync", "time"], optional = true }
+futures-util = { version = "0.3", optional = true }
+# "std" for the file logger (set_boxed_logger)
+log = { version = "0.4", features = ["std"] }
+
+# Windows' default COMMUNICATIONS device - the headset, where the default
+# device is the monitor (user, 2026-10-31) - which cpal cannot ask for. The
+# same windows crate and features cpal 0.18 builds with, so nothing extra.
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", optional = true, features = [
+    "Win32_Foundation",
+    "Win32_Media_Audio",
+    "Win32_Devices_Properties",
+    "Win32_System_Com",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_System_Variant",
+    "Win32_UI_Shell_PropertiesSystem",
+] }

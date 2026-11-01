@@ -64,7 +64,7 @@ switch (_mode) do {
             _args set [10, _now];
             if ((_logic getVariable [QGVAR(status), ""]) isNotEqualTo STATUS_STATION) then {
                 _logic setVariable [QGVAR(status), STATUS_STATION, true];
-                [QGVAR(say), [_logic, format ["on station over %1, hunting", mapGridPosition _center], "high"]] call CBA_fnc_globalEvent;
+                [_logic, format ["on station over %1, hunting", mapGridPosition _center], "high"] call FUNC(say);
             };
         } else {
             if (_now > _until) then {
@@ -88,7 +88,7 @@ switch (_mode) do {
                 _args set [11, _found];
                 _args set [8, "dive"];
                 (driver _uav) disableAI "ALL";
-                [QGVAR(say), [_logic, format ["target acquired, %1 - diving", getText (configOf _found >> "displayName")], "normal"]] call CBA_fnc_globalEvent;
+                [_logic, format ["target acquired, %1 - diving", getText (configOf _found >> "displayName")], "normal"] call FUNC(say);
             };
         };
     };

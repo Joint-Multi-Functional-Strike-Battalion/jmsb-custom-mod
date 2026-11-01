@@ -22,13 +22,6 @@ class CfgVehicles {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};
         };
 
-        // Read by ACRE2 when a radio is connected. Inert without it.
-        class AcreComponents {
-            componentName = QGVAR(antenna);
-            mountedAntenna = "";
-            mastMount[] = {};
-        };
-
         class ACE_Actions {
             class ACE_MainActions {
                 selection = "interaction_point";
@@ -45,29 +38,8 @@ class CfgVehicles {
                     priority = 5;
                     icon = QPATHTOF(data\satcom_icon.paa);
                 };
-
-                // ACRE2's own connect/disconnect. Hidden entirely without ACRE,
-                // rather than shown and then failing on a nil function.
-                class GVAR(connect) {
-                    displayName = "Connect Radio";
-                    distance = 5;
-                    condition = QUOTE(call FUNC(hasAcre) && {!([ARR_2(_player,_target)] call acre_sys_gsa_fnc_isAntennaConnected)} && {[ARR_2(_player,_target)] call acre_sys_gsa_fnc_hasCompatibleRadios});
-                    statement = "true";
-                    insertChildren = QUOTE([ARR_2(_player,_target)] call acre_sys_gsa_fnc_connectChildrenActions);
-                    showDisabled = 0;
-                    exceptions[] = {};
-                    priority = 4;
-                };
-
-                class GVAR(disconnect) {
-                    displayName = "Disconnect Radio";
-                    distance = 5;
-                    condition = QUOTE(call FUNC(hasAcre) && {[ARR_2(_player,_target)] call acre_sys_gsa_fnc_isAntennaConnected});
-                    statement = QUOTE([ARR_2(_player,_target)] call acre_sys_gsa_fnc_disconnect);
-                    showDisabled = 0;
-                    exceptions[] = {};
-                    priority = 4;
-                };
+                // The ACRE2 Connect / Disconnect Radio actions were removed
+                // with ACRE (DEC1, 2026-10-31).
             };
         };
     };

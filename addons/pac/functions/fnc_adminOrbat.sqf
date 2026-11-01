@@ -126,7 +126,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_kind", "", [""]], ["_op", "", [""]], ["_key", "", [""]], ["_rec", createHashMap, [createHashMap]]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
     WARNING_2("adminOrbat refused: %1 is not an admin (%2)",name _caller,_kind);
     false
 };

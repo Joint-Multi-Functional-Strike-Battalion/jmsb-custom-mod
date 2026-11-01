@@ -22,3 +22,9 @@
 
 // How far from the module vehicles are looked for when none are synchronised.
 #define BOARD_VEH_SEARCH    150
+
+// How far the presser may be from the thing he pressed, checked again on the
+// server (review R1): ACE's reach plus a vehicle's bulk when the button is one.
+#define BOARD_PRESS_RANGE   15
+
+#define SERVER_OWNER        2

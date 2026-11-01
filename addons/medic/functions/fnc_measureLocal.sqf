@@ -3,7 +3,8 @@
  * Author: JMSB
  * Takes a hand reading on the machine where the patient is local, and
  * publishes it on him - value, mission time and who took it - so every medic
- * in the section sees the same "last measured" line.
+ * in the section sees the same "last measured" line. Sent by the server
+ * (FUNC(srvMeasure)) by remoteExec and taken only from it (review R1).
  *
  * A LIMB UNDER A TOURNIQUET HAS NO PULSE. A check taken on a tourniqueted arm
  * reads zero, the way ACE's own pulse and pressure checks do.
@@ -26,6 +27,9 @@
 params [["_patient", objNull, [objNull]], ["_kind", "", [""]], ["_bodyPart", "", [""]], ["_by", "", [""]]];
 
 if (isNull _patient || {!local _patient}) exitWith {};
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("measureLocal: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
 
 private _slot = CHECK_KINDS find _kind;
 if (_slot < 0) exitWith {};

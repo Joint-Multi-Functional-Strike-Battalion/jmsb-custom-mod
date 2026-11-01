@@ -14,7 +14,7 @@ Description:
     FUNC(sessionEnd) writes leftAt when they go. A server that dies mid-op
     leaves leftAt empty and lastSeenAt within a minute of the truth, which is
     what the heartbeat is for; the next mission start closes such rows at
-    lastSeenAt (XEH_postInit).
+    lastSeenAt (FUNC(boot), once the store is loaded).
 
     windowId is the op window open when they joined, or "" - attendance is
     answered per window, and a join is stamped with the one it fell in so the

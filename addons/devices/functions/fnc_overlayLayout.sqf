@@ -42,7 +42,7 @@ if (!isClass _cfg) exitWith {
 (getArray (_cfg >> "body")) params ["_bx", "_by", "_bw", "_bh"];
 (getArray (_cfg >> "screen")) params ["_sx", "_sy", "_sw", "_sh"];
 
-private _phone = _device isEqualTo "phone";
+private _phone = _device in WALK_BOTTOM_DEVICES;
 private _fill = [GVAR(sideFill), GVAR(phoneFill)] select _phone;
 
 // The body's height in pixels, and the canvas side that gives it - capped by

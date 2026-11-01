@@ -5,7 +5,9 @@
  * busy (in another call, or no free slot), no answer, declined, bumped by a
  * FLASH call, dropped with no route, or refused. Notified, the busy tone, and
  * jmfsb_voice_callState [callId, reason]. No route, busy and no answer offer
- * CALL BACK (jmfsb_voice_fnc_callBack).
+ * CALL BACK (jmfsb_voice_fnc_callBack). Sent by remoteExec from the server's
+ * srv* functions and taken only from the server or this machine
+ * (jmfsb_common_fnc_fromServer).
  *
  * Arguments:
  * 0: Call id <STRING>
@@ -23,6 +25,7 @@
 
 params [["_callId", "", [""]], ["_reason", "", [""]], ["_units", [], [[]]]];
 
+if (!hasInterface || {!([] call EFUNC(common,fromServer))}) exitWith {};
 private _names = ((_units select {!isNull _x}) apply {name _x}) joinString ", ";
 private _text = switch (_reason) do {
     case REASON_NO_ROUTE: {format ["No route on DATA to %1. CALL BACK available.", _names]};

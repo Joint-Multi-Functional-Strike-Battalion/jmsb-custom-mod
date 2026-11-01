@@ -40,7 +40,7 @@ _logic setVariable [QGVAR(readyAt), CBA_missionTime + _cooldown, true];
 [_logic] call FUNC(unmark);
 
 if (_said isNotEqualTo "") then {
-    [QGVAR(say), [_logic, _said, "normal"]] call CBA_fnc_globalEvent;
+    [_logic, _said, "normal"] call FUNC(say);
 };
 
 if (_cooldown > 0 && {([_logic] call FUNC(ordnance)) isNotEqualTo []}) then {

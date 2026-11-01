@@ -25,6 +25,39 @@
 #define TILE_W 0.082
 #define TILE_H 0.078
 #define TILE_GAP 0.005
+// THE TILE QUALIFIERS (notes, 2026-10-30): the JAM tile names the domain hit
+// - the jamming addon's three, by the words the tile shows; the MSG tile the
+// highest unread precedence, these being the raised ones under FLASH.
+#define JAM_DOMAINS [["DATA", "data"], ["RADIO", "radio"], ["GPS", "gps"]]
+#define MSG_RAISED_PRIORITIES ["PRIORITY", "MEDIUM"]
+
+// TILE STATE COLOURS (user, 2026-10-30, the TAC//APP mockup: "I like the
+// colours around the tiles based on status"): the outline, a tint over the
+// ground, the value and the qualifier's badge all in the state's colour -
+// red alert, amber warn, green ok. Fixed, never themed, like the swatches
+// below. The tint's and the badge's alpha.
+#define TILE_RED [1, 0.337, 0.235, 1]
+#define TILE_AMBER [0.85, 0.65, 0.15, 1]
+#define TILE_GREEN [0.25, 0.75, 0.45, 1]
+#define TILE_TINT_ALPHA 0.12
+#define TILE_BADGE_ALPHA 0.9
+// The band's dim ink: stale text and a dead page arrow.
+#define TILE_DIM_ALPHA 0.45
+
+// THE LIVE APPS' QUIETER INK (FUNC(appTimer), FUNC(appScanner)): the ink at
+// these alphas for labels and for an empty line. An alarm's countdown goes
+// red inside TIMER_RED_SECS and amber (TILE_AMBER) inside TIMER_AMBER_SECS.
+// The scanner calls jamming CONTESTED from SCANNER_JAM_CONTESTED up and shows
+// the newest SCANNER_ALERTS entries of the alert log.
+#define LIVE_MUTE_ALPHA 0.62
+#define LIVE_DIM_ALPHA 0.42
+#define TIMER_RED_SECS 30
+#define TIMER_AMBER_SECS 120
+#define SCANNER_JAM_CONTESTED 0.75
+#define SCANNER_ALERTS 4
+
+// The server's machine, for remoteExec to it (review S7).
+#define SERVER_OWNER 2
 
 // Squad health swatches. Hue IS the data here and nowhere else in the suite -
 // it is the one place allowed to break the near-mono rule, and only because
@@ -56,6 +89,14 @@
 #define ICON_WX_FOG QPATHTOF(data\weather\fog.paa)
 #define ICON_WX_WIND QPATHTOF(data\weather\wind.paa)
 
+// THE WEATHER PAGE'S VALUE COLUMN (user, 2026-10-30: "move this data to the
+// left, hard to read across screen like this"): where each row's value starts,
+// as a share of the row's width, left-aligned there. The labels are tracked
+// uppercase - C L O U D  C O V E R, F I R S T  L I G H T - so the column sits
+// at the top of the 0.35-0.40 band asked for, to keep the longest of them on
+// one line at the larger text sizes.
+#define WX_VALUE_AT 0.4
+
 // The three app glyphs. Base-game files rather than shipped ones - they are
 // single-colour marks the suite tints like any other, so there is nothing to be
 // gained by carrying a copy of them.
@@ -74,11 +115,88 @@
 #define ROSTER_MAX 16
 #define TRAFFIC_MAX 12
 
+// FUNC(row)'s value column, as a share of the row's width. ROW_VALUE_RIGHT is
+// no column: the value right-aligned at the row's far edge, as every list in
+// the suite has always drawn it. A caller that sets a column gets the value
+// left-aligned from there, a short reach past the label instead of a screen
+// away from it.
+#define ROW_VALUE_RIGHT 0
+
 // THE SETTINGS APP'S ROWS (FUNC(appSettings)): how much of the pane a stepper's
 // value takes - wide enough for a list's choice by name, not only a number -
 // and the word a row the server or mission forces carries instead of controls.
 #define SETTINGS_STEP_VALUE_W 0.3
 #define SETTINGS_LOCKED "LOCKED"
+// The settings rows read larger than the rest of the suite (user, 2026-10-24:
+// "in settings larger fonts"): text and row height both scaled.
+#define SETTINGS_TEXT_K 1.2
+#define SETTINGS_ROW_K 1.25
+#define SETTINGS_TEXT (TEXT_TITLE * SETTINGS_TEXT_K)
+// Notification time on screen (jmfsb_notify_duration), stepped from SETTINGS >
+// NETS & ALERTS within the notify addon's own slider range.
+#define NOTIFY_DURATION_MIN 2
+#define NOTIFY_DURATION_MAX 30
+// LIVE TILES, per player (user, 2026-10-24: "turn on and off live tiles in
+// settings and assign a slot"): every tile the band can carry, in its default
+// order, and the setting that holds "id:slot" / "id:off" pairs. A tile with no
+// entry is AUTO - shown, in default order after the placed ones.
+#define TILE_CHOICES [["vehicle", "VEHICLE"], ["drones", "DRONES"], ["jam", "JAM"], ["weather", "WEATHER"], ["timer", "TIMER"], ["radio", "RADIO"], ["msg", "MSG"], ["arty", "ARTY"], ["medic", "MEDIC"], ["hack", "HACK"], ["intel", "INTEL"], ["support", "SUPPORT"], ["pac", "PAC"]]
+
+// ARTY - the artillery team's calculator and tile (user, 2026-10-25). ACE's
+// mil is 6400 to the circle (its DEGTOMILS); the standard atmosphere and air
+// friction are ACE's defaults (ace_artillerytables). A gun is the piece he is
+// in or the nearest within the player's gun range setting; a radar fix younger
+// than ARTY_FIX_HOT seconds puts the tile on alert. MRSI offers up to
+// ARTY_MRSI_MAX solutions; the marker list holds the nearest ARTY_MARKERS_MAX.
+#define ARTY_MILS_PER_DEG 17.7777778
+#define ARTY_STD_TEMP 15
+#define ARTY_STD_DENSITY 1.225
+#define ARTY_ACE_DEFAULT_AF -0.00006
+#define ARTY_G 9.8066
+#define ARTY_FIX_HOT 120
+#define ARTY_MRSI_MAX 3
+#define ARTY_MARKERS_MAX 20
+#define ARTY_APP_W 0.62
+#define ARTY_APP_H 0.66
+#define ARTY_ROW_K 1.2
+// TILES PER PAGE OF THE BAND (user, 2026-10-24: "tile pos 1-10"; 2026-10-30:
+// "add a 11th through 16th slot that you get to using the left right arrows
+// ... increase the slot count with every new app"): every tile has a slot,
+// the band shows this many a row, and arrows at its ends turn the page.
+#define TILE_SLOTS 10
+// The page arrows: a column this wide at each end of the band, their glyphs.
+#define TILE_ARROW_PX 14
+#define TILE_ARROW_LEFT "<"
+#define TILE_ARROW_RIGHT ">"
+// The qualifier's badge (user, 2026-10-30: "scrunched up text"): its word is
+// CHIP_SIZE_K of the tile's small text, sized at the monospace's own advance
+// (wider than the chips' tracked estimate, so it never wraps), and never more
+// than this share of the tile - the kicker takes what is left.
+// (0.66 still wrapped a two-letter badge - "R / F", "U / P" - in the first
+// run, 2026-10-31: the structured text keeps a margin each side)
+#define TILE_BADGE_GLYPH 0.8
+#define TILE_BADGE_MAX_K 0.5
+// The SUPPORT tile's qualifier names the first type in this many letters, so
+// "TRANSPORT 1" fits the badge as "TRANS 1".
+#define SUP_QUALIFIER_CHARS 5
+// THE MENU APP (user, 2026-10-30: "add a menu icon to get to each app and
+// settings"; the tablet bar's MENU): every app the tiles know and SETTINGS,
+// one row each. Its frame, in safe-zone fractions.
+#define MENU_APP "menu"
+#define MENU_APP_W 0.3
+#define MENU_APP_H_MAX 0.8
+#define MENU_SETTINGS_APP "settings"
+#define MENU_SETTINGS_NAME "SETTINGS"
+// The settings dropdown: its share of the row, and its type against the row height.
+#define SETTINGS_COMBO_W 0.32
+#define SETTINGS_COMBO_FONT_K 0.62
+#define TILE_SLOT_AUTO -1
+#define TILE_SLOT_OFF 0
+#define TILE_SLOT_DEFAULT_BASE 100
+// The PAC tile's kicker and detail read larger (user, 2026-10-24).
+#define TILE_TEXT_K_PAC 1.35
+// Unread traffic of these priorities makes the MSG tile an alert.
+#define MSG_URGENT_PRIORITIES ["FLASH", "IMMEDIATE", "HIGH"]
 
 // THE THREE POINTS A SUPPORT REQUEST CAN CARRY, and the variables each lives
 // in. Written once, as a macro, because four separate places fill them - the
@@ -183,7 +301,19 @@
 
 // The tab row and a checklist line, in rows.
 #define SUP_TABS_K 1.3
+// TAC//SUPPORT reads larger than the rest of the suite (user, 2026-10-24:
+// "support needs bigger fonts"): the cells' and steppers' text scaled, and
+// each section opened by a solid band (fnc_supportGroup) rather than a rule.
+#define SUP_TEXT_K 1.15
 #define SUP_CHECK_K 0.9
+
+// DANGER CLOSE (user, 2026-10-30): the task types that put ordnance on a
+// point. CONFIRM on one of them waits for YES / NO when a friendly is inside
+// the danger-close setting's distance of the target; this many are named,
+// on this many checklist-height rows.
+#define SUP_DANGER_TYPES ["arty", "cas"]
+#define SUP_DANGER_NAMES_MAX 4
+#define SUP_DANGER_ROWS 2
 
 // What the request's one point is called when its task does not say
 // (task declaration field 6, addons/support/README.md).
@@ -227,6 +357,9 @@
 #define RADIO_REFRESH 1
 // The voice API's ear words, in the order the L / B / R segments are drawn.
 #define RADIO_EARS ["L", "B", "R"]
+// The handheld's battery on NETS (user, 2026-10-30): read in the accent and
+// the swap button in the alarm style at this share of full and under.
+#define RADIO_BATTERY_LOW 0.2
 // A call's states (jmfsb_voice_fnc_calls) and priorities.
 #define CALL_RINGING "ringing"
 #define CALL_LIVE "live"
@@ -239,6 +372,29 @@
 // "ended" and the failure reasons), and how long the line stays up (s).
 #define CALL_STATE_WORDS [["warning", "PRIORITY WARNING - A FLASH CALL IS TAKING THIS SLOT"], ["ended", "CALL ENDED"], ["noRoute", "NO ROUTE - CALL BACK IS AVAILABLE"], ["busy", "BUSY - CALL BACK IS AVAILABLE"], ["noAnswer", "NO ANSWER - CALL BACK IS AVAILABLE"], ["declined", "DECLINED"], ["bumped", "BUMPED BY A FLASH CALL"], ["dropped", "DROPPED - NO ROUTE"], ["refused", "NOBODY IN REACH ON DATA"], ["notOwner", "ONLY THE CALL'S OWNER CAN ADD PEOPLE"]]
 #define CALL_STATE_HOLD 8
+// THE ECHO TEST's states, as jmfsb_adapter_livekit_fnc_echoState gives them
+// ("" no voice extension: no row on CONTACTS).
+#define ECHO_IDLE "idle"
+#define ECHO_JOINING "joining"
+#define ECHO_LIVE "live"
+
+// THE CALL'S PICTURE (FUNC(callFeed)): no video is sent - each viewer's machine
+// renders a camera on the other man. The sender picks what his camera sends
+// (public on him as GVAR(callCam)): FACE, in front of his face looking back
+// at him, or VIEW, at his eyes looking where he looks. The surface name and
+// resolution, the default distances from his eyes (m) and how far either way
+// the settings move them, the field of view of each, how
+// often who is shown and what he sends are looked at again (s).
+#define CALL_FEED_RTT QGVAR(callFeed)
+#define CALL_FEED_RES 512
+#define CALL_CAM_FACE "face"
+#define CALL_CAM_VIEW "view"
+#define CALL_CAM_FACE_DIST 0.8
+#define CALL_CAM_VIEW_AHEAD 0.15
+#define CALL_CAM_NUDGE 0.2
+#define CALL_CAM_FACE_FOV 0.5
+#define CALL_CAM_VIEW_FOV 0.75
+#define CALL_FEED_TICK 0.25
 // VON's channel ids (DESIGN_VOICE.md, "Channels"): the fixed ones by name, and
 // custom channel n is id CUSTOM_BASE + n - 1. C2 and A2G hold the first two
 // custom channels for good; CALL 1-8 the other eight.
@@ -250,9 +406,9 @@
 #define VOICE_KIND_DIRECT "direct"
 #define VOICE_KIND_CALL "call"
 #define VOICE_KIND_TEAM "team"
-// jmfsb_voice_system: "von" is our game voice; "tfar" / "acre" a radio mod
-// whose nets the voice API serves (calls are game voice only).
-#define VOICE_SYSTEM_VON "von"
+// jmfsb_voice_system "none" (jmfsb_voice_active false): the server's voice
+// cannot run on this machine - every RADIO tab says this instead.
+#define TEXT_VOICE_UNAVAILABLE "VOICE UNAVAILABLE"
 // The group adds (DESIGN_VOICE.md, "Add people"): [id, button, contact tag];
 // "team" is the player's own group and carries no tag.
 #define RADIO_GROUPS [["team", "+ MY TEAM", ""], ["sl", "+ SQUAD LEADERS", "SL"], ["rto", "+ RTOs", "RTO"], ["medic", "+ MEDICS", "MEDIC"], ["hq", "+ HQ", "HQ"]]
@@ -307,7 +463,12 @@
 // beep volume, pitch per net, static by quality): [label, the voice addon's
 // CBA setting, "bool" or "slider"]. A setting the voice addon does not declare
 // reads NOT BUILT rather than a switch that switches nothing.
-#define RADIO_SOUNDS [["RADIO BEEPS", "jmfsb_voice_radioBeeps", "bool"], ["CALL BEEPS", "jmfsb_voice_callBeeps", "bool"], ["BEEP VOLUME", "jmfsb_voice_beepVolume", "slider"], ["PITCH PER NET", "jmfsb_voice_pitchPerNet", "bool"], ["STATIC BY QUALITY", "jmfsb_voice_staticByQuality", "bool"]]
+// The VON adapter's own rows first (user, 2026-10-24: a volume, voice activation):
+// a slider's optional fourth field is its top (the beep volume's is RADIO_BEEP_MAX).
+#define RADIO_SOUNDS [["VOICE VOLUME", "jmfsb_adapter_von_masterVolume", "slider", 1], ["VOICE ACTIVATION", "jmfsb_adapter_von_vad", "bool"], ["VA ON CALLS", "jmfsb_adapter_von_vaCalls", "bool"], ["RADIO BEEPS", "jmfsb_voice_radioBeeps", "bool"], ["CALL BEEPS", "jmfsb_voice_callBeeps", "bool"], ["BEEP VOLUME", "jmfsb_voice_beepVolume", "slider"], ["PITCH PER NET", "jmfsb_voice_pitchPerNet", "bool"], ["STATIC BY QUALITY", "jmfsb_voice_staticByQuality", "bool"]]
+// The share of the NETS right column the SOUNDS panel takes, now that it has
+// eight rows over the KEYS panel.
+#define RADIO_SOUNDS_SPLIT 0.66
 #define RADIO_BEEP_STEP 0.1
 // The voice addon's beep volume runs 0 to 2 (its MAX_BEEP_VOLUME).
 #define RADIO_BEEP_MAX 2
@@ -321,9 +482,16 @@
     ["open / close tablet", [QEGVAR(devices,tabletKey)]], \
     ["RADIO app on the phone or side device", [QEGVAR(devices,radioAppKey)]], \
     ["previous / next tab (small devices)", [QEGVAR(devices,tabPrev), QEGVAR(devices,tabNext)]], \
-    ["TROOPS IN CONTACT", [QGVAR(ticKey)]] ]
+    ["TROOPS IN CONTACT - answers a ringing call first", [QGVAR(ticKey)]], \
+    ["answer / hang up call  -  decline", [QEGVAR(devices,answerKey), QEGVAR(devices,declineKey)]], \
+    ["voice activation on / off", [QEGVAR(devices,vadKey)]], \
+    ["PTT 1 (active net) 2 3 4 (hold) / talk local (hold)", [QEGVAR(adapter_von,ptt_1), QEGVAR(adapter_von,ptt_2), QEGVAR(adapter_von,ptt_3), QEGVAR(adapter_von,ptt_4), QEGVAR(adapter_von,talkLocal)]], \
+    ["open channel NET / LOCAL (voice activation)", [QEGVAR(adapter_von,openToggle)]], \
+    ["radio voice volume - / +", [QEGVAR(adapter_von,volumeDown), QEGVAR(adapter_von,volumeUp)]] ]
 // The walking view's F-keys (jmfsb_devices' button settings, these by default).
-#define RADIO_WALK_KEYS [["F1", "accept a call"], ["F2", "ear for the active net; quick add during a call"], ["F3", "mute the active net"], ["F4", "decline or hang up"]]
+// The numpad standard (user, 2026-10-24): answering is numpad 6, so the F-keys
+// no longer repeat it.
+#define RADIO_WALK_KEYS [["F1", "ear for the active net; quick add during a call"], ["F2", "mute the active net"], ["F3", "map zoom in"], ["F4", "map zoom out"]]
 // A text box: the board's search, which a redraw must not pull out from under
 // the fingers typing in it.
 #ifndef CT_EDIT

@@ -9,7 +9,9 @@ The two-argument INFO/WARNING/ERROR/LOG the Roomba scripts were written against,
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_diag`
+- `jmfsb_notify`
 - `cba_xeh` _(external)_
 
 Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking the load order when something above is absent.

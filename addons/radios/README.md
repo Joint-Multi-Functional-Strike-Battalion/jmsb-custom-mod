@@ -19,18 +19,11 @@ database and the arsenals carry.
 **No radio dialog.** The radio UI is the device's RADIO app. The MPU5 dialog
 picture (`data/mpu5_dialog_ca.paa`) is still generated and shipped for it.
 
-**Under TFAR they are TFAR sets** (2026-10-20, "keep the ACRE and TFAR"). This
-addon stays plain so VON needs no radio mod; the optional patch
-`jmfsb_compatibility_tfar_radios` (addons/compatibility/tfar_radios, loaded
-only with `tfar_core`, `tfar_handhelds` and `tfar_backpacks`) re-parents
-`jmfsb_mpu5` and `jmfsb_tw950` on `TFAR_anprc152` with `tf_prototype`,
-`tf_parent`, TFAR's numbered instances (`_1` to `_1000`, TFAR's own
-`TF_RADIO_IDS`) and the MPU5's own open-radio screen
-(`jmfsb_mpu5_radio_dialog`, on `data/mpu5_dialog_ca.paa`), and gives the radio
-bags - `jmfsb_mpu5_lr` through our radio pack base - their TFAR long range
-properties. Under TFAR a handheld wears the PRC-152's model (inherited); the
-generated MPU5 mesh is still not worn. Class names and `jmfsb_rf_profile` are
-unchanged.
+**No TFAR sets any more.** The optional TFAR patch
+(`jmfsb_compatibility_tfar_radios`) was removed on 2026-10-31 (DEC1): the
+voice is LiveKit, with game VON as the server's fallback. The MPU5 manpack
+(`jmfsb_mpu5_lr`) is kept as a bag so loadouts that carry it still load; no
+voice system reads anything off the back.
 
 **On the ground** a dropped handheld wears `ItemRadio`'s own model (inherited):
 the generated MPU5 mesh was reported invisible on the ground and is not worn
@@ -42,7 +35,10 @@ until it has been looked at in game.
 3DMA assets at `Radio_MPU5_v01/` and `Radio_TrellisWare_v01/` in the repo
 root. **Those sources are gitignored and never committed**; the derivatives
 here are what ships. One table in the script says which meshes of which OBJ
-make which radio; adding a radio is one row.
+make which radio; adding a radio is one row. `rdc.p3d` is that row for the
+MPU5 asset's tablet mesh - the RDC, `jmfsb_devices`' chest screen - wearing
+the MPU5's textures; like the MPU5's own mesh it is not worn by its item
+until it has been seen in game.
 
 Per radio `<id>`:
 
@@ -83,7 +79,8 @@ release with this addon until it is.
 
 - `jmfsb_main`
 - `jmfsb_backpack`
+- `cba_common` _(external)_
 
 ## Ships
 
-3 unit classes, 2 weapon/item classes.
+3 unit classes, 3 weapon/item classes.

@@ -4,6 +4,8 @@ PREP(loop);
 PREP(draw);
 PREP(drawMembers);
 PREP(memberNumber);
+// The friendlies the picture tracks, for the danger-close check and Point Man
+PREP(friendlies);
 PREP(remove);
 
 PREP(getGroupPosition);

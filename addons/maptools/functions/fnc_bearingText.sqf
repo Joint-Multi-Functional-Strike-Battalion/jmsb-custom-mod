@@ -13,7 +13,7 @@
  * Example:
  * [45] call jmfsb_maptools_fnc_bearingText
  *
- * Public: No
+ * Public: Yes
  */
 
 params [["_bearing", 0, [0]]];

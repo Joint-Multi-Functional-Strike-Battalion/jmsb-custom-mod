@@ -8,7 +8,9 @@ class CfgPatches {
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_diag",
+            "jmfsb_notify",
             "cba_xeh"
         };
         skipWhenMissingDependencies = 1;

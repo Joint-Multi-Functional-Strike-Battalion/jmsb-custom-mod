@@ -60,7 +60,7 @@ private _key = format [QGVAR(taken_%1), _side];
 private _taken = _device getVariable [_key, 0];
 
 if (_taken >= count _entries) exitWith {
-    [QGVAR(pickResult), ["This terminal has nothing further on it.", _side]] call CBA_fnc_globalEvent;
+    ["This terminal has nothing further on it.", _side] remoteExecCall [QFUNC(pickResult), 0];
     false
 };
 
@@ -93,7 +93,7 @@ private _left = (count _entries) - (_taken + count _slice);
 
 INFO_3("package '%1': %2 entries to %3",_package,count _slice,_side);
 
-[QGVAR(pickResult), [
+[
     format [
         "%1 - %2 file%3 recovered.%4",
         _label,
@@ -102,6 +102,6 @@ INFO_3("package '%1': %2 entries to %3",_package,count _slice,_side);
         [" Nothing further on this terminal.", ""] select (_left > 0)
     ],
     _side
-]] call CBA_fnc_globalEvent;
+] remoteExecCall [QFUNC(pickResult), 0];
 
 true

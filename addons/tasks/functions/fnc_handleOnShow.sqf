@@ -36,9 +36,12 @@ _taskCreateArray call BIS_fnc_taskCreate;
 // Call onShowCode
 call compile (_taskNamespace getVariable ["onShowCode", ""]);
 
-// Raise onShowEvents
+// Raise onShowEvents: to the tasks waiting on them (FUNC(raise), server-side -
+// review R1), and as a local CBA event for mission scripts that listen on this
+// server.
 {
-    [_x] call CBA_fnc_serverEvent;
+    [_x] call FUNC(raise);
+    [_x] call CBA_fnc_localEvent;
 } forEach (_taskNamespace getVariable ["onShowEvents", []]);
 
 // Prepare Success and Failed handling

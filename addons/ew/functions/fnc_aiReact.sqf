@@ -71,8 +71,10 @@ private _delays = [];
     _best params ["_chance", "_delay"];
     if (random 1 >= _chance) then {continue};
     _delays pushBack _delay;
+    // By remoteExec where the group is local, which takes it only from the
+    // server (review R1: a CBA event any client could raise to move AI).
     [{
-        [QGVAR(aiAlert), _this, leader (_this select 0)] call CBA_fnc_targetEvent;
+        _this remoteExecCall [QFUNC(aiAlert), leader (_this select 0)];
     }, [_group, _at], _delay] call CBA_fnc_waitAndExecute;
 } forEach _groups;
 if (_delays isEqualTo []) exitWith {
@@ -85,8 +87,9 @@ private _first = selectMin _delays;
 private _obj = _e get "object";
 private _players = (if (_obj isKindOf "CAManBase") then {[_obj]} else {crew _obj}) select {isPlayer _x};
 if (_players isNotEqualTo []) then {
+    // Called here on the server, not raised as a CBA event (review R1).
     [{
-        [QEGVAR(reaction,event), _this] call CBA_fnc_serverEvent;
+        if (!isNil QEFUNC(reaction,roll)) then {_this call EFUNC(reaction,roll)};
     }, [_players select 0, AI_REACT_SOURCE], _first] call CBA_fnc_waitAndExecute;
 };
 

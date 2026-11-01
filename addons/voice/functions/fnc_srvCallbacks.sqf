@@ -26,7 +26,7 @@ private _keep = [];
     _x params ["_from", "_to", "_at"];
     if (isNull _from || isNull _to || (_now - _at) > GVAR(callbackExpire) * SECONDS_PER_MINUTE) then {
         {
-            [QGVAR(note), ["CALL BACK", "A callback request expired."], _x] call CBA_fnc_targetEvent;
+            ["CALL BACK", "A callback request expired."] remoteExecCall [QFUNC(note), _x];
         } forEach ([_from, _to] select {!isNull _x});
         continue;
     };

@@ -8,7 +8,7 @@
  * or the vehicle carries nothing.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -16,12 +16,13 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetAps
+ *
  * Public: No
  */
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
@@ -38,12 +39,12 @@ private _veh = vehicle player;
 private _fit = _veh getVariable ["jmfsb_aps_fit", "NONE"];
 private _rf = _veh getVariable ["jmfsb_aps_rf", false];
 if (_veh == player || {_fit isEqualTo "NONE" && {!_rf}}) exitWith {
-    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], "NO APS", _dim, (0.9 * _k), true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y, _w - 2 * _pad, _rowH], "NO APS", _dim, (0.9 * _k), true]];
 };
 
 // the system, named the way the crew names it
 private _name = _veh getVariable ["jmfsb_aps_name", "APS"];
-[_ctrl, [_pad, _y, _w - 2 * _pad, _rowH * 1.2], _name, _ink, (1.15 * _k), true] call EFUNC(tacpad,drawText);
+_ops pushBack [HUD_OP_TEXT, [[_pad, _y, _w - 2 * _pad, _rowH * 1.2], _name, _ink, (1.15 * _k), true]];
 private _row = _y + _rowH * 1.3;
 
 // THE CHARGES, LEFT AND RIGHT, AS TWO BARS - a launcher that is out on one
@@ -61,16 +62,16 @@ if (_fit isNotEqualTo "NONE" && _max > 0) then {
             case (_n < _max / 2): {_amber};
             default {_green};
         };
-        [_ctrl, [_x0, _row, _barW, _rowH], format ["%1 %2/%3", _side, _n, _max], _colour, (0.68 * _k), true, "left", true] call EFUNC(tacpad,drawText);
-        [_ctrl, [_x0, _row + _rowH, _barW, _barH], _line] call EFUNC(tacpad,drawFill);
+        _ops pushBack [HUD_OP_TEXT, [[_x0, _row, _barW, _rowH], format ["%1 %2/%3", _side, _n, _max], _colour, (0.68 * _k), true, "left", true]];
+        _ops pushBack [HUD_OP_FILL, [[_x0, _row + _rowH, _barW, _barH], _line]];
         if (_n > 0) then {
-            [_ctrl, [_x0, _row + _rowH, _barW * (_n / _max), _barH], _colour] call EFUNC(tacpad,drawFill);
+            _ops pushBack [HUD_OP_FILL, [[_x0, _row + _rowH, _barW * (_n / _max), _barH], _colour]];
         };
     } forEach [["L", _l, _pad], ["R", _r, _pad * 2 + _barW]];
     _row = _row + _rowH * 1.7;
     // the crew's own hold, set from the map panel
     if (_veh getVariable ["jmfsb_aps_hkHold", false]) then {
-        [_ctrl, [_pad, _row, _w - 2 * _pad, _rowH], "LAUNCHERS   HOLD", _amber, (0.68 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+        _ops pushBack [HUD_OP_TEXT, [[_pad, _row, _w - 2 * _pad, _rowH], "LAUNCHERS   HOLD", _amber, (0.68 * _k), true, "left", true]];
         _row = _row + _rowH;
     };
 };
@@ -92,7 +93,7 @@ if (_rf) then {
         case (_left > 0 || _hold): {_amber};
         default {_green};
     };
-    [_ctrl, [_pad, _row, _w - 2 * _pad, _rowH], _text, _colour, (0.68 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _row, _w - 2 * _pad, _rowH], _text, _colour, (0.68 * _k), true, "left", true]];
     _row = _row + _rowH;
 };
 
@@ -107,6 +108,6 @@ if (_last isNotEqualTo []) then {
             if (_clock == 0) then {_clock = 12};
             _text = format ["%1  %2 o'clock", _what, _clock];
         };
-        [_ctrl, [_pad, _row, _w - 2 * _pad, _rowH], _text, _accent, (0.68 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+        _ops pushBack [HUD_OP_TEXT, [[_pad, _row, _w - 2 * _pad, _rowH], _text, _accent, (0.68 * _k), true, "left", true]];
     };
 };

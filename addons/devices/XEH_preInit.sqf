@@ -63,7 +63,14 @@ EGVAR(tacpad_apps,settingsSections) pushBack ["devkeys", "DEVICE KEYS", {["devke
 // Built here so another addon can add or replace one in its own postInit; the
 // order is the row's, left to right.
 GVAR(overlayProviders) = [] call FUNC(overlayProviders);
-GVAR(overlayOrder) = ["NET", "MESH", "JAM", "GPS", "DRONES", "MSG"];
+// BATT between GPS and DRONES (user, 2026-10-30: the battery % on the phone).
+// NO NET CELL (user, 2026-10-31: "do we need net% any more" - no: it gauged
+// the game VON's ten custom channels, and the voice server has no such
+// count). The provider stays for a VON-fallback mission to add back.
+GVAR(overlayOrder) = ["MESH", "JAM", "GPS", "BATT", "DRONES", "MSG"];
+// The shown device's class (FUNC(deviceClass)), set by FUNC(overlayPlace);
+// the rows switch on it (FUNC(overlayRows)).
+GVAR(overlayClass) = "";
 
 // RF's summary for the walking view (FUNC(overlayRf)), rebuilt by the tick
 // whenever jmfsb_rf_linkChanged has marked it dirty; and the last man heard,
@@ -101,10 +108,10 @@ GVAR(uavAction) = -1;
 GVAR(uavView) = UAV_VIEW_DRIVER;
 
 // DRONE ORDERS land on the machine that owns the drone's group - the server
-// for most UAV crews, the launcher's client for a hand-thrown one - so the
-// handler is on every machine, not only on players' (FUNC(uavOrder)). Which
-// weapon of a class is its laser designator, worked out once per class.
-[QGVAR(uavOrder), {_this call FUNC(uavOrder)}] call CBA_fnc_addEventHandler;
+// for most UAV crews, the launcher's client for a hand-thrown one - by
+// remoteExec through the server, which checks the sender (FUNC(uavOrder),
+// review S7); no CBA event. Which weapon of a class is its laser designator,
+// worked out once per class.
 GVAR(uavLaserCache) = createHashMap;
 
 ADDON = true;

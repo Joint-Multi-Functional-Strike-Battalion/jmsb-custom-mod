@@ -5,9 +5,8 @@
  * THEN SENDS ON IT: the adapter sets it as the current voice channel (VON:
  * setCurrentChannel - TEAM = Group, C2-kind = custom 1, A2G = custom 2, a
  * CALL = its custom channel, VEH = Vehicle, DIRECT = Direct). The other nets
- * are still heard. Plays the net switch click.
- * Under TFAR / ACRE: that radio's adapter puts the set carrying the net
- * first (hook "setActive"); no click, no RF state of ours.
+ * are still heard. Plays the net switch click. Nothing while no game-voice
+ * system runs (system "none").
  *
  * Arguments:
  * 0: Net id <STRING>
@@ -23,13 +22,12 @@
 
 params [["_net", "", [""]]];
 
-if (!GVAR(active)) exitWith {
-    if !([_net] call HOOK("setActive")) exitWith {false};
-    GVAR(activeNetId) = _net;
-    [QGVAR(netsChanged), []] call CBA_fnc_localEvent;
-    true
-};
+if (!GVAR(active)) exitWith {false};
 if !(_net in (GVAR(myNets) apply {_x select 0})) exitWith {false};
+// LOCAL IS A KEY, NOT A NET TO SIT ON (user, 2026-10-25: "talking in local so
+// that everyone can hear you should not be a chip just a key bind"): it is
+// held on its own key (jmfsb_adapter_von talkLocal), never the active net.
+if (([_net] call FUNC(netKind)) isEqualTo KIND_DIRECT) exitWith {false};
 if (_net isEqualTo GVAR(activeNetId)) exitWith {true};
 if !([_net] call HOOK("setActive")) exitWith {false};
 

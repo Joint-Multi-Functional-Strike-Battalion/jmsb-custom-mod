@@ -6,22 +6,37 @@
  * Unbuild action, a radio base station on the beacon (setting "Patrol base
  * radio relay", jmfsb_pac_fnc_baseStation) and the on-deploy hook.
  *
+ * THE BUILDER IS THE SENDER (review S7). Sent by remoteExec from
+ * FUNC(establishPatrolBase); the server takes the builder from the sending
+ * machine and his position, direction and side from that unit, never from the
+ * request, and re-runs the client's checks (alive, on foot, kits in range,
+ * the base limit) before anything is consumed.
+ *
  * Arguments:
- * 0: Position ATL <ARRAY>
- * 1: Direction <NUMBER>
- * 2: Base name <STRING>
- * 3: Side <SIDE>
- * 4: Builder (for feedback) <OBJECT>
+ * 0: Base name <STRING>
  *
  * Return Value: None
+ *
+ * Example:
+ * ["FOB Alpha"] remoteExecCall ["jmfsb_patrol_base_fnc_serverBuild", 2]
  *
  * Public: No
  */
 
 if !(isServer) exitWith {};
 
-params [["_pos", [], [[]]], ["_dir", 0, [0]], ["_name", "", [""]], ["_side", west, [west]], ["_builder", objNull, [objNull]]];
-if (_pos isEqualTo []) exitWith {};
+params [["_name", "", [""]]];
+
+private _builder = ([] call EFUNC(common,sender)) select 1;
+if (isNull _builder || {!alive _builder} || _name isEqualTo "") exitWith {
+    WARNING_1("serverBuild: refused - no living builder on machine %1",remoteExecutedOwner);
+};
+if !(isNull objectParent _builder) exitWith {
+    ["Patrol Base", "You must be on foot.", NOTE_FAIL] remoteExecCall [QEFUNC(notify,notify), _builder];
+};
+private _pos = getPosATL _builder;
+private _dir = getDir _builder;
+private _side = side group _builder;
 
 private _req   = missionNamespace getVariable [QGVAR(kitCount), 4];
 private _max   = missionNamespace getVariable [QGVAR(maxCount), 3];
@@ -30,12 +45,12 @@ private _kitItems = KIT_ITEMS;
 
 private _bases = missionNamespace getVariable [QGVAR(bases), []];
 if (count _bases >= _max) exitWith {
-    ["Patrol Base", format ["Patrol base limit reached (%1).", _max], [1, 0.3, 0.3, 1]] remoteExec [QEFUNC(notify,notify), _builder];
+    ["Patrol Base", format ["Patrol base limit reached (%1).", _max], NOTE_FAIL] remoteExec [QEFUNC(notify,notify), _builder];
 };
 
 private _have = [_pos] call FUNC(countKits);
 if (_have < _req) exitWith {
-    ["Patrol Base", format ["Not enough kits (found %1, need %2).", _have, _req], [1, 0.3, 0.3, 1]] remoteExec [QEFUNC(notify,notify), _builder];
+    ["Patrol Base", format ["Not enough kits (found %1, need %2).", _have, _req], NOTE_FAIL] remoteExec [QEFUNC(notify,notify), _builder];
 };
 
 // --- Consume: strip kit items from holders, delete kit objects -------------
@@ -95,6 +110,10 @@ if (GVAR(radioRelay) && !isNil QEFUNC(pac,baseStation)) then {
 };
 
 // --- On-deploy hook ---------------------------------------------------------
-[missionNamespace getVariable [QGVAR(onDeployCode), ""], [_beacon, _pos, _name, _side, _builder]] call FUNC(runHook);
+// Next frame, as the server's own act: the hook is the mission's server-side
+// code, and run inside this remote-executed call it would be judged as the
+// builder's request (the default hook's teleport point would be refused for
+// anyone not a Zeus - review S7).
+[{_this call FUNC(runHook)}, [missionNamespace getVariable [QGVAR(onDeployCode), ""], [_beacon, _pos, _name, _side, _builder]]] call CBA_fnc_execNextFrame;
 
 [_name, "Patrol base established.", [0.6, 1, 0.6, 1]] call EFUNC(notify,broadcast);

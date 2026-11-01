@@ -50,12 +50,13 @@ class CfgVehicles {
         respawnWeapons[] = {"sps_hk_vp9_stnd_green", "Throw", "Put"};
         magazines[] = {"16Rnd_9x21_Mag", "16Rnd_9x21_Mag", "16Rnd_9x21_Mag"};
         respawnMagazines[] = {"16Rnd_9x21_Mag", "16Rnd_9x21_Mag", "16Rnd_9x21_Mag"};
-        items[] = {"jmfsb_medbags_FirstAid", "optic_NVS", "ACRE_PRC152"};
-        respawnItems[] = {"jmfsb_medbags_FirstAid", "optic_NVS", "ACRE_PRC152"};
+        // No ACRE handheld any more (DEC1).
+        items[] = {"jmfsb_medbags_FirstAid", "optic_NVS"};
+        respawnItems[] = {"jmfsb_medbags_FirstAid", "optic_NVS"};
         linkedItems[] = {"jmfsb_vests_mig_MIG_FERRO_BISON_MC","jmfsb_headware_H_Booniehat_ocp_F","ItemMap","ItemGPS","ItemCompass","ACE_Altimeter"};
         respawnLinkedItems[] = {"jmfsb_vests_mig_MIG_FERRO_BISON_MC","jmfsb_headware_H_Booniehat_ocp_F","ItemMap","ItemGPS","ItemCompass","ACE_Altimeter"};
 
-        ALiVE_orbatCreator_loadout[] = {{},{},{"sps_hk_vp9_stnd_green","","","",{"16Rnd_9x21_Mag",17},{},""},{"jmfsb_uniform_sof_SOF_U_B_SFFatigues_Shortsleeve_ocp",{{"jmfsb_medbags_FirstAid",1},{"optic_NVS",1}}},{"jmfsb_vests_mig_MIG_FERRO_BISON_MC",{{"ACRE_PRC152",1},{"16Rnd_9x21_Mag",2,17}}},{},"jmfsb_headware_H_Booniehat_ocp_F","",{},{"ItemMap","ItemGPS","","ItemCompass","ACE_Altimeter",""}};
+        ALiVE_orbatCreator_loadout[] = {{},{},{"sps_hk_vp9_stnd_green","","","",{"16Rnd_9x21_Mag",17},{},""},{"jmfsb_uniform_sof_SOF_U_B_SFFatigues_Shortsleeve_ocp",{{"jmfsb_medbags_FirstAid",1},{"optic_NVS",1}}},{"jmfsb_vests_mig_MIG_FERRO_BISON_MC",{{"16Rnd_9x21_Mag",2,17}}},{},"jmfsb_headware_H_Booniehat_ocp_F","",{},{"ItemMap","ItemGPS","","ItemCompass","ACE_Altimeter",""}};
 
         class EventHandlers {
             class CBA_Extended_EventHandlers: CBA_Extended_EventHandlers {};

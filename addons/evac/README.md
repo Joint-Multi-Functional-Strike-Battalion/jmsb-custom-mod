@@ -9,11 +9,19 @@ same loadout and injuries.
 With Advanced Combat Medicine (ACM) loaded the whole system stands down - ACM
 brings its own evacuation - and the action never appears.
 
+The medic's machine asks the server by `remoteExecCall` to `fnc_evacServer`.
+The server trusts none of it (review S6). The medic is the sending machine's
+own player. He must be alive and within 10 m of the casualty. The action's
+gate runs again on the server: a downed living player, not himself, and an
+ACE medic if Medics Only is on. One casualty cannot be evacuated twice
+within 10 s. A refusal is shown to the medic as "Failed.".
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_notify`
 - `ace_interact_menu` _(external)_
 - `ace_common` _(external)_
@@ -22,7 +30,7 @@ brings its own evacuation - and the action never appears.
 
 ## Ships
 
-3 functions.
+4 functions.
 
 ## CBA settings
 
@@ -34,10 +42,11 @@ brings its own evacuation - and the action never appears.
 
 ## Functions
 
-<details><summary>3</summary>
+<details><summary>4</summary>
 
 - `jmfsb_evac_fnc_canConvert`
 - `jmfsb_evac_fnc_convert`
 - `jmfsb_evac_fnc_convertAction`
+- `jmfsb_evac_fnc_evacServer`
 
 </details>

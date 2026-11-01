@@ -37,7 +37,8 @@ if (!isNull _owner) then {
     if (local _owner) then {
         [_id] call FUNC(kill);
     } else {
-        [QGVAR(kill), [_id], _owner] call CBA_fnc_targetEvent;
+        // By remoteExec, taken only from the server (review S7).
+        [_id] remoteExecCall [QFUNC(kill), _owner];
     };
 };
 GVAR(stats) set ["intercepts", (GVAR(stats) get "intercepts") + 1];

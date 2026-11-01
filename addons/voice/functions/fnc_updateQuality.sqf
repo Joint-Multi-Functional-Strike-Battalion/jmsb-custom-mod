@@ -24,11 +24,13 @@ if (isNull player) exitWith {};
 private _now = CBA_missionTime;
 private _nets = (GVAR(myNets) select {(_x select 2) in MESH_KINDS}) apply {_x select 0};
 private _seen = createHashMap;
+private _units = createHashMap;
 
 {
     private _unit = _x;
     if (_unit isEqualTo player || !(_unit isKindOf "CAManBase")) then {continue};
     private _uid = getPlayerUID _unit;
+    _units set [_uid, _unit];
     {
         private _net = _x;
         private _key = _uid + "|" + _net;
@@ -50,6 +52,19 @@ private _seen = createHashMap;
         };
     } forEach _nets;
 } forEach allPlayers;
+
+// A NET HE LEFT IS HEARD NO MORE: the adapter is told 0 for every speaker it
+// last heard on it, so it does not keep the last quality (and give it to the
+// next call that takes the same CALL slot). A speaker gone from the game needs
+// nothing: there is nobody left to hear.
+{
+    private _key = _x;
+    if ((GVAR(applied) get _key) > 0) then {
+        private _at = _key find "|";
+        private _unit = _units getOrDefault [_key select [0, _at], objNull];
+        if (!isNull _unit) then {[_unit, _key select [_at + 1], 0] call HOOK("quality")};
+    };
+} forEach ((keys GVAR(applied)) select {!(_x in _seen)});
 
 // forget speakers and nets that are gone
 {

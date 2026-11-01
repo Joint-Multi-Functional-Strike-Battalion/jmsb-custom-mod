@@ -13,6 +13,9 @@
  *
  * The search on the bar filters by name or callsign. People on the call come
  * first, then those in reach, then the rest; as many as the panel holds.
+ * Above them, while the voice extension is loaded, ECHO TEST: CALL it to hear
+ * yourself back through the voice server, HANG UP to end it
+ * (jmfsb_adapter_livekit_fnc_echo).
  *
  * Arguments:
  * 0: Body <CONTROL>
@@ -61,7 +64,12 @@ _rows = _rows apply {_x select 2};
 
 ([_body, _rect, "CONTACTS", ["REACH ON DATA", format ["%1 MATCH", count _rows]] select (_find isNotEqualTo "")] call FUNC(appPagePanel)) params ["_left", "_top", "_w", "_h"];
 
-if (_rows isEqualTo []) exitWith {
+// The echo test takes the first row while the voice extension is loaded.
+private _echo = "";
+if (!isNil QEFUNC(adapter_livekit,echoState)) then {_echo = [] call EFUNC(adapter_livekit,echoState)};
+private _first = parseNumber (_echo isNotEqualTo "");
+
+if (_rows isEqualTo [] && _first isEqualTo 0) exitWith {
     [_body, [_left + _pad, _top + _rowH * 0.5, _w - 2 * _pad, _rowH], ["Nobody to call.", "Nobody matches the search."] select (_find isNotEqualTo ""), _dim, TEXT_TITLE] call EFUNC(tacpad,drawText);
 };
 
@@ -70,14 +78,33 @@ if (_rows isEqualTo []) exitWith {
 [_body, [_left, _top + _rowH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
 private _step = _rowH * 1.5;
-private _fits = floor ((_h - _rowH * 2.5) / _step) max 1;
+private _fits = ((floor ((_h - _rowH * 2.5) / _step) max 1) - _first) max 0;
 private _btnW = _w * 0.13;
 private _act1 = _left + _w * 0.68;
 private _act2 = _act1 + _btnW + _pad;
 
+if (_first > 0) then {
+    private _ry = _top + _rowH * 1.2;
+    private _cy = _ry + (_step - _rowH) * 0.5;
+    private _on = _echo isNotEqualTo ECHO_IDLE;
+    [_body, [_left + _pad, _cy, _w * 0.48, _rowH], format ["ECHO TEST %1 VOICE SERVER", MIDDOT_TEXT], _ink, TEXT_BODY, true] call EFUNC(tacpad,drawText);
+    private _state = switch (_echo) do {
+        case ECHO_JOINING: {"CALLING"};
+        case ECHO_LIVE: {"LIVE"};
+        default {"READY"};
+    };
+    [_body, [_left + _w * 0.5, _cy, _w * 0.16, _rowH], _state, [_ink, _accent] select _on, TEXT_LABEL, true] call EFUNC(tacpad,drawText);
+    private _fnc_echo = {
+        [([] call EFUNC(adapter_livekit,echoState)) isEqualTo ECHO_IDLE] call EFUNC(adapter_livekit,echo);
+        {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+    };
+    [_body, [_act1, _cy, _btnW, _rowH], ["CALL", "HANG UP"] select _on, ["line", "fill"] select _on, _fnc_echo, []] call FUNC(appPageButton);
+    [_body, [_left, _ry + _step - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
+};
+
 {
     _x params [["_unit", objNull, [objNull]], ["_name", "", [""]], ["_callsign", "", [""]], ["_tags", [], [[]]], ["_reach", false, [false]], ["_busy", false, [false]]];
-    private _ry = _top + _rowH * 1.2 + _forEachIndex * _step;
+    private _ry = _top + _rowH * 1.2 + (_forEachIndex + _first) * _step;
     private _cy = _ry + (_step - _rowH) * 0.5;
     private _mine = _unit in _onCall;
 
@@ -125,7 +152,7 @@ private _act2 = _act1 + _btnW + _pad;
 } forEach (_rows select [0, _fits]);
 
 private _more = (count _rows) - _fits;
-private _footY = _top + _rowH * 1.2 + ((count _rows) min _fits) * _step + _rowH * 0.3;
+private _footY = _top + _rowH * 1.2 + (((count _rows) min _fits) + _first) * _step + _rowH * 0.3;
 [
     _body, [_left + _pad, _footY, _w - 2 * _pad, _rowH],
     format ["%1While a call is live, + ADD rings that person into it. ADD TO CALL on the map or the squad list is not built.", ["", format ["+%1 more - search to narrow. ", _more]] select (_more > 0)],

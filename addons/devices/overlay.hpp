@@ -94,12 +94,16 @@ class RscTitles {
             OVERLAY_TEXT(Squad2,IDC_OVERLAY_SQUAD2,"RobotoCondensed");
             OVERLAY_TEXT(Talk,IDC_OVERLAY_TALK,"RobotoCondensedBold");
             OVERLAY_TEXT(Call,IDC_OVERLAY_CALL,"RobotoCondensed");
+            // OVERLAY_STATUS_CELLS of them - seven with BATT (2026-10-30);
+            // six here left the seventh cell without a control, so MSG
+            // never drew.
             OVERLAY_STATUS_CELL(0);
             OVERLAY_STATUS_CELL(1);
             OVERLAY_STATUS_CELL(2);
             OVERLAY_STATUS_CELL(3);
             OVERLAY_STATUS_CELL(4);
             OVERLAY_STATUS_CELL(5);
+            OVERLAY_STATUS_CELL(6);
             OVERLAY_NET_CELL(0);
             OVERLAY_NET_CELL(1);
             OVERLAY_NET_CELL(2);

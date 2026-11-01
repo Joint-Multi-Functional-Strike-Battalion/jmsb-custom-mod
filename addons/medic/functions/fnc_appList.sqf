@@ -77,15 +77,19 @@ private _y = _padY + _rowH;
 // out from one list and cannot disagree about where a column starts.
 // HR and SPO2 are the tablet's own EKG and pulse oximeter (FUNC(readVitals);
 // user, 2026-10-22: "put those medical status into the medic app").
+// BP and RR beside them (user, 2026-10-24: "bp resp rate and o2 need to be in
+// the medical app").
 private _cols = [
     ["PATIENT", 0.000, "left"],
-    ["STATE", 0.300, "left"],
-    ["BLEEDING", 0.430, "left"],
-    ["WOUNDS", 0.545, "left"],
-    ["BLOOD", 0.630, "left"],
-    ["HR", 0.720, "left"],
-    ["SPO2", 0.800, "left"],
-    ["RANGE", 0.885, "right"]
+    ["STATE", 0.235, "left"],
+    ["BLEEDING", 0.335, "left"],
+    ["WOUNDS", 0.435, "left"],
+    ["BLOOD", 0.505, "left"],
+    ["HR", 0.580, "left"],
+    ["BP", 0.640, "left"],
+    ["SPO2", 0.750, "left"],
+    ["RR", 0.815, "left"],
+    ["RANGE", 0.870, "right"]
 ];
 private _fnc_cell = {
     params ["_index", "_text", "_colour", "_rowY", ["_size", TEXT_BODY], ["_bold", false]];
@@ -146,10 +150,12 @@ private _hidden = 0;
     ] call _fnc_cell;
     [3, [str _wounds, "-"] select (!_alive || _wounds isEqualTo 0), _otherInk, _y, TEXT_BODY] call _fnc_cell;
     [4, [format ["%1 L", (_volume max 0) toFixed 1], "-"] select !_alive, _otherInk, _y, TEXT_BODY] call _fnc_cell;
-    ([_unit] call FUNC(readVitals)) params ["_hr", "", "_spo2"];
+    ([_unit] call FUNC(readVitals)) params ["_hr", "_bp", "_spo2", "_rr"];
     [5, _hr # 1, _otherInk, _y, TEXT_BODY] call _fnc_cell;
-    [6, _spo2 # 1, _otherInk, _y, TEXT_BODY] call _fnc_cell;
-    [7, [format ["%1 M", round (player distance _unit)], "YOU"] select (_unit isEqualTo player), _otherInk, _y, TEXT_BODY] call _fnc_cell;
+    [6, _bp # 1, _otherInk, _y, TEXT_BODY] call _fnc_cell;
+    [7, _spo2 # 1, _otherInk, _y, TEXT_BODY] call _fnc_cell;
+    [8, _rr # 1, _otherInk, _y, TEXT_BODY] call _fnc_cell;
+    [9, [format ["%1 M", round (player distance _unit)], "YOU"] select (_unit isEqualTo player), _otherInk, _y, TEXT_BODY] call _fnc_cell;
 
     [_body, [0, _y + _rowH - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 

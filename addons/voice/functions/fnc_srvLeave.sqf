@@ -4,7 +4,9 @@
  * Server: someone leaves a call (hang-up, dropped, gone). A member leaves
  * the call net; someone ringing just stops ringing. The caller hanging up
  * before anyone answered ends the dial; otherwise the call ends when one
- * person is left.
+ * person is left. Reached by remoteExec from FUNC(hangUp): the unit must be
+ * the sender (jmfsb_common_fnc_senderIs); the server's own drops
+ * (FUNC(srvCallTick)) pass.
  *
  * Arguments:
  * 0: Call id <STRING>
@@ -14,13 +16,14 @@
  * None
  *
  * Example:
- * ["123_1", player] call jmfsb_voice_fnc_srvLeave
+ * ["123_1", player] remoteExecCall ["jmfsb_voice_fnc_srvLeave", 2]
  *
  * Public: No
  */
 
 params [["_callId", "", [""]], ["_unit", objNull, [objNull]]];
 
+if (!isServer || {!([_unit] call EFUNC(common,senderIs))}) exitWith {};
 private _call = GVAR(calls) getOrDefault [_callId, createHashMap];
 if (count _call == 0) exitWith {};
 

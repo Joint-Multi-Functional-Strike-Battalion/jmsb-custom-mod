@@ -3,8 +3,7 @@
  * Author: JMSB
  * Mutes or unmutes a net for the local player: its speakers are set to
  * volume 0 for him while they talk on it (VON has no per-channel volume).
- * Under TFAR / ACRE: the radio's own volume for that net (hook "setMute"),
- * where the radio has one.
+ * Nothing while no game-voice system runs (system "none").
  *
  * Arguments:
  * 0: Net id <STRING>
@@ -21,9 +20,7 @@
 
 params [["_net", "", [""]], ["_muted", true, [true]]];
 
-if (!GVAR(active)) exitWith {
-    if ([_net, _muted] call HOOK("setMute")) then {[QGVAR(netsChanged), []] call CBA_fnc_localEvent};
-};
+if (!GVAR(active)) exitWith {};
 GVAR(muted) set [_net, _muted];
 [] call FUNC(updateQuality);
 [QGVAR(netsChanged), []] call CBA_fnc_localEvent;

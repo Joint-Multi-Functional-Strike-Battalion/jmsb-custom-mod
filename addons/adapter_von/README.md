@@ -4,15 +4,19 @@
 
 The default voice adapter of `jmfsb_voice`: Arma 3's own VON
 (docs/DESIGN_VOICE.md). The only addon that uses the VON commands for voice.
-Registers itself as `"von"` in preInit; another adapter registered later
+Registers itself as `"von"` in preInit; another VON-mode adapter registered
 replaces it. NOT RUN IN GAME.
 
-**Stands down under TFAR or ACRE:** while `jmfsb_voice_active` is false (TFAR
-or ACRE loaded, decided in the voice preInit) it does not register and its
-postInit sets nothing up - no channels, no enableChannel, no handlers. The
-voice core then serves that radio's nets through `jmfsb_adapter_tfar` /
-`jmfsb_adapter_acre` (external-radio mode, addons/voice/README.md), and would
-refuse this adapter anyway.
+**The fallback only:** the voice is LiveKit (`jmfsb_adapter_livekit`); this
+adapter runs only while the game's VON is the system chosen
+(`jmfsb_voice_system` "von": the setting JMSB - Voice > Voice system, or
+Automatic on a server without the voice extension;
+`jmfsb_voice_fnc_selectSystem`, read at `CBA_settingsInitialized`). Under
+LiveKit, and under "none" (the server's system cannot run here), the postInit
+sets nothing up - no channels, no enableChannel, no handlers. The server's
+system is everyone's: a client starts on `jmfsb_voice_systemReady`, once it
+has taken it. TFAR and ACRE were removed on 2026-10-31 (DEC1). Its settings
+are the page JMSB - Voice (Built-in) > VON.
 
 ## Channels
 
@@ -60,12 +64,47 @@ refuse this adapter anyway.
 - **Who hears a key** (hook `audience`, for the speaker's pushed key event):
   Group = the players of his Arma group, set or not; Vehicle = the players
   aboard, passengers too; a custom channel = every player on a net that rides
-  it (all C2-kind nets share one, all A2G-kind nets another). Direct: nobody - it is never touched.
+  it (all C2-kind nets share one, all A2G-kind nets another), by the nets
+  the server has him on (`jmfsb_voice_fnc_rosterNets`), not the speaker's
+  own reading of them. Direct: nobody - it is never touched.
 - **The VON toggle is blocked:** a KeyDown handler on the mission display
   (46) swallows `actionKeys "VoiceOverNet"` and says once: bind Push To Talk
   (Configure > Controls > Multiplayer). At mission start he is told when Push
   To Talk has no key, or his VON volume (`getAudioOptionVolumes` index 3) is
   below 0.1.
+
+## Talk keys, open channel, volume (2026-10-24)
+
+The engine owns the microphone - no script starts a transmission - so the
+keys move the **current channel**, which is what Arma's Push To Talk sends on
+and what Arma's own voice activation (Options > Audio) transmits on.
+
+- **Voice: PTT 1-4 (hold)** (2026-10-30) - every talk key is Caps Lock with
+  a modifier, because Caps Lock is Arma's own Push To Talk and the engine
+  sees it whatever else is held: PTT 1 is Caps Lock and the mic on the active
+  net while held; PTT 2-4 are Ctrl, Alt and Shift + Ctrl with Caps Lock, the
+  mic on the net the tablet's RADIO app gave each (`jmfsb_voice_fnc_pttNet`:
+  net 2, 3, 4 of his list until set). Two held: the last pressed talks. The
+  bind is not consumed, so Arma's Push To Talk on Caps Lock still opens the
+  mic. **Voice: talk local (hold)** - Shift + Caps Lock - the mic on Direct;
+  the modifier released before the key still ends the hold (`fnc_hold`: the
+  key's release arrives as PTT 1's). Under voice activation a held key alone
+  is the whole radio: hold and speak. Under push to talk they pick the
+  channel the Push To Talk key sends on. **A PTT 2-4 key VON will not give
+  its net** (no net set, the net has no channel, or `setCurrentChannel` is
+  refused - not yet a member; PLAN_VOICE_EW_PLAY V4) sends nothing: the
+  channel he is on has its voice held off while the key is down
+  (`fnc_holdOff`; `fnc_channels` leaves it alone meanwhile), the `ptt` hook
+  reports no key, and the key says why once per press. Before, the engine
+  sent on PTT 1's net.
+- **Voice activation** (setting, off by default): the player says his VON is
+  on voice activation. His mic then sits on the **open channel** when no key
+  is held - LOCAL (Direct) by default, or his active net; **Voice: open
+  channel NET / LOCAL** (numpad /) flips it, and the RADIO app shows the
+  word. **Voice activation on calls** (on): a live call is the open channel
+  for as long as it lasts. The missing-Push-To-Talk warning is not given.
+- **Radio voice volume** (setting, 0-100%, on the RADIO app and numpad - / +):
+  scales every radio speaker on top of the mesh; Direct is untouched.
 
 ## Volume (the mesh)
 
@@ -128,7 +167,9 @@ line to the RPT tagged `VON T1`-`T5`. T1 and T5 at once, T2-T4 over 15 s:
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_voice`
+- `jmfsb_notify`
 - `cba_main` _(external)_
 - `cba_xeh` _(external)_
 - `cba_settings` _(external)_
@@ -136,18 +177,22 @@ line to the RPT tagged `VON T1`-`T5`. T1 and T5 at once, T2-T4 over 15 s:
 
 ## Ships
 
-27 functions.
+35 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_adapter_von_volumeFloor` | SLIDER | Volume at the weakest link |
+| `jmfsb_adapter_von_masterVolume` | SLIDER | Radio voice volume |
+| `jmfsb_adapter_von_vad` | CHECKBOX | Voice activation |
+| `jmfsb_adapter_von_vaCalls` | CHECKBOX | Voice activation on calls |
 
 ## Functions
 
-<details><summary>27</summary>
+<details><summary>35</summary>
 
+- `jmfsb_adapter_von_fnc_applyOpen`
 - `jmfsb_adapter_von_fnc_applyVolume`
 - `jmfsb_adapter_von_fnc_audience`
 - `jmfsb_adapter_von_fnc_block`
@@ -159,11 +204,17 @@ line to the RPT tagged `VON T1`-`T5`. T1 and T5 at once, T2-T4 over 15 s:
 - `jmfsb_adapter_von_fnc_current`
 - `jmfsb_adapter_von_fnc_ensureChannel`
 - `jmfsb_adapter_von_fnc_global`
+- `jmfsb_adapter_von_fnc_hold`
+- `jmfsb_adapter_von_fnc_holdOff`
 - `jmfsb_adapter_von_fnc_join`
 - `jmfsb_adapter_von_fnc_keyDown`
 - `jmfsb_adapter_von_fnc_keyed`
 - `jmfsb_adapter_von_fnc_leave`
+- `jmfsb_adapter_von_fnc_liveCallChannel`
 - `jmfsb_adapter_von_fnc_netOf`
+- `jmfsb_adapter_von_fnc_openChannel`
+- `jmfsb_adapter_von_fnc_openState`
+- `jmfsb_adapter_von_fnc_openToggle`
 - `jmfsb_adapter_von_fnc_ptt`
 - `jmfsb_adapter_von_fnc_quality`
 - `jmfsb_adapter_von_fnc_reserve`
@@ -174,6 +225,7 @@ line to the RPT tagged `VON T1`-`T5`. T1 and T5 at once, T2-T4 over 15 s:
 - `jmfsb_adapter_von_fnc_testChannel`
 - `jmfsb_adapter_von_fnc_testResult`
 - `jmfsb_adapter_von_fnc_voiceChatLoad`
+- `jmfsb_adapter_von_fnc_volumeStep`
 - `jmfsb_adapter_von_fnc_warn`
 
 </details>

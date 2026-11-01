@@ -12,7 +12,7 @@
  * Example:
  * [1234] call jmfsb_maptools_fnc_distanceText
  *
- * Public: No
+ * Public: Yes
  */
 
 params [["_metres", 0, [0]]];

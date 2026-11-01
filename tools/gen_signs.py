@@ -18,6 +18,8 @@ OUT = os.path.join(IMG, "signs_v2")
 LOGO = os.path.join(ROOT, "art", "JMSB-crossed-arrows-G", "512", "jmsb-crossed-arrows-G-clean-512.png")
 ART = os.path.join(ROOT, "art", "signs")   # swatches lifted from the last good boards
 ORIG = os.environ.get("JMFSB_SIGN_ORIG", "")   # folder of old signs converted to PNG
+# --only name1,name2: render just those boards (and no FA boards)
+ONLY = set(sys.argv[sys.argv.index("--only") + 1].split(",")) if "--only" in sys.argv else set()
 
 W, H = 2048, 1024
 
@@ -264,6 +266,69 @@ def keycols(im, d, columns):
             d.text((x0, y), label, font=fl, fill=BONE)
             d.text((x1 - tw(d, key, fk), y + 2), key, font=fk, fill=WARN if warn else AMBER)
             y += 58
+
+
+def numpad(im, d, keys, legend):
+    """The numpad standard drawn as the keypad itself (user, 2026-10-24: "make a
+    sign with a numpad saying 1-4 are F1 F2 F3 F4, 0 and . are the arrows, 5-9
+    are functions ... set a standard"). keys: label -> (caption, group); the
+    pad is the real layout - + and Enter two rows tall, 0 two columns wide.
+    legend: [(heading, [(label, key), ...]), ...] down the right."""
+    fills = {
+        "f":     (FRAME_PALE, BROWN_FACE),   # device F1-F4
+        "net":   (FRAME_PALE, BROWN_FACE),   # pick a net
+        "arrow": (SLATE, BROWN_FACE),        # device arrows
+        "fn":    (WARN, BONE),               # the 5-9 functions
+        "voice": (WOOD_RULE, BONE),          # talk keys, volume, open channel
+        "lock":  (BROWN_MARGIN, SLATE),      # Num Lock
+    }
+    # col, row, col span, row span
+    layout = {
+        "NUM": (0, 0, 1, 1), "/": (1, 0, 1, 1), "*": (2, 0, 1, 1), "-": (3, 0, 1, 1),
+        "7": (0, 1, 1, 1), "8": (1, 1, 1, 1), "9": (2, 1, 1, 1), "+": (3, 1, 1, 2),
+        "4": (0, 2, 1, 1), "5": (1, 2, 1, 1), "6": (2, 2, 1, 1),
+        "1": (0, 3, 1, 1), "2": (1, 3, 1, 1), "3": (2, 3, 1, 1), "ENTER": (3, 3, 1, 2),
+        "0": (0, 4, 2, 1), ".": (2, 4, 1, 1),
+    }
+    x0, y0 = MARGIN + 8, ROWS_Y - 10
+    cw, gap = 214, 12
+    rh = (BODY_BOTTOM - y0 - 4 * gap) // 5
+    fnum, fcap = font(F_BLACK, 52), font(F_BOLD, 24)
+    for label, (c, r, cs, rs) in layout.items():
+        caption, group = keys.get(label, ("", "lock"))
+        bg, ink = fills[group]
+        bx = x0 + c * (cw + gap)
+        by = y0 + r * (rh + gap)
+        bw = cs * cw + (cs - 1) * gap
+        bh = rs * rh + (rs - 1) * gap
+        d.rounded_rectangle([bx, by, bx + bw, by + bh], radius=12, fill=bg)
+        # The key's own legend large on the left, what it does beside it,
+        # both centred down the key - so a one-row key never stacks them.
+        num = "" if label == "NUM" else ("ENT" if label == "ENTER" else label)
+        tx = bx + 16
+        if num:
+            nf = fnum if len(num) < 3 else font(F_BLACK, 34)
+            nb = d.textbbox((0, 0), num, font=nf)
+            d.text((tx, by + (bh - (nb[3] - nb[1])) // 2 - nb[1]), num, font=nf, fill=ink)
+            tx += (nb[2] - nb[0]) + 18
+        lines = caption.split("\n")
+        ly = by + (bh - 28 * len(lines)) // 2
+        for line in lines:
+            d.text((tx, ly), line, font=fcap, fill=ink)
+            ly += 28
+    # the legend
+    lx0 = x0 + 4 * cw + 3 * gap + 72
+    lx1 = W - MARGIN - 8
+    fh, fl, fk = font(F_BOLD, 40), font(F_REG, 34), font(F_MONO, 34)
+    y = ROWS_Y - 6
+    for heading, items in legend:
+        d.text((lx0, y), heading.upper(), font=fh, fill=EMBER)
+        y += 56
+        for label, key in items:
+            d.text((lx0, y), label, font=fl, fill=BONE)
+            d.text((lx1 - tw(d, key, fk), y + 2), key, font=fk, fill=AMBER)
+            y += 46
+        y += 18
 
 
 def sections(im, d, blocks):
@@ -611,46 +676,136 @@ SIGNS = {
     # GAME VOICE (user, 2026-10-22: "signs for the game voip system"). Three
     # boards, the words from addons/voice, addons/adapter_von and the devices'
     # keybinds (XEH_postInit.sqf): the nets a man is on, the keys, and how it
-    # works. Radio voice on Arma's own VON; TFAR and ACRE nights are their own.
+    # works. TFAR and ACRE were removed 2026-10-31 (DEC1).
     "radio_nets": R("Radio Voice - Your Nets", [
         ["TEAM", "your squad, e.g. GHOST 1 - everyday talk; where you start on every role pick"],
         ["C2", "team leaders, ATLs and all of HHC - leaders talking between squads"],
         ["A2G", "pilots and copilots by seat, plus the JFO skill - air to ground"],
         ["VEH", "crew intercom of the vehicle you are in - not the passengers"],
-        ["DIRECT", "talking out loud to whoever is near you - always works, no radio needed"],
+        ["LOCAL", "talking out loud to everyone near you - hold Num / - always works, no radio needed"],
         ["CALL 1-8", "private calls, up to 8 people each - CALL beside a name in the Squad app"],
         ["GLOBAL", "the whole server - the tablet's GLOBAL button; C2 members and admins only"],
     ], sub="The comm plan in PAC puts you on them - by squad, role and skill",
        foot="Chip outline: green good  ·  amber weak or jammed  ·  red no route  ·  dim muted"),
 
+    # THE NUMPAD STANDARD (user, 2026-10-30: "1-5 are radio nets, 6 7 8 9 are
+    # F1-F4, - is TIC, 0 and . are the arrows, / = no do not answer, * = yes
+    # or answer"; Ctrl + 1-5 mutes a net from 2026-10-25) - the same table as
+    # the comment over BUTTON_KEYS in addons/devices/script_component.hpp.
+    "numpad": {
+        "kind": "numpad", "title": "Numpad - Device Keys",
+        "sub": "Num Lock ON  ·  1-5 pick your net  ·  Ctrl + 1-5 mutes it  ·  6-9 are the device's F1-F4",
+        "keys": {
+            "NUM": ("NUM LOCK\nON", "lock"),
+            "/": ("DECLINE\nNO", "fn"),
+            "*": ("ANSWER\nYES", "fn"),
+            "-": ("TROOPS IN\nCONTACT", "fn"),
+            "+": ("VOICE\nACTIVATE", "voice"),
+            "7": ("F2", "fn"),
+            "8": ("F3", "fn"),
+            "9": ("F4", "fn"),
+            "4": ("NET 4", "net"),
+            "5": ("NET 5", "net"),
+            "6": ("F1", "fn"),
+            "1": ("NET 1", "net"),
+            "2": ("NET 2", "net"),
+            "3": ("NET 3", "net"),
+            "ENTER": ("TABLET", "fn"),
+            "0": ("PREV NET", "arrow"),
+            ".": ("NEXT\nNET", "arrow"),
+        },
+        # Only what is NOT printed on the pad.
+        "legend": [
+            ("Hold Ctrl and press", [
+                ("Mute / unmute net 1-5", "Ctrl + 1-5"),
+            ]),
+            ("The device's F1-F4 (6 7 8 9)", [
+                ("F1 ear, F2 mute, F3 / F4 zoom", "the walking view"),
+                ("The apps set in SETTINGS", "the tablet"),
+            ]),
+            ("Talking", [
+                ("On your net", "Push To Talk (Caps Lock)"),
+                ("LOCAL - everyone near you", "Direct, or bind Talk local"),
+            ]),
+            ("Change them", [
+                ("These keys, volume, talk local", "Configure Addons"),
+                ("Push To Talk, Direct", "Controls > Multiplayer"),
+            ]),
+        ],
+        "foot": "Set on your own PC: ESC > Options > Controls > Configure Addons > 1st JMSB",
+    },
+
+    # THE SAME KEYS WITH THE TABLET OPEN (user, 2026-10-25: "make a numpad sign
+    # for the tablet"): the numpad works under the tablet as on the phone
+    # (jmfsb_devices_fnc_keyDown), Enter closes it, and the frame's F1-F4 are
+    # numpad 6-9 or a click, opening the apps set in SETTINGS > DEVICE KEYS.
+    "numpad_tablet": {
+        "kind": "numpad", "title": "Numpad - Tablet",
+        "sub": "Num Lock ON  ·  the same keys work with the tablet open  ·  Enter opens and closes it",
+        "keys": {
+            "NUM": ("NUM LOCK\nON", "lock"),
+            "/": ("DECLINE\nNO", "fn"),
+            "*": ("ANSWER\nYES", "fn"),
+            "-": ("TROOPS IN\nCONTACT", "fn"),
+            "+": ("VOICE\nACTIVATE", "voice"),
+            "7": ("F2", "fn"),
+            "8": ("F3", "fn"),
+            "9": ("F4", "fn"),
+            "4": ("NET 4", "net"),
+            "5": ("NET 5", "net"),
+            "6": ("F1", "fn"),
+            "1": ("NET 1", "net"),
+            "2": ("NET 2", "net"),
+            "3": ("NET 3", "net"),
+            "ENTER": ("OPEN /\nCLOSE", "fn"),
+            "0": ("SCROLL UP / PREV NET", "arrow"),
+            ".": ("DOWN /\nNEXT NET", "arrow"),
+        },
+        "legend": [
+            ("Hold Ctrl and press", [
+                ("Mute / unmute net 1-5", "Ctrl + 1-5"),
+            ]),
+            ("Arrows 0 and .", [
+                ("Scroll the open screen", "0 up  . down"),
+                ("Nothing to scroll", "change net"),
+            ]),
+            ("The frame keys (click, or 6 7 8 9)", [
+                ("TAC//MSG  ·  Squad", "6  7"),
+                ("Radio  ·  Settings", "8  9"),
+                ("Change their apps", "SETTINGS > DEVICE KEYS"),
+            ]),
+        ],
+        "foot": "Set on your own PC: ESC > Options > Controls > Configure Addons > 1st JMSB",
+    },
+
     "radio_keys": K("Radio Voice - Keys", [
         ("Talk and nets", [
             ("Talk on your active net", "Push To Talk"),
-            ("Select net 1 - 4", "Num 1-4"),
+            ("Talk local (hold)", "Num / or Direct"),
+            ("Pick net 1 - 6", "Num 1-6"),
+            ("Mute / unmute net 1 - 6", "Ctrl+Num 1-6"),
             ("Active net left / right", "Num 0 / Num ."),
-            ("Ear for the active net", "Ctrl+Num 2"),
-            ("Mute the active net", "Ctrl+Num 3"),
-            ("Global (C2 and admins)", "tablet GLOBAL"),
+            ("Radio volume", "Num - / +"),
         ]),
         ("Calls and devices", [
-            ("Accept a call", "Ctrl+Num 1"),
-            ("Decline / hang up", "Ctrl+Num 4"),
-            ("Open the tablet", "Num 5"),
-            ("RADIO app", "Num 6"),
-            ("RADIO app tabs", "Num 7 / Num 8"),
+            ("Answer / hang up", "Num *"),
+            ("Voice activation on/off", "Num 7"),
+            ("Open the tablet", "Num 8"),
+            ("Troops In Contact", "Num 9"),
             ("Hide / show the phone", "Ctrl+End"),
+            ("Device F1-F4", "Alt+Num 1-4"),
         ]),
-    ], foot="Push To Talk: Options > Controls > Multiplayer  ·  the rest: Configure Addons (CBA)"),
+    ], foot="Push To Talk and (Direct): Options > Controls > Multiplayer  ·  the rest: Configure Addons"),
 
     "radio_howto": R("Radio Voice - How It Works", [
         ["1", "bind Push To Talk in Options > Controls > Multiplayer - the VON toggle key is blocked"],
-        ["2", "carry the MPU5, your role's default radio - with no radio you only have VEH and DIRECT"],
+        ["2", "carry the MPU5, your role's default radio - with no radio you only have VEH and LOCAL"],
         ["3", "pick a role and you land on your squad net - the filled chip on your phone"],
-        ["4", "Num 1-4 picks a net by its chip number; hold Push To Talk and the chip goes red with TX"],
+        ["4", "Num 1-6 picks a net by its chip number; hold Push To Talk and the chip goes red with TX"],
         ["5", "no fixed range - your signal routes radio to radio, through vehicles and the base stations"],
         ["6", "weak route = quiet with static; red outline = nobody can hear you - move, or get near a base"],
-        ["7", "unconscious or on radio silence your radio nets close; DIRECT always works"],
-    ], sub="Game voice on Arma's own VON - no TFAR, no ACRE, nothing to download",
+        ["7", "unconscious or on radio silence your radio nets close; LOCAL always works"],
+    ], sub="Voice is built into the mod - nothing else to download",
        foot="NET % on your phone is the free radio channels - at 0% a new call cannot connect"),
 
     # The devices drawn (user, 2026-10-22: "include drawings" - in the signs):
@@ -697,18 +852,18 @@ SIGNS = {
         "GLOBAL: server-wide talk for C2 members and admins - red while on",
         "F1-F4 are Ctrl+Num 1-4, the tablet's own keys",
         "The arrows are Num 0 and Num . : step the active net",
-    ], sub="Num 5 opens it; the UAV tablet is the same screen in a frame with grips",
+    ], sub="Num 8 opens it; the UAV tablet is the same screen in a frame with grips",
        foot="ESC closes it  ·  everything on it is also on the phone, smaller"),
 
     # The radios themselves, and the tablet's apps (user, 2026-10-23: "add
     # guides to the radios, the devices and the tablets").
     "radio_sets": D("Radio Voice - The Radios", ["mpu5_icon.png", "tw950_icon.png"], [
         "MPU5, left: the unit's handheld and every role's default, in your radio slot",
-        "It is what puts you on your nets - no radio, and you have only VEH and DIRECT",
+        "It is what puts you on your nets - no radio, and you have only VEH and LOCAL",
         "TW-950, right: the second handheld - an older set, no relay, shorter reach",
-        "Game voice: no man packs. On a TFAR or ACRE night carry that radio's sets too",
+        "No man packs: the handhelds carry every net",
         "Arsenal > Tools holds both; the one you take goes in the radio slot",
-    ], sub="The MPU5 is a MANET set: it relays for the men round you",
+    ], sub="The MPU5 is a MANET set: it relays for everyone near you",
        foot="Lose your radio and your chips go grey - get one from a mate or the arsenal", plain=True),
 
     "tablet_apps": R("The Tablet - Apps", [
@@ -722,7 +877,7 @@ SIGNS = {
         ["INTEL", "what has been recovered"],
         ["PAC", "your record, the roster, the operation"],
         ["SETTINGS", "device keys, phone size, tablet frame, grid digits, colour scheme"],
-    ], sub="Num 5 opens the tablet - a tile is a readout and the button to its app",
+    ], sub="Num 8 opens the tablet - a tile is a readout and the button to its app",
        foot="ESC closes  ·  the apps also run on the vanilla map in native mode"),
 
     # THE SIMPLE SIGNS (user, 2026-10-23: "make sure i have simple signs with
@@ -748,7 +903,7 @@ SIGNS = {
         "Net chips - Num 1-4 picks one",
         "Red with TX while you talk",
         "GLOBAL - leaders and admins, server-wide",
-    ], sub="Num 5 opens it, ESC closes it",
+    ], sub="Num 8 opens it, ESC closes it",
        foot="Everything on it is also on the phone, smaller"),
 
     "markers": R("Marker Tree", [
@@ -792,6 +947,10 @@ def render(name, spec):
     elif spec["kind"] == "keys":
         header(im, d, spec["title"])
         keycols(im, d, spec["columns"])
+        footer(im, d, spec.get("foot"))
+    elif spec["kind"] == "numpad":
+        header(im, d, spec["title"], spec.get("sub"))
+        numpad(im, d, spec["keys"], spec["legend"])
         footer(im, d, spec.get("foot"))
     elif spec["kind"] == "devices":
         header(im, d, spec["title"], spec.get("sub"))
@@ -914,6 +1073,10 @@ def main():
         os.makedirs(OUT, exist_ok=True)
         made = []
         for name, spec in sorted(SIGNS.items()):
+            # --only a,b renders just those boards - the screenshot boards need
+            # JMFSB_SIGN_ORIG and are drawn without their figure otherwise.
+            if ONLY and name not in ONLY:
+                continue
             if plain:
                 spec = strip_area(spec)
             p = os.path.join(OUT, name + ".png")
@@ -929,6 +1092,8 @@ def main():
                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             print("  converted to PAA")
 
+    if ONLY:
+        return
     EYEBROW = "1ST JOINT MULTI-FUNCTIONAL STRIKE BATTALION"
     os.makedirs(FA_OUT, exist_ok=True)
     for name, spec in sorted(FA_SIGNS.items()):

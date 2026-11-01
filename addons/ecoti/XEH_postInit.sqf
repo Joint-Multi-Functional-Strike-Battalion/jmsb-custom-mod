@@ -29,3 +29,12 @@ addMissionEventHandler ["EachFrame", {[] call FUNC(hideCovered)}];
     {false},
     [DIK_N, [true, true, false]]
 ] call CBA_fnc_addKeybind;
+
+// Unbound by default: set it in Controls > Configure Addons.
+[
+    "1st Joint Multi-Functional Strike Battalion",
+    QGVAR(hideNearKey),
+    ["AiTR - hide close boxes on/off", "No AiTR boxes inside the 'Hide close boxes inside' distance (Addon Options > AiTR (ECOTI)), or boxes on everyone again."],
+    {[] call FUNC(toggleHideNear)},
+    {false}
+] call CBA_fnc_addKeybind;

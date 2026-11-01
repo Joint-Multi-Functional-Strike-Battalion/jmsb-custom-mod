@@ -27,5 +27,5 @@ if (isNull _logic || _text isEqualTo "") exitWith {};
 [{
     params ["_logic", "_token", "_text", "_priority"];
     if (isNull _logic || {(_logic getVariable [QGVAR(token), -1]) isNotEqualTo _token}) exitWith {};
-    [QGVAR(say), [_logic, _text, _priority]] call CBA_fnc_globalEvent;
+    [_logic, _text, _priority] call FUNC(say);
 }, [_logic, _token, _text, _priority], 0 max _delay] call CBA_fnc_waitAndExecute;

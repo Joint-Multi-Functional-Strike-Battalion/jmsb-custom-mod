@@ -24,6 +24,6 @@ params ["", ["_key", -1, [0]]];
 if !(_key in (actionKeys ACTION_TOGGLE)) exitWith {false};
 if (!GVAR(toldToggle)) then {
     GVAR(toldToggle) = true;
-    [QEGVAR(voice,note), [NOTE_TITLE, NOTE_TOGGLE]] call CBA_fnc_localEvent;
+    [NOTE_TITLE, NOTE_TOGGLE] call EFUNC(notify,notify);
 };
 true

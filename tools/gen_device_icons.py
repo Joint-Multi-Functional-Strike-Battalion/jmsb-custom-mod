@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Arsenal pictures for the walking-view devices (phone, side, side2).
+"""Arsenal pictures for the walking-view devices (phone, side, side2, rdc).
 
 The items used their frame textures as the picture, and a frame's screen is a
 transparent hole - so in the arsenal each read as a dark empty rectangle (user,
@@ -31,7 +31,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ART = os.path.normpath(os.path.join(HERE, "..", "art", "devices"))
 DATA = os.path.normpath(os.path.join(HERE, "..", "addons", "devices", "data"))
 
-DEVICES = ["phone", "side", "side2"]
+DEVICES = ["phone", "side", "side2", "rdc"]
 ICON = 256
 
 # The walking view's own colours (docs/DESIGN_PHONE_WALKING.md, "Colours").

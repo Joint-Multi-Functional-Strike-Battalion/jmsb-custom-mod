@@ -3,7 +3,8 @@
 Function: jmfsb_hacking_fnc_alarmRing
 
 Description:
-    An alarm has gone off. This runs on every machine - the whole point of the
+    An alarm has gone off. The server sends this by remoteExec, and it runs only
+    when it came from the server (review S7). It runs on every machine - the whole point of the
     thing is that one person sets it and the entire server's phones go - but a
     phone only rings if you are carrying one, so a player carrying no scanner
     hears nothing, exactly as if their pocket were empty.
@@ -26,7 +27,9 @@ Author:
 ---------------------------------------------------------------------------- */
 params [["_name", "someone", [""]]];
 
-if (!hasInterface) exitWith {};
+// Sent by the server alone (FUNC(alarmAdd)), by remoteExec: a client cannot
+// ring every scanner on the net (review S7).
+if (!hasInterface || {!([] call EFUNC(common,fromServer))}) exitWith {};
 
 if !([player] call FUNC(hasScanner)) exitWith {};
 

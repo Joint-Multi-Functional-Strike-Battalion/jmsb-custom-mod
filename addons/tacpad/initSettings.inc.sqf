@@ -9,7 +9,7 @@
 [
     QGVAR(enabled), "CHECKBOX",
     ["Enable tacpad", "Draws the tacpad panels on the map screen. Off leaves the vanilla map exactly as it was."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     true,
     false
 ] call CBA_fnc_addSetting;
@@ -22,7 +22,7 @@
 [
     QGVAR(displayMode), "LIST",
     ["Display mode", "NATIVE draws the tacpad on the map screen as it always has. TABLET takes it off the map and puts the same screens inside a device - open it from the ACE self-interaction menu under Equipment, or its key. The vanilla map stays a plain map."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     [["native", "tablet"], ["Native", "Tablet"], 1],
     false,
     {[QGVAR(displayMode_changed), []] call CBA_fnc_localEvent}
@@ -34,7 +34,7 @@
         "Colour scheme",
         "Four day grounds and four night ones, in matching pairs: JMSB DAY with JMSB NIGHT (the unit's ranger green and tan; night is the default), FIELD GREY with NIGHT / RED, OLIVE with NIGHT OLIVE, SAND with NIGHT SAND. A night scheme is a dark ground with the day scheme's own accent held down to what does not blow your eyes out at 0200. CUSTOM uses the three colours below. Also switchable in-game from the gear under the message reader."
     ],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     [
         ["jmsb", "light", "olive", "sand", "nightJmsb", "dark", "nightOlive", "nightSand", "custom"],
         ["JMSB Day", "Field Grey", "Olive", "Sand", "JMSB Night", "Night / Red", "Night Olive", "Night Sand", "Custom"],
@@ -47,7 +47,7 @@
 [
     QGVAR(opacity), "SLIDER",
     ["Panel opacity", "How solid a panel's ground is over the map. The text stays fully opaque at any setting - a translucent panel you cannot read is not a panel."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     [0.3, 1, 0.92, 2, true],
     false,
     {[QGVAR(opacity_changed), []] call CBA_fnc_localEvent}
@@ -56,7 +56,7 @@
 [
     QGVAR(respectZones), "CHECKBOX",
     ["Keep clear of reserved areas", "Slides a panel out of the game menu, the chat overlay and the map's scale and contour legend when you drop it on one. Off lets you put a panel anywhere, including on top of your own chat."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     true,
     false
 ] call CBA_fnc_addSetting;
@@ -67,7 +67,7 @@
 [
     QGVAR(customGround), "EDITBOX",
     ["Custom: ground", "Panel background as r,g,b from 0 to 1, e.g. 0.05,0.06,0.05. Used only by the Custom scheme."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     "",
     false,
     {[QGVAR(scheme_changed), []] call CBA_fnc_localEvent}
@@ -76,7 +76,7 @@
 [
     QGVAR(customInk), "EDITBOX",
     ["Custom: text", "Text and divider colour as r,g,b from 0 to 1. Used only by the Custom scheme."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     "",
     false,
     {[QGVAR(scheme_changed), []] call CBA_fnc_localEvent}
@@ -85,7 +85,7 @@
 [
     QGVAR(customAccent), "EDITBOX",
     ["Custom: accent", "Selection, alerts and FLASH traffic as r,g,b from 0 to 1. Used only by the Custom scheme."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     "",
     false,
     {[QGVAR(scheme_changed), []] call CBA_fnc_localEvent}
@@ -102,7 +102,7 @@
 [
     QGVAR(quickReplies), "EDITBOX",
     ["Quick replies", "The buttons under an open thread, separated by commas. A template id (roger, wilco, inprogress, cantco, close) sends that reply; anything else is sent as the words themselves. Five per row."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     ["roger, wilco, WAIT ONE, SMOKE OUT, LZ SECURE, NEGATIVE"],
     false
 ] call CBA_fnc_addSetting;
@@ -117,7 +117,7 @@
 [
     QGVAR(uiScale), "SLIDER",
     ["UI size", "Scales the whole tacpad - panels, rows and type together. The in-game settings screen steps it by 1, 5 or 10 percent; this is the same number."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     [0.5, 2, 1, 2, true],
     false,
     {[QGVAR(uiScale_changed), []] call CBA_fnc_localEvent}
@@ -130,7 +130,7 @@
 [
     QGVAR(textScale), "SLIDER",
     ["Text size", "Scales all tacpad text. Rows and headers grow with it, so a larger setting means fewer rows visible rather than text spilling out of them."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     [0.6, 2.5, 1.2, 2, true],
     false,
     {[QGVAR(scheme_changed), []] call CBA_fnc_localEvent}

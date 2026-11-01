@@ -28,8 +28,10 @@
 
 params [["_id", "", [""]], ["_changes", createHashMap, [createHashMap, []]]];
 
+// A client's call goes to the server by remoteExec, which takes it only for a
+// node the client holds (FUNC(srvRequest), review R1).
 if (!isServer) exitWith {
-    [QGVAR(setState), [_id, _changes]] call CBA_fnc_serverEvent;
+    ["setState", [_id, _changes]] remoteExecCall [QFUNC(srvRequest), SERVER_OWNER];
     true
 };
 if (_changes isEqualType []) then {_changes = createHashMapFromArray _changes};

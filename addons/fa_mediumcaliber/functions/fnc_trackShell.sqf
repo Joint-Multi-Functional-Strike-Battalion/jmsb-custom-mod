@@ -1,7 +1,7 @@
 #include "script_component.hpp"
 /*
  * Author: YonV
- * Installs a per-frame proximity check for a programmable-airburst shell.
+ * Installs a TRACK_TICK proximity check for a programmable-airburst shell.
  * Detonates when a UAV or soft ground target enters the proximity radius.
  * Self-removes on round expiry, detonation, or once the round has flown past
  * its effective range (mirrors fnc_trackAD.sqf from the anti-drone module).
@@ -98,4 +98,4 @@ private _origin = getPosASL _proj;
     };
 
     _args set [6, _curPos];
-}, 0, [_proj, _prox, _lethal, _dmg, _origin, _range, _origin]] call CBA_fnc_addPerFrameHandler;
+}, TRACK_TICK, [_proj, _prox, _lethal, _dmg, _origin, _range, _origin]] call CBA_fnc_addPerFrameHandler;

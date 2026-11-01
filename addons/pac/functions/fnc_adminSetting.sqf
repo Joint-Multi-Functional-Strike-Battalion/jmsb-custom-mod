@@ -32,7 +32,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_key", "", [""]], ["_value", "", [""]]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
     WARNING_2("adminSetting refused: %1 is not an admin (%2)",name _caller,_key);
     false
 };

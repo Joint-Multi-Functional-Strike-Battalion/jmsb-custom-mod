@@ -11,7 +11,12 @@
  * Sorted newest first and trimmed, so a long mission does not accumulate a
  * thousand entries nobody will scroll to.
  *
- * Arguments (CBA event):
+ * Sent by remoteExecCall from the server (FUNC(alert), messaging's srvTic) and
+ * taken only from the server, or called on this machine for its own alert (the
+ * tacpad's TIMER) - review S7. It was a CBA event, and any client could raise
+ * that one to put a red danger popup on every screen.
+ *
+ * Arguments:
  * 0: Source <STRING>
  * 1: Text <STRING>
  * 2: Grid, "" if nowhere in particular <STRING>
@@ -21,10 +26,14 @@
  * Return Value:
  * None
  *
- * Public: No
+ * Example:
+ * ["TIMER", "Countdown expired.", "", 2, 60] call jmfsb_common_fnc_onAlert
+ *
+ * Public: Yes
  */
 
 if (!hasInterface) exitWith {};
+if !([] call FUNC(fromServer)) exitWith {};
 params [["_source", "", [""]], ["_text", "", [""]], ["_grid", "", [""]], ["_severity", 1, [0]], ["_life", 120, [0]]];
 
 private _alerts = missionNamespace getVariable [QGVAR(alerts), []];

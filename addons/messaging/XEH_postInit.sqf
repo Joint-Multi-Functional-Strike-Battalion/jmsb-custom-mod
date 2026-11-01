@@ -1,19 +1,14 @@
 #include "script_component.hpp"
 
-// Everything crosses the wire on CBA's event channel rather than a raw
-// remoteExec. patrol_base made the same call for the same reason: it is a
-// channel a mission's CfgRemoteExec cannot close, and it is what the rest of
-// the mod already uses. The trade is that the server cannot read the sending
-// machine off the engine, so it takes the sender from the unit it was handed
-// and checks that unit is a live player - see srvSubmit.
+// THE WIRE IS remoteExecCall, NOT CBA EVENTS (review S7). A CBA event carries
+// no sender, so the server could only take the sender from the unit it was
+// handed - and any client could hand it anyone's. A client calls srvSubmit,
+// srvRequestIndex, srvRequestThread, srvMarkRead and srvClaim on the server,
+// each of which checks the unit named is the sender's own; the server answers
+// with cltReceive, cltIndex, cltThread, cltMarker and cltReject, each of which
+// takes the call only from the server.
 
 if (isServer) then {
-    [QGVAR(submit), LINKFUNC(srvSubmit)] call CBA_fnc_addEventHandler;
-    [QGVAR(requestIndex), LINKFUNC(srvRequestIndex)] call CBA_fnc_addEventHandler;
-    [QGVAR(requestThread), LINKFUNC(srvRequestThread)] call CBA_fnc_addEventHandler;
-    [QGVAR(markRead), LINKFUNC(srvMarkRead)] call CBA_fnc_addEventHandler;
-    [QGVAR(claim), LINKFUNC(srvClaim)] call CBA_fnc_addEventHandler;
-
     // TRAFFIC DOES NOT SURVIVE A RESTART, and that is the design rather than a
     // gap in it. The store is built empty in preInit and nothing reloads it: the
     // mailboxes the mission named are recreated here, and they are recreated
@@ -48,34 +43,6 @@ if (isServer) then {
 };
 
 if (hasInterface) then {
-    // The cache holds threads the server has already sent. When the store is
-    // emptied under it - see msg.clear - it is holding threads that no longer
-    // exist, and an index refresh alone would not clear them.
-    [QGVAR(cacheClear), {
-        GVAR(cache) = createHashMap;
-    }] call CBA_fnc_addEventHandler;
-
-    [QGVAR(indexPush), LINKFUNC(cltIndex)] call CBA_fnc_addEventHandler;
-    [QGVAR(receive), LINKFUNC(cltReceive)] call CBA_fnc_addEventHandler;
-    [QGVAR(threadPush), LINKFUNC(cltThread)] call CBA_fnc_addEventHandler;
-    [QGVAR(marker), LINKFUNC(cltMarker)] call CBA_fnc_addEventHandler;
-
-    // A refusal is told to the sender and nobody else. It is the server's half
-    // of the validation the client already ran, so it only fires when the two
-    // disagreed - a stale template, or a thread that changed state while the
-    // form was open.
-    [QGVAR(reject), {
-        params [["_templateId", "", [""]], ["_why", "", [""]]];
-        private _template = [_templateId] call FUNC(template);
-        [_template getOrDefault ["short", "MESSAGE"], _why, "high"] call FUNC(notify);
-
-        // AND IN CHAT. The notification stack is an RscTitles layer, so anything
-        // drawn as a dialog is in front of it - and the screen a refusal is
-        // about is always a dialog. A message that says why nothing happened is
-        // worthless if it is behind the thing that did nothing.
-        systemChat format ["[%1] %2", _template getOrDefault ["short", "MESSAGE"], _why];
-    }] call CBA_fnc_addEventHandler;
-
     // Ask once the player exists. A JIP client that asks before its unit is
     // assigned gets an empty index and never asks again.
     [{!isNull player && {!isNull (group player)}}, {
@@ -227,8 +194,10 @@ if (hasInterface) then {
     // but they let go of the threads that no longer exist.
     {_y set ["threads", []]} forEach GVAR(boxes);
 
-    [QGVAR(cacheClear), []] call CBA_fnc_globalEvent;
-    {[_x] call FUNC(srvRequestIndex)} forEach allPlayers;
+    // From the server by remoteExec, not a CBA event any client can raise
+    // (review S7).
+    [] remoteExecCall [QFUNC(cltCacheClear), 0];
+    {[_x] call FUNC(srvIndexPush)} forEach allPlayers;
     "store emptied and every index refreshed"
 }] call EFUNC(common,addDebugCommand);
 
@@ -237,8 +206,8 @@ if (hasInterface) then {
     private _text = [_args joinString " ", "Admin test - if you can read this in TAC//MSG the chain is intact"] select (_args isEqualTo []);
     private _key = ((["freetext"] call FUNC(template)) getOrDefault ["order", []]) param [0, "Text.A"];
 
-    // Through the same event the client uses, so this proves the server half
-    // exactly as a player's send would.
+    // Through the same function the client calls, so this proves the server
+    // half exactly as a player's send would.
     [_caller, format ["admin:%1:%2", diag_frameNo, floor random 1e6], "freetext", [[_key, _text]], [format ["P:%1", getPlayerUID _caller]], "", ""] call FUNC(srvSubmit);
     "filed - it should be in your reader within a frame"
 }] call EFUNC(common,addDebugCommand);

@@ -23,7 +23,7 @@ params [["_on", !GVAR(globalOn), [false]]];
 
 if (!GVAR(active) || {!hasInterface}) exitWith {false};
 if (_on && {!([player] call FUNC(canGlobal))}) exitWith {
-    [QGVAR(note), [GLOBAL_TITLE, GLOBAL_REFUSED]] call CBA_fnc_localEvent;
+    [GLOBAL_TITLE, GLOBAL_REFUSED] call EFUNC(notify,notify);
     false
 };
 if !([_on, GVAR(activeNetId)] call HOOK("global")) exitWith {false};

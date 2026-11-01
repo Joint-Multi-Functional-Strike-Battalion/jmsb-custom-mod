@@ -18,10 +18,8 @@ ADDON = false;
 
 #include "initSettings.inc.sqf"
 
-// The staging zones' satellite uplinks are the server's: a client that adds or
-// removes a zone reports it here (FUNC(stagingUplink)).
-if (isServer) then {
-    [QGVAR(stagingUplink), {_this call FUNC(stagingUplink)}] call CBA_fnc_addEventHandler;
-};
+// The staging zones' satellite uplinks are the server's: a client reports a
+// zone's position by remoteExec to FUNC(stagingUplink), which checks it - not
+// the CBA event it was, which any client could raise (review R1).
 
 ADDON = true;

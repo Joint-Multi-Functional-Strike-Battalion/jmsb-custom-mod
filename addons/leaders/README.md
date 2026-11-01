@@ -23,6 +23,9 @@ survives a restart.
 
     #jmfsbleaders    who is left, where, and in what state
 
+Admins only, on a dedicated server too; the answer goes to the admin who typed
+it, nobody else. Same as `#jmfsb leaders`.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

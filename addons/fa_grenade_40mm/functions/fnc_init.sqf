@@ -15,7 +15,6 @@
 if (GVAR(initDone)) exitWith {};
 GVAR(initDone) = true;
 
-GVAR(hasACRE) = isClass (configFile >> "CfgPatches" >> "acre_main");
 GVAR(hasDEW)  = isClass (configFile >> "CfgPatches" >> "DEW_main") ||
                 {isClass (configFile >> "CfgPatches" >> "Drongo_EW")};
 
@@ -35,6 +34,9 @@ GVAR(registry) = createHashMapFromArray [
 
 ["CAManBase", "fired", {
     params ["_unit", "_w", "_m", "_md", "_ammo", "_mag", "_proj"];
+    // Fired runs on every machine; only the shooter's deploys the payload,
+    // or every client spawns its own chute and effect.
+    if (!local _proj) exitWith {};
     private _entry = GVAR(registry) getOrDefault [_ammo, []];
     if (_entry isEqualTo []) exitWith {};
     [_unit, _proj, _entry] call FUNC(handle);

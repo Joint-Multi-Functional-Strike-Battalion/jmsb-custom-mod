@@ -12,6 +12,9 @@
  *   MARK        drops a marker here (FUNC(mark))
  *   VIEWSHED    works out line of sight from here (FUNC(viewshedStart))
  *   ROUTE       adds a waypoint
+ *   RINGS       places the rings' centre
+ *   LOS         the first press is where you look from; the second where
+ *               you look to (FUNC(losCheck))
  *   GRID        reads, takes no press
  *
  * Arguments:
@@ -67,6 +70,18 @@ switch (GVAR(tool)) do {
     };
     case TOOL_ROUTE: {
         GVAR(route) pushBack _pos;
+    };
+    case TOOL_RINGS: {
+        GVAR(rings) = _pos;
+    };
+    case TOOL_LOS: {
+        if (GVAR(losFrom) isEqualTo []) then {
+            GVAR(losFrom) = _pos;
+            GVAR(los) = [];
+        } else {
+            GVAR(los) = [GVAR(losFrom), _pos] + ([GVAR(losFrom), _pos] call FUNC(losCheck));
+            GVAR(losFrom) = [];
+        };
     };
     default {};
 };

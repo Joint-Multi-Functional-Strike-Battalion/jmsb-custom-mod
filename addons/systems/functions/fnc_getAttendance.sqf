@@ -1,34 +1,40 @@
 #include "script_component.hpp"
 /*
  * Author: CPL.Brostrom.A -- Tinkered with by YonV tinkered with by YonV
- * This function return players that have connected to the server.
- * It will print it to your RPT log.
+ * Prints the names of the players that have connected to this machine's RPT.
+ * The connection log lives on the server only, so the names are read there
+ * and handed to the asking client, which prints them again in its own RPT.
  *
  * Arguments:
- * None
+ * 0: Names to print (default: read from the server's connection log) <ARRAY of STRINGs>
  *
  * Return Value:
- * Array of players
+ * Names printed <ARRAY of STRINGs>
  *
  * Example:
  * call jmfsb_systems_fnc_getAttendance
  *
+ * Public: No
  */
 
-private _playerLog = missionNamespace getVariable [QEGVAR(log,players), []];
+params [["_names", nil, [[]]]];
 
-// Rpt 
+if (isNil "_names") then {
+    // keyed by UID; the name is in each entry
+    private _playerLog = missionNamespace getVariable [QEGVAR(log,players), createHashMap];
+    _names = [];
+    {
+        _names pushBack (_y getOrDefault ["name", _x]);
+    } forEach _playerLog;
+};
+
+// Rpt
 ["=================================================== START", "Attendance"] call EFUNC(diag,info);
-[format ["Attendance (Entries: %1)", count _playerLog], "Attendance"] call EFUNC(diag,info);
+[format ["Attendance (Entries: %1)", count _names], "Attendance"] call EFUNC(diag,info);
 {
-    _x params ["_name"];
-    [_name, "Attendance",  false, false] call EFUNC(diag,info);
-} forEach _playerLog;
+    [_x, "Attendance", false, false] call EFUNC(diag,info);
+} forEach _names;
 
 ["=================================================== END", "Attendance"] call EFUNC(diag,info);
 
-
-// Notification
-["Attendance", "All attended players have been written to your RPT log.", NOTE_INFO] call JMFSBFUNC(notify,notify);
-
-_playerLog
+_names

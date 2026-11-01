@@ -3,6 +3,10 @@
  * Author: 3Mydlo3
  * Function enables spectator functionality.
  *
+ * Server only: each player who may spectate gets FUNC(start) by remoteExec,
+ * which takes it only from the server (review R1: it was a CBA event any
+ * client could raise to force every player into spectator).
+ *
  * Arguments:
  * None
  *
@@ -15,8 +19,10 @@
  * Public: No
  */
 
+if (!isServer) exitWith {false};
+
 {
-    [QGVAR(start), [_x], _x] call CBA_fnc_targetEvent;
+    [_x] remoteExecCall [QFUNC(start), _x];
 } forEach (allPlayers select {[_x] call FUNC(canSpectate)});
 
 true

@@ -4,8 +4,7 @@
  * Link quality from a speaker to the local player on a net, as he hears it:
  * RF's best path, held at its last value for the grace time after the route
  * drops. Mute is not applied. DIRECT 1; VEH 1 between crew of one vehicle.
- * Under TFAR / ACRE: that radio's adapter's word (hook "linkQuality":
- * TFAR RF's quality on the net, ACRE 1 - ACRE's own signal model rules).
+ * 0 while no game-voice system runs (system "none").
  *
  * Arguments:
  * 0: Speaker <OBJECT>
@@ -24,7 +23,7 @@ params [["_speaker", objNull, [objNull]], ["_net", "", [""]]];
 
 if (isNull _speaker) exitWith {0};
 if (_speaker isEqualTo player) exitWith {1};
-if (!GVAR(active)) exitWith {[_speaker, _net] call HOOK("linkQuality")};
+if (!GVAR(active)) exitWith {0};
 if !(([_net] call FUNC(netKind)) in MESH_KINDS) exitWith {[_speaker, _net] call FUNC(linkQuality)};
 
 private _eff = GVAR(eff) get ((getPlayerUID _speaker) + "|" + _net);

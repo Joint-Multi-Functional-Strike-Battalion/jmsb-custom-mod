@@ -6,17 +6,17 @@
 // LOCAL goes further - it owns the round, so it is the one that can delete it.
 ["AllVehicles", "fired", LINKFUNC(fired)] call CBA_fnc_addClassEventHandler;
 
-// The server asks the firing machine to kill a round it owns (FUNC(resolve)).
-[QGVAR(kill), LINKFUNC(kill)] call CBA_fnc_addEventHandler;
-// The server asks the gunner's machine to fire (FUNC(assign)) when the gunner
-// is not the server's - a headless client's crew.
-[QGVAR(fire), LINKFUNC(fire)] call CBA_fnc_addEventHandler;
+// The server asks the firing machine to kill a round it owns (FUNC(resolve)),
+// and the gunner's machine to fire (FUNC(assign)) when the gunner is not the
+// server's - a headless client's crew. Both by remoteExec, taken only from
+// the server: the "kill" and "fire" CBA events are gone (review S7).
 
 if (!isServer) exitWith {};
 
-// A fired round reported by its firing machine (FUNC(shot)) - the server's
-// own shots arrive here too, as a local event.
-[QGVAR(threat), LINKFUNC(threat)] call CBA_fnc_addEventHandler;
+// A fired round reported by its firing machine (FUNC(shot)) comes by
+// remoteExec to FUNC(threat), which checks the shooter is the sender's; the
+// server's own shots call it. No CBA event (review R1): any client could raise
+// one with fake rounds to make the guns burst.
 
 // jmfsb_airdefence's batteries and AA bases: one alarm area per battery,
 // claimed from whatever automatic area their pieces were put in at creation.

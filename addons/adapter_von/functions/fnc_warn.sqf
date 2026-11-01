@@ -19,9 +19,10 @@
 
 (findDisplay DISPLAY_MISSION) displayAddEventHandler ["KeyDown", {_this call FUNC(keyDown)}];
 
-if ((actionKeys ACTION_PTT) isEqualTo []) then {
-    [QEGVAR(voice,note), [NOTE_TITLE, NOTE_NO_PTT]] call CBA_fnc_localEvent;
+// A player on voice activation needs no Push To Talk key (GVAR(vad)).
+if (!GVAR(vad) && {(actionKeys ACTION_PTT) isEqualTo []}) then {
+    [NOTE_TITLE, NOTE_NO_PTT] call EFUNC(notify,notify);
 };
 if ((getAudioOptionVolumes select VON_VOLUME_INDEX) < VON_VOLUME_LOW) then {
-    [QEGVAR(voice,note), [NOTE_TITLE, NOTE_VON_LOW]] call CBA_fnc_localEvent;
+    [NOTE_TITLE, NOTE_VON_LOW] call EFUNC(notify,notify);
 };

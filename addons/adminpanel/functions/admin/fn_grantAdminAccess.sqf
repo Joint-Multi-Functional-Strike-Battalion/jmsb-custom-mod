@@ -33,32 +33,17 @@ if ((getPlayerUID _player) in admp_authorisedIDs) then {
     private _message = format ["Are you sure you want to remove admin panel access from %1?", name _player];
     private _confirm = [_message, "CONFIRM REMOVE ACCESS", "CONFIRM", "CANCEL", _admp_display] call BIS_fnc_guiMessage;
 
+    // THE SERVER CHANGES ITS LIST AND ANSWERS (review S2, FUNC(adminGrant)).
     if (_confirm) then {
-        admp_authorisedIDs deleteAt (admp_authorisedIDs find (getPlayerUID _player));
-        publicVariable "admp_authorisedIDs";
-        
-        ["Admin Panel", format ["Removed %1's admin access!", name _player], [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);
+        [getPlayerUID _player, false] remoteExecCall [QFUNC(adminGrant), 2];
         playSound "3DEN_notificationDefault";
-
-        if (_player != player) then { // show selected player a message
-            _message = format ["%1 revoked your admin access!", name player];
-            [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
-        };
     };
 } else {
     private _message = format ["Are you sure you want to give admin panel access to %1?", name _player];
     private _confirm = [_message, "CONFIRM ADMIN ACCESS", "CONFIRM", "CANCEL", _admp_display] call BIS_fnc_guiMessage;
 
     if (_confirm) then {
-        admp_authorisedIDs pushBackUnique (getPlayerUID _player);
-        publicVariable "admp_authorisedIDs";
-
-        ["Admin Panel", format ["Granted %1 admin access!", name _player], [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);
+        [getPlayerUID _player, true] remoteExecCall [QFUNC(adminGrant), 2];
         playSound "3DEN_notificationDefault";
-
-        if (_player != player) then { // show selected player a message
-            _message = format ["%1 granted you admin access!", name player];
-            [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
-        };
     };
 };

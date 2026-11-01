@@ -87,3 +87,7 @@ if (diag_tickTime >= (_keys getOrDefault ["tilesDue", 0])) then {
 };
 
 [] call FUNC(tabletStack);
+
+// The call's window, drawn last so it is on top of any row or panel rebuilt
+// this tick; it has no buttons, so drawing it every tick loses no press.
+[_display] call FUNC(tabletCall);

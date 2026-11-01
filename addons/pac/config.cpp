@@ -11,7 +11,8 @@ class CfgPatches {
             "jmfsb_common",
             "jmfsb_adminpanel",
             "jmfsb_tacpad",
-            "jmfsb_notify"
+            "jmfsb_notify",
+            "jmfsb_loading"
         };
         skipWhenMissingDependencies = 1;
         author = QAUTHOR;

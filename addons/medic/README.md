@@ -28,7 +28,7 @@ Without a device, the line shows the last hand check, with its age and the medic
 
 ACM's cuff readings (`MeasureBloodPressure` / `MeasureBloodPressureStethoscope`) are not recorded. Their treatment completes in 0.01 s and only opens ACM's gauge, which the medic can cancel, so `ace_treatmentSucceded` fires before any reading exists. They need the cuff on that arm, and while the cuff is on, the BP line is live anyway.
 
-The reading is taken on the patient's own machine, where his vitals are exact, through the `jmfsb_medic_measure` targeted event. It is published on him as `jmfsb_medic_checkHR` / `_checkBP` / `_checkRR` (`[value, missionTime, medicName]`), so every medic in the section sees the same last reading. A check on a limb under a tourniquet reads zero. There is no hand check for SpO2. With neither a device nor a hand check, the line reads `--` and NOT MONITORED.
+The reading is taken on the patient's own machine, where his vitals are exact. The medic's machine sends the check by `remoteExecCall` to the server's `srvMeasure`, which names the medic from the sender, checks he is alive and within 10 m of the patient, and sends it to `measureLocal` on the patient's machine, which takes it only from the server (review R1; it was the `jmfsb_medic_measure` CBA event, which any client could raise to stamp a check with any medic's name on anyone). It is published on him as `jmfsb_medic_checkHR` / `_checkBP` / `_checkRR` (`[value, missionTime, medicName]`), so every medic in the section sees the same last reading. A check on a limb under a tourniquet reads zero. There is no hand check for SpO2. With neither a device nor a hand check, the line reads `--` and NOT MONITORED.
 
 Blood type is always shown, because it comes off the dog tags. The app reads `ACM_circulation_BloodType` first (0-7 = O+, O-, A+, A-, B+, B-, AB+, AB-), then ACE's `ace_dogtags_dogtagData`. If neither is set, it calls `ace_dogtags_fnc_getDogtagData`, which works the tag out and publishes it, the same as a hand dog-tag check.
 
@@ -58,11 +58,11 @@ The variable names are ACE's public unit variables. For ACM they were read from 
 
 ## Ships
 
-16 functions.
+17 functions.
 
 ## Functions
 
-<details><summary>16</summary>
+<details><summary>17</summary>
 
 - `jmfsb_medic_fnc_age`
 - `jmfsb_medic_fnc_app`
@@ -79,6 +79,7 @@ The variable names are ACE's public unit variables. For ACM they were read from 
 - `jmfsb_medic_fnc_readVitals`
 - `jmfsb_medic_fnc_recordCheck`
 - `jmfsb_medic_fnc_showOnMap`
+- `jmfsb_medic_fnc_srvMeasure`
 - `jmfsb_medic_fnc_tile`
 
 </details>

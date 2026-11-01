@@ -2,6 +2,7 @@
 PREP(isActive);
 PREP(isFullScreen);
 PREP(togglePower);
+PREP(toggleHideNear);
 
 // The caches: who is in range, how much of each of them can be seen, what
 // colour each is.
@@ -25,3 +26,5 @@ PREP(drawCompass);
 // EachFrame - hides the boxes when the map or a dialog covers the view,
 // where Draw3D does not run.
 PREP(hideCovered);
+// Is he looking through a Vector - the long sensor range (user, 2026-10-24).
+PREP(vectorView);

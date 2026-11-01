@@ -81,7 +81,7 @@ private _lo = [_min, 0] select (_list isNotEqualTo []);
 private _hi = [_max, count _list - 1] select (_list isNotEqualTo []);
 private _frac = if (_hi > _lo) then {(_pos - _lo) / (_hi - _lo)} else {1};
 
-[_parent, [_x0, _y0, _w, _labelH], _label, _muted, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+[_parent, [_x0, _y0, _w, _labelH], _label, _muted, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 
 private _by = _y0 + _labelH;
 [_parent, [_x0, _by, _w, _boxH], _ground] call EFUNC(tacpad,drawFill);
@@ -92,7 +92,7 @@ private _by = _y0 + _labelH;
 // The value bar.
 private _vx = _x0 + _cellW + _pad * 2;
 private _vw = _w - 2 * _cellW - _pad * 4;
-[_parent, [_vx, _by, _vw * (1 - STEP_BAR_SPAN), _boxH], _valueText, _ink, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+[_parent, [_vx, _by, _vw * (1 - STEP_BAR_SPAN), _boxH], _valueText, _ink, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 if (_bar) then {
     private _barH = STEP_BAR_PX * pixelH;
     private _barW = _vw * STEP_BAR_SPAN * (_frac max STEP_BAR_MIN);

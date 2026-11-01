@@ -89,7 +89,7 @@ _logic setVariable [QGVAR(partners), _joined];
 [_logic, _target, format ["%1 - %2 %3", _callsign, _label, SHEAF_WORDS param [_sheafType, ""]], _sheaf] call FUNC(mark);
 
 if (_wait >= 1) then {
-    [QGVAR(say), [_logic, format ["fire mission received - shot in %1 sec", round _wait], "normal"]] call CBA_fnc_globalEvent;
+    [_logic, format ["fire mission received - shot in %1 sec", round _wait], "normal"] call FUNC(say);
 };
 
 private _with = _joined apply {(_x select 0) getVariable [QGVAR(callsign), "FIRES"]};

@@ -8,9 +8,10 @@ Description:
     anything that is not a `#jmfsb ` command from an admin, so ordinary chat is
     untouched.
 
-    Server-side handlers are reached with CBA_fnc_serverEvent and reply back to
-    the caller alone - the point is testing on a live dedicated server without
-    telling the whole lobby what you are doing.
+    Server-side handlers are reached by remoteExec (FUNC(debugRunServer),
+    which checks the sender is an admin) and reply back to the caller alone -
+    the point is testing on a live dedicated server without telling the whole
+    lobby what you are doing.
 
 Parameters:
     _text   : STRING - the raw chat message.
@@ -27,7 +28,12 @@ params [["_text", "", [""]], ["_sender", objNull, [objNull]]];
 if ((toLower _text) select [0, 7] isNotEqualTo DEBUG_PREFIX) exitWith { false };
 
 // Never acknowledge the surface to a non-admin: swallow nothing, say nothing.
+// The flag is the server's (FUNC(adminFlags)); the server checks again.
 if !(_sender getVariable [QGVAR(isAdmin), false]) exitWith { false };
+
+// Every machine sees the chat line (review B27): only the typer's runs it;
+// the others just hide an admin's command.
+if (_sender isNotEqualTo player) exitWith { true };
 
 private _parts = (_text select [7]) splitString " ";
 if (_parts isEqualTo []) exitWith {
@@ -37,21 +43,22 @@ if (_parts isEqualTo []) exitWith {
 
 private _name = toLower (_parts deleteAt 0);
 
-if (isNil QGVAR(debugCommands)) then { GVAR(debugCommands) = createHashMap };
+// The table is this machine's own (localNamespace, FUNC(addDebugCommand)).
+private _commands = localNamespace getVariable [QGVAR(debugCommands), createHashMap];
 
 if (_name isEqualTo "help") exitWith {
     private _lines = [];
     {
         _y params ["_n", "_h"];
         _lines pushBack format ["  %1%2 - %3", DEBUG_PREFIX, _n, _h];
-    } forEach GVAR(debugCommands);
+    } forEach _commands;
     _lines sort true;
     [format ["%1 commands:", count _lines]] call FUNC(debugReply);
     { [_x] call FUNC(debugReply) } forEach _lines;
     true
 };
 
-private _entry = GVAR(debugCommands) getOrDefault [_name, []];
+private _entry = _commands getOrDefault [_name, []];
 if (_entry isEqualTo []) exitWith {
     [format ["unknown command '%1' - try %2help", _name, DEBUG_PREFIX]] call FUNC(debugReply);
     true
@@ -64,7 +71,7 @@ if (_local) then {
     private _reply = [_parts, _sender] call _code;
     if (!isNil "_reply") then { [_reply] call FUNC(debugReply) };
 } else {
-    [QGVAR(debugRun), [_name, _parts, _sender]] call CBA_fnc_serverEvent;
+    [_name, _parts] remoteExecCall [QFUNC(debugRunServer), SERVER_OWNER];
 };
 
 true

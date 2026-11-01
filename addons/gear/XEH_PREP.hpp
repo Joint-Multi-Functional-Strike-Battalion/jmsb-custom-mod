@@ -6,4 +6,3 @@ PREP(postInitProxy);
 PREP(preInit);
 PREP(removeLoadout);
 PREP(saveLoadout);
-PREP(setupRadios);

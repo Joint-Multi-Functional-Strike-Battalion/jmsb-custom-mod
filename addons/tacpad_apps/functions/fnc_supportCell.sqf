@@ -83,12 +83,12 @@ private _fill = [_parent, _rect, _fillColour] call EFUNC(tacpad,drawFill);
 
 private _labelW = [_w * _split, _w] select (_meta isEqualTo "");
 private _labels = [
-    ["label", [_parent, [_x0 + _pad, _y0, _labelW - 2 * _pad, _h], _label, _labelColour, TEXT_TITLE, true]] call FUNC(supportHover)
+    ["label", [_parent, [_x0 + _pad, _y0, _labelW - 2 * _pad, _h], _label, _labelColour, TEXT_TITLE * SUP_TEXT_K, true]] call FUNC(supportHover)
 ];
 if (_meta isNotEqualTo "") then {
     _labels pushBack (["label", [
         _parent, [_x0 + _labelW, _y0, _w - _labelW - _pad, _h],
-        _meta, _metaColour, TEXT_LABEL, true, "right", true
+        _meta, _metaColour, TEXT_BODY, true, "right", true
     ]] call FUNC(supportHover));
 };
 

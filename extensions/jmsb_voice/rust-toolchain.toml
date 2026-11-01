@@ -1,0 +1,5 @@
+# The compiler the DLL is built with, here and on GitHub Actions
+# (.github/workflows/jmsb_voice.yml), so both build the same thing.
+[toolchain]
+channel = "1.99.1"
+profile = "minimal"

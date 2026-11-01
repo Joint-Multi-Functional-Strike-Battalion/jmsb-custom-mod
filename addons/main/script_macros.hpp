@@ -41,10 +41,6 @@
 #define JMFSB_TOOLBAR               "1st Joint Multi-Functional Strike Battalion"
 #define JMFSB_TOOLBAR_WIKI          "Wiki"
 
-// Extension macros
-#define EXT "1st Joint Multi-Functional Strike Battalion_mods"
-#define EXT_LOG "1st Joint Multi-Functional Strike Battalion_mods_log"
-
 // JMFSB Debug macros
 #include "\z\jmfsb\addons\main\script_debug.hpp"
 

@@ -3,7 +3,7 @@
 // RscDisplayVoiceChat is a microphone square in the bottom left while the
 // player transmits; under game voice FUNC(voiceChatLoad) hides it and shows
 // this chip in its place - a red dot, TX and the net he is keying ("TX GHOST 1",
-// "TX GLOBAL"). Under TFAR / ACRE (voice stood down) the vanilla one stays.
+// "TX GLOBAL"). Under any other system the vanilla one stays.
 class RscStructuredText;
 
 class RscDisplayVoiceChat {

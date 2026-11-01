@@ -23,7 +23,7 @@ if (!isServer || {isNull _logic}) exitWith {};
 if (_token isNotEqualTo (_logic getVariable [QGVAR(token), -1])) exitWith {};
 
 if (_said isNotEqualTo "") then {
-    [QGVAR(say), [_logic, _said, "normal"]] call CBA_fnc_globalEvent;
+    [_logic, _said, "normal"] call FUNC(say);
 };
 
 private _left = (_logic getVariable [QGVAR(inFlight), 1]) - 1;

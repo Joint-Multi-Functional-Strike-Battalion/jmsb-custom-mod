@@ -44,5 +44,11 @@ switch (true) do {
     };
 };
 
+// The player's radio volume knob scales every radio speaker (user,
+// 2026-10-24); Direct stays at his own voice-chat volume.
+if (_ch isEqualTo CH_GROUP || _ch isEqualTo CH_VEHICLE || _ch > CH_DIRECT) then {
+    _volume = _volume * GVAR(masterVolume);
+};
+
 _unit setPlayerVoNVolume _volume;
 _volume

@@ -20,7 +20,7 @@ params ["_unit"];
 private _chute = vehicle _unit;
 
 // Rope top helper, workaround parachute rope visual bug, allow cut
-private _ropeTop = createVehicle ["ace_fastroping_helper", getPos _chute, [], 0, "CAN_COLLIDE"];
+private _ropeTop = createVehicle [ROPE_TOP_CLASS, getPos _chute, [], 0, "CAN_COLLIDE"];
 _chute setVariable [QGVAR(loweringLine), _ropeTop, true];
 _ropeTop allowDamage false;
 _ropeTop disableCollisionWith _chute;

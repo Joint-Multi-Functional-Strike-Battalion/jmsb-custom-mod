@@ -46,6 +46,9 @@
  * 0: Accepted <BOOL>
  * 1: Why not, "" when accepted <STRING>
  *
+ * Example:
+ * ["cas:0", "SAD", getPosATL player, []] call jmfsb_cas_fnc_task
+ *
  * Public: No
  */
 
@@ -74,7 +77,8 @@ if (isNull _logic) exitWith {
 private _callsign = _logic getVariable [QGVAR(callsign), "CAS"];
 
 if (_task isEqualTo "rtb") exitWith {
-    [QGVAR(abort), [_logic]] call CBA_fnc_serverEvent;
+    // By remoteExec, so the server knows who recalls it (review S6).
+    [_logic] remoteExecCall [QFUNC(abort), SERVER_OWNER];
     INFO_1("%1 recalled",_callsign);
     [true, ""]
 };
@@ -102,10 +106,12 @@ if (_pos isEqualTo []) exitWith {[false, "no target grid"]};
 // through as its own words; only LOITER means something different here, and
 // everything else - SAD, ATTACK RUN, a token this addon has never heard of -
 // is the strike this asset has always flown.
-private _mode = ["strike", "loiter"] select (toUpper _task isEqualTo "LOITER");
+private _mode = [MODE_STRIKE, MODE_LOITER] select (toUpper _task isEqualTo "LOITER");
 
 // THE ORDER GOES TO THE SERVER AND THE RUN IS FLOWN THERE. A client that
 // spawned its own aircraft would own an airframe nobody else could see hit.
-[QGVAR(request), [_logic, _pos, _ingress, _egress, player, _mag, _mode]] call CBA_fnc_serverEvent;
+// By remoteExec, and without a caller: the server takes him from the sending
+// machine and checks his side and the tasking gate again (review S6).
+[_logic, _pos, _ingress, _egress, _mag, _mode] remoteExecCall [QFUNC(request), SERVER_OWNER];
 
 [true, ""]

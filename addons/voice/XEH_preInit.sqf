@@ -6,30 +6,22 @@ PREP_RECOMPILE_START;
 #include "XEH_PREP.hpp"
 PREP_RECOMPILE_END;
 
-// WHICH SYSTEM CARRIES THE VOICE (user, 2026-10-20): VON only when neither TFAR
-// nor ACRE is loaded. Decided once, here, from this machine's own CfgPatches
-// (server and clients load the same mods). Under TFAR or ACRE nothing of VON is
-// started (XEH_postInit): the core only mirrors that radio's adapter for the
-// UIs (fnc_externalTick), and calls, contacts and sounds answer empty.
-private _tfar = TFAR_PATCHES select {isClass (configFile >> "CfgPatches" >> _x)};
-private _acre = ACRE_PATCHES select {isClass (configFile >> "CfgPatches" >> _x)};
-GVAR(system) = SYSTEM_VON;
-if (_acre isNotEqualTo []) then {GVAR(system) = SYSTEM_ACRE};
-if (_tfar isNotEqualTo []) then {GVAR(system) = SYSTEM_TFAR};
-GVAR(active) = GVAR(system) isEqualTo SYSTEM_VON;
-if (!GVAR(active)) then {
-    INFO_2("voice: %1 loaded (%2) - VON stands down, the core serves that radio's nets",GVAR(system),_tfar + _acre);
-};
-if (_tfar isNotEqualTo [] && _acre isNotEqualTo []) then {
-    WARNING("voice: TFAR and ACRE both loaded - TFAR's adapter is the one taken");
-};
-// External-radio mode: when the adapter's nets are next read (fnc_externalTick).
-GVAR(extNetsAt) = 0;
+// WHICH SYSTEM CARRIES THE VOICE (user, 2026-10-20; the choice a setting,
+// 2026-10-30): the automatic answer - LiveKit when adapter_livekit announces
+// itself here (its preInit), else game VON - now, so every reader has one
+// before the settings are in. The setting (jmfsb_voice_defaultSystem) is read
+// at CBA_settingsInitialized, below, before anything of any system starts
+// (XEH_postInit gates on it there too). TFAR and ACRE are no longer choices
+// (DEC1, 2026-10-31).
+GVAR(loaded) = [];
 
 // THE ADAPTER: hooks of the backend that carries the audio. adapter_von
-// registers "von" in its preInit (it requires this addon, so this runs first);
-// under TFAR / ACRE adapter_tfar / adapter_acre register "tfar" / "acre".
-// Until one registers, every hook is a no-op with a neutral answer.
+// registers "von" and adapter_livekit "livekit", each in its preInit (they
+// require this addon, so this runs first); every one is kept
+// (GVAR(adapters)) and FUNC(applyAdapter) takes the system's. Until then
+// every hook is a no-op with a neutral answer.
+GVAR(adapters) = createHashMap;     // adapter id -> its hooks
+GVAR(adapterIds) = [];              // ...in the order they registered
 GVAR(adapterDefaults) = createHashMapFromArray [
     ["join", {}],
     ["leave", {}],
@@ -41,20 +33,22 @@ GVAR(adapterDefaults) = createHashMapFromArray [
     ["block", {}],
     ["ptt", {[false, ""]}],
     ["keyed", {}],
-    ["audience", {
-        params ["_unit", "_net"];
-        ([_net, _unit] call FUNC(members)) - [_unit]
-    }],
-    ["selfTest", {}],
-    // external radio only (HOOKS_REQUIRED_EXTERNAL)
-    ["nets", {[]}],
-    ["netState", {[]}],
-    ["setEar", {false}],
-    ["setMute", {false}],
-    ["linkQuality", {QUALITY_FULL}]
+    ["audience", {_this call FUNC(audience)}],
+    ["selfTest", {}]
 ];
 GVAR(adapter) = +GVAR(adapterDefaults);
 GVAR(adapterId) = "";
+// The automatic answer now; the setting's once it is in. Registered here, in
+// preInit, so it runs before every postInit's CBA_settingsInitialized handler
+// (the adapters', this addon's) - they read jmfsb_voice_system / _active.
+// THE SERVER'S CHOICE IS EVERYONE'S (FUNC(followServer)): it publishes it, a
+// client takes it ("none" when it cannot run it), and every client-side start
+// waits for jmfsb_voice_systemReady rather than the settings.
+[SYSTEM_AUTO] call FUNC(selectSystem);
+["CBA_settingsInitialized", {
+    [GVAR(defaultSystem)] call FUNC(selectSystem);
+    [] call FUNC(followServer);
+}] call CBA_fnc_addEventHandler;
 
 // SERVER-PUBLISHED, read everywhere (see fnc_serverTick / fnc_srvPublish).
 // Public variables keep a JIP value that arrived before this ran.
@@ -84,6 +78,7 @@ GVAR(published) = [];               // [calls, callbacks] last sent
 
 // CLIENT STATE (the local player).
 GVAR(myNodes) = [];                 // his RF node ids
+GVAR(batteryWarned) = -1;           // the battery warning last said, an index into BATTERY_WARN_LEVELS (FUNC(batteryTick))
 GVAR(sent) = createHashMap;         // node id -> registration last sent
 GVAR(activeNetId) = "";            // the active net
 GVAR(globalOn) = false;            // a leader or admin on Global (FUNC(global))
@@ -92,6 +87,7 @@ GVAR(wantActive) = "";              // net to make active as soon as it can be
 GVAR(wantTeamUntil) = 0;            // until when FUNC(checkActive) lands him on TEAM once it is listed (FUNC(toTeam))
 GVAR(muted) = createHashMap;        // net -> true
 GVAR(ears) = createHashMap;         // net -> "L" | "B" | "R"
+GVAR(pttNets) = createHashMap;      // PTT key 2..4 -> net id, or PTT_OFF (FUNC(pttKey))
 GVAR(myNets) = [];                  // jmfsb_voice_fnc_nets rows, last tick
 GVAR(eff) = createHashMap;          // "uid|net" -> quality after grace
 GVAR(lastGood) = createHashMap;     // "uid|net" -> [time, quality]

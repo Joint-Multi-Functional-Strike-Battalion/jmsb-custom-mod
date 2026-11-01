@@ -15,6 +15,12 @@
  * Public: No
  */
 
+if (!hasInterface) exitWith {};
+// Sent by the server (FUNC(restart)) or called here (review R1).
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("reloadLocal: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
+
 WARNING("Reloading spectator!");
 
 if (["IsInitialized"] call BIS_fnc_EGSpectator) then {
@@ -25,12 +31,12 @@ if (["IsInitialized"] call BIS_fnc_EGSpectator) then {
         vectorUp _oldSpectatorCamera,
         attachedTo (["GetDummyTarget"] call BIS_fnc_EGSpectatorCamera)
     ];
-    [QGVAR(stop)] call CBA_fnc_localEvent;
+    [] call FUNC(stop);
 };
 
 if ([player] call FUNC(canSpectate)) then {
     // Start spectator
-    [QGVAR(start)] call CBA_fnc_localEvent;
+    [] call FUNC(start);
 
     // Move camera to last position if spectator was enabled before
     if (!isNil QGVAR(oldSpectatorCamera)) then {

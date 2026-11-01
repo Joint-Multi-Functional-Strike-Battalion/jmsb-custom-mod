@@ -12,12 +12,19 @@
  * this player can read but was not addressed to them. The row is updated and
  * nothing is said, because a filing cabinet does not ring.
  *
- * Arguments (CBA event):
+ * Sent by remoteExecCall from the server (FUNC(srvDeliver)), and taken only
+ * from the server (review S7): otherwise any client could put a message from
+ * anyone in another player's reader.
+ *
+ * Arguments:
  * 0: Message <ARRAY> - array form of a message HashMap, [] for a row-only update
  * 1: Index entry <ARRAY> - array form of an index HashMap
  *
  * Return Value:
  * None
+ *
+ * Example:
+ * [_messageArray, _entryArray] remoteExecCall ["jmfsb_messaging_fnc_cltReceive", _unit]
  *
  * Public: No
  */
@@ -25,6 +32,7 @@
 params [["_messageArray", [], [[]]], ["_entryArray", [], [[]]]];
 
 if (!hasInterface || {_entryArray isEqualTo []}) exitWith {};
+if !([] call EFUNC(common,fromServer)) exitWith {};
 
 // READ THROUGH THE NAMESPACE, NOT OFF THE VARIABLE. Both containers are
 // preInit's, and both were still arriving as Nothing here on a live client -
@@ -96,7 +104,7 @@ if (_quiet) exitWith {
     // empty. A thread that is cached is a thread somebody opened, so ask for
     // it again; cltThread replaces the cache and wakes whatever is watching.
     if (_threadId in _cache) then {
-        [QGVAR(requestThread), [player, _threadId]] call CBA_fnc_serverEvent;
+        [player, _threadId] remoteExecCall [QFUNC(srvRequestThread), SERVER_OWNER];
     };
     [QGVAR(indexRefreshed), []] call CBA_fnc_localEvent;
 };
@@ -118,7 +126,11 @@ if (_cached isNotEqualTo []) then {
     _cachedThread set ["closed", (_entry getOrDefault ["status", ""]) in ["CLOSED", "ABORTED"]];
 };
 
-[QGVAR(received), [_message, _entry]] call CBA_fnc_localEvent;
+// The screens' hooks (FUNC(onReceive)), not a CBA event: any client could
+// raise that one on every machine and fake a FLASH banner (review S7).
+{
+    [_message, _entry] call _x;
+} forEach (localNamespace getVariable [QGVAR(receiveHooks), []]);
 
 private _template = [_message get "templateId"] call FUNC(template);
 private _title = format ["%1 %2", _template getOrDefault ["short", "MSG"], _message get "fromCallsign"];

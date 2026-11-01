@@ -5,7 +5,9 @@
  * (what FUNC(radioRows) labels them on this tab), the cursor (numpad 0 / .),
  * and the tabs (numpad 7 / 8). docs/DESIGN_VOICE.md, "Adding a caller on the
  * phone or side device": open RADIO, move to the person with 0 / ., press F1.
- * Group add: F3 GROUP +, move to the group, F1.
+ * Group add: F3 GROUP +, move to the group, F1. In a call F2 flips what his
+ * camera sends: SEND VIEW / SEND FACE. On the ECHO TEST row F2 calls it or
+ * hangs it up; F4 hangs it up too.
  *
  * Arguments:
  * 0: Key - 0..3 for F1..F4, KEY_INDEX_LEFT / KEY_INDEX_RIGHT for the cursor,
@@ -61,13 +63,16 @@ if (_ring isNotEqualTo "" && {_key in [0, SOFT_KEY_COUNT - 1]}) exitWith {
     call _redraw
 };
 
-// BACK closes the app; on CALLS, F4 is HANG UP while a call is up.
+// BACK closes the app; on CALLS, F4 is HANG UP while a call or the echo test
+// is up.
 private _live = _view get "live";
+private _echo = "";
+if (!isNil QEFUNC(adapter_livekit,echoState)) then {_echo = [] call EFUNC(adapter_livekit,echoState)};
 if (_key isEqualTo SOFT_KEY_COUNT - 1) exitWith {
-    if (GVAR(radioTab) isEqualTo "calls" && _live isNotEqualTo "") then {
-        [_live] call EFUNC(voice,hangUp);
-    } else {
-        [false] call FUNC(radioApp);
+    switch (true) do {
+        case (GVAR(radioTab) isEqualTo "calls" && _live isNotEqualTo ""): {[_live] call EFUNC(voice,hangUp)};
+        case (GVAR(radioTab) isEqualTo "calls" && {_echo in [ECHO_JOINING, ECHO_LIVE]}): {[false] call EFUNC(adapter_livekit,echo)};
+        default {[false] call FUNC(radioApp)};
     };
     call _redraw
 };
@@ -75,6 +80,10 @@ if (_key isEqualTo SOFT_KEY_COUNT - 1) exitWith {
 private _row = _rows param [GVAR(radioCursor), []];
 switch (GVAR(radioTab)) do {
     case "calls": {
+        // In a call F2 flips what his camera sends (FUNC(radioRows)).
+        if (_key isEqualTo 1 && _live isNotEqualTo "") exitWith {
+            [] call EFUNC(tacpad_apps,callCamFlip);
+        };
         if (_key isEqualTo 2) exitWith {
             GVAR(radioGroupMode) = !GVAR(radioGroupMode);
             GVAR(radioCursor) = 0;
@@ -90,6 +99,10 @@ switch (GVAR(radioTab)) do {
             if (_units isNotEqualTo []) then {[_units] call EFUNC(tacpad_apps,radioDial)};
             GVAR(radioGroupMode) = false;
             GVAR(radioCursor) = 0;
+        };
+        // The echo test's row: F2 calls it, or hangs it up.
+        if ((_row param [3, []]) isEqualTo RADIO_ROW_ECHO) exitWith {
+            if (_key isEqualTo 1) then {[_echo isEqualTo ECHO_IDLE] call EFUNC(adapter_livekit,echo)};
         };
         (_row param [3, []]) params [["_unit", objNull, [objNull]], ["_reachable", false, [false]], ["_mine", false, [false]]];
         if (isNull _unit || _mine) exitWith {};

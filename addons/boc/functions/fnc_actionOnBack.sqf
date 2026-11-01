@@ -41,7 +41,8 @@ if (_shouldSwitchNVGs) then {
 //can be emptied and placed in unit's backpack
 //they must each be emptied when added
 //safe since game inventory won't let players add non-empty backpacks into their backpack
-[QGVAR(clearCargoBackpacks), [backpackContainer _unit]] call CBA_fnc_globalEvent;
+//global commands from this machine, not a CBA event any client could raise (review R1)
+[backpackContainer _unit] call FUNC(clearCargoBackpacks);
 
 //add variables
 private _backpack = backpackContainer _unit;

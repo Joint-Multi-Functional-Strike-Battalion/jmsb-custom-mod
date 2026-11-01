@@ -37,6 +37,8 @@ Author:
 params [["_unit", objNull, [objNull]]];
 
 if (!isServer || isNull _unit) exitWith {[]};
+// A client slots only himself (review S5).
+if !([_unit] call EFUNC(common,senderIs)) exitWith {[]};
 if ((GVAR(settings) getOrDefault ["autoSlot", 1]) isEqualTo 0) exitWith {[]};
 if (isNil "YMF_dynamicGroups") exitWith {[]};
 if ((_unit getVariable ["YMF_oldrole", ""]) isNotEqualTo "") exitWith {[]};

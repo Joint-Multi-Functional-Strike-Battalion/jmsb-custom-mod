@@ -10,11 +10,8 @@ class CfgPatches {
             QGVAR(item)
         };
         requiredVersion = REQUIRED_VERSION;
-        // ACRE2 is a SOFT dependency, deliberately. Without it this is still a
-        // deployable mast - which is what patrol_base wants it for - and every
-        // ACRE call is guarded at runtime. Requiring acre_main would make the
-        // whole addon vanish on an ACRE-less server and take the base beacon
-        // with it.
+        // A deployable mast - what patrol_base wants it for. Its ACRE2 antenna
+        // went with ACRE (DEC1, 2026-10-31).
         requiredAddons[] = {
             "jmfsb_main",
             "ace_interact_menu",
@@ -29,6 +26,5 @@ class CfgPatches {
 };
 
 #include "CfgEventHandlers.hpp"
-#include "CfgAcreComponents.hpp"
 #include "CfgWeapons.hpp"
 #include "CfgVehicles.hpp"

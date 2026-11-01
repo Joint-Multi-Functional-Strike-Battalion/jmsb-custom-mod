@@ -35,6 +35,10 @@ params [["_map", controlNull, [controlNull]]];
 if (!GVAR(enabled) || GVAR(memberMarkers) isEqualTo 0) exitWith {};
 private _members = GVAR(memberUnits);
 if (isNil "_members" || {_members isEqualTo []}) exitWith {};
+// NO FIX, NO MEMBER ICONS - on the map and on the devices' maps alike (user,
+// 2026-10-24); the admin's god view keeps them. Same flag as FUNC(draw).
+if ((missionNamespace getVariable [QEGVAR(jamming,gpsDenied), false])
+    && {!(GVAR(adminGodView) && GVAR(adminView) && {[ACE_player] call FUNC(isAdmin)})}) exitWith {};
 
 // The ACE3 / vanilla team colours, and whether the number on them is dark.
 private _teams = createHashMapFromArray [

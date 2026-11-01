@@ -17,7 +17,14 @@
 
 params [["_player", player]];
 
-if (!(local _player)) exitWith {[QGVAR(start), _this, _player] call CBA_fnc_targetEvent};
+// Another machine's say-so only from the server (review R1: it was a CBA
+// event any client could raise to force everyone into spectator).
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("start: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
+if (isNull _player) exitWith {};
+if (!(local _player)) exitWith {[_player] remoteExecCall [QFUNC(start), _player]};
+if (!hasInterface) exitWith {};
 
 if (["IsInitialized"] call BIS_fnc_EGSpectator) exitWith {WARNING("Spectator already initialized!")};
 

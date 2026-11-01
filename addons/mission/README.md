@@ -4,13 +4,14 @@
 
 The two-argument INFO/WARNING/ERROR/LOG the Roomba scripts were written against, plus the notification colours and the logistics shorthand. Included AFTER jmfsb's macros so the #undef in there lands on the right definitions.
 
-**Staging zone satellite uplink** (user, 2026-10-20): every staging zone added with `addStagingZone` (object, marker or position) gets a radio base station at its centre (`stagingUplink` -> `jmfsb_pac_fnc_baseStation`, RF profile `base`) for the players' side; `removeStagingZone` takes it down. Zones are added on the clients, so a client hands the uplink to the server (CBA server event `jmfsb_mission_stagingUplink`), which makes one station per site. It relays the players' nets round the zone and links by satellite to every patrol base and SAT-capable vehicle under open sky. Setting "Staging zone satellite uplink" (default on). See docs/DESIGN_RF.md "Base stations".
+**Staging zone satellite uplink** (user, 2026-10-20): every staging zone added with `addStagingZone` (object, marker or position) gets a radio base station at its centre (`stagingUplink` -> `jmfsb_pac_fnc_baseStation`, RF profile `base`) for the players' side; `removeStagingZone` takes it down. Zones are added on the clients, so a client reports a zone's POSITION to the server by `remoteExec` (`jmfsb_mission_fnc_stagingUplink`), which makes one station per site. Review R1: it was a CBA event, so any client could put up or take down any station. The server now takes a position only from an admin, a Zeus, or when it matches a staging marker (`zone_staging*`, `respawn_west*`) it sees itself. Object zones and removals are the server's own calls, because `addStagingZone` and `removeStagingZone` run on the server too (object inits, and remoteExecs to every machine). It relays the players' nets round the zone and links by satellite to every patrol base and SAT-capable vehicle under open sky. Setting "Staging zone satellite uplink" (default on). See docs/DESIGN_RF.md "Base stations".
 
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_diag`
 - `cba_xeh` _(external)_
 - `cba_settings` _(external)_

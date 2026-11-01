@@ -22,7 +22,7 @@
  * EVERY PRESS LANDS IN THE RPT, AND EVERY ACCEPTED ORDER IS RECEIPTED. The
  * FSM nils the task variable the moment it takes the order, so a watcher on
  * that variable IS the delivery receipt - raised back to the app as the
- * support core's ack (EFUNC(support,ack), the jmfsb_support_ack event) with
+ * support core's ack (EFUNC(support,ack), delivered to EFUNC(support,onAck) hooks) with
  * the callsign, or a no-ack warning after 20s. The old QGVAR(supportAck)
  * event still fires beside it for any mission script listening to it.
  * A day of testing produced "nothing happened" with nothing in the log on
@@ -63,7 +63,7 @@ _prm params [["_radius", 500], ["_alt", 150], ["_roeIdx", 0]];
 INFO_4("supportTask: asset '%1' task '%2' pos %3 prm %4",_assetId,_task,_pos,_prm);
 
 // THE ATO. Not a NEO asset: a CAS request raised on the server, which holds
-// ALiVE's event log - see the GVAR(supportRequest) handler in XEH_postInit.
+// ALiVE's event log - see FUNC(srvRequestATO).
 if (_assetId isEqualTo SUPPORT_ATO_ID) exitWith {
     if (_task isEqualTo "rtb") exitWith {[false, "the ATO cannot be recalled"]};
     // No point means "overhead me", as on the NEO air path below: the ATO
@@ -71,7 +71,8 @@ if (_assetId isEqualTo SUPPORT_ATO_ID) exitWith {
     // refusal here would contradict it.
     if (_pos isEqualTo []) then {_pos = getPosATL player};
     _pos set [2, 0];
-    [QGVAR(supportRequest), ["cas", side group player, _pos, name player]] call CBA_fnc_serverEvent;
+    // By remoteExec, so the server knows who asked (review S7).
+    [_pos] remoteExecCall [QFUNC(srvRequestATO), SERVER_OWNER];
     [true, "CAS requested from the ATO."]
 };
 

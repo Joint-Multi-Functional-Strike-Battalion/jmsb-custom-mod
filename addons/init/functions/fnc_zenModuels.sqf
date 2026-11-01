@@ -59,16 +59,6 @@ INFO("init","Initializing custom Zen Modules.");
     "\A3\ui_f\data\map\vehicleicons\iconCrate_ca.paa"
 ] call zen_custom_modules_fnc_register;
 
-if (EGVAR(Settings,enableRadios)) then {
-    ["JMSB Mission", "Reset Radio",
-        {
-            params ["_modulePos", "_objectPos"];
-            [_modulePos, _objectPos] call EFUNC(zenmodules,ResetPlayerRadio);
-        },
-        "\a3\modules_f\data\portraitmodule_ca.paa"
-    ] call zen_custom_modules_fnc_register;
-};
-
 ["JMSB Mission", "Call Endex",
     {
         params ["_modulePos", "_objectPos"];
@@ -79,8 +69,8 @@ if (EGVAR(Settings,enableRadios)) then {
 
 ["JMSB Mission", "Take attendance",
     {
-        [QGVAR(getAttendance)] call CBA_fnc_localEvent;
-        ["All attended players have been saved to your RPT log"] call zen_common_fnc_showMessage;
+        [] remoteExecCall [QFUNC(srvAttendance), SERVER_OWNER];
+        ["Attendance requested from the server"] call zen_common_fnc_showMessage;
     },
     "\a3\modules_f\data\portraitmodule_ca.paa"
 ] call zen_custom_modules_fnc_register;

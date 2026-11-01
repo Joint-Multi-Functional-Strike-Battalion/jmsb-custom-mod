@@ -4,6 +4,17 @@
 
 Backpack on chest, re-prefixed into jmfsb.
 
+The old `zade_boc_fnc_*` names still redirect, with a warning, to the
+`jmfsb_boc_fnc_*` of the same name. `chestpackItems`, `chestpackMagazines`
+and `loadChestpack` have no such function and no longer redirect (review L4).
+
+No CBA events any more (review R1). Emptying a pack is done with global
+commands by the machine moving it (`clearAllCargo`), not the old
+`clearAllCargo` / `clearCargoBackpacks` events any client could raise to
+empty any container. The server adds its HandleDisconnect handler once at
+postInit, not on a `handleDisconnect` event that added another on every
+raise.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

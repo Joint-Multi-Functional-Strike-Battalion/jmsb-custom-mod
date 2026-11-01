@@ -44,6 +44,21 @@
 // Admin chat-command prefix. Seven characters - fnc_debugCommand slices on it.
 #define DEBUG_PREFIX "#jmfsb "
 
+// Who sent a request (FUNC(sender), FUNC(senderIsAdmin), FUNC(adminCheck)):
+// the server is always machine 2; `admin` answers 2 for a #login'd admin.
+#define SERVER_OWNER     2
+#define ADMIN_LOGGED_IN  2
+// How long a client waits for #login / #logout to take before asking again.
+#define ADMIN_LOGIN_WAIT 5
+// The tick timings are written to the RPT this often, seconds (FUNC(perfReport)).
+#define PERF_REPORT_S    60
+// Secrets an admin enters in game (FUNC(secretSet), review R4): the names, the
+// server-profile prefix, and how many trailing characters the dialog may show
+// (none at all for a value this short or shorter).
+#define SECRET_NAMES     ["livekitKey", "livekitSecret", "pacdbUrl", "pacdbKey"]
+#define SECRET_PREFIX    "jmfsb_secret_"
+#define SECRET_SHOWN     4
+
 // Intel markers fade in this many scheduled steps - never a per-frame handler.
 #define INTEL_FADE_STEPS 5
 
@@ -79,3 +94,8 @@
 // The class picker hides classes from addons whose CfgPatches name holds one of
 // these (lower case) - Aegis and Atlas are not run by the unit (FUNC(listClasses)).
 #define LIST_HIDE_SOURCES ["aegis", "atlas"]
+
+// An artillery team is a squad whose ORBAT kind (its map icon, on the group as
+// jmfsb_bft_type) is one of these (fnc_artyGroups; user, 2026-10-25).
+#define ARTY_KIND_VAR "jmfsb_bft_type"
+#define ARTY_KINDS ["art", "mortar"]

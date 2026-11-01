@@ -73,13 +73,13 @@ The content sits 18 units inside the screen hole with a thin rim round it (the t
 
 ### Net row
 
-- One square cell per net the player can use, equal width, 28 high, 3 px outline.
-- Text `<N> <NAME>`: number + name, 12 chars max (name 10). N is the **Select net N** key: numpad 1-4 for nets 1-4 by default, 5-9 unbound (numpad 5-9 are the tablet, RADIO, tabs and TIC); all CBA keybinds.
+- Six equal cells across the full width whatever the count (2026-10-30), 38 px tall on the phone, 34 px in two columns on a portrait screen, 3 px outline; an empty cell is a dim outline.
+- Text `<N> <NAME>`: number + name, 12 chars max (name 10). N is the **Select net N** key: numpad 1-5 for nets 1-5 by default, 6-9 unbound (numpad 6-9 are the device keys); all CBA keybinds.
 - Outline is the net's state (2026-10-21, `jmfsb_voice_fnc_netQuality`): green good, amber weak or jammed, red no route, dim muted.
 - Active net: light fill, dark text.
 - Small grey `R` = receive only.
 - Only nets you are on are shown: VEH appears in a vehicle, CALL when a call is live or ringing. Cells show name + ear tag (L/B/R), no numbers.
-- Numpad 0 / . move the active net left / right. **Ctrl +** numpad 1-4 are the device keys F1-F4 (F1 accept call, F2 ear / quick add, F3 mute, F4 decline / hang up), changed 2026-10-21 so plain 1-4 select nets. See [DESIGN_VOICE.md](DESIGN_VOICE.md). Frequencies never shown.
+- Numpad 0 / . move the active net left / right. Numpad 6 7 8 9 are the device keys F1-F4 (2026-10-30; the walking view's jobs: ear / quick add, mute, zoom), * answers and / declines a call, - is TIC, + voice activation, Enter the tablet. See [DESIGN_VOICE.md](DESIGN_VOICE.md). Frequencies never shown.
 
 ## Colours
 

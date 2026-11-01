@@ -42,6 +42,14 @@
 // a message addressed to nobody in particular.
 #define TAG_MAX 8
 
+// The server's machine id - where a client sends a request by remoteExecCall
+// (review S7). CBA events carry no sender, so nothing that needs trust uses one.
+#define SERVER_OWNER 2
+
+// remoteExecCall target for "every machine" - a server push the whole server
+// takes, such as a marker removed with its thread.
+#define TARGET_ALL 0
+
 // Accent colours handed to the notification widget, so a warning from messaging
 // looks like every other warning in the mod.
 #define COLOUR_NORMAL [0.871, 0.361, 0.188, 1]

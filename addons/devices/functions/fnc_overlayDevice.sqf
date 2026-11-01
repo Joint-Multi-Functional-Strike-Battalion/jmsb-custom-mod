@@ -13,7 +13,7 @@
  * None
  *
  * Return Value:
- * Device class in CfgJmfsbDevices - "phone", "side" or "side2" - or "" <STRING>
+ * Device class in CfgJmfsbDevices - "phone", "side", "side2" or "rdc" - or "" <STRING>
  *
  * Example:
  * private _device = [] call jmfsb_devices_fnc_overlayDevice
@@ -24,7 +24,7 @@
 if (!hasInterface || {isNull player}) exitWith {""};
 
 private _items = assignedItems player;
-private _carried = [QGVAR(phone), QGVAR(side), QGVAR(side2)] findIf {_x in _items};
+private _carried = [QGVAR(phone), QGVAR(side), QGVAR(side2), QGVAR(rdc)] findIf {_x in _items};
 if (_carried < 0) exitWith {""};
 
-["phone", "side", "side2"] select _carried
+["phone", "side", "side2", RDC_DEVICE] select _carried

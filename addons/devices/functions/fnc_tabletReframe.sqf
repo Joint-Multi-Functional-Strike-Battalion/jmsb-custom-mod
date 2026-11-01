@@ -23,7 +23,7 @@
  */
 
 if (isNull (uiNamespace getVariable [QGVAR(display), displayNull])) exitWith {false};
-if !(GVAR(device) in [LARGE_DEVICE, UAV_DEVICE]) exitWith {false};
+if !(GVAR(device) in [LARGE_DEVICE, UAV_DEVICE, RDC_DEVICE]) exitWith {false};
 
 [{
     [] call FUNC(close);

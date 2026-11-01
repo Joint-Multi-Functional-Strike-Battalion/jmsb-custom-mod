@@ -38,7 +38,8 @@ private _bpos = ASLToAGL _burstPos;
 "SmallSecondary" createVehicle _bpos;
 
 if (missionNamespace getVariable ["ace_frag_enabled", true]) then {
-    ["ace_frag_frag_eh", [_bpos, typeOf _proj]] call CBA_fnc_serverEvent;
+    // ACE 3.21 frago takes [position ASL, ammo class].
+    ["ace_frag_frag_eh", [_burstPos, typeOf _proj]] call CBA_fnc_serverEvent;
 };
 
 {

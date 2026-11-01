@@ -50,7 +50,7 @@ if (!_godmode) then {
 
     if (_player != player) then { // show selected player a message
         private _message = format ["%1 enabled godmode on you!", name player];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
     };
 } else {
     [_player, true] remoteExec ["allowDamage", 0, false];
@@ -64,7 +64,7 @@ if (!_godmode) then {
 
     if (_player != player) then { // show selected player a message
         private _message = format ["%1 disabled godmode on you!", name player];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
     };
 };
 

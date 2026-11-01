@@ -39,17 +39,17 @@ private _line = ["line"] call EFUNC(tacpad,theme);
 private _muted = ["muted"] call EFUNC(tacpad,theme);
 private _dim = ["dim"] call EFUNC(tacpad,theme);
 
-private _soundsH = (_h0 - _padY) * PAGE_SPLIT_RIGHT;
+private _soundsH = (_h0 - _padY) * RADIO_SOUNDS_SPLIT;
 
 // ------------------------------------------------------------- SOUNDS ----
-([_body, [_x0, _y0, _w0, _soundsH], "SOUNDS", "BEEPS AND STATIC"] call FUNC(appPagePanel)) params ["_left", "_top", "_w"];
+([_body, [_x0, _y0, _w0, _soundsH], "VOICE AND SOUNDS", "VOLUME, VOICE ACTIVATION, BEEPS AND STATIC"] call FUNC(appPagePanel)) params ["_left", "_top", "_w"];
 private _labelW = _w * 0.42;
 private _ctlX = _left + _pad + _labelW;
 private _ctlW = _w - _labelW - 2 * _pad;
 private _step = _rowH * 1.5;
 
 {
-    _x params ["_label", "_setting", "_kind"];
+    _x params ["_label", "_setting", "_kind", ["_max", RADIO_BEEP_MAX, [0]]];
     private _ry = _top + _padY + _forEachIndex * _step;
     [_body, [_left + _pad, _ry, _labelW, _rowH], _label, _muted, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
 
@@ -63,15 +63,15 @@ private _step = _rowH * 1.5;
 
     if (_kind isEqualTo "slider") then {
         if !(_now isEqualType 0) then {_now = 0};
-        [_body, [_ctlX, _ry, _ctlW * 0.6, _rowH], _now / RADIO_BEEP_MAX, format ["%1%2", round (_now * PERCENT), "%"]] call FUNC(appPageBar);
+        [_body, [_ctlX, _ry, _ctlW * 0.6, _rowH], _now / _max, format ["%1%2", round (_now * PERCENT), "%"]] call FUNC(appPageBar);
         {
             _x params ["_glyph", "_delta", "_at"];
             [_body, [_ctlX + _ctlW * _at, _ry, _ctlW * 0.18, _rowH], _glyph, "line", [{
                 params ["_ctrl"];
-                (_ctrl getVariable [QGVAR(pageData), []]) params ["_name", "_by"];
-                [_name, _by, 0, RADIO_BEEP_MAX, RADIO_BEEP_DECIMALS, false] call FUNC(settingStep);
+                (_ctrl getVariable [QGVAR(pageData), []]) params ["_name", "_by", ["_top", RADIO_BEEP_MAX, [0]]];
+                [_name, _by, 0, _top, RADIO_BEEP_DECIMALS, false] call FUNC(settingStep);
                 {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
-            }, {}] select _locked, [_setting, _delta]] call FUNC(appPageButton);
+            }, {}] select _locked, [_setting, _delta, _max]] call FUNC(appPageButton);
         } forEach [["-", -RADIO_BEEP_STEP, 0.62], ["+", RADIO_BEEP_STEP, 0.81]];
         continue;
     };

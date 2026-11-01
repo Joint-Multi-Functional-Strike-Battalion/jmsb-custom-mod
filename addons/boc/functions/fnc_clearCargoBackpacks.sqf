@@ -1,7 +1,8 @@
 #include "script_component.hpp"
 /*
  * Author: Ampersand
- * Called locally by event. Clear inventory of every backpack in given container.
+ * Clear inventory of every backpack in given container, with global commands
+ * (FUNC(clearAllCargo); review R1 - no longer a CBA event).
  *
  * Arguments:
  * 0: Container <OBJECT>

@@ -25,7 +25,9 @@
 params [["_track", createHashMap, [createHashMap]]];
 
 private _now = CBA_missionTime;
-private _fresh = (_track get "cuts") select {(_now - (_x select 3)) <= GVAR(fixWindow)};
+// A jammer site does not move: every cut it kept counts (fnc_cut keeps them by place).
+private _static = (_track getOrDefault ["source", ""]) isEqualTo SRC_ZONE;
+private _fresh = (_track get "cuts") select {_static || {(_now - (_x select 3)) <= GVAR(fixWindow)}};
 private _minCross = sin FIX_MIN_CROSS_DEG;
 
 private _sumW = 0;

@@ -32,7 +32,7 @@ if (_call get "live") then {
 };
 if (_reason isEqualTo REASON_BUMPED) then {
     {
-        [QGVAR(callFailed), [_callId, REASON_BUMPED, []], _x] call CBA_fnc_targetEvent;
+        [_callId, REASON_BUMPED, []] remoteExecCall [QFUNC(callFailed), _x];
     } forEach ((_members + ((_call get "ringing") apply {_x select 0})) select {!isNull _x});
 };
 

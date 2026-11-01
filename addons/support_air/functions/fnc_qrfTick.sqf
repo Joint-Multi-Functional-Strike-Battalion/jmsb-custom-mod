@@ -136,7 +136,7 @@ switch (_phase) do {
             if (alive _u && {vehicle _u isEqualTo _veh}) then {_next = _u};
         };
         if (!isNull _next) then {
-            [_next, _veh] call FUNC(jump);
+            [_next, _veh] remoteExecCall [QFUNC(jump), _next];
         };
         if (_jumpers isNotEqualTo []) exitWith {};
 

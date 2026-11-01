@@ -9,3 +9,6 @@ PREP(toggle);
 // modules
 PREP(addZeusModules);
 PREP(forceRespawn);
+// A forced respawn: client -> server -> the dead, by remoteExec (review S7).
+PREP(forceRespawnRequest);
+PREP(forceLocal);

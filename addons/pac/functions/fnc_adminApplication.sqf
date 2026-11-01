@@ -19,7 +19,7 @@
 params [["_caller", objNull, [objNull]], ["_steamId", "", [""]], ["_status", "", [""]]];
 
 if (!isServer || isNull _caller || _steamId isEqualTo "") exitWith {};
-if !([_caller] call jmfsb_adminpanel_fnc_isAdmin) exitWith {WARNING_1("adminApplication refused: %1 is not an admin",name _caller)};
+if !([_caller] call FUNC(isAdminCaller)) exitWith {WARNING_1("adminApplication refused: %1 is not an admin",name _caller)};
 if !(_status in ["accepted", "rejected", "new"]) exitWith {};
 
 [_caller, _steamId, _status] spawn {

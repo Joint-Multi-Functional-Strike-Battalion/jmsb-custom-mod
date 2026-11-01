@@ -22,14 +22,26 @@
  * Return Value: None
  *
  * Example:
- * [QGVAR(threat), [_id, _gunner, _pos, _vel, _info, [], west]] call CBA_fnc_serverEvent
+ * [_id, _gunner, _pos, _vel, _info, [], west] remoteExecCall ["jmfsb_adsite_fnc_threat", 2]
  *
  * Public: No
  */
 
 params ["_id", "_owner", "_p0", "_v", "_info", "_target", "_side"];
 
-if (!GVAR(enabled) || {count GVAR(units) == 0}) exitWith {};
+if (!isServer || !GVAR(enabled) || {count GVAR(units) == 0}) exitWith {};
+
+// From a client by remoteExec (review R1: it was a CBA event any client could
+// raise with fake rounds to make the guns burst). Kept cheap - a few compares
+// per shell: the shooter is the sending machine's, the round leaves from
+// near him, and his side is the server's reading, not the call's.
+if (isRemoteExecuted && {remoteExecutedOwner isNotEqualTo SERVER_OWNER}) then {
+    if (!(_owner isEqualType objNull) || {(owner _owner) isNotEqualTo remoteExecutedOwner}) exitWith {_owner = objNull};
+    if !(_p0 isEqualType [] && {count _p0 == 3}) exitWith {_owner = objNull};
+    if ((getPosASL _owner) distance _p0 > ADS_SHOT_SLACK) exitWith {_owner = objNull};
+    _side = side group _owner;
+};
+if (isNull _owner) exitWith {};
 
 private _family = _info select 0;
 // a shell fired flat is a tank's direct fire, not artillery

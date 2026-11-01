@@ -1,10 +1,11 @@
 #include "script_component.hpp"
 /*
  * Author: JMSB
- * SET TIME or SET WEATHER: reads the combos and raises the event that changes
- * the world - time on the server (FUNC(envTime)), weather on every machine
- * (FUNC(envWeather)), the way ZEN's weather module does it. CBA events, so no
- * CfgRemoteExec entry is needed.
+ * SET TIME or SET WEATHER: reads the combos and sends them to the server -
+ * time (FUNC(envTime)), weather (FUNC(envWeather), which the server passes on
+ * to every machine, the way ZEN's weather module does it). By remoteExec, so
+ * the server checks the sender is an admin (review S7); a mission with a
+ * CfgRemoteExec whitelist lists both.
  *
  * Arguments:
  * 0: "time" or "weather" <STRING>
@@ -35,7 +36,7 @@ if (_what isEqualTo "time") exitWith {
     private _minute = [IDC_ADMINENV_MINUTE] call _fnc_value;
     private _speed = [IDC_ADMINENV_SPEED] call _fnc_value;
 
-    [QGVAR(envTime), [_hour, _minute, _speed, profileName]] call CBA_fnc_serverEvent;
+    [_hour, _minute, _speed] remoteExecCall [QFUNC(envTime), ADMIN_SERVER];
     ["Time", format [
         "Set to %1:%2, time x%3",
         [_hour, 2] call CBA_fnc_formatNumber,
@@ -49,9 +50,9 @@ private _rain = [IDC_ADMINENV_RAIN] call _fnc_value;
 private _fog = [IDC_ADMINENV_FOG] call _fnc_value;
 private _wind = [IDC_ADMINENV_WIND] call _fnc_value;
 
-[QGVAR(envWeather), [
-    _overcast / ENV_PERCENT, _rain / ENV_PERCENT, _fog / ENV_PERCENT, _wind, profileName
-]] call CBA_fnc_globalEvent;
+[
+    _overcast / ENV_PERCENT, _rain / ENV_PERCENT, _fog / ENV_PERCENT, _wind
+] remoteExecCall [QFUNC(envWeather), ADMIN_SERVER];
 ["Weather", format [
     "Overcast %1%5, rain %2%5, fog %3%5, wind %4 m/s",
     _overcast, _rain, _fog, _wind, "%"

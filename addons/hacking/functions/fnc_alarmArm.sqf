@@ -15,23 +15,24 @@ Description:
 
 Parameters:
     0: NUMBER - seconds from now.
-    1: STRING - who set it. Optional, default the player's name.
+    1: STRING - ignored; the server names the setter from the sender
+       (review S7). Callers may still pass it.
 
 Returns:
     BOOL - true if it was sent.
 
 Example:
-    [300, name player] call jmfsb_hacking_fnc_alarmArm
+    [300] call jmfsb_hacking_fnc_alarmArm
 
 Author:
     JMSB
 ---------------------------------------------------------------------------- */
-params [["_delay", 0, [0]], ["_who", "", [""]]];
+params [["_delay", 0, [0]]];
 
 if (!hasInterface || _delay <= 0) exitWith {false};
-if (_who isEqualTo "") then {_who = name player};
 
-[QGVAR(alarmAdd), [_delay, _who]] call CBA_fnc_serverEvent;
+// By remoteExec, so the server knows who set it (review S7).
+[_delay] remoteExecCall [QFUNC(srvAlarmAdd), SERVER_OWNER];
 
 ["Alarm", format ["Armed for %1 minutes.", (round (_delay / 6)) / 10], [0.6, 1, 0.6, 1]] call EFUNC(notify,notify);
 

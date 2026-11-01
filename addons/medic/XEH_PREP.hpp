@@ -13,6 +13,7 @@ PREP(age);
 // Manual measurements: the medic's machine hears the treatment, the patient's
 // machine takes the reading
 PREP(recordCheck);
+PREP(srvMeasure);
 PREP(measureLocal);
 
 // The tile and the app

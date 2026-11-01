@@ -2,8 +2,8 @@
 
 if (!isServer) exitWith {};
 
-// The machine that made a drone names its launcher here (FUNC(init)).
-[QGVAR(deployed), {_this call FUNC(deploy)}] call CBA_fnc_addEventHandler;
+// The machine that made a drone names its launcher by remoteExec to
+// FUNC(deploy), which checks the sender - no CBA event (review R1).
 
 // A client's mode switch (the DRONES board) reaches FUNC(setMode) by
 // remoteExecCall, so the server can check who sent it - no CBA event here.

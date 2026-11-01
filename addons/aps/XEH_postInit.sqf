@@ -1,15 +1,12 @@
 #include "script_component.hpp"
 
 // THE JAM REGISTRY lives on every client - reference-counted burst sources
-// with expiry times, the ACRE lever true while any is live (see
-// fnc_jamRegister / fnc_jamTick). jmfsb_radio_mesh and jmfsb_jamming read
-// GVAR(acreJam) in their signal functions, so a burst degrades the radio
-// exactly the way a jamming zone does, and the two never fight over one
-// boolean: a player standing in a zone stays jammed when the burst's timer
-// runs out, because the zone is a different source.
+// with expiry times, GVAR(jammed) true while any is live (see
+// fnc_jamRegister / fnc_jamTick), with a cue at each edge. The ACRE signal
+// lever it fed (GVAR(acreJam), read by radio_mesh and jamming) went with ACRE
+// (DEC1, 2026-10-31).
 if (hasInterface) then {
     GVAR(jamSources) = createHashMap;
-    GVAR(acreJam) = 0;
     GVAR(jammed) = false;
     GVAR(lastEvent) = [];   // [what, bearing, when] - the HUD's APS tile reads it
     [LINKFUNC(jamTick), 0.5, []] call CBA_fnc_addPerFrameHandler;

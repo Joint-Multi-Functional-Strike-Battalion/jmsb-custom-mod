@@ -3,7 +3,7 @@
 [
     QGVAR(enabled), "CHECKBOX",
     ["Enable Hacking", "Master toggle for the tower/drone hacking self-interaction."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     true,   // default
     true    // isGlobal
 ] call CBA_fnc_addSetting;
@@ -17,7 +17,7 @@
 [
     QGVAR(condition), "EDITBOX",
     ["Hack Condition", "SQF condition that must also return true before anyone can hack. `_this` is the unit. Left as ""true"" it never blocks anything. Example: side group _this == west"],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     "true",
     true
 ] call CBA_fnc_addSetting;
@@ -25,7 +25,7 @@
 [
     QGVAR(towerClasses), "EDITBOX",
     ["Hackable Tower Classes", "Comma-separated object classnames hackable as 'towers', in addition to Electronic War Zones emitters."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     "Land_TTowerBig_2_F,Land_TTowerBig_1_F,Land_Communication_F,Land_Antenna_01_F,Land_Antenna_02_F",
     true
 ] call CBA_fnc_addSetting;
@@ -33,7 +33,7 @@
 [
     QGVAR(droneClasses), "EDITBOX",
     ["Downable Drone Classes", "Comma-separated vehicle classnames that 'Down Drone' may target. Blank = any enemy UAV, which is the old behaviour. Listed classes still have to be enemy UAVs."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     "",
     true
 ] call CBA_fnc_addSetting;
@@ -41,7 +41,7 @@
 [
     QGVAR(requireISR), "CHECKBOX",
     ["Require ISR operator", "On: only a unit flagged as ISR can use the intrusion suite. This is the ONLY gate on hacking - no device is checked. The flag and its variable name are shared with Intel Hunt - see Common."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     true,
     true
 ] call CBA_fnc_addSetting;
@@ -53,7 +53,7 @@
 [
     QGVAR(scannerVariable), "EDITBOX",
     ["Scanner Variable", "Unit variable that controls who sweeps for emitters. Everyone does by default - no device and no flag needed. Set this variable FALSE on a unit to deny them the scanner screen, the warning lamps and the alarms."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     "jmfsb_isScanner",
     true
 ] call CBA_fnc_addSetting;
@@ -63,7 +63,7 @@
 [
     QGVAR(alarmVolume), "SLIDER",
     ["Scanner Alarm Volume", "How loud YOUR scanner's alarm beeps. 0 silences the beep entirely - the screen still blinks and the notification still shows."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [0, 2, 1, 1],   // min, max, default, decimals shown
     false           // per-client
 ] call CBA_fnc_addSetting;
@@ -73,7 +73,7 @@
 [
     QGVAR(remoteEnable), "CHECKBOX",
     ["Remote Unit Hack", "Players can hack an enemy soldier's comms at range. Success buys one intel product centred on the target; failure can alert the area and jam your own grid."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     false,
     true
 ] call CBA_fnc_addSetting;
@@ -81,7 +81,7 @@
 [
     QGVAR(remoteRange), "SLIDER",
     ["Remote Hack Range (m)", "How far a target handset can be to start a remote hack, and how far before the signal drops. Everything else about the failure package keeps its shipped default."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [50, 3000, 800, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -91,7 +91,7 @@
 [
     QGVAR(towerTaor), "EDITBOX",
     ["Tower TAOR Marker(s)", "Comma-separated area marker names. Towers are hackable only inside them. Blank = anywhere on the map."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     "",
     true
 ] call CBA_fnc_addSetting;
@@ -99,7 +99,7 @@
 [
     QGVAR(phonePct), "SLIDER",
     ["Enemy Cell Phone Carriers (%)", "Percentage of enemy soldiers carrying a hackable cell phone. The rest have nothing to hack. Requires Remote Unit Hack on."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [0, 100, 30, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -111,7 +111,7 @@
 [
     QGVAR(perHint), "SLIDER",
     ["Deposits per Hint", "Intel items that must be DEPOSITED at a drop before ISR processes a batch and one hint circle fires. Items carried in a pocket count for nothing."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [1, 50, 10, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -120,7 +120,7 @@
 [
     QGVAR(docChance), "SLIDER",
     ["Documents on Bodies (%)", "Chance a body with no phone still carries searchable documents. Insurgents always carry a phone, so this only governs everyone else."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [0, 100, 30, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -131,7 +131,7 @@
 [
     QGVAR(netFailStep), "SLIDER",
     ["Extra detection per net", "How much each net broken recently adds to the chance of being detected on the NEXT one, in percentage points. 0 restores a flat chance."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [0, 40, 10, 0, false],
     true
 ] call CBA_fnc_addSetting;
@@ -139,7 +139,7 @@
 [
     QGVAR(netFailWindow), "SLIDER",
     ["Detection memory", "How long, in seconds, a broken net keeps counting against you. One step is shed for every window that passes quietly, so a patient section is forgiven and an impatient one is not."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [60, 3600, 600, 0, false],
     true
 ] call CBA_fnc_addSetting;
@@ -153,7 +153,7 @@
 [
     QGVAR(netTargets), "LIST",
     ["Hackable nets", "Whose cell nets the remote hack will offer. Your own group is never on the list. A net that is not hostile is labelled FRIENDLY on the card, so nobody spends a minute and a detection roll on their own side by accident."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [[0, 1, 2], ["Hostile only", "Hostile and civilian", "Anyone"], 2],
     true
 ] call CBA_fnc_addSetting;
@@ -175,7 +175,7 @@
 [
     QGVAR(cfg_package_share), "SLIDER",
     ["Intel package share per hack (%)", "How much of a terminal's intel package one successful break-in yields. Lower means more return visits. 100 hands the whole package over at once."],
-    ["1st Joint Multi-Functional Strike Battalion", "Hacking"],
+    ["JMSB - EW, Drones & Intel", "Hacking"],
     [5, 100, HACK_PACKAGE_SHARE_DEF, 0],
     true
 ] call CBA_fnc_addSetting;

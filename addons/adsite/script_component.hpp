@@ -38,6 +38,10 @@
 #define ADS_WARN_GAP 30
 // The firing machine's projectile map is pruned of landed rounds above this.
 #define ADS_OWNED_CAP 64
+// A client's reported round (FUNC(threat), review R1): it must leave from
+// within this many metres of the shooter the sending machine holds.
+#define ADS_SHOT_SLACK 150
+#define SERVER_OWNER 2
 
 // ---- threat families, per ammo class (FUNC(family)) ------------------------
 #define FAM_NONE 0

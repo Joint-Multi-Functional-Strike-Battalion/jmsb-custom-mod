@@ -3,6 +3,10 @@
  * Author: 3Mydlo3
  * Function restarts all spectators.
  *
+ * Server only: every machine gets FUNC(reloadLocal) by remoteExec, which takes
+ * it only from the server (review R1: it was a CBA event any client could
+ * raise).
+ *
  * Arguments:
  * None
  *
@@ -18,6 +22,6 @@
 if (!isServer || {time < 1}) exitWith {};
 
 WARNING("Restarting spectator!");
-[QGVAR(reloadLocal)] call CBA_fnc_globalEvent;
+[] remoteExecCall [QFUNC(reloadLocal), 0];
 
 nil

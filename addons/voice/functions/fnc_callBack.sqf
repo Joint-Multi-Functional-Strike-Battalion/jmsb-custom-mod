@@ -23,4 +23,4 @@ params [["_unit", objNull, [objNull]]];
 
 if (!GVAR(active)) exitWith {};
 if (isNull _unit || isNull player) exitWith {};
-[QGVAR(srvCallback), [player, _unit]] call CBA_fnc_serverEvent;
+[player, _unit] remoteExecCall [QFUNC(srvCallback), SERVER_OWNER];

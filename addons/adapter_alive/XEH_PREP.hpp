@@ -1,4 +1,7 @@
 PREP(ready);
+// Server hooks in place of the ready / capture CBA events (review R1).
+PREP(whenReady);
+PREP(onCapture);
 PREP(commanders);
 PREP(taorFor);
 PREP(objectivesFor);
@@ -33,6 +36,8 @@ PREP(requestFire);
 PREP(supportAssets);
 PREP(supportSitrep);
 PREP(supportTask);
+// The ATO's CAS request, client to server by remoteExec (review S7).
+PREP(srvRequestATO);
 PREP(supportTypes);
 PREP(probe);
 PREP(clusterCandidates);

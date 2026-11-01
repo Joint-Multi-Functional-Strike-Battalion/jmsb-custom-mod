@@ -16,4 +16,9 @@ ADDON = false;
 // these were the exception because they were written from scratch in one go.
 #include "XEH_PREP.hpp"
 
+// ACE's drag and carry setters have local effect. FUNC(doSupplyCrate) sends
+// FUNC(crateDraggable) by remoteExec with the crate as its JIP id, so every
+// machine, joiners too, can drag and carry the crate (review L3) - no CBA
+// event any client could raise on any object (review R1).
+
 ADDON = true;

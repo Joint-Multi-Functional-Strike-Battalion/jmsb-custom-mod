@@ -35,7 +35,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_mode", "add", [""]]];
 
 if (!isServer) exitWith {0};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {0};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {0};
 if (GVAR(readOnly)) exitWith {0};
 
 #define SAMPLE_TAG "sample"

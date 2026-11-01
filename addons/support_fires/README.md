@@ -66,6 +66,15 @@ battery (virtual rounds not yet fired are not fired; those in the air land;
 every battery that joined checks fire too), and self-destruct for loitering
 munitions. A cruise missile in flight cannot be recalled.
 
+The server checks every order and recall again for whoever sent it (review
+S6). They go by `remoteExecCall` to `fnc_request` and `fnc_abort`, never by a
+CBA event. The requester is the sending machine's own player, who must pass
+the Support tasking tag gate and own the asset's side. The server reruns the
+same `fnc_check` the client ran: target, range, what is left, busy or cooling
+down. It reads the rounds, sheaf and guns from the parameter array itself, so
+a client cannot fire more than the module allows. No client can fire or
+recall another side's asset.
+
 The server acknowledges every order with what will happen and when
 (`jmfsb_support_ack`), and the asset talks on the notify rail of its side:
 fire mission received (with the wait), SHOT with the impact grid and time of
@@ -73,7 +82,9 @@ flight, SPLASH, rounds complete, check fire, missile away, on station, target
 acquired, impact, and **rearmed, ready for tasking** when its cooldown runs
 out. While a mission runs its target is **marked on the map** for the side
 (an icon, and the sheaf or search area as an outline), and the marker goes
-when the mission ends.
+when the mission ends. The words and the marker go from the server by
+`remoteExec` (`fnc_sayLocal` to the side, `fnc_markLocal` with JIP,
+`fnc_unmarkLocal`), and a client takes them only from the server (review S7).
 
 **Cooldown** is Simplex's: the module's cooldown after the mission ends, plus
 its cooldown per round (artillery) or per missile (cruise) for every one the
@@ -190,7 +201,7 @@ minimum or maximum); every other value is the Virtual Artillery default.
 
 ## Ships
 
-4 unit classes, 47 functions.
+4 unit classes, 53 functions.
 
 ## Eden modules
 
@@ -292,7 +303,7 @@ A loitering munition launch site on the support page, at this module's position.
 
 ## Functions
 
-<details><summary>47</summary>
+<details><summary>53</summary>
 
 - `jmfsb_support_fires_fnc_abort`
 - `jmfsb_support_fires_fnc_aimPoint`
@@ -300,6 +311,7 @@ A loitering munition launch site on the support page, at this module's position.
 - `jmfsb_support_fires_fnc_assets`
 - `jmfsb_support_fires_fnc_available`
 - `jmfsb_support_fires_fnc_ballistics`
+- `jmfsb_support_fires_fnc_check`
 - `jmfsb_support_fires_fnc_detonate`
 - `jmfsb_support_fires_fnc_entityRow`
 - `jmfsb_support_fires_fnc_finish`
@@ -315,6 +327,7 @@ A loitering munition launch site on the support page, at this module's position.
 - `jmfsb_support_fires_fnc_loiterOne`
 - `jmfsb_support_fires_fnc_loiterTick`
 - `jmfsb_support_fires_fnc_mark`
+- `jmfsb_support_fires_fnc_markLocal`
 - `jmfsb_support_fires_fnc_moduleArtillery`
 - `jmfsb_support_fires_fnc_moduleCruise`
 - `jmfsb_support_fires_fnc_moduleLoiter`
@@ -328,7 +341,10 @@ A loitering munition launch site on the support page, at this module's position.
 - `jmfsb_support_fires_fnc_readOpts`
 - `jmfsb_support_fires_fnc_register`
 - `jmfsb_support_fires_fnc_request`
+- `jmfsb_support_fires_fnc_requester`
+- `jmfsb_support_fires_fnc_say`
 - `jmfsb_support_fires_fnc_sayLater`
+- `jmfsb_support_fires_fnc_sayLocal`
 - `jmfsb_support_fires_fnc_setupBattery`
 - `jmfsb_support_fires_fnc_sitrep`
 - `jmfsb_support_fires_fnc_sortieDone`
@@ -339,6 +355,7 @@ A loitering munition launch site on the support page, at this module's position.
 - `jmfsb_support_fires_fnc_threat`
 - `jmfsb_support_fires_fnc_typeList`
 - `jmfsb_support_fires_fnc_unmark`
+- `jmfsb_support_fires_fnc_unmarkLocal`
 - `jmfsb_support_fires_fnc_virtualRound`
 - `jmfsb_support_fires_fnc_virtualShot`
 

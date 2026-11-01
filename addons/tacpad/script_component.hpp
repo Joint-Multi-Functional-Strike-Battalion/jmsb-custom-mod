@@ -18,6 +18,13 @@
 // it except through FUNC(openReader).
 #define READER_APP "reader"
 
+// THE SCHEME IDS A PROFILE MAY STILL HOLD (XEH_postInit): the one renamed on
+// 2026-10-08, and the default it became. The store is CBA's own client
+// settings hash in the profile.
+#define SCHEME_LEGACY       "nightBrass"
+#define SCHEME_DEFAULT      "nightJmsb"
+#define CBA_PROFILE_STORE   "cba_settings_hash"
+
 // THE REPORT CARD (FUNC(composeCard), FUNC(composeCardHead), FUNC(composePicker)),
 // docs/PLAN_MESSAGING_UI.md phase 2. Sizes are text sizes for FUNC(drawText);
 // widths are fractions of the card column.

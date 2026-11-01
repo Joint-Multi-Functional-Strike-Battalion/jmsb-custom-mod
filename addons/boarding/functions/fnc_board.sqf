@@ -3,6 +3,13 @@
  * Author: JMSB
  * Loads every player near a boarding point into cargo. SERVER SIDE.
  *
+ * Reached by remoteExec from the button's ACE action (review R1: it was a CBA
+ * event, so any client could load everybody at any point from anywhere). The
+ * presser must be the sender's own unit, alive and within BOARD_PRESS_RANGE of
+ * one of the point's buttons, and the point's range, transport and options are
+ * the server's own copy (FUNC(moduleController)), not the logic's public
+ * variables.
+ *
  * The presser is not the owner of the other players, and moveInCargo wants
  * the unit local - so each seating is sent to the machine that owns that
  * player rather than run here and hoped for.
@@ -20,17 +27,29 @@
  * None
  *
  * Example:
- * [_logic, _player] call jmfsb_boarding_fnc_board
+ * [_logic, player] remoteExecCall ["jmfsb_boarding_fnc_board", 2]
+ *
+ * Public: No
  */
 
 params [["_logic", objNull, [objNull]], ["_presser", objNull, [objNull]]];
 
 if (!isServer || {isNull _logic}) exitWith {};
+if (!alive _presser || {!([_presser] call EFUNC(common,senderIs))}) exitWith {
+    WARNING_2("board: refused - machine %1 named %2",remoteExecutedOwner,_presser);
+};
 
-private _range = _logic getVariable [QGVAR(range), BOARD_RANGE_DEF];
+private _point = (localNamespace getVariable [QGVAR(points), createHashMap]) getOrDefault [netId _logic, []];
+if (_point isEqualTo []) exitWith {
+    WARNING_1("board: refused - %1 is not a boarding point",_logic);
+};
+_point params ["_range", "_buttons", "_synced", "_sideOnly", "_skipPresser"];
+
+if ((_buttons findIf {!isNull _x && {(_presser distance _x) <= BOARD_PRESS_RANGE}}) < 0) exitWith {
+    WARNING_1("board: refused - %1 is not at a button of this point",name _presser);
+};
+
 private _at = getPosATL _logic;
-private _sideOnly = (_logic getVariable ["sideOnly", 0]) == 0;
-private _skipPresser = (_logic getVariable ["includePresser", 0]) == 1;
 
 // FUNC(notify) is client-local and takes three arguments; the server telling
 // one player something has to be sent to that player's machine.
@@ -40,7 +59,7 @@ private _fnc_tell = {
     ["Boarding", _text, _colour] remoteExec [QEFUNC(notify,notify), _to];
 };
 
-private _vehicles = [_logic] call FUNC(seatsFor);
+private _vehicles = [_logic, _synced] call FUNC(seatsFor);
 if (_vehicles isEqualTo []) exitWith {
     [_presser, "No transport with room here.", [1, 0.3, 0.3, 1]] call _fnc_tell;
 };
@@ -57,23 +76,25 @@ if (_who isEqualTo []) exitWith {
     [_presser, "Nobody on foot in range.", [1, 0.3, 0.3, 1]] call _fnc_tell;
 };
 
-// Fill the nearest vehicle before moving to the next. emptyPositions is read
-// again for each man rather than counted once up front: the seat a man takes
-// is gone for the man behind him, and a stale count is how two people get
-// sent to the same seat and one of them ends up standing.
+// Fill the nearest vehicle before moving to the next. The free seats are
+// counted once and kept here: the moveIn happens later on each player's own
+// machine, so emptyPositions does not drop during this loop and would send the
+// whole crowd to the first vehicle.
+private _free = _vehicles apply {_x emptyPositions "cargo"};
 private _seated = 0;
 private _left = [];
 
 {
     private _unit = _x;
-    private _veh = _vehicles param [_vehicles findIf {(_x emptyPositions "cargo") > 0}, objNull];
+    private _i = _free findIf {_x > 0};
 
-    if (isNull _veh) then {
+    if (_i < 0) then {
         _left pushBack _unit;
     } else {
+        _free set [_i, (_free select _i) - 1];
         // where the unit is local - moveInCargo on a remote player does not
         // reliably take
-        [_unit, _veh] remoteExec ["moveInCargo", _unit];
+        [_unit, _vehicles select _i] remoteExec ["moveInCargo", _unit];
         _seated = _seated + 1;
     };
 } forEach _who;

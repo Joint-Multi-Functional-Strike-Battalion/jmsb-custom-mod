@@ -181,6 +181,18 @@ private _myUid = getPlayerUID player;
         format ["%1  %2", toUpper (_msg getOrDefault ["fromCallsign", "?"]), _tags joinString "  "],
         ([_mute, _accent] select _urgent), TEXT_LABEL, true, _align, true
     ] call FUNC(drawText);
+    // THE SENDER'S LINE IS A BUTTON: press it to write to that player alone
+    // (user, 2026-10-24: "click on a player to send them a message").
+    private _fromUid = _msg getOrDefault ["fromUid", ""];
+    if (!_mine && _fromUid isEqualType "" && _fromUid isNotEqualTo "") then {
+        private _fromHit = [_root, [_tx, _y, _tw, _rowH * 0.8], {
+            params ["_ctrl"];
+            private _uid = _ctrl getVariable [QGVAR(uid), ""];
+            if (_uid isEqualTo "") exitWith {};
+            ["", "", false, format ["P:%1", _uid]] call FUNC(composeOpen);
+        }] call FUNC(drawHit);
+        _fromHit setVariable [QGVAR(uid), _fromUid];
+    };
 
     [
         _root, [_tx, _y, _tw, _rowH * 0.8],

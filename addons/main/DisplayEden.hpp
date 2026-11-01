@@ -13,7 +13,7 @@ class Display3DEN {
                 class GVAR(Wiki) {
                     text = JMFSB_TOOLBAR_WIKI;
                     picture = "\a3\3DEN\Data\Controls\ctrlMenu\link_ca.paa";
-                    weblink = "https://wiki.1st Joint Multi-Functional Strike Battalion.com/";
+                    weblink = "https://github.com/Joint-Multi-Functional-Strike-Battalion/";
                     opensNewWindow = 1;
                 };
             };

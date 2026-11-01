@@ -9,7 +9,11 @@
  * is: the globals exist, at least one commander, and every commander
  * reporting startupComplete.
  *
- * Raises "jmfsb_adapter_alive_ready" once.
+ * Runs the FUNC(whenReady) hooks once. Not the "jmfsb_adapter_alive_ready"
+ * CBA event any more (review R1): any client could raise that one again and
+ * restart every system that starts on it - air defence, leaders, QRF, UAS.
+ * The truth is the server's, in localNamespace; GVAR(ready) is a copy for
+ * readers.
  *
  * Arguments: None
  *
@@ -19,7 +23,7 @@
  */
 
 if (!isServer) exitWith {};
-if (GVAR(ready)) exitWith {};
+if (localNamespace getVariable [QGVAR(ready), false]) exitWith {};
 
 [{
     params ["_args", "_handle"];
@@ -35,11 +39,18 @@ if (GVAR(ready)) exitWith {};
         };
 
     if (_ok) exitWith {
+        [_handle] call CBA_fnc_removePerFrameHandler;
+        if (localNamespace getVariable [QGVAR(ready), false]) exitWith {};
+        localNamespace setVariable [QGVAR(ready), true];
         GVAR(ready) = true;
         INFO_2("ALiVE up after %1s - %2 commander(s). Adapter ready.",
             round (CBA_missionTime - _t0),count OPCOM_instances);
-        [QGVAR(ready), []] call CBA_fnc_globalEvent;
-        [_handle] call CBA_fnc_removePerFrameHandler;
+        private _hooks = localNamespace getVariable [QGVAR(readyHooks), []];
+        localNamespace setVariable [QGVAR(readyHooks), []];
+        {
+            _x params ["_code", "_args"];
+            _args call _code;
+        } forEach _hooks;
     };
 
     // An adapter that never becomes ready must be diagnosable from the RPT

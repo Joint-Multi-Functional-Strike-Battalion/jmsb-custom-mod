@@ -70,7 +70,7 @@ private _fnc_hold = {
 };
 private _fnc_putOut = {
     {
-        if (!isPlayer _x) then {[QGVAR(putOut), [_x], _x] call CBA_fnc_targetEvent};
+        if (!isPlayer _x) then {[_x] remoteExecCall [QFUNC(putOut), _x]};
     } forEach _cargo;
 };
 private _fnc_waitDone = {CBA_missionTime > (_st getOrDefault ["waitUntil", 0])};
@@ -147,7 +147,7 @@ switch (_st get "phase") do {
         // for him to be out rather than sweep him with the airframe.
         private _theirs = _cargo select {alive _x && {isPlayer leader group _x}};
         if (_theirs isNotEqualTo []) exitWith {
-            {[QGVAR(putOut), [_x], _x] call CBA_fnc_targetEvent} forEach _theirs;
+            {[_x] remoteExecCall [QFUNC(putOut), _x]} forEach _theirs;
         };
         [_handle] call CBA_fnc_removePerFrameHandler;
         [_veh] call FUNC(sweep);
@@ -188,7 +188,7 @@ switch (_st get "phase") do {
         private _next = _cargo param [_cargo findIf {alive _x && {!(_x getVariable [QGVAR(jumped), false])}}, objNull];
         if (!isNull _next) exitWith {
             _next setVariable [QGVAR(jumped), true];
-            [QGVAR(jumpOut), [_next, _veh], _next] call CBA_fnc_targetEvent;
+            [_next, _veh] remoteExecCall [QFUNC(jump), _next];
         };
         [_logic, _st, "stick is out, returning to base"] call FUNC(transportHome);
     };

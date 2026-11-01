@@ -47,6 +47,18 @@ The tile follows the same rule: an armed alarm counts the nearest one down,
 because that is a thing that will happen to you; the stopwatch has the tile the
 rest of the time.
 
+**Live screens tick in place** (code review R8). TIMER, the EW SCANNER and the
+tile band are built once; their tick writes new words and colours into the
+controls already there (`jmfsb_tacpad_fnc_liveApply`) — `fnc_timerLive`,
+`fnc_scannerLive` and `fnc_tileLive` give the values, in draw order, and the
+*shape* that decides which controls exist. Only a new shape (an alarm armed or
+deleted, the ring, a stepped delay, a reading row or alert coming or going, a
+tile turning live or stale, a qualifier of another length, the page, the place,
+the scheme, the type size) builds the screen again — for an app still only
+while the pointer is off it (`jmfsb_tacpad_fnc_appIdle`). The countdowns keep
+running while the pointer rests on TIMER, and no refresh deletes a button
+under a press.
+
 ## The EW scanner on a vanilla info panel — REMOVED
 
 This addon used to carry a **Custom Info** panel resource for the EW readout —
@@ -140,7 +152,10 @@ the tablet dialog passes it through (`jmfsb_devices_fnc_keyDown`).
 
 Every list in the suite is drawn by `fnc_row`, so the roster, the traffic list
 and the tool strip cannot drift apart in padding, type size or divider weight —
-which is exactly what happens when three panels each draw their own.
+which is exactly what happens when three panels each draw their own. A row's
+value sits right-aligned at the far edge unless the caller sets a value column
+(the optional seventh argument, a fraction of the row's width), in which case it
+is left-aligned from there.
 
 ## Map tools are jmfsb_maptools'
 
@@ -308,7 +323,9 @@ own providers.
 The RADIO board (`fnc_appRadio`; docs/DESIGN_VOICE.md, "Tablet RADIO app") is
 Arma 3's own VON through `jmfsb_voice`'s API, read once per draw into the
 board's context and handed to each panel. It names no radio mod; with the
-voice addon absent it says so and draws nothing to press. It redraws when what
+voice addon absent it says so and draws nothing to press. When this machine
+cannot run the server's voice (`jmfsb_voice_system` "none") every tab says
+VOICE UNAVAILABLE. TFAR and ACRE were removed on 2026-10-31 (DEC1). It redraws when what
 it shows changes (`fnc_appRadioKey`), on the voice events (ring, call state,
 nets changed), never under a press and never while its search box has focus.
 Numpad 6 opens it on the tablet, 7 / 8 step its tabs (`jmfsb_devices`' keys).
@@ -327,10 +344,18 @@ Numpad 6 opens it on the tablet, 7 / 8 step its tabs (`jmfsb_devices`' keys).
   (`fnc_appRadioContacts`) with ON CALL / + ADD / CALL / CALL BACK; LIVE CALL
   (`fnc_appRadioLive`) - an incoming ring with ACCEPT / DECLINE, the call's
   slot, clock, people, priority and size, RECENT contacts (`fnc_radioQuick`,
-  kept off the call events by `fnc_radioCalls`), HANG UP, MUTE CALL, and a
+  kept off the call events by `fnc_radioCalls`), HANG UP, MUTE CALL, SEND
+  VIEW / SEND FACE while it is live (`fnc_callCamFlip`: what the player's own
+  camera sends, public on him as `jmfsb_tacpad_apps_callCam`), and a
   line with the call's last word (failure reason, priority warning, end) - and
   CALLBACKS with how long each has waited. Every ring goes through
   `fnc_radioDial`: into the live call when there is one, a new call otherwise.
+- **The call's picture** (docs/DESIGN_VOICE.md "Call picture"): `fnc_callFeed`
+  renders a game camera on the other man on a live call - the one talking,
+  `fnc_callFeedUnit` - at his FACE or his VIEW, whichever he sends, to one
+  render-to-texture per machine. Where it sits, the camera distances (Call
+  picture settings, 0.2 m either way) and the flip key are the devices'
+  (`jmfsb_devices_fnc_callWindow`, floating over the tablet and the walking view).
 - **MANAGE** (`fnc_appRadioManage`): leaders, RTOs and admins
   (`fnc_radioRole`: the admin flag, the RTO job by the one RTO test
   `jmfsb_voice_fnc_isRto` - the RTO console is a player job, user 2026-10-20 -
@@ -347,10 +372,11 @@ Numpad 6 opens it on the tablet, 7 / 8 step its tabs (`jmfsb_devices`' keys).
   `fnc_radioTick`, the callsigns `fnc_radioSquads`). The drafts live in
   uiNamespace and are part of the redraw key. Only an RTO or admin
   (`jmfsb_voice_fnc_canManageNets`) gets the presses; the voice server
-  re-checks. On a TFAR / ACRE night the block only says so.
+  re-checks. Without the voice addon the block only says so.
 
 `fnc_radioState` / `fnc_radioPublish` publish the player's active voice net for
-the squad table and the target card; `fnc_radioTune` (the roster's TUNE) makes
+the squad table and the target card, on the unit he controls - a
+Zeus-controlled one included (`CBA_fnc_currentUnit`, review L4); `fnc_radioTune` (the roster's TUNE) makes
 another man's active net the player's when he is on it too.
 
 ## DRONES: no UAV terminal
@@ -431,7 +457,7 @@ Not run in game.
 
 ## Ships
 
-87 functions.
+106 functions.
 
 ## CBA settings
 
@@ -445,13 +471,20 @@ Not run in game.
 | `jmfsb_tacpad_apps_show_tools` | CHECKBOX | Show map tools |
 | `jmfsb_tacpad_apps_readerDense` | CHECKBOX | Reader: high density |
 | `jmfsb_tacpad_apps_show_settings` | CHECKBOX | Show settings gear |
+| `jmfsb_tacpad_apps_artyMrsi` | CHECKBOX | ARTY: MRSI solutions |
+| `jmfsb_tacpad_apps_artyMrsiGap` | SLIDER | ARTY: MRSI reload gap (s) |
+| `jmfsb_tacpad_apps_artyGunRange` | SLIDER | ARTY: gun search range (m) |
+| `jmfsb_tacpad_apps_tileLayout` | EDITBOX | Live tile layout |
+| `jmfsb_tacpad_apps_callFaceDist` | SLIDER | Call picture: FACE distance (m) |
+| `jmfsb_tacpad_apps_callViewAhead` | SLIDER | Call picture: VIEW offset (m) |
 
 ## Functions
 
-<details><summary>87</summary>
+<details><summary>106</summary>
 
 - `jmfsb_tacpad_apps_fnc_alarmAtDelay`
 - `jmfsb_tacpad_apps_fnc_ammoState`
+- `jmfsb_tacpad_apps_fnc_appArty`
 - `jmfsb_tacpad_apps_fnc_appComms`
 - `jmfsb_tacpad_apps_fnc_appDrones`
 - `jmfsb_tacpad_apps_fnc_appDronesAction`
@@ -470,6 +503,7 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_appHackTrack`
 - `jmfsb_tacpad_apps_fnc_appIntel`
 - `jmfsb_tacpad_apps_fnc_appJamming`
+- `jmfsb_tacpad_apps_fnc_appMenu`
 - `jmfsb_tacpad_apps_fnc_appPageBar`
 - `jmfsb_tacpad_apps_fnc_appPageButton`
 - `jmfsb_tacpad_apps_fnc_appPagePanel`
@@ -488,7 +522,13 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_appSupport`
 - `jmfsb_tacpad_apps_fnc_appTimer`
 - `jmfsb_tacpad_apps_fnc_appWeather`
+- `jmfsb_tacpad_apps_fnc_artyGun`
+- `jmfsb_tacpad_apps_fnc_artySolve`
+- `jmfsb_tacpad_apps_fnc_callCamFlip`
+- `jmfsb_tacpad_apps_fnc_callFeed`
+- `jmfsb_tacpad_apps_fnc_callFeedUnit`
 - `jmfsb_tacpad_apps_fnc_missionSchemes`
+- `jmfsb_tacpad_apps_fnc_openLog`
 - `jmfsb_tacpad_apps_fnc_panelHide`
 - `jmfsb_tacpad_apps_fnc_panelReader`
 - `jmfsb_tacpad_apps_fnc_panelSettings`
@@ -517,11 +557,14 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_readerRow`
 - `jmfsb_tacpad_apps_fnc_roleTiles`
 - `jmfsb_tacpad_apps_fnc_row`
+- `jmfsb_tacpad_apps_fnc_scannerLive`
 - `jmfsb_tacpad_apps_fnc_setSetting`
 - `jmfsb_tacpad_apps_fnc_settingCycle`
 - `jmfsb_tacpad_apps_fnc_settingLocked`
 - `jmfsb_tacpad_apps_fnc_settingStep`
 - `jmfsb_tacpad_apps_fnc_supportCell`
+- `jmfsb_tacpad_apps_fnc_supportConfirm`
+- `jmfsb_tacpad_apps_fnc_supportDangerClose`
 - `jmfsb_tacpad_apps_fnc_supportGroup`
 - `jmfsb_tacpad_apps_fnc_supportHover`
 - `jmfsb_tacpad_apps_fnc_supportMapDraw`
@@ -533,7 +576,15 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_supportStepper`
 - `jmfsb_tacpad_apps_fnc_supportTint`
 - `jmfsb_tacpad_apps_fnc_ticSend`
+- `jmfsb_tacpad_apps_fnc_tileChoices`
 - `jmfsb_tacpad_apps_fnc_tileData`
+- `jmfsb_tacpad_apps_fnc_tileLayout`
+- `jmfsb_tacpad_apps_fnc_tileLayoutSet`
+- `jmfsb_tacpad_apps_fnc_tileLive`
+- `jmfsb_tacpad_apps_fnc_tileOrder`
+- `jmfsb_tacpad_apps_fnc_tilePageStep`
+- `jmfsb_tacpad_apps_fnc_timerClock`
+- `jmfsb_tacpad_apps_fnc_timerLive`
 - `jmfsb_tacpad_apps_fnc_timerSet`
 - `jmfsb_tacpad_apps_fnc_timerState`
 - `jmfsb_tacpad_apps_fnc_toggleNet`

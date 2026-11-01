@@ -110,6 +110,10 @@
 #define CHECK_BREATHING "CheckBreathing"
 #define CHECK_KINDS ["hr", "bp", "rr"]
 #define CHECK_VARS [QGVAR(checkHR), QGVAR(checkBP), QGVAR(checkRR)]
+// The server takes a hand check only from a medic this close to the patient
+// (review R1), metres - ACE's treatment reach with room for a vehicle seat.
+#define CHECK_RANGE 10
+#define SERVER_OWNER 2
 
 // ---------------------------------------------------------------------------
 // THE NAMES READ OFF OTHER MODS, in one place. Every one of these but the pain

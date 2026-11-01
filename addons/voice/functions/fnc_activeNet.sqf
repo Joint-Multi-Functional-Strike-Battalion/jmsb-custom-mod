@@ -2,7 +2,7 @@
 /*
  * Author: JMSB
  * The local player's active net: the one the game push-to-talk sends on.
- * Under TFAR / ACRE: the net of that radio's active set (hook "current").
+ * "" while no game-voice system runs (system "none").
  *
  * Arguments:
  * None
@@ -16,5 +16,5 @@
  * Public: Yes
  */
 
-if (!GVAR(active)) exitWith {[] call HOOK("current")};
+if (!GVAR(active)) exitWith {""};
 GVAR(activeNetId)

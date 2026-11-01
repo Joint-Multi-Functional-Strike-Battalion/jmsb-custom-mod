@@ -14,7 +14,7 @@
 [
     QGVAR(windowMin), "SLIDER",
     ["Outage minimum (s)", "Shortest time a destroyed cache holds the ceiling down. Outages extend rather than stack, so supply raids are raids and not a win button."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [60, 3600, 600, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -22,7 +22,7 @@
 [
     QGVAR(windowMax), "SLIDER",
     ["Outage maximum (s)", "Longest time a destroyed cache holds the ceiling down."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [60, 7200, 1800, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -30,7 +30,7 @@
 [
     QGVAR(cachesPerSide), "SLIDER",
     ["Supply caches per side", "Unmarked crates placed inside that side's patrol zones, split across them. Finding them is what the intel economy is for; killing one drops the ceiling."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [0, 12, 3, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -51,9 +51,9 @@
 // setting is here at all.
 [
     QGVAR(swarmClasses), "EDITBOX",
-    ["Swarm airframes", "Comma-separated UAV classes a Drone Swarm module may field. Empty allows any. A module naming a class outside this list refuses to launch and says so when it is placed."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
-    "O_UAV_01_F,B_UAV_01_F,I_UAV_01_F",
+    ["Swarm airframes", "Comma-separated UAV classes a Drone Swarm module may field: a class on the list or a variant of one (a faction's own Switchblade is a variant of the Switchblade). Empty allows any. A module naming a class outside this list refuses to launch and says so when it is placed."],
+    ["JMSB - EW, Drones & Intel", "Drones"],
+    "O_UAV_01_F,B_UAV_01_F,I_UAV_01_F,B_SwitchBlade_300,B_SwitchBlade_600",
     true
 ] call CBA_fnc_addSetting;
 
@@ -68,7 +68,7 @@
 [
     QGVAR(aliveZones), "CHECKBOX",
     ["Patrol ALiVE objectives", "Turn a share of each commander's ALiVE objectives into patrol zones, once, when the campaign comes up. Hand-placed Drone Patrol modules are unaffected and add to these."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     false,
     true
 ] call CBA_fnc_addSetting;
@@ -76,7 +76,7 @@
 [
     QGVAR(aliveZoneShare), "SLIDER",
     ["ALiVE objectives patrolled (%)", "Share of one commander's objectives that get a patrol zone. This shapes a small map; the cap below is what bounds a big one."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [0, 100, 30, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -84,7 +84,7 @@
 [
     QGVAR(aliveZoneMax), "SLIDER",
     ["Max ALiVE zones per side", "Hard ceiling per commander whatever the share works out to. A percentage has no ceiling - 30% of 173 objectives is 52 zones, and the planner would try to hold an airframe over every one."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [0, 30, 6, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -92,7 +92,7 @@
 [
     QGVAR(aliveZoneRadius), "SLIDER",
     ["ALiVE zone radius (m)", "Orbit radius for a zone taken from an objective. 0 uses the objective's own size, which is what ALiVE thinks that place is worth."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [0, 3000, 0, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -100,7 +100,7 @@
 [
     QGVAR(aliveZoneDrones), "SLIDER",
     ["Airframes per ALiVE zone", "How many drones each objective-derived zone tries to hold up. The airframe itself is always the commander's own faction UAV."],
-    ["1st Joint Multi-Functional Strike Battalion", "Drones"],
+    ["JMSB - EW, Drones & Intel", "Drones"],
     [1, 6, 1, 0],
     true
 ] call CBA_fnc_addSetting;

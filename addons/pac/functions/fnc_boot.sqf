@@ -15,9 +15,16 @@ Description:
              (deck, slot table, radio plan, mailboxes) and orders cached
         4/6  store from the profile
         5/6  store from the service: adopted, or created on first save
-        6/6  saved to the profile ONLY - the boot never writes the database
+        6/6  stale sessions closed and the manual op window restored (they
+             need the loaded store); connects and disconnects held during
+             the boot replayed; the store gate (GVAR(storeReady)) opened;
+             saved to the profile ONLY - the boot never writes the database
              it has just read (that is what wiped it); published; structure
              and settings sent to clients; ready
+
+    NO STORE WRITE BEFORE STEP 6. FUNC(storeSave) refuses until
+    GVAR(storeReady), and XEH_postInit's connect handlers queue in
+    GVAR(bootQueue) until then.
 
     THE PROFILE IS ALWAYS THE STORE; the service is on top of it. With
     sync = "off" steps 3 and 5 say so and the unit's database is an
@@ -128,19 +135,10 @@ if (_service) then {
     waitUntil {sleep 0.1; (missionNamespace getVariable ["CBA_settings_ready", false]) || {diag_tickTime - _t0 > 10}};
     private _from = [] call FUNC(svcConfigure);
     ["3/6", switch (_from) do {
-        case "setting": {"database address: the CBA server setting 'Database' (Addon Options > 1st Joint Multi-Functional Strike Battalion PAC > Service), handed to the extension - a mongodb+srv:// string is Atlas directly, an http:// one the pacdb service"};
+        case "setting": {"database address: the CBA server setting 'Database' (Addon Options > JMSB - Mission & Admin > TAC//PAC Service), handed to the extension - a mongodb+srv:// string is Atlas directly, an http:// one the pacdb service"};
         case "environment": {"database address: no CBA setting - the extension uses GHOSTD_PACDB_URL / GHOSTD_PACDB_KEY from the server's environment, or pacdb.json in its root"};
         default {"database address: the CBA setting could NOT be handed to the extension - is ghostd_pacdb_x64.dll / .so loaded?"};
     }] call FUNC(bootLog);
-    // THE ADDRESS THIS SERVER CALLS OUT FROM, when the admin asked for it -
-    // what goes in an Atlas access-list entry, and a verdict on TLS beside it.
-    // Off by default: a request to a third party is not something a boot should
-    // make on its own. The answer comes back through the ExtensionCallback
-    // handler (XEH_postInit) a moment later, as "network check: ...".
-    if (missionNamespace getVariable [QGVAR(netCheck), false]) then {
-        ["3/6", "network check on: asking what address this server calls out from, and whether TLS works here - the answer follows as a 'network check' line"] call FUNC(bootLog);
-        "ghostd_pacdb" callExtension ["netcheck", []];
-    };
 
     ["3/6", format ["service: reading the config, one document per file - '%1.settings' .ranks .skills .awards .statuses .admins .nets .radio .orbat .templates .schemes, every '%1.role.*' and every '%1.opord.*' (each up to %2 s)", _unit, PAC_SVC_TIMEOUT]] call FUNC(bootLog);
     ([] call FUNC(svcStructure)) params ["_doc", "_status"];
@@ -238,12 +236,44 @@ if (_service && GVAR(svcUp)) then {
 };
 
 // ---- 6/6 save, publish, ready ------------------------------------------------
+// FIRST, WHAT NEEDS THE LOADED STORE. Sessions still open from a previous run
+// are stale - nobody has been let in yet - so they close at their lastSeenAt.
+// An op window left open is NOT closed: an admin starts and stops windows, and
+// a restart mid-op should not end the op; the manual one is restored.
+{
+    if ((_x # 4) isEqualTo "") then {_x set [4, _x # 3]};
+} forEach GVAR(sessions);
+GVAR(windowOpen) = "";
+{
+    if ((_x # 3) isEqualTo "" && {(_x # 4) isEqualTo "manual"}) then {GVAR(windowOpen) = _x # 0};
+} forEach GVAR(windows);
+
+// THEN WHO CONNECTED OR LEFT DURING THE BOOT, in order, and the gate opens -
+// in one unscheduled step, so a connect cannot slip between the replay and
+// the gate. Their saves are refused until the gate is open; the save below
+// carries them.
+private _replayed = 0;
+isNil {
+    {
+        _x params ["_joined", "_uid", "_name"];
+        if (_joined) then {[_uid, _name, false] call FUNC(playerJoin)} else {[_uid] call FUNC(sessionEnd)};
+    } forEach GVAR(bootQueue);
+    _replayed = count GVAR(bootQueue);
+    GVAR(bootQueue) = [];
+    GVAR(storeReady) = true;
+};
+if (_replayed > 0) then {
+    ["6/6", format ["%1 connect(s) / disconnect(s) held during the boot, applied now", _replayed]] call FUNC(bootLog);
+};
+
 // PROFILE ONLY - NEVER THE DATABASE. The boot has just READ the store from the
 // database in step 5; writing it back here is exactly what wiped it - any hiccup
 // (a slow read, an empty profile left by another mission) and a smaller local
 // store overwrote the real one. The database is written only when an admin
-// presses SAVE, and at mission end for play time (user, 2026-09-05).
+// presses SAVE, and at mission end for play time (user, 2026-09-05). Players
+// replayed above reach the database with their logoff, SAVE or mission end.
 private _wrote = [true, false] call FUNC(storeSave);
+[] call FUNC(rosterTotals);
 [] call FUNC(publish);
 
 // The structure and the settings go to every client once - JIP gets them with
@@ -251,6 +281,7 @@ private _wrote = [true, false] call FUNC(storeSave);
 GVAR(structureSvc) = GVAR(structure);
 GVAR(settingsSvc) = GVAR(settings);
 publicVariable QGVAR(structureSvc);
+[] call FUNC(adminsPublish);
 publicVariable QGVAR(settingsSvc);
 publicVariable QGVAR(bootLog);
 ["structure"] call FUNC(hostRefresh);     // the host does not hear its own publicVariable

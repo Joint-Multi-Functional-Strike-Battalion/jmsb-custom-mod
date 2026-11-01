@@ -60,7 +60,7 @@ private _pending = 0;
         _pending = _pending + 1;
         if !(_threadId in _asked) then {
             _asked pushBack _threadId;
-            [QGVAR(requestThread), [player, _threadId]] call CBA_fnc_serverEvent;
+            [player, _threadId] remoteExecCall [QFUNC(srvRequestThread), SERVER_OWNER];
         };
         continue;
     };

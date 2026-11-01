@@ -14,3 +14,10 @@ PREP(skillAdjustment);
 PREP(staging);
 PREP(vehicle);
 PREP(zenModuels);
+// Attendance: client to server and back by remoteExec (review S7).
+PREP(srvAttendance);
+PREP(attendance);
+// The connection log (server only) and ACM evacuation (client to server by
+// remoteExec) - review R1.
+PREP(logPlayer);
+PREP(srvEvacuated);

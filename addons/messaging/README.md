@@ -23,19 +23,54 @@ no-op rather than an error.
 
 | | |
 |---|---|
-| 1. client `submit` | validates the payload locally, then raises `jmfsb_messaging_submit` on the server. Refuses with a reason and never leaves the machine if a required field is empty, if there is no addressee, or if messaging is off |
-| 2. server `srvSubmit` | checks the sender is a live player, drops a repeated nonce, validates *again*, opens or finds the thread (`srvThreadFor`), files the message |
-| 3. server `srvDeliver` | works out the mailboxes — always `P:<sender>`, plus the addressees, plus the command group if a ROUTING line is ticked — files the thread in each, and pushes one `receive` per PLAYER, never one per box they happen to share |
-| 4. client `cltReceive` | replaces that thread's row in `jmfsb_messaging_index` and raises `received`. The reader draws off that index and nothing else |
+| 1. client `submit` | validates the payload locally, then sends it to the server by `remoteExecCall` of `srvSubmit`. Refuses with a reason and never leaves the machine if a required field is empty, if there is no addressee, or if messaging is off |
+| 2. server `srvSubmit` | checks the unit named is the sending machine's own and a live player, drops a repeated nonce, validates *again*, opens or finds the thread (`srvThreadFor`), files the message |
+| 3. server `srvDeliver` | works out the mailboxes — always `P:<sender>`, plus the addressees, plus the command group if a ROUTING line is ticked — files the thread in each, and pushes one `cltReceive` per PLAYER, never one per box they happen to share |
+| 4. client `cltReceive` | replaces that thread's row in `jmfsb_messaging_index` and runs the `onReceive` hooks. The reader draws off that index and nothing else |
 
 A shared box has no members — a named box is readable by everyone rather than
 subscribed to — so a thread filed only in one is pushed to every player as a
 *quiet* row: an index entry with no message body and no notification.
 
-Anything the server refuses comes back on `jmfsb_messaging_reject`, which is told
-to the sender and nobody else. It now also prints to system chat, because the
+Anything the server refuses comes back to the sender and nobody else
+(`cltReject`), which runs the hooks screens register with `onReject` (TAC//MSG's
+composer puts the card back). It now also prints to system chat, because the
 notification stack is an `RscTitles` layer and every screen it would be about is
 a dialog — in front of it.
+
+## Who sent it (review S7)
+
+Nothing that needs trust travels on a CBA event: an event carries no sender, so
+the server could only believe the unit it was handed. A client reaches the
+server by `remoteExecCall` of five functions, and each checks at its top that
+the unit it names is the sending machine's own (`jmfsb_common_fnc_senderIs`):
+
+| function | the client's request |
+|---|---|
+| `srvSubmit` | file a message. A call sign override is dropped unless the sender is an admin by the server's records (the `msg.*` test commands) or the server itself |
+| `srvRequestIndex` | his own index. The rows are built by `srvIndexPush`, which the server also calls on its own account (a claim, `msg.clear`) |
+| `srvRequestThread` | one thread's bodies, when he may read it |
+| `srvMarkRead` | mark a thread read for himself |
+| `srvClaim` | claim or release a task thread for himself |
+
+The server answers by `remoteExecCall` of `cltReceive`, `cltIndex`, `cltThread`,
+`cltMarker`, `cltReject` and `cltCacheClear`, and each takes the call only from
+the server (`jmfsb_common_fnc_fromServer`). A mission with a `CfgRemoteExec`
+whitelist must list all eleven. Server-side callers (the counter-battery radar,
+the test commands) call `srvSubmit` directly and pass as the server.
+
+The other way round holds too: nothing the server says to a client goes on a
+CBA event, because any client can raise any of them on every machine (review
+S7). A refusal reaches a screen through an `onReject` hook, which only
+`cltReject` runs; `msg.clear` empties the caches by `cltCacheClear`. The old
+`threadUpdated`, `taskStateChanged` and `tic` global events had no listener and
+went to every machine on every claim, sweep and contact report (P8); they are
+gone. A screen hears a change through the index push (`cltReceive`, `cltIndex`).
+Traffic arriving for the player runs the hooks screens register with
+`onReceive` (the reader redraws, TAC//MSG raises a FLASH banner) - it used to
+be the `received` CBA event, which any client could raise to put a fake FLASH
+banner on every screen. A quiet row still raises the local `indexRefreshed`
+event, which only redraws from the player's own index.
 
 ## Seeing where it stopped
 
@@ -60,7 +95,8 @@ a dev box, so these file traffic **from somebody else** — through the real
 server path, so it arrives unread, raises a notification and lands on the thread
 spine exactly as another player's would. Only the call sign is a lie: `srvSubmit`
 takes an optional override and, when one is given, does *not* mark the message
-read by the sender.
+read by the sender. The override is honoured only for the server and for an
+admin by the server's records.
 
 | | |
 |---|---|
@@ -155,12 +191,6 @@ on every machine and never crosses the wire at all.
 
 ## Deliberate deviations from `work/mess.json`
 
-- **The sender is taken from the unit that was handed in**, after checking it is
-  a live player, rather than read off the engine with `remoteExecutedOwner`. The
-  spec asks for the latter; that needs a raw `remoteExec`, and the rest of the
-  mod deliberately travels on CBA's event channel because a mission's
-  `CfgRemoteExec` cannot close it. Impersonation from here already requires a
-  client running arbitrary code.
 - **`gfa_atak` became `jmfsb_messaging`**, using the standard `GVAR`/`QGVAR`
   macros like every other addon.
 
@@ -181,7 +211,7 @@ EW link-state degradation, and FRAGO sub-threads.
 
 ## Ships
 
-48 functions.
+53 functions.
 
 ## CBA settings
 
@@ -203,11 +233,13 @@ EW link-state degradation, and FRAGO sub-threads.
 
 ## Functions
 
-<details><summary>48</summary>
+<details><summary>53</summary>
 
+- `jmfsb_messaging_fnc_cltCacheClear`
 - `jmfsb_messaging_fnc_cltIndex`
 - `jmfsb_messaging_fnc_cltMarker`
 - `jmfsb_messaging_fnc_cltReceive`
+- `jmfsb_messaging_fnc_cltReject`
 - `jmfsb_messaging_fnc_cltThread`
 - `jmfsb_messaging_fnc_fieldKeys`
 - `jmfsb_messaging_fnc_follow`
@@ -218,6 +250,8 @@ EW link-state degradation, and FRAGO sub-threads.
 - `jmfsb_messaging_fnc_netStream`
 - `jmfsb_messaging_fnc_netsApply`
 - `jmfsb_messaging_fnc_notify`
+- `jmfsb_messaging_fnc_onReceive`
+- `jmfsb_messaging_fnc_onReject`
 - `jmfsb_messaging_fnc_open`
 - `jmfsb_messaging_fnc_platoonTags`
 - `jmfsb_messaging_fnc_railNets`
@@ -235,6 +269,7 @@ EW link-state degradation, and FRAGO sub-threads.
 - `jmfsb_messaging_fnc_srvDeliver`
 - `jmfsb_messaging_fnc_srvForward`
 - `jmfsb_messaging_fnc_srvIndexFor`
+- `jmfsb_messaging_fnc_srvIndexPush`
 - `jmfsb_messaging_fnc_srvMarkRead`
 - `jmfsb_messaging_fnc_srvMembers`
 - `jmfsb_messaging_fnc_srvNextId`

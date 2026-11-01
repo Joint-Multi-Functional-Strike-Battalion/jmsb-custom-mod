@@ -31,11 +31,10 @@ if (isNil QEFUNC(adapter_alive,profileGroup)) exitWith {
 };
 
 if !(missionNamespace getVariable [QEGVAR(adapter_alive,ready), false]) exitWith {
-    // One-shot: the adapter raises ready once, and this handler goes with it.
-    [QEGVAR(adapter_alive,ready), {
-        [_thisType, _thisId] call CBA_fnc_removeEventHandler;
-        [_thisArgs] call FUNC(profileGuards);
-    }, _live] call CBA_fnc_addEventHandlerArgs;
+    // One-shot: the adapter's ready hooks run once (review R1: no CBA event).
+    [{
+        [_this] call FUNC(profileGuards);
+    }, _live] call EFUNC(adapter_alive,whenReady);
     INFO_1("AA base: %1 guard group(s) wait for ALiVE before profiling",count _live);
 };
 

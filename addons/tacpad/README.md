@@ -274,6 +274,23 @@ kicker is the same kicker and a 2px rule is the same 2px rule wherever it lands:
 text renders against the top edge and every label in the suite was sitting high
 in its own row with all the air underneath it.
 
+**Live screens build once and change words in place** (code review R8). A screen
+that ticks — a live app, the tile band, the devices' rows — must not delete and
+recreate its controls on the tick: a control deleted between a press and its
+release never raises a click, and a render-to-texture picture made again flickers.
+Five helpers carry the rule:
+
+| | |
+|---|---|
+| `retext` | sets the words and colour of a line `drawText` made, in its same type role; `drawText` writes through it, so a line updated on a tick reads exactly as it was drawn |
+| `liveStore` / `liveApply` | a screen stores its *shape* (everything that decides which controls exist and where) and its live lines and fills after a full draw; its tick hands the new shape and values to `liveApply`, which writes them in place, or answers false and the screen is built again as before |
+| `changed` | the change key the tablet rows use, as one helper: a value's text kept on a holder under a name, true only when it differs |
+| `nextFrameOnce` | one redraw next frame however many times it is asked for this frame |
+
+`composeTargets` is worked out once a frame; a reader draw asks for it from the TO
+line, the CC line and the picker. The rail's net press and squad fold ask for the
+reader's redraw through `nextFrameOnce`.
+
 Rule weights are `RULE_THIN` and `RULE_THICK` **in real screen pixels**. The
 design separates a 1px row boundary from a 2px region boundary and that
 difference is the grid being visible; they were multiplied by the UI grid once,
@@ -308,7 +325,7 @@ it, and every `PREP` in it would then look for its functions in this folder.
 
 ## Ships
 
-69 functions.
+76 functions.
 
 ## CBA settings
 
@@ -328,7 +345,7 @@ it, and every `PREP` in it would then look for its functions in this folder.
 
 ## Functions
 
-<details><summary>69</summary>
+<details><summary>76</summary>
 
 - `jmfsb_tacpad_fnc_appAlive`
 - `jmfsb_tacpad_fnc_appClose`
@@ -337,6 +354,8 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_appHost`
 - `jmfsb_tacpad_fnc_appIdle`
 - `jmfsb_tacpad_fnc_build`
+- `jmfsb_tacpad_fnc_changed`
+- `jmfsb_tacpad_fnc_chipWidth`
 - `jmfsb_tacpad_fnc_clock`
 - `jmfsb_tacpad_fnc_close`
 - `jmfsb_tacpad_fnc_composeCard`
@@ -352,6 +371,7 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_composeTiles`
 - `jmfsb_tacpad_fnc_composeToPicker`
 - `jmfsb_tacpad_fnc_diaryWatch`
+- `jmfsb_tacpad_fnc_drawChip`
 - `jmfsb_tacpad_fnc_drawFill`
 - `jmfsb_tacpad_fnc_drawFrame`
 - `jmfsb_tacpad_fnc_drawHit`
@@ -362,9 +382,12 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_hexOf`
 - `jmfsb_tacpad_fnc_hostDisplay`
 - `jmfsb_tacpad_fnc_hotspot`
+- `jmfsb_tacpad_fnc_liveApply`
+- `jmfsb_tacpad_fnc_liveStore`
 - `jmfsb_tacpad_fnc_markerGrids`
 - `jmfsb_tacpad_fnc_netBox`
 - `jmfsb_tacpad_fnc_netLabel`
+- `jmfsb_tacpad_fnc_nextFrameOnce`
 - `jmfsb_tacpad_fnc_open`
 - `jmfsb_tacpad_fnc_openApp`
 - `jmfsb_tacpad_fnc_openReader`
@@ -391,6 +414,7 @@ it, and every `PREP` in it would then look for its functions in this folder.
 - `jmfsb_tacpad_fnc_register`
 - `jmfsb_tacpad_fnc_registerApp`
 - `jmfsb_tacpad_fnc_repaint`
+- `jmfsb_tacpad_fnc_retext`
 - `jmfsb_tacpad_fnc_rgbOf`
 - `jmfsb_tacpad_fnc_roleShort`
 - `jmfsb_tacpad_fnc_setHost`

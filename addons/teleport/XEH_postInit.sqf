@@ -1,10 +1,18 @@
 #include "script_component.hpp"
 
-// The point list lives in missionNamespace and is published, so a JIP client
-// gets it with the rest of the mission state rather than needing a handshake.
-if (isServer && {isNil QTP_LIST}) then {
-    TP_LIST = [];
-    publicVariable QTP_LIST;
+// The server's point list lives in localNamespace, which is not networked; a
+// copy is published in missionNamespace, so a JIP client gets it with the rest
+// of the mission state. Server code reads only its own (review S7). A client
+// that publishes over the copy gets the server's list back at once.
+if (isServer) then {
+    if (isNil {localNamespace getVariable QTP_LIST}) then {
+        localNamespace setVariable [QTP_LIST, []];
+    };
+    [] call FUNC(listPublish);
+    QTP_LIST addPublicVariableEventHandler {
+        WARNING("teleport list overwritten by a client - publishing the server's own");
+        [] call FUNC(listPublish);
+    };
 };
 
 [] call FUNC(zenModules);

@@ -14,6 +14,13 @@
  * A tile never resizes on refresh. The value changes, the module does not: a
  * band that reflows every two seconds is a band nobody can click.
  *
+ * AND A REFRESH DELETES NOTHING (code review R8). While the band's shape is
+ * the one it was built for, a refresh writes each tile's words and colours
+ * (FUNC(tileLive)) into the controls already there (EFUNC(tacpad,liveApply));
+ * the band is built again only when the shape changes - a tile added, gone,
+ * turned live or stale, a qualifier of another length, the page, the place,
+ * the scheme or the type size.
+ *
  * ONE ROW ACROSS A DEVICE (docs/DESIGN_TABLET.md, "Live tiles"). The tablet
  * draws the band in a row of its own between the notification line and the
  * map, outside every panel - jmfsb_devices passes its own body and asks for the
@@ -38,11 +45,53 @@ params [["_body", controlNull, [controlNull]], ["_id", "", [""]], ["_fillRow", f
 
 if (isNull _body) exitWith {};
 
-{ctrlDelete _x} forEach (allControls (ctrlParent _body) select {(ctrlParentControlsGroup _x) isEqualTo _body});
-
-([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
+([] call EFUNC(tacpad,theme)) params ["_ground", "_ink"];
 
 private _tiles = [] call FUNC(tileData);
+
+// THE BAND PAGES (user, 2026-10-30: "add a 11th through 16th slot that you
+// get to using the left right arrows ... increase the slot count with every
+// new app"): every tile has a slot, a page is TILE_SLOTS a row, and the
+// arrows at the band's ends turn it. The page is kept across redraws.
+private _pageRows = [1, 2] select (GVAR(tileRows) isEqualTo "2" && !_fillRow);
+private _perPage = TILE_SLOTS * _pageRows;
+private _pages = (ceil ((count _tiles) / _perPage)) max 1;
+private _page = ((uiNamespace getVariable [QGVAR(tilePage), 0]) min (_pages - 1)) max 0;
+uiNamespace setVariable [QGVAR(tilePage), _page];
+// The page count and this draw's arguments, for the device arrows
+// (FUNC(tilePageStep)) to turn the page and draw the band again.
+uiNamespace setVariable [QGVAR(tilePages), _pages];
+uiNamespace setVariable [QGVAR(tileArgs), [_body, _id, _fillRow]];
+private _paged = _pages > 1;
+_tiles = _tiles select [_page * _perPage, _perPage];
+
+// THE SAME BAND IS TICKED IN PLACE (code review R8). Its shape - which tiles,
+// which of them live or stale, how long each qualifier is, the page, the
+// body's and its panel's place, the host, the scheme and the type size - is
+// what decides every control and where it stands; while it holds, the
+// refresh writes the tiles' words and colours (FUNC(tileLive)) into the
+// controls already there, and nothing under the cursor is deleted.
+private _shape = [
+    _tiles apply {
+        private _qualifier = _x param [2, ""];
+        private _state = _x param [5, "rest"];
+        private _length = if (_qualifier isEqualType "") then {count _qualifier} else {-1};
+        [_x select 0, _state isEqualTo "stale", _state in ["alert", "warn", "ok"], _length, _x param [7, 1]]
+    },
+    _page, _pages, _id, _fillRow, ctrlPosition _body, ctrlPosition (ctrlParentControlsGroup _body),
+    HOST_RECT, EGVAR(tacpad,displayMode), [] call EFUNC(tacpad,theme), EGVAR(tacpad,textScale), EGVAR(tacpad,uiScale),
+    GVAR(tileRows), pixelW, pixelH
+];
+private _values = [];
+{
+    _values append ([_x] call FUNC(tileLive));
+} forEach (_tiles select [0, _body getVariable [QGVAR(tilesDrawn), 0]]);
+if ([_body, _shape, _values] call EFUNC(tacpad,liveApply)) exitWith {};
+
+{ctrlDelete _x} forEach (allControls (ctrlParent _body) select {(ctrlParentControlsGroup _x) isEqualTo _body});
+_values = [];
+private _entries = [];
+
 private _tileW = TILE_W * HOST_W;
 private _gap = TILE_GAP * HOST_W;
 private _bodyW = (ctrlPosition _body) # 2;
@@ -77,6 +126,11 @@ if (!_fillRow) then {
     _bodyW = _bodyW min (_maxW - 2 * RULE_THICK * pixelW);
 };
 
+// The band's inset at each end: the panel's own padding, and the page
+// arrow's column when there is a page to turn to.
+private _arrowCol = TILE_ARROW_PX * pixelW;
+private _edge = PAD * HOST_W + ([0, _arrowCol + _gap] select _paged);
+
 // SHRINK TO FIT - AND BUDGET BOTH EDGES, WHICH IS THE WHOLE BUG.
 //
 // This used to size the tiles against _bodyW while the draw loop below cuts
@@ -91,7 +145,7 @@ if ((count _tiles) > 0) then {
     private _tilesPerRow = ceil ((count _tiles) / _rows);
     if (_tilesPerRow > 0) then {
         // The same two edges the draw loop and the cut check use.
-        private _avail = _bodyW - 2 * (PAD * HOST_W);
+        private _avail = _bodyW - 2 * _edge;
         private _totalWidthNeeded = (_tileW * _tilesPerRow) + (_gap * (_tilesPerRow - 1));
 
         if (_totalWidthNeeded > _avail || _fillRow) then {
@@ -110,7 +164,6 @@ if ((count _tiles) > 0) then {
 // box that was about to change, and the detail line ended up hanging below the
 // tile's own border.
 private _tileH = TILE_H * HOST_H;
-private _edge = PAD * HOST_W;
 private _edgeY = PAD * HOST_H;
 // A device's row is drawn into a body that is already its final size.
 if (_fillRow) then {
@@ -135,9 +188,34 @@ private _detailH = _tileH * 0.20;
 private _rows = [1, 2] select (GVAR(tileRows) isEqualTo "2" && !_fillRow);
 private _perRow = ceil (count _tiles / _rows);
 
+// The ink's quieter steps: dim for a dead arrow, mute for the cut count. A
+// tile's own are FUNC(tileLive)'s.
+private _dim = [_ink # 0, _ink # 1, _ink # 2, TILE_DIM_ALPHA];
+private _mute = [_ink # 0, _ink # 1, _ink # 2, LIVE_MUTE_ALPHA];
+
+// THE LIVE PARTS. The nth tint, outline or line drawn takes the nth value
+// (FUNC(tileLive)), and is kept with its type role for the refresh to write
+// the next one into.
+private _fnc_fill = {
+    params ["_rect"];
+    private _ctrl = [_body, _rect, (_values select (count _entries)) select 1] call EFUNC(tacpad,drawFill);
+    _entries pushBack [[_ctrl], []];
+};
+private _fnc_frame = {
+    params ["_rect", "_dashed"];
+    private _ctrls = [_body, _rect, (_values select (count _entries)) select 1, RULE_THICK, _dashed] call EFUNC(tacpad,drawFrame);
+    _entries pushBack [_ctrls, []];
+};
+private _fnc_text = {
+    params ["_rect", "_style"];
+    (_values select (count _entries)) params ["_text", "_colour"];
+    private _ctrl = ([_body, _rect, _text, _colour] + _style) call EFUNC(tacpad,drawText);
+    _entries pushBack [[_ctrl], _style];
+};
+
 private _i = 0;
 {
-    _x params ["_app", "_kicker", "_qualifier", "_value", "_detail", ["_state", "rest"], ["_icon", ""]];
+    _x params ["_app", "", "_qualifier", "", "", ["_state", "rest"], "", ["_textK", 1, [0]]];
 
     // Inset by the panel's own padding, so a tile's 2px outline is not sitting
     // on the panel's 2px outline - two edges touching read as one thick one.
@@ -152,56 +230,64 @@ private _i = 0;
     // was read as "does not fit" and silently dropped it.
     if (_x0 + _tileW > _bodyW - _edge + 0.0005 * HOST_W) exitWith {};
 
-    private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.45];
-    private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
-
-    // [fill, outline, kicker, qualifier, value, detail]. Every state is the same
-    // six decisions, so they are declared together rather than as branches
-    // scattered through the drawing - and the qualifier is its own colour
-    // because WARN puts it in the accent while the kicker beside it stays ink.
-    (switch (_state) do {
-        // The one loud state. Inverted accent block, everything on it in ground.
-        case "alert": {[_accent, _accent, _ground, _ground, _ground, _ground]};
-        // Degraded but working: the outline and the numbers carry it, not a fill.
-        case "warn": {[_ground, _accent, _ink, _accent, _accent, _mute]};
-        // No feed. The frame stays so the band never reflows, but nothing on it
-        // is claimed to be true.
-        case "stale": {[_ground, _line, _dim, _dim, _dim, _dim]};
-        default {[_ground, _ink, _ink, _mute, _ink, _mute]};
-    }) params ["_fill", "_edgeInk", "_kickInk", "_qualInk", "_valueInk", "_detailInk"];
+    // THE STATE'S COLOUR ALL ROUND THE TILE - the tint, the outline, the
+    // value and the badge - is FUNC(tileLive)'s; a live state gets the tint,
+    // and stale the line, dashed.
+    _values append ([_x] call FUNC(tileLive));
+    private _stale = _state isEqualTo "stale";
+    private _live = _state in ["alert", "warn", "ok"];
 
     // The tile's small text - kicker, qualifier, detail - is TEXT_BODY two
     // pixels over the rest of the app text (user, 2026-10-22: "the secondary
     // text in the tiles 2px larger"; jmfsb_tacpad_fnc_textPx).
-    private _tileText = [TEXT_BODY, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx);
-    [_body, [_x0, _rowY, _tileW, _tileH], _fill] call EFUNC(tacpad,drawFill);
-    [_body, [_x0, _rowY, _tileW, _tileH], _edgeInk, RULE_THICK] call EFUNC(tacpad,drawFrame);
+    // A tile may ask for larger small print - the PAC tile does (user, 2026-10-24).
+    private _tileText = ([TEXT_BODY, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx)) * _textK;
+    [_body, [_x0, _rowY, _tileW, _tileH], _ground] call EFUNC(tacpad,drawFill);
+    if (_live) then {
+        [[_x0, _rowY, _tileW, _tileH]] call _fnc_fill;
+    };
+    // STALE IS A DASHED OUTLINE with dim text, never dim text alone (notes,
+    // 2026-10-30); every other state keeps its solid outline.
+    [[_x0, _rowY, _tileW, _tileH], _stale] call _fnc_frame;
 
-    // Kicker left, qualifier hard right on the same line. Two controls, because
-    // one structured text with an align='right' span in it puts the right span
-    // on its own line the moment the left one runs long.
-    [_body, [_x0 + _padX, _rowY + _kickOff, _tileW * 0.55, _kickH], _kicker, _kickInk, _tileText, true, "left", true] call EFUNC(tacpad,drawText);
-    [_body, [_x0 + _tileW * 0.45 - _padX, _rowY + _kickOff, _tileW * 0.55 - _padX, _kickH], _qualifier, _qualInk, _tileText, true, "right"] call EFUNC(tacpad,drawText);
-
-    // A glyph sits opposite the value, not instead of it. The tile's whole job
-    // is one number worth a glance; the icon says what kind of number it is
-    // without the eye having to read the kicker first.
-    if (_icon != "") then {
-        private _glyphH = _valueH * 0.95;
-        [
-            _body,
-            [_x0 + _tileW - _padX - _glyphH * pixelW / pixelH, _rowY + _valueOff + (_valueH - _glyphH) * 0.5, _glyphH],
-            _icon,
-            _valueInk
-        ] call EFUNC(tacpad,drawIcon);
+    // Kicker left, the qualifier a badge hard right on the same line - filled
+    // with the state's colour and the ground on it, the line and ink at rest.
+    // Two controls, because one structured text with an align='right' span in
+    // it puts the right span on its own line the moment the left one runs
+    // long. The qualifier and the value are numbers: the monospace.
+    //
+    // THE BADGE IS SIZED TO ITS WORD AND THE KICKER TAKES THE REST (user,
+    // 2026-10-30: "scrunched up text"): the word at CHIP_SIZE_K of the small
+    // text, like every chip, its width estimated at the monospace's own
+    // advance (TILE_BADGE_GLYPH) so it never wraps; it was measured at a
+    // tighter estimate and drawn a size larger, and broke in two.
+    private _badgeW = 0;
+    private _badgeSize = _tileText * CHIP_SIZE_K;
+    if (_qualifier isNotEqualTo "") then {
+        private _badgeFontH = ([_badgeSize] call EFUNC(tacpad,textH)) / 1.25;
+        _badgeW = ((count _qualifier) * TILE_BADGE_GLYPH * _badgeFontH * pixelW / pixelH + 2 * CHIP_PAD_PX * pixelW) min (_tileW * TILE_BADGE_MAX_K);
+    };
+    private _kickW = _tileW - 2 * _padX - ([0, _badgeW + _padX * 0.5] select (_badgeW > 0));
+    [[_x0 + _padX, _rowY + _kickOff, _kickW, _kickH], [_tileText, true, "left", true, ""]] call _fnc_text;
+    if (_badgeW > 0) then {
+        private _badge = [_x0 + _tileW - _padX - _badgeW, _rowY + _kickOff, _badgeW, _kickH];
+        [_badge] call _fnc_fill;
+        [_badge, [_badgeSize, true, "center", false, FONT_MONO]] call _fnc_text;
     };
 
-    [_body, [_x0 + _padX, _rowY + _valueOff, _tileW - 2 * _padX, _valueH], _value, _valueInk, TEXT_DISPLAY, true] call EFUNC(tacpad,drawText);
-    [_body, [_x0 + _padX, _rowY + _detailOff, _tileW - 2 * _padX, _detailH], _detail, _detailInk, _tileText, true] call EFUNC(tacpad,drawText);
+    // NO ICON ON THE BAND (notes, 2026-10-30; the user: keep them on the HUD
+    // widgets only): the kicker and the value carry the tile. The entry keeps
+    // its icon slot for the HUD.
+    [[_x0 + _padX, _rowY + _valueOff, _tileW - 2 * _padX, _valueH], [TEXT_DISPLAY, true, "left", false, FONT_MONO]] call _fnc_text;
+    [[_x0 + _padX, _rowY + _detailOff, _tileW - 2 * _padX, _detailH], [_tileText, true, "left", false, ""]] call _fnc_text;
 
     private _hit = [_body, [_x0, _rowY, _tileW, _tileH], {
         params ["_ctrl"];
-        [_ctrl getVariable [QGVAR(tileApp), ""], [], true] call EFUNC(tacpad,openApp);    }] call EFUNC(tacpad,drawHit);
+        private _app = _ctrl getVariable [QGVAR(tileApp), ""];
+        // The MSG tile is the reader, not an app (user, 2026-10-24).
+        if (_app isEqualTo "msg") exitWith {[] call EFUNC(tacpad,openReader)};
+        [_app, [], true] call EFUNC(tacpad,openApp);
+    }] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(tileApp), _app];
 
     _i = _i + 1;
@@ -212,11 +298,35 @@ private _i = 0;
 // clue that the band is short of room.
 private _dropped = (count _tiles) - _i;
 if (_dropped > 0) then {
-    private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
     [
         _body, [_bodyW - _edge - _tileW * 0.5, _edgeY + (_rows - 1) * (_tileH + _edgeY), _tileW * 0.5, _tileH],
         format ["+%1", _dropped], _mute, TEXT_BODY, true, "right", true
     ] call EFUNC(tacpad,drawText);
+};
+
+// THE PAGE ARROWS at the band's ends, when there is a page to turn to (user,
+// 2026-10-30): a column each, the glyph in the ink - dim where there is no
+// page that way - and a press turns the page and draws the band again into
+// the same body, next frame, with the same arguments.
+if (_paged) then {
+    private _bandH = _rows * _tileH + (_rows - 1) * _edgeY;
+    {
+        _x params ["_ax", "_glyph", "_step", "_can"];
+        private _rect = [_ax, _edgeY, _arrowCol, _bandH];
+        [_body, _rect, _glyph, [_dim, _ink] select _can, TEXT_BODY, true, "center", false, FONT_MONO] call EFUNC(tacpad,drawText);
+        if (_can) then {
+            private _turn = [_body, _rect, {
+                params ["_ctrl"];
+                (_ctrl getVariable [QGVAR(tilePageTurn), [0, []]]) params ["_step", "_args"];
+                uiNamespace setVariable [QGVAR(tilePage), (uiNamespace getVariable [QGVAR(tilePage), 0]) + _step];
+                [FUNC(panelTiles), _args] call CBA_fnc_execNextFrame;
+            }] call EFUNC(tacpad,drawHit);
+            _turn setVariable [QGVAR(tilePageTurn), [_step, [_body, _id, _fillRow]]];
+        };
+    } forEach [
+        [PAD * HOST_W, TILE_ARROW_LEFT, -1, _page > 0],
+        [_bodyW - PAD * HOST_W - _arrowCol, TILE_ARROW_RIGHT, 1, _page < _pages - 1]
+    ];
 };
 
 // The band is exactly one tile tall - it used to be a fixed default with empty
@@ -224,3 +334,8 @@ if (_dropped > 0) then {
 if (!_fillRow) then {
     [_id, 0, _rows * TILE_H + (_rows + 1) * PAD] call EFUNC(tacpad,fit);
 };
+
+// What the refresh writes into from now on: the tiles drawn, and their live
+// parts under the shape they were built for.
+_body setVariable [QGVAR(tilesDrawn), _i];
+[_body, _shape, _entries] call EFUNC(tacpad,liveStore);

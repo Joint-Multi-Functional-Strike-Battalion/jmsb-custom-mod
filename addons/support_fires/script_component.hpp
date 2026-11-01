@@ -14,6 +14,9 @@
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
 
+// The server's machine id - an order goes there by remoteExec (review S6).
+#define SERVER_OWNER        2
+
 // ---------------------------------------------------------------- provider --
 // THE SUPPORT PROVIDER this addon registers with the support core
 // (addons/support/README.md). Every asset id it hands out is "fires:<n>", n the

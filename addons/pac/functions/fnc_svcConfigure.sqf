@@ -31,6 +31,12 @@ if !(_url isEqualType "") then {_url = ""};
 if !(_key isEqualType "") then {_key = ""};
 _url = trim _url;
 _key = trim _key;
+// A credential in the settings themselves (warned about below, review S9).
+private _inSetting = (_url find "@") >= 0 || _key isNotEqualTo "";
+// Empty setting: what an admin entered in game, kept in the server's profile
+// (review R4); still empty: the extension's own environment / pacdb.json.
+if (_url isEqualTo "") then {_url = ["pacdbUrl"] call EFUNC(common,secret)};
+if (_key isEqualTo "") then {_key = ["pacdbKey"] call EFUNC(common,secret)};
 
 // PASTED WITH ITS QUOTES. The Atlas string is shown in quotes nearly everywhere
 // it is copied from, and an edit box keeps them - the extension then sees
@@ -45,6 +51,13 @@ _key = trim _key;
 } forEach [_url, _key];
 
 if (_url isEqualTo "") exitWith {"environment"};
+
+// A PASSWORD IN A CBA SETTING REACHES EVERY PLAYER (review S9, 2026-10-31): CBA
+// copies server settings to every client. It still works, but the RPT says so
+// every start; the place for it is GHOSTD_PACDB_URL or pacdb.json on the server.
+if (_inSetting) then {
+    WARNING("the Database / Key setting holds a credential, and CBA sends every server setting to every player. Clear both settings and put the string in GHOSTD_PACDB_URL (or pacdb.json in the server's root), then change the database password");
+};
 
 // THE MASKED STRING IS NOT THE STRING. Every place the address is shown -
 // this log, the website, a chat - prints the password as "..." or an ellipsis,

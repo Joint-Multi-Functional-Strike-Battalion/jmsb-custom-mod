@@ -12,10 +12,14 @@ Description:
     be a second message for the same answer, and it would arrive after the
     respawn it was meant for.
 
-    RUNS ON SPAWN, ON RESPAWN, AND ON EVERY PUBLISH. The first two are when the
-    unit exists to apply things to; the third is how an admin's edit reaches a
-    man who is already in the field, without him rejoining. All three routes
-    land here so there is one place that decides what a player carries.
+    RUNS ON SPAWN AND ON RESPAWN ONLY (and from the groups addon's role
+    setup). Seeding, slotting and the kept loadout are spawn work: run on
+    every publish they reset everyone's gear whenever anyone joined. A
+    publish runs FUNC(reapplyLocal) instead - rank and skills - which is how
+    an admin's edit reaches a man already in the field. The one exception:
+    a publish that brings this player's row for the first time in this life
+    (he spawned before he was on the roster) runs this, once - the unit's
+    GVAR(spawnApplied) flag says whether it has.
 
     PAC IS THE SOURCE OF TRUTH FOR SKILLS. What is applied is the PAC
     assignment and only that; the roles no longer set skills (the groups addon
@@ -42,6 +46,9 @@ private _row = (missionNamespace getVariable [QGVAR(roster), []]) select {(_x # 
 if (_row isEqualTo []) exitWith {false};
 
 (_row # 0) params ["", "", "_rankId", "", "", "", "_skillIds"];
+
+// this life has had its spawn work; a respawn is a new unit without the flag
+player setVariable [QGVAR(spawnApplied), true];
 
 [player, _rankId] call FUNC(applyRank);
 [player, _skillIds] call FUNC(applySkills);

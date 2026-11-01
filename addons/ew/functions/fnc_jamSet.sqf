@@ -42,10 +42,16 @@
 params [["_unit", objNull, [objNull]], ["_changes", [], [[], createHashMap]]];
 
 if (!isServer) exitWith {
-    [QGVAR(jamSet), [_unit, _changes]] call CBA_fnc_serverEvent;
+    [_unit, _changes] remoteExecCall [QFUNC(jamSet), SERVER_OWNER];
     true
 };
 if (isNull _unit) exitWith {false};
+// By remoteExec, for the sender's own unit only (review R1: it was a CBA
+// event, so any client could set another operator's jammer).
+if !([_unit] call EFUNC(common,senderIs)) exitWith {
+    WARNING_2("jamSet: refused - machine %1 named %2",remoteExecutedOwner,_unit);
+    false
+};
 if (_changes isEqualType []) then {_changes = createHashMapFromArray _changes};
 
 private _kit = [_unit] call FUNC(kit);

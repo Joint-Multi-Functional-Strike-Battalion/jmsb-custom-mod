@@ -15,6 +15,39 @@ close it and leave the tablet up. Every control is found through the group
 (`uiCtrl`) and placed in fractions of it (`uiPlace`), so the pages are the same
 on both hosts.
 
+**One writer, one state** (review 2026-10-31, B1-B4, P4).
+- No store write before the boot has loaded the store (`storeReady`, boot step 6).
+  `storeSave` refuses until then, and so does the mission-end save.
+- Connects and disconnects during the boot are queued and replayed in step 6
+  (`playerJoin`, `sessionEnd`). Their logon reaches the database with the next
+  database write (logoff, SAVE, mission end), not at once.
+- Sessions left open by the last run are closed, and the manual op window
+  restored, in boot step 6 after the store is loaded.
+- A roster publish re-applies rank and skills only (`reapplyLocal`). Seeding,
+  slotting and the kept loadout run on first spawn and respawn
+  (`applyOnClient`). A player whose row arrives after he spawned gets them once,
+  on that publish.
+- `applySkills` sets a variable or trait only when its value changes.
+- One pacdb request at a time on the server: `svcLoad` queues callers on a
+  ticket, and a timed-out request blocks the next until its late answer arrives
+  (at most `PAC_SVC_STALE` s). `svcSave` sends a whole chunked put in one
+  unscheduled step, so two saves cannot mix.
+- The heartbeat (`PAC_HEARTBEAT`) updates attendance, recomputes the roster's
+  time totals and promotion list (`rosterTotals`), publishes if that list
+  changed, and writes a save the debounce held back.
+- `publish` sends `opordArchive` only when it changed.
+
+**Small fixes** (review 2026-10-31, L1).
+- Headless clients are never seeded or given a session: `PlayerConnected` skips
+  them (`getUserInfo`), and the heartbeat leaves them out.
+- The heartbeat keys sessions with `uid`, the same id as everything else.
+- KICK and BAN on a player's page go by player id, not name (`#kick <id>`,
+  `#exec ban <id>`). They need you logged in as the server's admin (`#login`);
+  without it the page says so, and nothing is logged unless the server took it.
+- The OPORD is marked posted when the admin asked to post it says it went out,
+  not when he is asked. While he is asked, no other admin is, for
+  `PAC_OPORD_ASK_WAIT` s (120).
+
 **Base stations** (user, 2026-10-20). PAC bridges the radio plan into RF
 (`netPlanSync`), and it puts up the base stations the same way:
 `baseStation [site, side, owner]` (server) registers an RF node of profile
@@ -27,6 +60,36 @@ per object or position; MPKilled and Deleted take it down, as does
 (staging zones) and `jmfsb_patrol_base`, each behind its own setting. Without
 RF it does nothing. See docs/DESIGN_RF.md "Base stations".
 
+**Holiday crest on the boot screen** (user, 2026-10-31). The mark on the
+TAC//PAC boot overlay (`ui/bootscreen.hpp`, `bootScreen`) is the holiday's
+crest when the mission loading screen's holiday table says so
+(`jmfsb_loading_fnc_holiday`: 7 days before the day through the day; New
+Year's Dec 26 to Jan 2), the unit's otherwise. One table for both screens,
+so they always agree.
+
+**Quick brief on the loading screen** (user, 2026-10-30). An OPORD class in
+the mission's `CfgGFA_PAC >> opords` may carry one optional text attribute
+beside its six sections, `quickBrief`: a few lines for the mission loading
+screen (`jmfsb_loading`), shown in a QUICK BRIEF panel right of the mission
+box while the mission loads, for the OPORD `settings >> currentOpord` names.
+Structured text, `<br/>` for a line break. Without a `CfgGFA_PAC`, a current
+OPORD or a `quickBrief` the panel shows the mission's `overviewText` instead.
+It is read off the mission file (`missionConfigFile`) only: the loading
+screen is up before TAC//PAC boots, so a database-held OPORD cannot feed it -
+a unit on `sync = "service"` still writes it into `config_pac.hpp`.
+
+```cpp
+class CfgGFA_PAC {
+    class settings { currentOpord = "op_roomba"; };
+    class opords {
+        class op_roomba {
+            quickBrief = "Clear the Molos airfield by 0600. Air on station from H-hour.<br/>ROE: PID before fire.";
+            class header { title = "TASK FORCE ROOMBA"; };
+        };
+    };
+};
+```
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -36,23 +99,17 @@ RF it does nothing. See docs/DESIGN_RF.md "Base stations".
 - `jmfsb_adminpanel`
 - `jmfsb_tacpad`
 - `jmfsb_notify`
+- `jmfsb_loading`
 
 Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking the load order when something above is absent.
 
 ## Ships
 
-199 functions.
-
-## CBA settings
-
-| Setting | Type | Name |
-|---|---|---|
-| `jmfsb_pac_testUid` | EDITBOX | Test as Steam id (editor only) |
-| `jmfsb_pac_netCheck` | CHECKBOX | Log this server's public IP at boot |
+203 functions.
 
 ## Functions
 
-<details><summary>199</summary>
+<details><summary>203</summary>
 
 - `jmfsb_pac_fnc_adminAddOperator`
 - `jmfsb_pac_fnc_adminApplication`
@@ -72,6 +129,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_adminText`
 - `jmfsb_pac_fnc_adminTicket`
 - `jmfsb_pac_fnc_adminTicketKind`
+- `jmfsb_pac_fnc_adminsPublish`
 - `jmfsb_pac_fnc_app`
 - `jmfsb_pac_fnc_applyAsk`
 - `jmfsb_pac_fnc_applyOnClient`
@@ -103,6 +161,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_fromJson`
 - `jmfsb_pac_fnc_hostRefresh`
 - `jmfsb_pac_fnc_import`
+- `jmfsb_pac_fnc_isAdminCaller`
 - `jmfsb_pac_fnc_leaderNotice`
 - `jmfsb_pac_fnc_loadStructure`
 - `jmfsb_pac_fnc_loadoutApply`
@@ -159,6 +218,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_pgTicketKinds`
 - `jmfsb_pac_fnc_pgTickets`
 - `jmfsb_pac_fnc_pgWindowStart`
+- `jmfsb_pac_fnc_playerJoin`
 - `jmfsb_pac_fnc_promotionPoints`
 - `jmfsb_pac_fnc_publish`
 - `jmfsb_pac_fnc_questionsLoad`
@@ -174,6 +234,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_roleFieldParse`
 - `jmfsb_pac_fnc_roleFieldText`
 - `jmfsb_pac_fnc_rolesFromMission`
+- `jmfsb_pac_fnc_rosterTotals`
 - `jmfsb_pac_fnc_seedFromUnit`
 - `jmfsb_pac_fnc_seedSample`
 - `jmfsb_pac_fnc_sessionEnd`

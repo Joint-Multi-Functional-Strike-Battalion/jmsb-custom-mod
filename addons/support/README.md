@@ -3,7 +3,7 @@
 `jmfsb_support`
 
 The support core: one registry of support assets, one request flow, one
-acknowledgement event. TAC//SUPPORT (`tacpad_apps` appSupport) reads only this
+acknowledgement hook (`onAck`). TAC//SUPPORT (`tacpad_apps` appSupport) reads only this
 addon; every asset source - ALiVE combat support, the CAS drone modules and
 the `support_fires` / `support_air` addons - is a **provider** registered here.
 There is no Simplex dependency (user, 2026-10-20): these addons are our own
@@ -86,8 +86,12 @@ viewer (`side group player`). A row is:
 
 The call is made **on the requesting machine** by `jmfsb_support_fnc_request`
 after the gate, validation, cooldown and `available` checks. A provider whose
-work must happen on the server sends it there itself (a CBA server event, as
-`cas` does) - the core does not move the call. Anything other than an array
+work must happen on the server sends it there itself - the core does not move
+the call. It sends it by `remoteExecCall` to a function of its own, never by a
+CBA event, and that server function takes the requester from the sending
+machine (`jmfsb_common_fnc_sender`), re-runs `jmfsb_support_fnc_canTask` for
+him, checks the asset is his side's and re-runs the provider's own checks
+(review S6). `cas`, `support_fires` and `support_air` all do this. Anything other than an array
 return is treated as a refusal ("the provider gave no answer").
 
 **`"rtb"`** is always passed through: never blocked by a cooldown or by
@@ -264,10 +268,18 @@ loiter).
    (`jmfsb_support_readyAt`, asset id -> mission time, owned and broadcast by the
    server), then the provider's `available`.
 4. **Dispatch** - the provider's `task`.
-5. **Bookkeeping** - on accept: a returned cooldown is sent to the server
-   (`jmfsb_support_cooldown` event) and published; `jmfsb_support_tasked`
-   `[assetId, task, pos, kind, requester]` is raised as a CBA global event for
-   anything that counts sorties, rounds or keeps an AAR.
+5. **Bookkeeping** - on accept: a returned cooldown is sent to the server by
+   `remoteExecCall` to `jmfsb_support_fnc_bookCooldown` and published. The
+   server books it only for a sender who passes the gate, for a registered
+   provider's id, on its own clock, capped at an hour, and only ever
+   lengthening a running cooldown - no client can clear or fake one (review
+   S6). The server's ledger is kept in `localNamespace`; the public
+   `jmfsb_support_readyAt` is a copy for the screens; `jmfsb_support_tasked`
+   `[assetId, task, pos, kind, requester]` is raised as a CBA LOCAL event on
+   the requesting machine only (review S7/P8: as a global event any client
+   could claim any requester, and nothing else listened). Anything that counts
+   sorties, rounds or keeps an AAR does it at the provider's server end, which
+   knows the real sender.
 
 Runs where it is called. TAC//SUPPORT calls it on the requesting client.
 
@@ -280,10 +292,15 @@ time) calls:
 [_assetId, _ok, _said, _requester] call jmfsb_support_fnc_ack;
 ```
 
-which raises the CBA event **`jmfsb_support_ack`** with payload
-`[assetId <STRING>, ok <BOOL>, said <STRING>]` - locally when `_requester` is
-omitted, `objNull` or local, otherwise as a target event on the requester's
-machine. TAC//SUPPORT shows `said` in its verdict row and on the notify rail
+which runs the hooks registered with
+**`jmfsb_support_fnc_onAck`** `[code]` with `[assetId <STRING>, ok <BOOL>,
+said <STRING>]` - locally when `_requester` is omitted, `objNull` or local,
+otherwise the server sends it by `remoteExecCall` to `ackLocal` on the
+requester's machine, which takes it only from the server. It was the CBA event
+`jmfsb_support_ack`, which any client could raise to put a fake receipt on
+every board (review R1); `ack` itself drops a remote-executed call, and only
+the server forwards to another machine. The hooks live in `localNamespace`.
+TAC//SUPPORT shows `said` in its verdict row and on the notify rail
 (`ok` false = the warning colour) and redraws. The ALiVE provider acks when the
 FSM consumes the order and warns after 20 s if it has not; it still also raises
 its old `jmfsb_adapter_alive_supportAck` event with the same payload for
@@ -307,15 +324,18 @@ support_air).
 
 ## Ships
 
-11 functions.
+14 functions.
 
 ## Functions
 
-<details><summary>11</summary>
+<details><summary>14</summary>
 
 - `jmfsb_support_fnc_ack`
+- `jmfsb_support_fnc_ackLocal`
 - `jmfsb_support_fnc_assets`
+- `jmfsb_support_fnc_bookCooldown`
 - `jmfsb_support_fnc_canTask`
+- `jmfsb_support_fnc_onAck`
 - `jmfsb_support_fnc_overlay`
 - `jmfsb_support_fnc_preview`
 - `jmfsb_support_fnc_provider`

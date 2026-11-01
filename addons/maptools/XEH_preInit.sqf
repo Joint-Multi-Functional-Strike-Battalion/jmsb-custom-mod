@@ -32,6 +32,14 @@ GVAR(protractor) = [];
 // ROUTE: the waypoints, in order.
 GVAR(route) = [];
 
+// RINGS: the centre the rings are drawn about, [] for none.
+GVAR(rings) = [];
+
+// LOS: a first point waiting for its second, and the answer -
+// [from, to, clear, where blocked] (FUNC(losCheck)).
+GVAR(losFrom) = [];
+GVAR(los) = [];
+
 // VIEWSHED: [centre, radius, rings, sectors, eye ASL, next ray], the two
 // triangle lists the cells have been sorted into so far, and the per-frame
 // handler computing the rest (-1 for none).

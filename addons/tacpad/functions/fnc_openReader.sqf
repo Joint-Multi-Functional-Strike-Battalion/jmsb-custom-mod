@@ -41,8 +41,13 @@
 
 if (!hasInterface) exitWith {false};
 
+// Not messaging's own notify - it is missing too. The notify addon, else a hint.
 if (isNil QEGVAR(messaging,index)) exitWith {
-    ["READER", "Messaging is not loaded.", "high"] call EFUNC(messaging,notify);
+    if (isNil QEFUNC(notify,notify)) then {
+        hint "READER: Messaging is not loaded.";
+    } else {
+        ["READER", "Messaging is not loaded."] call EFUNC(notify,notify);
+    };
     false
 };
 

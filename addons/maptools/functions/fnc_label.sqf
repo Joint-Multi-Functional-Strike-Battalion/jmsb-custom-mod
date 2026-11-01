@@ -18,7 +18,7 @@
  * Example:
  * [_map, _pos, "TOTAL 1.20 KM", _accent, 0.045] call jmfsb_maptools_fnc_label
  *
- * Public: No
+ * Public: Yes
  */
 
 params ["_map", "_pos", "_text", "_color", "_size", ["_align", "right", [""]]];

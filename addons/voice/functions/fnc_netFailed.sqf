@@ -3,7 +3,8 @@
  * Author: JMSB
  * Client: the server (or FUNC(netAdd) itself) refused something about an
  * RTO net - said in words, with the busy tone, the way a refused call is
- * (FUNC(callFailed)).
+ * (FUNC(callFailed)). Sent by remoteExec from the server and taken only from
+ * the server or this machine (jmfsb_common_fnc_fromServer).
  *
  * Arguments:
  * 0: Reason - one of the REASON_* of the RTO nets <STRING>
@@ -20,6 +21,7 @@
 
 params [["_reason", "", [""]], ["_name", "", [""]]];
 
+if (!hasInterface || {!([] call EFUNC(common,fromServer))}) exitWith {};
 private _text = switch (_reason) do {
     case REASON_NOT_RTO: {"RTO nets are the RTO's and the admin's to make."};
     case REASON_BAD_NAME: {format ["'%1' will not do as a net name: %2 to %3 letters, digits, spaces or dashes, and not a name already in use.", _name, CUSTOM_NAME_MIN, CUSTOM_NAME_MAX]};

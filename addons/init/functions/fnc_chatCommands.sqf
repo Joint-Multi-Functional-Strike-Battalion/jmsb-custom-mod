@@ -15,7 +15,8 @@
 
 ["attendance", {
     if !([player] call admp_fnc_isAdmin) exitWith {["Chat Command", "#attendance is admin only.", NOTE_BAD] call JMFSBFUNC(notify,notify)};
-    [QGVAR(getAttendance)] call CBA_fnc_localEvent;
+    // The server checks the sender itself (review S7).
+    [] remoteExecCall [QFUNC(srvAttendance), SERVER_OWNER];
 }] call CBA_fnc_registerChatCommand;
 
 ["exportranks", {

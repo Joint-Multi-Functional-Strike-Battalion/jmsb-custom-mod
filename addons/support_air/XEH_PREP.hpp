@@ -19,14 +19,20 @@ PREP(available);
 PREP(logicOf);
 PREP(readParam);
 PREP(readPoint);
+// The one order check, run on the requester's machine and again on the
+// server (review S6).
+PREP(check);
 // The verdict before CONFIRM and the map shapes of the picked asset.
 PREP(preview);
 PREP(overlay);
 PREP(flightTime);
 
-// Server: one order in, the asset type that flies it.
+// Server: one order in by remoteExec from FUNC(task), the sender checked, the
+// asset type that flies it.
 PREP(order);
 PREP(say);
+// The side's notify rail, server to the side by remoteExec (review S7).
+PREP(sayLocal);
 
 // Server: aircraft, shared by every asset type.
 PREP(spawnAircraft);
@@ -57,6 +63,8 @@ PREP(transportTick);
 PREP(transportArrive);
 PREP(transportStep);
 PREP(transportHome);
+// Run where the passenger lives, on the server's word (review S7).
+PREP(putOut);
 PREP(findSignal);
 PREP(canRope);
 PREP(stockRopes);

@@ -23,7 +23,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_type", "", [""]], ["_targetUid", "", [""]], ["_detail", "", [""]]];
 
 if (!isServer) exitWith {""};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {""};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {""};
 
 private _id = [getPlayerUID _caller, name _caller, _type, _targetUid, _detail] call FUNC(logAction);
 [] call FUNC(storeSave);

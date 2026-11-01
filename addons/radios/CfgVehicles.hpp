@@ -34,11 +34,11 @@ class CfgVehicles {
         };
     };
 
-    // THE MPU5 MANPACK: the long range set on the back, for SL / PL / RTO /
-    // JTAC - under TFAR (a TFAR long range set through jmfsb_backpack's radio
-    // bag base, compatibility/tfar_radios) and ACRE. Under game voice it is a
-    // bag and nothing more: no man packs there (user, 2026-10-21), and
-    // jmfsb_rf_fnc_carriedSets reads nothing off the back.
+    // THE MPU5 MANPACK, for SL / PL / RTO / JTAC. A bag and nothing more: no
+    // man packs under game voice (user, 2026-10-21), and
+    // jmfsb_rf_fnc_carriedSets reads nothing off the back. Kept so loadouts
+    // that carry it still load (it was a long range set under TFAR / ACRE,
+    // removed with DEC1).
     class jmfsb_mpu5_lr: EGVAR(backpack,B_RadioBag_01_Multicam) {
         author = QAUTHOR;
         scope = 2;

@@ -141,7 +141,18 @@ _veh setVariable [QGVAR(firedEH), _veh addEventHandler ["Fired", {
 // turretUnit on an empty seat is objNull - which fires nothing and reports
 // nothing. The vehicle form picks its own gunner.
 _veh doWatch _aim;
-_veh fireAtTarget [_dummy, _weapon];
+// Not proven for pylon stores (review B18): when the vehicle form refuses,
+// the crewman on the store's turret is made to fire it instead. A mode of
+// "this" means the weapon itself is the mode.
+if !(_veh fireAtTarget [_dummy, _weapon]) then {
+    private _shooter = [_veh turretUnit _turret, driver _veh] select (_turret isEqualTo [-1]);
+    private _fireMode = (getArray (configFile >> "CfgWeapons" >> _weapon >> "modes")) param [0, "this"];
+    if (_fireMode == "this") then {_fireMode = _weapon};
+    if (isNull _shooter) exitWith {
+        WARNING_2("'%1' could not fire %2 - no crewman on that store",typeOf _veh,_weapon);
+    };
+    _shooter forceWeaponFire [_weapon, _fireMode];
+};
 
 INFO_3("'%1' releasing %2 at %3",typeOf _veh,_weapon,mapGridPosition _aim);
 

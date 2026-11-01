@@ -26,7 +26,24 @@
 #define TOOL_GRID "grid"
 #define TOOL_VIEWSHED "viewshed"
 #define TOOL_ROUTE "route"
-#define TOOLS_ALL [TOOL_RULER, TOOL_PROTRACTOR, TOOL_MARK, TOOL_GRID, TOOL_VIEWSHED, TOOL_ROUTE]
+// RINGS and LOS (user, 2026-10-30).
+#define TOOL_RINGS "rings"
+#define TOOL_LOS "los"
+#define TOOLS_ALL [TOOL_RULER, TOOL_PROTRACTOR, TOOL_MARK, TOOL_GRID, TOOL_VIEWSHED, TOOL_ROUTE, TOOL_RINGS, TOOL_LOS]
+
+// RANGE RINGS: the settings' ranges - metres between rings, and how many.
+// Each ring's reading sits at its north.
+#define RING_STEP_MIN 25
+#define RING_STEP_MAX 2000
+#define RING_STEP_DEFAULT 100
+#define RING_COUNT_MIN 1
+#define RING_COUNT_MAX 10
+#define RING_COUNT_DEFAULT 5
+// LOS: how far apart the line is sampled, m, for where the ground blocks it
+// (FUNC(losCheck)), and the readings.
+#define LOS_STEP 25
+#define LOS_CLEAR "  LOS CLEAR"
+#define LOS_BLOCKED "  LOS BLOCKED AT %1"
 
 // --------------------------------------------------------------- numbers ---
 #define DEG_PER_TURN 360
@@ -108,6 +125,9 @@
 #define VS_CELL_MIN 20
 #define VS_CELL_MAX 200
 #define VS_CELL_DEFAULT 50
+// The most cells one viewshed draws (two triangles each, every frame the map is
+// open); a finer setting at a wide radius gets a coarser cell instead.
+#define VS_CELLS_MAX 4000
 // Fill alphas: what the point sees, and what it does not.
 #define VS_ALPHA_SEEN 0.35
 #define VS_ALPHA_HIDDEN 0.3

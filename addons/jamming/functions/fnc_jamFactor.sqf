@@ -4,7 +4,7 @@ Function: jmfsb_jamming_fnc_jamFactor
 
 Description:
     Jamming strength at a position, 0 (clear) to 1 (fully smothered). One shared
-    calculator for every consumer - the RF noise source, the ACRE applier, the jamming HUD,
+    calculator for every consumer - the RF noise source, the jamming HUD,
     the RDF scanner, UAV jamming. They can disagree about what to DO with the
     number, never about what the number is.
 

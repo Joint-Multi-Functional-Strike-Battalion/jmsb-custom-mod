@@ -27,6 +27,15 @@ PREP(drawIcon);
 PREP(drawHit);
 PREP(headerMeta);
 
+// Live screens (code review R8): build once, then change words and colours in
+// place; a change key to skip a redraw that would draw the same; one redraw
+// per frame.
+PREP(retext);
+PREP(changed);
+PREP(liveStore);
+PREP(liveApply);
+PREP(nextFrameOnce);
+
 // Panel lifecycle
 PREP(register);
 PREP(registerApp);
@@ -62,6 +71,9 @@ PREP(readerRail);
 PREP(readerList);
 PREP(readerRow);
 PREP(readerChip);
+// The one chip primitive (notes, 2026-10-30), and its measure
+PREP(drawChip);
+PREP(chipWidth);
 PREP(readerPreview);
 PREP(readerCard);
 PREP(readerReplies);

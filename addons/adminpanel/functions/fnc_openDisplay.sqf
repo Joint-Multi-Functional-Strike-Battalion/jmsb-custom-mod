@@ -29,6 +29,14 @@
 params [["_class", "", [""]], ["_parent", displayNull, [displayNull]]];
 
 if (_class isEqualTo "") exitWith {false};
+// THE OPEN TABLET IS THE PARENT WHENEVER THERE IS ONE (user, 2026-10-24: the
+// console "still comes up without a tablet frame when the admin button is
+// pushed in the tablet"). The tacpad's host display is only the device in
+// tablet display mode; a tablet opened on its key in native mode, or a host
+// hand-over that has not happened yet, left this falling through to
+// createDialog - which closes the device under the console. The device
+// dialog itself is asked for by its id first.
+if (isNull _parent) then {_parent = findDisplay ADMIN_TABLET_IDD};
 if (isNull _parent && HOST_DEVICE) then {_parent = HOST_DISPLAY};
 if (isNull _parent) exitWith {createDialog _class};
 !isNull (_parent createDisplay _class)

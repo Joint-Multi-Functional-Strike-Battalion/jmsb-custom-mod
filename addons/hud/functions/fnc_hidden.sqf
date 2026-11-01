@@ -11,8 +11,9 @@
  * ANY DIALOG, NOT A LIST OF THEM. The admin console is a full-screen dialog and
  * the HUD sat on top of it - the SCANNER slot printed over the panel's own
  * UTILITIES and ADMIN ACTIONS rows. It was not a z-order accident that could be
- * fixed once: FUNC(draw) deletes and recreates the contents of both slots every
- * second, and each rebuild put fresh controls back above the dialog. Hooking the
+ * fixed once: FUNC(draw) deleted and recreated the contents of both slots every
+ * second then (it rebuilds only on a change now - FUNC(paint)), and each
+ * rebuild put fresh controls back above the dialog. Hooking the
  * console's onLoad would have fixed the console and left the other nine
  * screens - the tablet, the reader, the group menu, the teleport and support
  * dialogs, the view-distance menu - to be found one screenshot at a time.

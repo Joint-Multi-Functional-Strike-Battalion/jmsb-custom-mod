@@ -12,12 +12,21 @@ PREP(assetAvailable);
 PREP(preview);
 PREP(overlay);
 
-// The run itself.
+// The run itself. The server's door check on who sent an order or a recall
+// (review S6), then the order and the recall.
+PREP(mayTask);
 PREP(request);
+PREP(abort);
 PREP(acquire);
 PREP(fireAt);
 PREP(killed);
 PREP(egress);
+// Inbound, in hot, on station and off station, server to the side (or to
+// everyone, for off station) by remoteExec (review S7).
+PREP(inbound);
+PREP(release);
+PREP(onStation);
+PREP(offStation);
 
 // Shared reads, so the provider and the run cannot disagree about what a
 // module is offering or whether it has anything left to offer.

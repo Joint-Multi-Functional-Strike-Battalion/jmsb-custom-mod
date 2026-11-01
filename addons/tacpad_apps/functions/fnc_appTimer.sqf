@@ -20,11 +20,20 @@
  * The stopwatch below it is this addon's own and is a different tool: an alarm
  * is a mark you set for later, a stopwatch is a thing you time.
  *
+ * BUILT ONCE, TICKED IN PLACE (code review R8). Every line that moves - the
+ * countdowns, the delays, the stopwatch - is a value of FUNC(timerLive), drawn
+ * here in the order it comes; the page's tick writes the next values into the
+ * same lines (EFUNC(tacpad,liveApply)) and builds the page again only when its
+ * shape has changed.
+ *
  * Arguments:
  * 0: Map display <DISPLAY>
  *
  * Return Value:
  * None
+ *
+ * Example:
+ * [_display] call jmfsb_tacpad_apps_fnc_appTimer
  *
  * Public: No
  */
@@ -33,33 +42,29 @@ params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {};
 
-([_display, "TIMER", 0.44, (0.68 + (count (missionNamespace getVariable [QEGVAR(hacking,alarms), []]) * ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale)))] call EFUNC(tacpad,appFrame)) params ["", "_body"];
+([_display, "TIMER", 0.44, (0.68 + (count (missionNamespace getVariable [QEGVAR(hacking,alarms), []]) * ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale)))] call EFUNC(tacpad,appFrame)) params ["_group", "_body"];
 if (isNull _body) exitWith {};
 
-([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
+([] call EFUNC(tacpad,theme)) params ["", "_ink", "_accent", "_line"];
 
 private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H;
 private _pos = ctrlPosition _body;
 private _w = _pos # 2;
 private _pad = PAD * HOST_W;
 private _padY = PAD * HOST_H;
-private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
-private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
-private _amber = [0.85, 0.65, 0.15, 1];
+private _mute = [_ink # 0, _ink # 1, _ink # 2, LIVE_MUTE_ALPHA];
+private _dim = [_ink # 0, _ink # 1, _ink # 2, LIVE_DIM_ALPHA];
 
-// A running clock, not a rounded minute: a row that reads "1 MIN" for sixty
-// seconds is a label, not a timer. The archived device's own formatter.
-private _fnc_clock = {
-    params ["_secs"];
-    private _s = (round _secs) max 0;
-    private _h = floor (_s / 3600);
-    private _m = floor ((_s - _h * 3600) / 60);
-    private _r = _s - _h * 3600 - _m * 60;
-    if (_h > 0) then {
-        format ["%1:%2:%3", _h, [_m, 2] call CBA_fnc_formatNumber, [_r, 2] call CBA_fnc_formatNumber]
-    } else {
-        format ["%1:%2", [_m, 2] call CBA_fnc_formatNumber, [_r, 2] call CBA_fnc_formatNumber]
-    };
+// THE LIVE LINES. The nth live line drawn takes the nth value, and is kept
+// with its type role for the tick to write the next one into.
+([] call FUNC(timerLive)) params ["_shape", "_values"];
+private _entries = [];
+private _fnc_live = {
+    params ["_rect", "_size", ["_bold", false], ["_align", "left"], ["_tracked", false]];
+    (_values select (count _entries)) params ["_text", "_colour"];
+    private _ctrl = [_body, _rect, _text, _colour, _size, _bold, _align, _tracked] call EFUNC(tacpad,drawText);
+    _entries pushBack [[_ctrl], [_size, _bold, _align, _tracked, ""]];
+    _ctrl
 };
 
 private _btnH = ([TEXT_TITLE] call EFUNC(tacpad,textH)) + 2 * _padY;
@@ -102,31 +107,11 @@ if (isNil QEGVAR(hacking,alarms)) then {
         _y = _y - _rowH;
         {
             _y = _y + _rowH;
-            _x params ["_id", "_at", "_who"];
-            private _left = _at - CBA_missionTime;
-            private _colour = switch (true) do {
-                case (_left < 30): {_accent};
-                case (_left < 120): {_amber};
-                default {_ink};
-            };
+            _x params ["_id"];
 
-            [_body, [_pad, _y, _w * 0.3, _rowH], [_left] call _fnc_clock, _colour, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
-            // WHEN, as well as how long. A section coordinating on the radio
-            // says "at twenty past", not "in eleven minutes forty" - and this
-            // roster is the thing they are reading off.
-            private _atClock = dayTime + (_left * timeMultiplier / 3600);
-            _atClock = _atClock mod 24;
-
-            [
-                _body, [_w * 0.32, _y, _w * 0.44, _rowH],
-                format ["#%1  %2:%3  %4",
-                    _forEachIndex + 1,
-                    [floor _atClock, 2] call CBA_fnc_formatNumber,
-                    [floor ((_atClock - floor _atClock) * 60), 2] call CBA_fnc_formatNumber,
-                    toUpper _who
-                ],
-                _mute, TEXT_BODY, false
-            ] call EFUNC(tacpad,drawText);
+            // The countdown, and WHEN as well as how long (FUNC(timerLive)).
+            [[_pad, _y, _w * 0.3, _rowH], TEXT_TITLE, true] call _fnc_live;
+            [[_w * 0.32, _y, _w * 0.44, _rowH], TEXT_BODY, false] call _fnc_live;
 
             // DEL names its row, so "#2" on the key is "#2" on the roster.
             private _delW = _w * 0.2;
@@ -135,15 +120,16 @@ if (isNil QEGVAR(hacking,alarms)) then {
 
             private _hit = [_body, [_w - _delW - _pad, _y, _delW, _rowH * 0.9], {
                 params ["_ctrl"];
+                if (isNil QEFUNC(hacking,srvAlarmDelete)) exitWith {};
                 private _kill = _ctrl getVariable [QGVAR(alarmId), -1];
+                // The roster is the server's (review S7): asked by remoteExec,
+                // which a host runs on his own machine too - a publicVariable
+                // never reached the server's list from the host. The server
+                // publishes the new copy; this row goes from the screen now.
+                [_kill] remoteExecCall [QEFUNC(hacking,srvAlarmDelete), SERVER_OWNER];
                 private _list = missionNamespace getVariable [QEGVAR(hacking,alarms), []];
                 private _i = _list findIf {(_x select 0) isEqualTo _kill};
-                if (_i >= 0) then {
-                    _list deleteAt _i;
-                    // Public, because the roster is the section's and the waiter
-                    // that would have rung it checks this same list.
-                    publicVariable QEGVAR(hacking,alarms);
-                };
+                if (_i >= 0) then {_list deleteAt _i};
                 {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
             }] call EFUNC(tacpad,drawHit);
             _hit setVariable [QGVAR(alarmId), _id];
@@ -159,11 +145,12 @@ _y = _y + _padY;
 // of a quick key is that it is set with one hand.
 private _fnc_arm = {
     params ["_ctrl"];
-    if (isNil QEFUNC(hacking,alarmAdd)) exitWith {};
+    if (isNil QEFUNC(hacking,srvAlarmAdd)) exitWith {};
 
-    // Through hacking's own event, so the server holds the roster and every
-    // machine gets the same list - the same path the hand-held uses.
-    [QEGVAR(hacking,alarmAdd), [_ctrl getVariable [QGVAR(alarmStep), 300], name player]] call CBA_fnc_serverEvent;
+    // By remoteExec to hacking's server function, the same path the hand-held
+    // uses: the server holds the roster and names the setter from the sender
+    // (review S7).
+    [_ctrl getVariable [QGVAR(alarmStep), 300]] remoteExecCall [QEFUNC(hacking,srvAlarmAdd), SERVER_OWNER];
     {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
 };
 
@@ -189,7 +176,7 @@ _y = _y + _btnH + _rowH * 0.8;
 private _custom = GVAR(alarmCustom);
 
 [_body, [_pad, _y, _w * 0.44, _rowH], "CUSTOM", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
-[_body, [_w * 0.44, _y, _w * 0.56 - _pad, _rowH], [_custom] call _fnc_clock, _ink, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
+[[_w * 0.44, _y, _w * 0.56 - _pad, _rowH], TEXT_TITLE, true, "right"] call _fnc_live;
 _y = _y + _rowH;
 
 private _fnc_bump = {
@@ -214,7 +201,7 @@ private _bumpW = (_w - (count _bumps + 1) * _pad) / (count _bumps);
 _y = _y + _btnH + _padY;
 
 [_body, [_pad, _y, _w - 2 * _pad, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-[_body, [_pad, _y, _w - 2 * _pad, _btnH], format ["ARM %1", [_custom] call _fnc_clock], _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
+[[_pad, _y, _w - 2 * _pad, _btnH], TEXT_TITLE, true, "center"] call _fnc_live;
 private _armCustom = [_body, [_pad, _y, _w - 2 * _pad, _btnH], _fnc_arm] call EFUNC(tacpad,drawHit);
 _armCustom setVariable [QGVAR(alarmStep), _custom];
 _y = _y + _btnH + _padY;
@@ -223,14 +210,8 @@ _y = _y + _btnH + _padY;
 // A DIFFERENT KIND OF ALARM ENTIRELY. Everything above is "in twenty minutes";
 // this is "at 0430", which is how orders are written - and on an accelerated
 // mission the two are nothing like each other. See FUNC(alarmAtDelay).
-private _at = GVAR(alarmAt);
-private _atText = format ["%1:%2",
-    [floor (_at / 3600), 2] call CBA_fnc_formatNumber,
-    [floor ((_at % 3600) / 60), 2] call CBA_fnc_formatNumber
-];
-
 [_body, [_pad, _y, _w * 0.44, _rowH], "ALARM AT", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
-[_body, [_w * 0.44, _y, _w * 0.56 - _pad, _rowH], _atText, _ink, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
+[[_w * 0.44, _y, _w * 0.56 - _pad, _rowH], TEXT_TITLE, true, "right"] call _fnc_live;
 _y = _y + _rowH;
 
 private _fnc_bumpAt = {
@@ -259,20 +240,15 @@ _y = _y + _btnH + _padY;
 
 // WHAT IT COSTS IN MISSION TIME, SAID OUT LOUD. On a 6x mission "at 0430" can be
 // four minutes away, and a man who does not know that sets it and walks off.
-private _atDelay = [_at] call FUNC(alarmAtDelay);
-
 [_body, [_pad, _y, _w - 2 * _pad, _btnH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-[
-    _body, [_pad, _y, _w - 2 * _pad, _btnH],
-    format ["ARM AT %1  -  IN %2", _atText, [_atDelay] call _fnc_clock],
-    _ink, TEXT_TITLE, true, "center"
-] call EFUNC(tacpad,drawText);
+[[_pad, _y, _w - 2 * _pad, _btnH], TEXT_TITLE, true, "center"] call _fnc_live;
 
 [_body, [_pad, _y, _w - 2 * _pad, _btnH], {
-    if (isNil QEFUNC(hacking,alarmAdd)) exitWith {};
+    if (isNil QEFUNC(hacking,srvAlarmAdd)) exitWith {};
     // Worked out at PRESS time, not at draw time: the screen may have been open
-    // for a minute and the world clock has moved under it.
-    [QEGVAR(hacking,alarmAdd), [[GVAR(alarmAt)] call FUNC(alarmAtDelay), name player]] call CBA_fnc_serverEvent;
+    // for a minute and the world clock has moved under it. By remoteExec, as
+    // above (review S7).
+    [[GVAR(alarmAt)] call FUNC(alarmAtDelay)] remoteExecCall [QEFUNC(hacking,srvAlarmAdd), SERVER_OWNER];
     {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
@@ -281,32 +257,21 @@ _y = _y + _btnH + _padY;
 _y = _y + _padY;
 
 // ---------------------------------------------------------- the stopwatch ---
-([] call FUNC(timerState)) params ["_secs", "_running", "_down", "_expired"];
-
 [_body, [_pad, _y, _w * 0.5, _rowH], "STOPWATCH", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
-[
-    _body, [_w * 0.5, _y, _w * 0.5 - _pad, _rowH],
-    switch (true) do {
-        case (_expired): {"TIME"};
-        case (_running): {"RUNNING"};
-        case (_secs > 0): {"HELD"};
-        default {"READY"};
-    },
-    ([_mute, _accent] select (_expired || _running)), TEXT_LABEL, true, "right", true
-] call EFUNC(tacpad,drawText);
+[[_w * 0.5, _y, _w * 0.5 - _pad, _rowH], TEXT_LABEL, true, "right", true] call _fnc_live;
 _y = _y + _rowH;
 
 // The readout's box is its own text height plus air, not a multiple of the row:
 // at 2.4 times the body size it outgrew a row-based box and START / RESET sat
 // over the digits (user screenshot, 2026-10-21: "lower the buttons a little").
 private _clockH = ([TEXT_DISPLAY] call EFUNC(tacpad,textH)) + 2 * _padY;
-[_body, [_pad, _y, _w - 2 * _pad, _clockH], [_secs] call _fnc_clock, ([_ink, _accent] select _expired), TEXT_DISPLAY, true, "center"] call EFUNC(tacpad,drawText);
+[[_pad, _y, _w - 2 * _pad, _clockH], TEXT_DISPLAY, true, "center"] call _fnc_live;
 _y = _y + _clockH + _padY;
 
 private _halfW = (_w - 3 * _pad) / 2;
 
 [_body, [_pad, _y, _halfW, _btnH], _accent] call EFUNC(tacpad,drawFill);
-[_body, [_pad, _y, _halfW, _btnH], ["START", "STOP"] select _running, _ground, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
+[[_pad, _y, _halfW, _btnH], TEXT_TITLE, true, "center"] call _fnc_live;
 [_body, [_pad, _y, _halfW, _btnH], {
     ["toggle"] call FUNC(timerSet);
     {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
@@ -320,7 +285,10 @@ private _resetX = _pad * 2 + _halfW;
     {["timer"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
-// A screen showing clocks has to redraw itself or it is a photograph of them.
+[_group, _shape, _entries] call EFUNC(tacpad,liveStore);
+
+// A screen showing clocks has to keep up with them or it is a photograph of
+// them - in place, every second.
 private _existing = uiNamespace getVariable [QGVAR(timerPFH), -1];
 if (_existing >= 0) then {
     [_existing] call CBA_fnc_removePerFrameHandler;
@@ -330,15 +298,18 @@ uiNamespace setVariable [QGVAR(timerPFH), [{
     params ["", "_handle"];
 
     // TWO QUESTIONS, NOT ONE. "Is this app still open" decides whether the loop
-    // lives; "is the pointer off it" decides whether it may REDRAW. They were
-    // the same test, and redrawing means deleting and rebuilding every control
-    // on the screen - so this loop was destroying the buttons under the
-    // player's cursor once a second and a press had to survive a coin toss.
-    // See EFUNC(tacpad,appIdle).
+    // lives; "is the pointer off it" decides whether it may REBUILD. A rebuild
+    // deletes and recreates every control on the screen, and a control deleted
+    // between the press and the release never raises a click - see
+    // EFUNC(tacpad,appIdle). Writing the next values into the same lines
+    // deletes nothing, so that goes ahead wherever the pointer is.
     if !(["timer"] call EFUNC(tacpad,appAlive)) exitWith {
         [_handle] call CBA_fnc_removePerFrameHandler;
         uiNamespace setVariable [QGVAR(timerPFH), -1];
     };
+
+    private _group = uiNamespace getVariable [QEGVAR(tacpad,appGroup), controlNull];
+    if (([_group] + ([] call FUNC(timerLive))) call EFUNC(tacpad,liveApply)) exitWith {};
 
     if !([] call EFUNC(tacpad,appIdle)) exitWith {};
     ["timer"] call EFUNC(tacpad,openApp);

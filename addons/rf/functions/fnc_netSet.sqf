@@ -29,8 +29,10 @@
 params [["_id", "", [""]], ["_changes", createHashMap, [createHashMap, []]]];
 
 if (_id isEqualTo "") exitWith {false};
+// A client's call goes to the server by remoteExec, which takes it only from an
+// admin: nets are everyone's (FUNC(srvRequest), review R1).
 if (!isServer) exitWith {
-    [QGVAR(netSet), [_id, _changes]] call CBA_fnc_serverEvent;
+    ["netSet", [_id, _changes]] remoteExecCall [QFUNC(srvRequest), SERVER_OWNER];
     false
 };
 if (_changes isEqualType []) then {_changes = createHashMapFromArray _changes};

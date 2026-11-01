@@ -18,8 +18,11 @@ if (!isServer) exitWith {};
 
 [] call FUNC(gather);
 
-// Re-gathered whenever ALiVE reports in again: commanders can be added to a
-// running mission, and an objective nobody is watching cannot be taken.
-[QEGVAR(adapter_alive,ready), { [] call FUNC(gather) }] call CBA_fnc_addEventHandler;
+// Gathered again once ALiVE is up, when this started without it. The ready
+// hook runs once (review R1: it was a CBA event any client could raise to
+// re-run it); the adapter is ready only once.
+if (!isNil QEFUNC(adapter_alive,whenReady) && {!(missionNamespace getVariable [QEGVAR(adapter_alive,ready), false])}) then {
+    [{ [] call FUNC(gather) }] call EFUNC(adapter_alive,whenReady);
+};
 
 [LINKFUNC(check), QRF_TICK, []] call CBA_fnc_addPerFrameHandler;

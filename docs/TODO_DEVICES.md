@@ -29,6 +29,7 @@ The design docs name DIVINER functions (`ghostD_...`). In this mod they are `jmf
 - [x] Frame generator `tools/gen_devices.py`; all art in `art/` (devices, signs, images)
 - [x] F1-F4 programmable to apps, left/right cycle apps, Ctrl+Home opens, ACE self action
 - [x] UAV tablet (grips) for players with the UAV trait, screen matched to the large tablet
+- [x] RDC (the MPU5's chest screen; user, 2026-10-30): GPS-slot item `jmfsb_devices_rdc`, walking view where the phone's is, the tablet in its frame when carried (A B X Y = F1-F4, sticks = arrows); frame cut from the MPU5 asset's texture by `tools/gen_rdc_src.py`; `rdc.p3d` generated, not worn (2026-10-30, not run in game)
 - [x] HUD off by default in tablet mode, player can re-enable
 - [x] Tablet layout from DESIGN_TABLET: device bar, notification line, live tiles in one row, map area (the host), net row; [ ] battery in the bar
 - [x] Fixed panel places on the tablet (squad rail, button strip, TIC, map tools, reader, APS) via a layout table passed to setHost; [ ] who-is-talking
@@ -38,6 +39,8 @@ The design docs name DIVINER functions (`ghostD_...`). In this mod they are `jmf
 - [x] CAS drone: after the run, fly on the egress heading to the nearest map edge and despawn off the map, not a few km past the target (user, 2026-10-19) - after the support fix workflow
 - [x] MEDIC app + tile (user, 2026-10-19): for CLS/Medic skill holders; tile = squad wounded count (red on arrest / bleeding out); app = squad patient list worst-first, patient page with pulse, BP, SpO2, respiration, blood type (ACM), blood volume, pain, airway/pneumothorax, wounds per body part, tourniquets/splints/IVs, SHOW ON MAP. Data: ACM (circulation BloodType, breathing RespirationRate, pulse oximeter, pressure cuff) + ACE medical. [?] live vs device-gated (default device-gated). Queued after the tablet layout workflow.
 - [x] Map tools rebuilt in-house (PLP MapTools feature set: ruler, protractor, centre, mark, grid, viewshed, route, clear) - `addons/maptools`, 2026-10-20, not run in game
+- [x] POINT MAN (user, 2026-10-30): waypoints by typed grid or picked on the map, the route on every map, USE walks it with the distance on the phone's status row and the tablet bar; `addons/pointman`, not run in game
+- [x] JUMPMASTER (user, 2026-10-30): HALO / HAHO / static line for a squad from its leader's tablet - readiness (mask, chute), red / green light path, passes, auto or manual exit, the server flies the aircraft; `addons/jumpmaster`, not run in game. [?] "walkable" bay: the engine does not carry a walking man in a moving aircraft; "stand" fixes him to the hull
 - [x] Notification line on the tablet mirroring popups, with the log on click
 - [x] Frame keys: F1-F4 and arrows are mouse buttons over the printed keys on every frame; F1-F4 open apps set per player; keyboard F1-F4 not taken (user, 2026-10-19)
 
@@ -107,7 +110,7 @@ Registered today: comms, squad, weather, scanner, drones, jam, timer, radio, hac
 | 0 | Toolchain: HEMTT, TFAR standalone, relay, test server | [x] HEMTT; TFAR removed 2026-10-20, voice is VON; [?] relay/test server not checked here |
 | 1 | RF core: registry, link budget, mesh, rf_link, DF | [x] addons/rf + adapter_tfar + adapter_acre stub; ranges a third of design, MPU5 25 mW ~0.5 km/hop relayed, drone link 2 W; [x] DF in addons/ew (2026-10-20, not run in game) |
 | 2 | Voice: game VON through jmfsb_voice / adapter_von (D14, 2026-10-20) | [x] channels, mesh-driven per-speaker volume, calls, callbacks, sounds, RADIO apps, numpad keys (D16); TFAR removed; [ ] in-game self test (jmfsb_voice_fnc_selfTest) |
-| 3 | Radio on net: MPU5 items, fill, active/monitor, speaking dots | [x] MPU5 (SR + LR) and TW-950 items; [ ] fill, active/monitor; [x] MPU5 on the ground uses the vanilla radio model (2026-10-20) |
+| 3 | Radio on net: MPU5 items, fill, active/monitor, speaking dots | [x] MPU5 (SR + LR) and TW-950 items; [ ] fill, active/monitor; [x] MPU5 on the ground uses the vanilla radio model (2026-10-20); [x] PTT 1-4 keys (Caps Lock = PTT 1 the active net; PTT 2-4 per net on the tablet's RADIO app; 2026-10-30, not run in game) |
 | 4 | Data on graph: BFT health, messaging, CAS tasks, notes via rf_reach; GPS domain | [ ] |
 | 5 | Tablet shell | [x] mostly (section 1) |
 | 6 | EW: emitters, DF, spectrum, jammer, three jam domains | [x] jam zones are RF noise (radio, data); [x] addons/ew: DF, tracks, barrage/spot/sweep/GPS jam, spoof, decoys, TAC//EW app + map layer (2026-10-20, not run in game); [x] GPS readers: BFT dots and group markers, map tools CENTRE / GRID, CUR LOC / pin / + GRID / TIC (2026-10-20, not run in game); [x] AI EW BASIC: enemy AI DF sensors, fix reaction through jmfsb_reaction, one-hop comms gate; ACTIVE / SMART fix dispatch only (drone / QRF) (2026-10-20, not run in game); [ ] rest of AI EW (ACTIVE / SMART EA and EP, mesh comms gate, HQ path), INSPECT/EXPLOIT, drone kill, hardware, drone navigation on the spoofed GPS |
@@ -137,3 +140,33 @@ Registered today: comms, squad, weather, scanner, drones, jam, timer, radio, hac
 - [x] Extended arsenal: OCP option on in-mod backpack groups
 - [x] Common arsenal backpacks: base game and DLC out, radio bags in (applied 2026-10-19, backups in D:/Git/_jmsb_db_backup_2026-10-19)
 - [x] DB boot speed: unscheduled parse, read-once cache, no poll sleep, throttled checklist, timing in RPT; [?] pacdb request ids / getMany (DIVINER extension)
+
+- [x] 2026-10-30 DANGER CLOSE: CONFIRM TASKING on an arty or CAS task with a BFT friendly inside `jmfsb_tacpad_apps_dangerClose` (600 m) of the target asks YES - FIRE / NO - CANCEL in the checklist's place
+- [x] 2026-10-30 Busy tone: keying a radio net someone else is talking on plays the busy cue in place of the TX chirp (key goes through)
+- [x] 2026-10-30 Point Man FOLLOW (a BFT friendly, or his vehicle; `jmfsb_bft_fnc_friendlies`) and ELEVATION PROFILE
+- [x] 2026-10-30 Map tools: RINGS (spacing and count settings), LOS (two presses, blocked point marked), GO TO GRID box on the TOOLS strip
+- [x] 2026-10-30 Jumpmaster: wind drift - LAND on the map, SHIFT PATH FOR WIND, HALO pull altitude and wind-factor settings; ALT readout (height, sink rate) on the phone from exit to ground
+- [x] 2026-10-30 Radio batteries: RF drains a set (`jmfsb_rf_batteryHours`, 8 h; keyed x4; charges in a running vehicle; flat = off), `jmfsb_mpu5_battery` spare item (arsenal: `tools/pac_add_items.py itemsTools tools/mpu5_battery.json`), BATTERY + SWAP BATTERY on RADIO > NETS, BATT cell leads the phone's row when low, warnings at 20 % / 5 % / flat. [ ] battery icon: the MPU5's is a placeholder
+- [x] 2026-10-30 9-line MEDEVAC: `tools/pac_medevac_9line.py` rewrites the deck's MEDEVAC card in the PAC database (dry run, `--apply`); the deck is data, not mod code
+- [ ] Night display: already there - NIGHT / RED is the `dark` scheme (and NIGHT OLIVE, NIGHT SAND, JMSB NIGHT)
+
+## 8. TAC//APP UI notes (2026-10-30), the coding pass
+
+- [x] fonts: two type roles - `FONT_LABEL` / `FONT_MONO` in tacpad/shared.inc.hpp, `drawText` arg 8; mono on tile values and qualifiers, row values, header meta, chips, status cells, the tablet bar's facts, the call clock
+- [x] tile-state-edge: the user chose the mockup's look over the edge bar ("I like the colours around the tiles based on status") - the state's colour on the outline, a tint over the ground, the value and the qualifier's badge: red alert, amber warn, green ok (new state; RADIO reachable, ARTY gun up); stale = dashed outline (`drawFrame` arg 4)
+- [x] chip-role: `jmfsb_tacpad_fnc_drawChip` / `chipWidth`; readerChip, compose tags, radioTick, reader net tabs on it
+- [x] reader-net-tabs: chips with unread counts, ALL first, selected accentFill, wraps; the dropdown is gone; header meta "N NEW"
+- [x] row-rhythm: `ROW_PX_FULL` 28 / `ROW_PX_DEVICE` 24, `ROW_H_SCREEN` (class px grown only when the type would overflow); `fnc_row` holds its type to the row; `RULE_BAND` 3
+- [x] tile-qualifier: drones distance, jam domain (DATA / RADIO / GPS), weather DAY / NIGHT, timer #n, msg FLASH / PRI, support "CAS 2", hack NO SET / IN RANGE
+- [x] header-meta: mono; TOOLS says CANCEL RULER
+- [x] net-row-six: six equal cells, empty ones dim outlines, 40 / 38 / 34 px, tablet legend as a tooltip (text only on hover)
+- [x] walking-keys: numpad 1-5 nets, 6 7 8 9 device F1-F4, - TIC, * answer, / decline, + voice activation, Enter tablet; talk local and volume unbound; signs, docs, hints updated. [ ] user to confirm VA on + and tablet on Enter (not stated)
+- [x] call-strip-quiet: strip only for ring / quick add / dial / callback; the live clock is in the talking box
+- [x] squad-list-wash: ground at 0.85 behind the squad list and the talking box
+- [x] portrait-rows: map 44 % of the screen, squad two columns of three, nets two columns at 34 px
+- [x] device-class: `deviceClass` in frames.hpp (gen_devices.py), `jmfsb_devices_fnc_deviceClass`, overlayRows switches on it
+- [x] tile-settings-providers: `fnc_tileChoices` - LIVE TILES lists the providers' tiles too
+- [x] stale-dashed: `drawFrame` dash flag; the tiles use it
+- [x] tile-icons: gone from the band, the slot stays for the HUD (user: keep on HUD)
+- [x] battery % on the tablet bar and the phone's status row (seven cells, BATT after GPS), not only when low
+- [ ] open: vehicle tablet mockup; talking chip placement while the call picture is up; nothing run in game

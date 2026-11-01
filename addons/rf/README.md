@@ -42,13 +42,21 @@ span), 0 below the receiver's sensitivity); `fnc_pathLoss` is the world part
 per net, nodes are partitioned by key (only sets holding the same key decode
 each other); each pair inside the band's clear-ground range gets an edge
 (two-way: the weaker direction), and `fnc_mesh` runs the widest-path search
-ported from radio_mesh's `fnc_signal`, with the hop limit = the smallest
+ported from the old radio_mesh addon's `fnc_signal` (radio_mesh was removed
+2026-10-31, DEC1), with the hop limit = the smallest
 profile hop limit among the relays on the path.
 
 Cost: the terrain and clutter casts in `fnc_pathLoss`. They are cached per pair
 and band (`jmfsb_rf_edgeCache`) and re-cast only when an end moved more than
-10 m or the entry is older than the static tick - that is how "static nodes
-5 s" is implemented. The player tick is 1 s.
+10 m or the entry is older than its life - the static tick plus a random half
+of it, so pairs cast together do not all expire together - which is how
+"static nodes 5 s" is implemented. Past 150 casts in one tick, pairs that did
+not move wait for a later tick (code review P2, 2026-10-31). The player tick
+is 1 s.
+
+The search is memoised per node set, band and net (`jmfsb_rf_meshMemo`): edges
+are quantised to 0.05 first, and while the edges and the relays are the same
+as last tick, the last answer is reused (code review P1).
 
 ## The satellite link
 
@@ -87,18 +95,32 @@ C2, relay and TX on. RF treats it as any placed node: it meshes, relays,
 emits to the listener hooks (EW) and takes noise. RF itself knows nothing of
 sites.
 
+## Batteries
+
+A set with a battery of its own (profile `batteryWh` > 0: the handhelds, the
+manpack, a placed relay) runs down while it is on, at the rate `Battery life`
+gives the handheld's 38 Wh scaled by its own Wh - four times as fast while
+keyed - and charges in a vehicle with its engine running, full in an hour.
+Flat, it switches itself off (out of the mesh; `jmfsb_rf_batteryFlat` on the
+server) and comes back when it has charge again or is swapped
+(`fnc_batterySwap`, raised by the holder's client). A set powered by its host
+(`-1`) never drains. Each player gets `jmfsb_rf_batteries` on his unit -
+`[[node id, level], ...]` in 5 % steps, sent only when a step changes - and
+reads it through `fnc_battery`. The devices and the RADIO app show it; the
+spare is `jmfsb_radios`' `jmfsb_mpu5_battery`.
+
 ## API
 
 | Function | Where | Notes |
 |---|---|---|
 | `jmfsb_rf_fnc_register` `[object, profile, nets, id, owner, holder, side, data]` -> id | any (a client forwards) | upsert by id; data = `[[key, value], ...]` merged into the node's extra-data field (e.g. `intent`) |
-| `jmfsb_rf_fnc_unregister` `[id]` | any | |
-| `jmfsb_rf_fnc_setState` `[id, [[key, value], ...]]` | any | on, tx, relay, activeNet, monitorNet, emcon, keys, data |
+| `jmfsb_rf_fnc_unregister` `[id]` | any (a client forwards) | |
+| `jmfsb_rf_fnc_setState` `[id, [[key, value], ...]]` | any (a client forwards) | on, tx, relay, activeNet, monitorNet, emcon, keys, data |
 | `jmfsb_rf_fnc_nodesFor` `[holder, skipOwners]` -> `[[id, owner, profile, fill], ...]` | server | the nodes a man holds, fill copied |
 | `jmfsb_rf_fnc_quality` `[node, net]` -> 0..1, -1 unknown | server: any; client: own slice | best path quality to any peer on the net |
 | `jmfsb_rf_fnc_netBand` `[net]` -> band | server | "" when the net does not exist |
 | `jmfsb_rf_fnc_pathLossFree` `[m, band]` -> dB | any | clear-ground loss from the band table, for noise sources |
-| `jmfsb_rf_fnc_netSet` `[net, [[key, value], ...]]` | server | create or change a net |
+| `jmfsb_rf_fnc_netSet` `[net, [[key, value], ...]]` | server (a client forwards; admins only) | create or change a net |
 | `jmfsb_rf_fnc_link` `[a, b, net]` -> `[quality, hops, lastHop]` | server: any pair; client: own slice | |
 | `jmfsb_rf_fnc_reach` `[id, net]` -> ids | server: any; client: own slice | |
 | `jmfsb_rf_fnc_budget` `[tx, rx, band, net]` -> `[rx dBm, snr, quality]` | server | fresh, uncached |
@@ -113,8 +135,14 @@ sites.
 | `jmfsb_rf_fnc_itemProfile` `[class]` -> profile | any | the profile a radio item or bag names in config, `""` = not a set (cached) |
 | `jmfsb_rf_fnc_carriedSets` `[unit]` -> `[[kind, class, profile], ...]` | any | his radio-slot set (`sr`) and radio bag (`lr`) |
 
-Server events (CBA): `jmfsb_rf_register`, `jmfsb_rf_unregister`,
-`jmfsb_rf_setState`, `jmfsb_rf_netSet`. Local events: `jmfsb_rf_linkChanged`
+**Who may change the registry (review R1).** On a client, `register`,
+`unregister`, `setState`, `batterySwap` and `netSet` go to the server by
+`remoteExec` to `jmfsb_rf_fnc_srvRequest`, never by a CBA event (any client
+could raise those to unregister or retune anyone's node). A client may act
+only on nodes it holds - the holder is a unit of its machine, or the node was
+registered to its Steam id - and register only nodes it holds itself; an
+admin may act on any. A client's `netSet` is an admin's only: nets are
+everyone's. Local events: `jmfsb_rf_linkChanged`
 `[node, net, [[peer, quality, hops, lastHop], ...]]` (server: every node;
 client: his own nodes, from the slice), `jmfsb_rf_netCut`,
 `jmfsb_rf_emconChanged`.
@@ -168,14 +196,13 @@ them.
   its only effect is still no relaying at 2 and above (EW reads it for
   exposure and intercept; the power cap is not in RF's link budget).
 - Voice degradation: game voice (`jmfsb_voice`, VON) sets each speaker's
-  volume from link quality (docs/DESIGN_VOICE.md); ACRE next.
+  volume from link quality (docs/DESIGN_VOICE.md). TFAR and ACRE are no
+  longer voice options (removed 2026-10-31, DEC1).
 - Gateways, PACE, battery drain, antenna height, faction tiers and AI nodes by
   tier (only the "AI nodes counted" switch exists).
-- Porting the consumers: hacking, messaging, bft, uas and radio_mesh (whose
-  search now lives here). Jamming is ported: its radio and data zones are RF
-  noise sources (`jmfsb_jamming_fnc_rfNoise`); GPS is still its own. Then the
-  ACRE rule in `tools/check_invariants.py`, held back until those direct
-  references are gone.
+- Porting the consumers: hacking, messaging, bft and uas. Jamming is ported:
+  its radio and data zones are RF noise sources (`jmfsb_jamming_fnc_rfNoise`);
+  GPS is still its own.
 
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
@@ -187,7 +214,7 @@ them.
 
 ## Ships
 
-40 functions.
+46 functions.
 
 ## CBA settings
 
@@ -197,6 +224,7 @@ them.
 | `jmfsb_rf_tickStatic` | SLIDER | Static tick (sec) |
 | `jmfsb_rf_aiNodes` | CHECKBOX | AI nodes counted |
 | `jmfsb_rf_debugOverlay` | CHECKBOX | Debug map overlay |
+| `jmfsb_rf_batteryHours` | SLIDER | Battery life (hours) |
 | `jmfsb_rf_vhfExp` | SLIDER | VHF path-loss exponent |
 | `jmfsb_rf_vhfRef` | SLIDER | VHF loss at 1 m (dB) |
 | `jmfsb_rf_vhfFloor` | SLIDER | VHF noise floor (dBm) |
@@ -220,12 +248,16 @@ them.
 
 ## Functions
 
-<details><summary>40</summary>
+<details><summary>46</summary>
 
 - `jmfsb_rf_fnc_addListener`
 - `jmfsb_rf_fnc_addNoiseSource`
 - `jmfsb_rf_fnc_bandInfo`
 - `jmfsb_rf_fnc_bandMhz`
+- `jmfsb_rf_fnc_battery`
+- `jmfsb_rf_fnc_batteryPublish`
+- `jmfsb_rf_fnc_batterySwap`
+- `jmfsb_rf_fnc_batteryTick`
 - `jmfsb_rf_fnc_bodyLoss`
 - `jmfsb_rf_fnc_budget`
 - `jmfsb_rf_fnc_carriedSets`
@@ -235,6 +267,7 @@ them.
 - `jmfsb_rf_fnc_link`
 - `jmfsb_rf_fnc_linkBudget`
 - `jmfsb_rf_fnc_maxRange`
+- `jmfsb_rf_fnc_mayTouch`
 - `jmfsb_rf_fnc_mesh`
 - `jmfsb_rf_fnc_netBand`
 - `jmfsb_rf_fnc_netFreq`
@@ -259,6 +292,7 @@ them.
 - `jmfsb_rf_fnc_setState`
 - `jmfsb_rf_fnc_sharedNets`
 - `jmfsb_rf_fnc_slices`
+- `jmfsb_rf_fnc_srvRequest`
 - `jmfsb_rf_fnc_tick`
 - `jmfsb_rf_fnc_unregister`
 - `jmfsb_rf_fnc_updateBands`

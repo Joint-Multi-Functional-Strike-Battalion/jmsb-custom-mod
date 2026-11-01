@@ -22,7 +22,7 @@
 params [["_caller", objNull, [objNull]], ["_op", "", [""]], ["_id", "", [""]], ["_section", "", [""]], ["_fields", createHashMap, [createHashMap]]];
 
 if (!isServer || isNull _caller || _id isEqualTo "") exitWith {};
-if !([_caller] call jmfsb_adminpanel_fnc_isAdmin) exitWith {WARNING_1("adminOpord refused: %1 is not an admin",name _caller)};
+if !([_caller] call FUNC(isAdminCaller)) exitWith {WARNING_1("adminOpord refused: %1 is not an admin",name _caller)};
 if (GVAR(readOnly)) exitWith {};
 if (["opords"] call FUNC(fileFed)) exitWith {
     ["TAC//PAC", "The orders come from the mission's config folder and there is no database - the game cannot write them.", [0.831, 0.267, 0.267, 1]] remoteExec ["jmfsb_notify_fnc_notify", owner _caller];

@@ -25,19 +25,24 @@ if (_up isEqualTo []) exitWith {
 private _pick = selectRandom _up;
 private _at = getPosATL (_pick select 0);
 
-[QEGVAR(hacking,product), ["icons",
-    format [QGVAR(reveal_%1), round CBA_missionTime],
-    [[+_at, "mil_warning"]], "ColorRed", GVAR(asymSide) call {
-        // The players' side, not the insurgency's: the reveal is for whoever
-        // took him, and every player hostile to the chain qualifies.
-        private _s = playerSide;
-        {
-            if ((side group _x) getFriend GVAR(asymSide) < 0.6) exitWith {
-                _s = side group _x;
-            };
-        } forEach allPlayers;
-        _s
-    }]] call CBA_fnc_globalEvent;
+// The map marker is hacking's intel product, sent by remoteExec from the
+// server (review S7). Hacking is optional for leaders: without it the
+// prisoner still talks, but nothing is drawn.
+if (!isNil "jmfsb_hacking_fnc_sendProduct") then {
+    ["icons",
+        format [QGVAR(reveal_%1), round CBA_missionTime],
+        [[+_at, "mil_warning"]], "ColorRed", GVAR(asymSide) call {
+            // The players' side, not the insurgency's: the reveal is for whoever
+            // took him, and every player hostile to the chain qualifies.
+            private _s = playerSide;
+            {
+                if ((side group _x) getFriend GVAR(asymSide) < 0.6) exitWith {
+                    _s = side group _x;
+                };
+            } forEach allPlayers;
+            _s
+        }] call jmfsb_hacking_fnc_sendProduct;
+};
 
 ["INTERROGATION", "He talked. Another leader's location is on your map."]
     call EFUNC(notify,broadcast);

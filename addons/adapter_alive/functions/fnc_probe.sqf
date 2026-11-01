@@ -22,6 +22,18 @@ params [["_which", "", [""]], ["_caller", objNull, [objNull]]];
 
 if (!isServer) exitWith {};
 
+// ADMINS ONLY, by the server's records (review S7). The probes spawn a squad,
+// call a fire mission and hold an objective; they came on a CBA event any
+// client could raise, from a chat command anyone could type. A host and a
+// single player pass as the server. The caller is the sender, never a unit
+// the request names.
+if !([] call EFUNC(common,senderIsAdmin)) exitWith {
+    WARNING_2("probe '%1': refused - machine %2 is not an admin",_which,remoteExecutedOwner);
+};
+if (isRemoteExecuted) then {
+    _caller = ([] call EFUNC(common,sender)) select 1;
+};
+
 private _say = {
     diag_log text format ["[jmfsb adapter PROBE] %1", _this];
     [format ["PROBE: %1", _this]] remoteExec ["systemChat", 0];

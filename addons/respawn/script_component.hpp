@@ -15,3 +15,7 @@
 
 #define TIME_DISABLED 1e10
 #define TIME_MINIMUM 1
+
+// remoteExec target of the server (review S7: a forced respawn is asked for
+// by remoteExec so the server knows who sent it).
+#define SERVER_OWNER 2

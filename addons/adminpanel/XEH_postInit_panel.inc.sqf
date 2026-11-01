@@ -3,11 +3,13 @@
 // an addon compiles once, for every mission. FUNC(adminList) RUNS that same
 // file at runtime instead and reads its _admins, so the mission's own
 // config\config_adminlist.hpp is unchanged and still the answer.
-admp_authorisedIDs = [] call FUNC(adminList);
+// THE SERVER PUBLISHES THE LIST NOW (review S2): this is only the start-up
+// copy screens read until the server's arrives (XEH_postInit).
+if (isNil "admp_authorisedIDs") then {admp_authorisedIDs = [] call FUNC(adminList)};
 
 // Single player has no uid worth the name, and a dev box is where this gets
 // used most.
-{admp_authorisedIDs pushBackUnique _x} forEach ["_SP_AI_", "_SP_PLAYER_"];
+{admp_authorisedIDs pushBackUnique _x} forEach ADMIN_SP_IDS;
 
 // GLOBAL VARIABLES ///////////////////////////////////////////////////////////////////////////////
 

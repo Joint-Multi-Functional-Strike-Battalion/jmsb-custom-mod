@@ -4,9 +4,6 @@
 // in it, because the zones belong to objectives rather than to a module that
 // named a victim.
 if (hasInterface) then {
-    GVAR(acreJam) = 0;
-    GVAR(hasACRE) = isClass (configFile >> "CfgPatches" >> "acre_main");
-
     [LINKFUNC(jammerLoop), JAM_CHECK_INTERVAL, []] call CBA_fnc_addPerFrameHandler;
 
     // The static-wash HUD was PREPed, documented and never registered -
@@ -20,28 +17,62 @@ if (hasInterface) then {
     // still dark until the next tick corrected it. Cleared on both events.
     ["ace_playerChanged", { GVAR(gpsDenied) = false; showGPS true }] call CBA_fnc_addEventHandler;
     ["unit", { GVAR(gpsDenied) = false; showGPS true }] call CBA_fnc_addPlayerEventHandler;
+};
 
-    // ACRE2: keep the vanilla signal result but scale received strength by
-    // this player's live jam level. jam == 0 is identical to vanilla.
-    //
-    // ACRE ALLOWS ONE CUSTOM SIGNAL FUNCTION. When jmfsb_radio_mesh is loaded
-    // it owns it - it routes through relays and then applies GVAR(acreJam)
-    // itself (see radio_mesh/fnc_signal), so this one stands down.
-    if (GVAR(hasACRE) && {!isNil "acre_api_fnc_setCustomSignalFunc"}
-        && {!isClass (configFile >> "CfgPatches" >> "jmfsb_radio_mesh")}) then {
-        [{
-            private _core = _this call acre_sys_signal_fnc_getSignalCore;
-            private _jam = missionNamespace getVariable [QGVAR(acreJam), 0];
-            // and the RF burst's registry (jmfsb_aps) - the same lever, another source
-            _jam = _jam max (missionNamespace getVariable ["jmfsb_aps_acreJam", 0]);
-            if (_jam <= 0) exitWith { _core };
-            _core params ["_pct", "_dbm"];
-            [_pct * (1 - _jam), _dbm]
-        }] call acre_api_fnc_setCustomSignalFunc;
-    };
+// ACE ON THE TERMINAL ITSELF (user, 2026-10-24: "the jammers need to have a
+// local ace interface to disable or hack"). Two actions under the terminal's
+// own menu, on the three terminal classes, shown only while the thing is a
+// live jammer: DISABLE kneels for the disable time and ends the zone for good
+// (an engineer's job by default); HACK puts it on the HACK board and opens the
+// board. ACE is not required by this addon, so both are guarded.
+if (hasInterface && {!isNil "ace_interact_menu_fnc_createAction"}) then {
+    private _disable = [
+        QGVAR(disable), "Disable jammer", JAM_ACTION_ICON,
+        {params ["_target", "_player"]; [_target, _player] call FUNC(disableStart)},
+        {params ["_target", "_player"]; [_target, _player] call FUNC(canDisable)}
+    ] call ace_interact_menu_fnc_createAction;
+    private _hack = [
+        QGVAR(hack), "Hack jammer", JAM_ACTION_ICON,
+        {params ["_target", "_player"]; [_target, _player] call FUNC(hackStart)},
+        {
+            params ["_target", "_player"];
+            !isNil QEFUNC(hacking,canHack)
+            && {[_target] call FUNC(isLiveJammer)}
+            && {[_player] call EFUNC(hacking,canHack)}
+        }
+    ] call ace_interact_menu_fnc_createAction;
+    {
+        if (isClass (configFile >> "CfgVehicles" >> _x)) then {
+            [_x, 0, ["ACE_MainActions"], _disable, false] call ace_interact_menu_fnc_addActionToClass;
+            [_x, 0, ["ACE_MainActions"], _hack, false] call ace_interact_menu_fnc_addActionToClass;
+        };
+    } forEach JAM_PROP_TERMINALS;
+    // What the server says back to the one who did it (fnc_disableSite) comes
+    // through notify's broadcast - no "note" CBA event any client could raise
+    // to put text on every screen (review R1).
+};
+
+// THE REPORT, admins only, answered to the caller alone (review R1: it was a
+// CBA event any player could raise to print every zone's position in everyone's
+// chat). On the #jmfsb surface: registered on every machine, because the
+// typer's machine looks it up, and run on the server. #jmfsbjam is a shortcut.
+["jam", "jamming zones and where they are", {
+    private _z = ["all", [], true] call FUNC(getZones);
+    private _txt = format ["%1 zone(s): %2", count _z,
+        _z apply {format ["%1@%2 r=%3", _x select 1, mapGridPosition (_x select 2), round (_x select 3)]}];
+    diag_log text format ["[jmfsb_jamming] %1", _txt];
+    format ["JAMMING: %1", _txt]
+}] call EFUNC(common,addDebugCommand);
+
+if (hasInterface) then {
+    ["jmfsbjam", {
+        ["#jmfsb jam", player] call EFUNC(common,debugCommand);
+    }, "all"] call CBA_fnc_registerChatCommand;
 };
 
 if (!isServer) exitWith {};
+// A terminal disabled by hand (fnc_disableStart, on the client that did it)
+// comes by remoteExec to FUNC(disableSite), which checks who and where.
 
 // RADIO AND DATA ZONES ARE RF NOISE: RF prices them into every link budget on
 // the server, and voice and data degrade by SNR from there. With no zones the
@@ -53,14 +84,3 @@ if (!isServer) exitWith {};
 // no module placed gets nothing from this addon. GVAR(moduleUp) is declared in
 // XEH_preInit, NOT here - see there for why.
 
-["jmfsbjam", {
-    [QGVAR(report), []] call CBA_fnc_serverEvent;
-}, "all"] call CBA_fnc_registerChatCommand;
-
-[QGVAR(report), {
-    private _z = ["all", [], true] call FUNC(getZones);
-    private _txt = format ["%1 zone(s): %2", count _z,
-        _z apply {format ["%1@%2 r=%3", _x select 1, mapGridPosition (_x select 2), round (_x select 3)]}];
-    diag_log text format ["[jmfsb_jamming] %1", _txt];
-    [format ["JAMMING: %1", _txt]] remoteExec ["systemChat", 0];
-}] call CBA_fnc_addEventHandler;

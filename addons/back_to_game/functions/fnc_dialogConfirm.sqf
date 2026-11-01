@@ -20,10 +20,7 @@ INFO("Teleportation confirmed!");
 player allowDamage false;
 [{player allowDamage true}, [], 5] call CBA_fnc_waitAndExecute;
 player playAction "PlayerProne";
-// wait for ACRE init if present
-[{!EGVAR(common,acre) || {[] call acre_api_fnc_isInitialized}}, {
-    player setUnitLoadout (GVAR(savegameData) select 0);
-}] call CBA_fnc_waitUntilAndExecute;
+player setUnitLoadout (GVAR(savegameData) select 0);
 
 private _oldGroup = GVAR(savegameData) select 1;
 if ((group player isNotEqualTo _oldGroup) && {!isNull _oldGroup}) then {
@@ -37,6 +34,8 @@ if ((group player isNotEqualTo _oldGroup) && {!isNull _oldGroup}) then {
     [player, _data] call _fnc_load;
 } forEach (GVAR(savegameData) select 4);
 
-[QGVAR(teleportPlayer), GVAR(savegameData)] call CBA_fnc_localEvent;
+// Called here, not through a CBA event: any client could raise that one on
+// every machine and teleport every player (review S7).
+GVAR(savegameData) call FUNC(teleportPlayer);
 
 nil

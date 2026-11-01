@@ -17,7 +17,7 @@
 
 if (!GVAR(markerEnabled)) exitWith {false};
 if (isNull ACE_player || {!alive ACE_player}) exitWith {false};
-if !(currentWeapon ACE_player in [QGVAR(Vector_Designator), QGVAR(Vector_Designator_NVG)]) exitWith {false};
+if !(currentWeapon ACE_player in VECTOR_DESIGNATORS) exitWith {false};
 
 // THE RAYCAST IS SHARED with the personal waypoint - see FUNC(vectorTarget).
 // Two copies of a line-of-sight test are two copies that can disagree about what
@@ -41,9 +41,11 @@ if (GVAR(markerDuration) > 0) then {
     [{deleteMarker _this}, _marker, GVAR(markerDuration)] call CBA_fnc_waitAndExecute;
 };
 
-// In-world 3D marker name on every client (each client checks its own setting)
+// In-world 3D marker name on every client (each client checks its own
+// setting). By the server, which names the sender itself (review R1: the
+// marker3D CBA event let any client put any text anywhere on every screen).
 if (GVAR(marker3DDuration) > 0) then {
-    [QGVAR(marker3D), [_posASL, format ["%1 (%2m)", name ACE_player, _distance], GVAR(markerColor)]] call CBA_fnc_globalEvent;
+    [_posASL, _distance, GVAR(markerColor)] remoteExecCall [QFUNC(srvMarker3D), SERVER_OWNER];
 };
 
 ["Vector", format ["Marker placed: %1 m", _distance], [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);

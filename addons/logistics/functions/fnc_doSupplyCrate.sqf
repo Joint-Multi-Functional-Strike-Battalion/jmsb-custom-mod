@@ -20,6 +20,13 @@ params [
     ["_crateType","crate_resupply_general",[""]]
 ];
 
+// Review R1: a Zeus's ZEN module reaches this by remoteExec, so a client's
+// call passes only for a curator or an admin - not any player spawning crates.
+private _zeus = !isNull getAssignedCuratorLogic (([] call EFUNC(common,sender)) select 1);
+if (!_zeus && {!([] call EFUNC(common,senderIsAdmin))}) exitWith {
+    WARNING_1("Logistics","doSupplyCrate refused: machine %1 is neither a Zeus nor an admin",remoteExecutedOwner);
+};
+
 // Crate model changes based on container of the crate
 private _crateModel = "";
 
@@ -81,8 +88,11 @@ if (isServer) then {
 
 // Change ace characteristics of crate
 [_crate, 1] call ace_cargo_fnc_setSize;
-[_crate, true] call ace_dragging_fnc_setDraggable;
-[_crate, true] call ace_dragging_fnc_setCarryable;
+// The drag setters are local: run them on every machine, and for JIP while the
+// crate exists (review L3) - by remoteExec, JIP-tied to the crate, to
+// FUNC(crateDraggable), which takes it only from the server (review R1: the
+// crateDraggable CBA event let any client make any object draggable).
+[_crate] remoteExecCall [QFUNC(crateDraggable), 0, _crate];
 
 // If a correct classname add texture
 private _smallBox = [

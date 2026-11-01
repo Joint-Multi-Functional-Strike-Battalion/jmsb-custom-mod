@@ -34,7 +34,9 @@ private _pylon = [];
 } forEach (keys EGVAR(init,PYLONS));
 
 if (count _pylon == 0) then {
-    WARNING_2("VehicleDefaultLoadout","Vehicle %1 [%2] has no loadout setup.",_vehicle,typeOf _vehicle);
+    // a quadbike or a truck has no pylons: nothing to apply is the normal
+    // case for most vehicles, not a fault, so it is not a warning
+    TRACE_INFO_2("VehicleDefaultLoadout","Vehicle %1 [%2] has no loadout setup.",_vehicle,typeOf _vehicle);
 } else {
     _vehicle setVariable ["ace_rearm_scriptedLoadout", true, true];
 };

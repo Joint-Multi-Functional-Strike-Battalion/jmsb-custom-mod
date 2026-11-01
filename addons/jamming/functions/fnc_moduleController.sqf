@@ -67,12 +67,11 @@ GVAR(siteObjectives) = [_logic getVariable ["siteObjectives", false]] call _bool
 // Burn-through. These overwrite the preInit defaults, which are the values
 // FUNC(jamFactor) falls back to on a machine the module has not reached.
 //
-// BROADCAST, because this file exits on !isServer and FUNC(jammerLoop) reads
-// jamBurnthrough on every CLIENT to decide whether to ask ACRE for the set's
-// power. Server-local, a dedicated server's players would never burn through
-// anything however big their radio - the same trap jmfsb_reaction documents on
-// its watts threshold. burnRef needs no broadcast: it is stamped into each
-// zone's model at spawn and travels with the registry.
+// BROADCAST, because this file exits on !isServer and FUNC(zoneModel) stamps
+// jamBurnthrough into each zone's model wherever a zone is built - the same
+// trap jmfsb_reaction documents on its watts threshold. burnRef needs no
+// broadcast: it is stamped into each zone's model at spawn and travels with
+// the registry.
 GVAR(jamBurnRef) = _logic getVariable ["burnRef", 500];
 
 // The zones' noise in the RF link budget. Server only: FUNC(rfNoise) runs
@@ -93,13 +92,10 @@ missionNamespace setVariable [
 // normally placed long before ALiVE finishes initialising, but one armed
 // afterwards would otherwise wait forever on an event that has already fired.
 if (!isNil QEFUNC(adapter_alive,objectivesFor)) then {
-    if (EGVAR(adapter_alive,ready)) then {
+    // Now when the adapter is ready already, and once only - not the ready
+    // CBA event any client could raise again (review R1).
+    [{
         private _n = [] call FUNC(spawnObjectiveJammers);
         INFO_1("%1 objective jammer site(s) queued",_n);
-    } else {
-        [QEGVAR(adapter_alive,ready), {
-            private _n = [] call FUNC(spawnObjectiveJammers);
-            INFO_1("%1 objective jammer site(s) queued",_n);
-        }] call CBA_fnc_addEventHandler;
-    };
+    }] call EFUNC(adapter_alive,whenReady);
 };

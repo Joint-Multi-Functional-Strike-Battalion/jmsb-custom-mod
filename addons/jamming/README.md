@@ -13,7 +13,7 @@ consumer asks about the one it cares about rather than about "jamming":
 
 | domain | what goes | who reads it |
 |---|---|---|
-| `radio` | the voice net - RF noise on VHF/UHF (game voice through `jmfsb_voice`), ACRE directly | `rfNoise`, `jammerLoop` |
+| `radio` | the voice net - RF noise on VHF/UHF (game voice through `jmfsb_voice`) | `rfNoise`, `jammerLoop` |
 | `data` | TAC//MSG traffic, and every group but your own off the map; RF noise on the DATA net's band | `messaging_fnc_linkState`, `bft_fnc_draw`, `rfNoise` |
 | `gps` | the GPS item, and with it the map self-icon | `gpsApply` |
 
@@ -35,9 +35,9 @@ the VHF and UHF link budgets and every data zone to the band of RF's DATA net
 **Zone Noise at the Core (dBm)**, default -40, plus 10 log10 of the zone's
 `jamFactor` at the receiver, before the receiver's spread gain: the zone's shape
 in RF is exactly its shape on the meter. Game voice then degrades by link
-quality in `jmfsb_voice`; this addon writes no voice variables. ACRE keeps
-the old direct lever (`acreJam`) until its adapter carries voice. GPS is not RF
-yet and stays here.
+quality in `jmfsb_voice`; this addon writes no voice variables. The direct
+ACRE lever (`acreJam` and its custom signal function) was removed on
+2026-10-31 (DEC1). GPS is not RF yet and stays here.
 
 `jamFactor` itself is unchanged and still zone-based: the meter, TAC//MSG link
 state, the scanner, burn-through and hacking read it as before. It answers for
@@ -77,6 +77,28 @@ Off by default until the module's **Radio Burn-Through** is ticked.
 
     #jmfsbjam    list live zones
 
+Admins only, answered to the caller alone: it is `#jmfsb jam` on the admin
+debug surface (review R1: it was a CBA event any player could raise to print
+every zone's position in everyone's chat).
+
+## On the terminal itself (ACE)
+
+Two actions under a live terminal's own ACE menu (user, 2026-10-24: "the
+jammers need to have a local ace interface to disable or hack"). **Disable
+jammer**: an engineer, explosives specialist or ISR operator (a setting; or anyone) kneels
+for the disable time (setting, 20 s) and the server removes the zone for good,
+the same end as destroying or hacking it; the terminal is flagged so it is not
+offered again. **Hack jammer**: an ISR operator who may hack puts the terminal
+on the HACK board as the selected device and the board opens, on the tablet
+where there is one; the hack runs there as any tower hack does. Nothing here
+needs ACE to load the addon: without it there is no menu.
+
+The disable reaches the server by `remoteExec` to `disableSite`, which takes it
+only for the sender's own unit and runs the checks again: a live jammer, a man
+allowed to disable it, within 7 m of it (review R1: it was a CBA event, so any
+client could switch off any jammer from anywhere). The "site disabled" line
+comes back through notify's broadcast, not a CBA event.
+
 ## For EW
 
 `jmfsb_ew` reads the zones as emitters through `fnc_emitters` (id, object,
@@ -100,7 +122,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-2 unit classes, 23 functions.
+2 unit classes, 28 functions.
 
 ## Eden modules
 
@@ -139,15 +161,27 @@ One jammer site, where you place it. Needs the JMSB - Jamming module on the map 
 
 </details>
 
+## CBA settings
+
+| Setting | Type | Name |
+|---|---|---|
+| `jmfsb_jamming_disableTime` | SLIDER | Disable time (s) |
+| `jmfsb_jamming_disableNeedsEngineer` | CHECKBOX | Disable needs a specialist |
+
 ## Functions
 
-<details><summary>23</summary>
+<details><summary>28</summary>
 
 - `jmfsb_jamming_fnc_artyReply`
+- `jmfsb_jamming_fnc_canDisable`
+- `jmfsb_jamming_fnc_disableSite`
+- `jmfsb_jamming_fnc_disableStart`
 - `jmfsb_jamming_fnc_emitters`
 - `jmfsb_jamming_fnc_getZones`
 - `jmfsb_jamming_fnc_gpsApply`
 - `jmfsb_jamming_fnc_gpsDrift`
+- `jmfsb_jamming_fnc_hackStart`
+- `jmfsb_jamming_fnc_isLiveJammer`
 - `jmfsb_jamming_fnc_jamFactor`
 - `jmfsb_jamming_fnc_jamHud`
 - `jmfsb_jamming_fnc_jammerLoop`

@@ -34,5 +34,5 @@ if ((trim _name) isEqualTo "") exitWith {
     false
 };
 
-[QGVAR(srvNetAdd), [player, _name, _squads apply {toUpper trim _x}, _uids]] call CBA_fnc_serverEvent;
+[player, _name, _squads apply {toUpper trim _x}, _uids] remoteExecCall [QFUNC(srvNetAdd), SERVER_OWNER];
 true

@@ -17,7 +17,9 @@ Author:
 params [["_text", "", [""]], ["_target", objNull, [objNull]]];
 
 if (isNull _target || {_target isEqualTo player}) exitWith {
-    if (hasInterface) then { systemChat format ["[jmfsb] %1", _text] };
+    // Printed only for this machine's own call or the server's (review R1): a
+    // client cannot write "[jmfsb]" lines into another player's chat.
+    if (hasInterface && {[] call FUNC(fromServer)}) then { systemChat format ["[jmfsb] %1", _text] };
 };
 
 [_text, objNull] remoteExec [QFUNC(debugReply), _target];

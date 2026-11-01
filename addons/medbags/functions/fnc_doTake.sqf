@@ -50,13 +50,14 @@ private _order = (GVAR(fillOrder) splitString ",") apply {parseNumber (trim _x)}
 if (_order isEqualTo []) then {_order = [3, 2, 1]};
 
 // One count per class, because a casualty can be carrying two of the same bag
-// and the action should hand over both.
+// and the action should hand over both. The casualty's machine removes them and
+// hands back only what it removed (FUNC(stripBag), review L3), so two medics
+// taking at once cannot both get the bag.
 {
     private _item = _x;
     private _n = {_x isEqualTo _item} count _carried;
 
-    [_target, _item, _n] remoteExec [QFUNC(stripBag), _target];
-    [_player, _item, _n, _order, GVAR(fillOverflow)] call EFUNC(common,addItem);
+    [_target, _item, _n, _player, _order, GVAR(fillOverflow)] remoteExecCall [QFUNC(stripBag), _target];
 } forEach _taken;
 
 INFO_3("%1 took %2 from %3",_player,_taken,_target);

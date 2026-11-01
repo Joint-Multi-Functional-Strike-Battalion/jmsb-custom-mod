@@ -60,7 +60,8 @@ INFO_1("VON T3 getPlayerChannel: press your push-to-talk a few times within %1 s
 private _c2 = GVAR(channelMap) findIf {(_x select 0) isEqualTo KEY_C2};
 private _c2Id = if (_c2 < 0) then {CUSTOM_NONE} else {(GVAR(channelMap) select _c2) select 1};
 if (_c2Id > CUSTOM_NONE) then {
-    [QGVAR(testChannel), [player]] call CBA_fnc_serverEvent;
+    // By remoteExec, so the server knows who asked (review S7).
+    [player] remoteExecCall [QFUNC(testChannel), SERVER_OWNER];
     INFO_2("VON T4 custom channel: server takes you off C2 (custom %1) and back on after %2 s",_c2Id,TEST_READD_S);
 } else {
     INFO("VON T4 custom channel: SKIPPED, no C2 channel published");

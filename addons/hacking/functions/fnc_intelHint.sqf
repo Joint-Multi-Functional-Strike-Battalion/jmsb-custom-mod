@@ -29,6 +29,9 @@
  *
  * Arguments:
  * 0: Where the batch was deposited <ARRAY> (optional - empty picks at random)
+ * 1: The side the hint is drawn for - the depositor's <SIDE>
+ *
+ * The walk (ids hinted, tier) is the server's, in localNamespace (review S7).
  *
  * Return Value:
  * Anything drawn <BOOL>
@@ -36,9 +39,9 @@
  * Public: No
  */
 
-params [["_from", [], [[]]]];
+params [["_from", [], [[]]], ["_side", sideUnknown, [sideUnknown]]];
 
-private _side = GVAR(hintSide);
+if (!isServer || {_side isEqualTo sideUnknown}) exitWith {false};
 private _pool = [];
 
 // --- the conventional network ----------------------------------------------
@@ -164,7 +167,7 @@ if (_pool isEqualTo []) exitWith {
 };
 
 // --- the walk ----------------------------------------------------------------
-private _hinted = missionNamespace getVariable [QGVAR(hintedIds), []];
+private _hinted = localNamespace getVariable [QGVAR(hintedIds), []];
 private _fresh = _pool select {!((_x select 0) in _hinted)};
 // Everything named once already: start the walk again rather than going quiet.
 if (_fresh isEqualTo []) then { _fresh = _pool; _hinted = [] };
@@ -182,7 +185,7 @@ private _pick = if (_from isEqualTo []) then {
 };
 _pick params ["_id", "_at", "_type"];
 
-private _tier = missionNamespace getVariable [QGVAR(hintTier), 0];
+private _tier = localNamespace getVariable [QGVAR(hintTier), 0];
 private _radii = ([QGVAR(cfg_circle_radii)] call FUNC(hackSetting)) splitString ", ";
 _radii = _radii apply { parseNumber _x };
 _radii = _radii select {_x > 0};
@@ -199,8 +202,8 @@ private _bearing = random 360;
 private _centre = _at vectorAdd [sin _bearing * _throw, cos _bearing * _throw, 0];
 
 _hinted pushBack _id;
-missionNamespace setVariable [QGVAR(hintedIds), _hinted];
-missionNamespace setVariable [QGVAR(hintTier), _tier + 1];
+localNamespace setVariable [QGVAR(hintedIds), _hinted];
+localNamespace setVariable [QGVAR(hintTier), _tier + 1];
 // The walk survives a restart with ALiVE's war state - see XEH_postInit.
 if (!isNil "jmfsb_adapter_alive_fnc_setData") then {
     [QGVAR(hintedIds), _hinted] call jmfsb_adapter_alive_fnc_setData;
@@ -212,10 +215,10 @@ if (!isNil "jmfsb_adapter_alive_fnc_reportIntel") then {
     [_side, sideUnknown, _id, _centre, _type] call jmfsb_adapter_alive_fnc_reportIntel;
 };
 
-[QGVAR(product), ["circle",
+["circle",
     format [QGVAR(hint_%1), _id],
-    _centre, _radius, "", "", toUpper _type, GVAR(hintSide)
-]] call CBA_fnc_globalEvent;
+    _centre, _radius, "", "", toUpper _type, _side
+] call FUNC(sendProduct);
 
 INFO_3("intel hint: %1 '%2', %3 m circle",_type,_id,round _radius);
 true

@@ -30,7 +30,6 @@ if (_idle > 0) then {
         if (!(_y get "closed") && {_now - (_y get "lastActivity") > _idle}) then {
             _y set ["closed", true];
             _y set ["status", "CLOSED"];
-            [QGVAR(threadUpdated), [_x, "CLOSED"]] call CBA_fnc_globalEvent;
         };
     } forEach GVAR(threads);
 };
@@ -56,7 +55,7 @@ private _dead = (keys GVAR(threads)) select {!(_x in _live)};
 
     private _marker = _thread getOrDefault ["marker", ""];
     if (_marker != "") then {
-        [QGVAR(marker), [_marker, []]] call CBA_fnc_globalEvent;
+        [_marker, []] remoteExecCall [QFUNC(cltMarker), TARGET_ALL];
     };
 
     GVAR(threads) deleteAt _x;

@@ -13,7 +13,7 @@
  * redraw key, so a redraw keeps it; the name box is a real RscEdit, as the
  * CALLS tab's FIND box is, because the board has no keyboard of its own.
  *
- * On a TFAR or ACRE night, or without the voice API, the block only says so.
+ * Without the voice API the block only says so.
  *
  * Arguments:
  * 0: Body <CONTROL>
@@ -50,8 +50,8 @@ private _bottom = _top + _h;
 [_body, [_left, _top + _rowH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 private _ry = _top + _rowH * 1.2;
 
-if ((_ctx getOrDefault ["external", false]) || {!(_ctx getOrDefault ["voice", false])}) exitWith {
-    [_body, [_left, _ry, _w, _rowH * 2], "RTO nets are game voice only - not on a TFAR or ACRE night.", _dim, TEXT_LABEL] call EFUNC(tacpad,drawText);
+if !(_ctx getOrDefault ["voice", false]) exitWith {
+    [_body, [_left, _ry, _w, _rowH * 2], "RTO nets need the voice addon (jmfsb_voice).", _dim, TEXT_LABEL] call EFUNC(tacpad,drawText);
 };
 
 // THE ADD NET FORM IS ANCHORED AT THE BOTTOM of the block, its height known

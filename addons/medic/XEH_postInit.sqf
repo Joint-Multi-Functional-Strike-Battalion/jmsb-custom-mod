@@ -1,10 +1,8 @@
 #include "script_component.hpp"
 
-// EVERY MACHINE: a manual reading is taken where the patient is local, because
-// that is the only place his vitals are exact - see FUNC(measureLocal). AI
-// patients live on the server or a headless client, so this is not
-// interface-only.
-[QGVAR(measure), LINKFUNC(measureLocal)] call CBA_fnc_addEventHandler;
+// A manual reading is taken where the patient is local, because that is the
+// only place his vitals are exact: the server sends it there by remoteExec
+// (FUNC(srvMeasure) -> FUNC(measureLocal)) - no CBA event (review R1).
 
 if (!hasInterface) exitWith {};
 

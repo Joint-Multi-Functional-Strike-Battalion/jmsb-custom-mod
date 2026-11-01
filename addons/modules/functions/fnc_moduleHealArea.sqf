@@ -24,6 +24,15 @@ if (_activated) then {
             // same call), so running them on the server healed nobody but
             // the host. ACM guarded: without that mod the calls are absent.
             private _p = _x;
+            // ONLY A MAN WHO NEEDS IT (review P8, 2026-10-31): every man in the
+            // area got eight remote calls and a banner every second, hurt or not.
+            // The readings are ACE's public ones.
+            private _hurt = damage _p > 0
+                || {(_p getVariable ["ace_medical_woundBleeding", 0]) > 0}
+                || {(_p getVariable ["ace_medical_bloodVolume", HEAL_FULL_BLOOD]) < HEAL_FULL_BLOOD}
+                || {_p getVariable ["ace_medical_inPain", false]}
+                || {_p getVariable ["ACE_isUnconscious", false]};
+            if (!_hurt) then {continue};
             {
                 if (!isNil _x) then {
                     [_p] remoteExec [_x, _p];

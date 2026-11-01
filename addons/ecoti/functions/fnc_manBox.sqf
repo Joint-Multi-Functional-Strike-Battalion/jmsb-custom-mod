@@ -41,6 +41,6 @@ private _rect = [[_feet, _crown], MAN_BOX_MARGIN, _view] call FUNC(boxRect);
 if (_rect isEqualTo []) exitWith {[]};
 
 private _dist = _camPos distance _eyes;
-private _alpha = linearConversion [GVAR(nearDistance), GVAR(range), _dist, 1, FAR_ALPHA_MIN, true];
+private _alpha = linearConversion [GVAR(nearDistance), _unit getVariable [QGVAR(far), GVAR(rangePlayer)], _dist, 1, FAR_ALPHA_MIN, true];
 
 [_rect, (_unit getVariable [QGVAR(rgb), UNKNOWN_RGB]) + [_alpha], [_unit, _dist] call FUNC(labelText)]

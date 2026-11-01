@@ -36,6 +36,14 @@ if (_pos isEqualTo [] || _shell isEqualTo "" || _rounds < 1) exitWith { false };
 
 private _gap = if (_window > 0) then { _window / _rounds } else { BARRAGE_ROUND_GAP };
 
+// SAID ON THE SERVER, so the enemy's counter-battery radar can report virtual
+// fire like any gun's (jmfsb_reaction_fnc_cbVirtual; user, 2026-10-25: "all
+// enemy shells"). Every caller of this is enemy fire on the players. Hooks
+// from FUNC(onBarrage), not a CBA event any client could raise (review R1).
+{
+    [_pos, _rounds, _shell] call _x;
+} forEach (localNamespace getVariable [QGVAR(barrageHooks), []]);
+
 diag_log text format ["[JMSB] Barrage: %1x %2 -> grid %3 over %4s",
     round _rounds, _shell, mapGridPosition _pos, round (_gap * _rounds)];
 

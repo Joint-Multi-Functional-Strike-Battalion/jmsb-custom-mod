@@ -19,6 +19,13 @@ GVAR(zones) = [];
 // When each zone last called artillery, keyed by its index in GVAR(zones).
 GVAR(artyLast) = createHashMap;
 
+// FPV WRECKS GO AS SOON AS THEY BLOW, on every machine - see FUNC(fpvWatch).
+GVAR(fpvWatched) = [];
+[QGVAR(UAV_06_IED_I)] call FUNC(fpvWatch);
+[{missionNamespace getVariable ["ddtReady", false]}, {
+    {[_x] call FUNC(fpvWatch)} forEach (missionNamespace getVariable ["ddtClassesFPV", []]);
+}, [], UAS_DDT_WAIT_S] call CBA_fnc_waitUntilAndExecute;
+
 #include "initSettings.inc.sqf"
 
 ADDON = true;

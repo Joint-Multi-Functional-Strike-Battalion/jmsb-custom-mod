@@ -112,13 +112,16 @@ private _fnc_arrow = {
     if (_leg isEqualTo "in") then {
         {
             private _next = _list param [_forEachIndex + 1, _pt];
-            private _dir = [0, _x getDir _next] select (_next isNotEqualTo []);
+            // if/then, not select: both array elements are evaluated, and
+            // getDir on an empty point errors every frame.
+            private _dir = if (_next isNotEqualTo []) then {_x getDir _next} else {0};
             [_x, _dir, [_label, format ["%1 %2", _label, _forEachIndex + 1]] select (_many > 1)] call _fnc_arrow;
             if (_next isNotEqualTo []) then {_map drawLine [_x, _next, _accent]};
         } forEach _list;
     } else {
         private _p = _list select 0;
-        [_p, [0, _pt getDir _p] select (_pt isNotEqualTo []), _label] call _fnc_arrow;
+        private _dir = if (_pt isNotEqualTo []) then {_pt getDir _p} else {0};
+        [_p, _dir, _label] call _fnc_arrow;
         if (_pt isNotEqualTo []) then {_map drawLine [_pt, _p, _accent]};
     };
 } forEach (uiNamespace getVariable [QGVAR(supportPointDecls), []]);

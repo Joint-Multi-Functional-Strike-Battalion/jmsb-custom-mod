@@ -36,3 +36,6 @@ private _emcon = (GVAR(rosterIndex) getOrDefault [getPlayerUID player, [objNull,
 // radio silence: one of the cut-offs, applied with the others (fnc_applyBlock)
 GVAR(blocked) = _emcon >= EMCON_SILENT;
 [] call FUNC(applyBlock);
+
+// the battery warnings, once each on the way down
+[] call FUNC(batteryTick);

@@ -13,6 +13,11 @@
  * HE CANNOT BE HURT ON THE WAY DOWN. An AI in a chute cannot dodge anything
  * and a bad landing is a dead QRF; damage comes back on the ground.
  *
+ * Runs where the jumper lives. A PARADROP's jumper may be a player or his AI,
+ * so FUNC(transportStep) sends it there by remoteExec, and only the server's
+ * word is taken (review S7: it was a CBA event any client could raise to
+ * throw anyone out of anything).
+ *
  * Arguments:
  * 0: The jumper <OBJECT>
  * 1: The aircraft <OBJECT>
@@ -21,7 +26,7 @@
  * None
  *
  * Example:
- * [_unit, _veh] call jmfsb_support_air_fnc_jump
+ * [_unit, _veh] remoteExecCall ["jmfsb_support_air_fnc_jump", _unit]
  *
  * Public: No
  */
@@ -36,7 +41,10 @@ params [
     ["_veh", objNull, [objNull]]
 ];
 
-if (!alive _unit || {isNull _veh}) exitWith {};
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("jump: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
+if (!alive _unit || {isNull _veh} || {!local _unit}) exitWith {};
 // Asked twice, or already out: one jump only.
 if (vehicle _unit isNotEqualTo _veh) exitWith {};
 

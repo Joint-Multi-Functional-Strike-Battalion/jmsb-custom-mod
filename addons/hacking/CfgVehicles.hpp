@@ -209,7 +209,7 @@ class CfgVehicles {
                 "Package - a class under Jmfsb_IntelPackages in the mission config",
                 "Terminal Class - what to build if this is synchronised to nothing",
                 "",
-                "How big a share one hack yields is a CBA setting - 1st Joint Multi-Functional Strike Battalion, Hacking.",
+                "How big a share one hack yields is a CBA setting - JMSB - EW, Drones & Intel, Hacking.",
                 "The package's own contents are mission config, not module attributes: see the wiki.",
             };
         };

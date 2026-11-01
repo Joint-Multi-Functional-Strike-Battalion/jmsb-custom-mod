@@ -36,6 +36,9 @@
 #define MAN_TYPES ["CAManBase"]
 #define VEHICLE_TYPES ["LandVehicle", "Air", "Ship"]
 #define ANIMAL_TYPES ["Animal"]
+// The rangefinder family that pushes the sensor out to the Vector range while
+// looked through: the unit's [JMSB] Vector Designator inherits it (fnc_vectorView).
+#define VECTOR_BASE_CLASS "ACE_Vector"
 
 // --- Visibility --------------------------------------------------------------
 // LINE OF SIGHT ONLY (user, 2026-10-17). A box is drawn while the player can
@@ -121,10 +124,8 @@
 // ACE report colours, by index + 1 - unreported and OK green, amber, red, KIA
 // grey - the squad page's HEALTH_ colours, KIA lifted to grey to read at night.
 #define ACE_COLOURS ["#338c40", "#338c40", "#d9ad26", "#d9331a", "#8c8c8c"]
-// How often this player's frequency is looked at (it is sent only on change),
-// and how it is written.
+// How often this player's frequency is looked at (it is sent only on change).
 #define FREQ_TICK 5
-#define FREQ_DECIMALS 3
 
 // --- The compass (FUNC(drawCompass), user 2026-10-19) -------------------------
 // A DUI-style line compass across the top centre while AiTR is up. Laid out on

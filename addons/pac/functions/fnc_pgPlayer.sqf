@@ -252,7 +252,13 @@ switch (_sec) do {
                 if (isNull _u) exitWith {};
                 [format ["Kick %1 from the server?", name _u], {
                     params ["_u"];
-                    serverCommand format ["#kick %1", name _u];
+                    // By player id, not name (review L1): a name can be shared
+                    // or carry spaces. serverCommand works only for the logged-in
+                    // server admin, and only a kick that went out is logged.
+                    if !(serverCommandAvailable "#kick") exitWith {["Log in as the server's admin (#login) to kick.", true] call FUNC(uiHint)};
+                    private _id = getPlayerID _u;
+                    if (_id isEqualTo "") exitWith {["That player has left.", true] call FUNC(uiHint)};
+                    if !(serverCommand format ["#kick %1", _id]) exitWith {["The server did not take the kick.", true] call FUNC(uiHint)};
                     [player, "kick", [_u] call FUNC(uid), format ["kicked %1", name _u]] remoteExec [QFUNC(adminLogAdd), 2];
                 }, _u] call FUNC(uiConfirm);
             }, true];
@@ -262,7 +268,12 @@ switch (_sec) do {
                 if (isNull _u) exitWith {};
                 [format ["BAN %1 from the server? This is not a kick.", name _u], {
                     params ["_u"];
-                    serverCommand format ["#ban %1", name _u];
+                    // As the kick (review L1): by player id, logged-in admin
+                    // only, logged only when the server took it.
+                    if !(serverCommandAvailable "#kick") exitWith {["Log in as the server's admin (#login) to ban.", true] call FUNC(uiHint)};
+                    private _id = getPlayerID _u;
+                    if (_id isEqualTo "") exitWith {["That player has left.", true] call FUNC(uiHint)};
+                    if !(serverCommand format ["#exec ban %1", _id]) exitWith {["The server did not take the ban.", true] call FUNC(uiHint)};
                     [player, "ban", [_u] call FUNC(uid), format ["banned %1", name _u]] remoteExec [QFUNC(adminLogAdd), 2];
                 }, _u] call FUNC(uiConfirm);
             }, true];

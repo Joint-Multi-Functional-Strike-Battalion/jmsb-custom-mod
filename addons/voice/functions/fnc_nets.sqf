@@ -5,11 +5,8 @@
  * radio nets his RF fill holds, from the server's roster), every CALL he is
  * live or ringing in, VEH while he is crew, DIRECT. voiceChannel is the
  * adapter's channel for the net (VON: 3 Group, 4 Vehicle, 5 Direct, 6-15
- * custom), -1 when it has none (yet).
- *
- * Under TFAR / ACRE: the nets that radio's sets carry now (the adapter's
- * "nets", voiceChannel -1), for the local player only - another unit's
- * radios are his own client's business, so he answers [].
+ * custom), -1 when it has none (yet). None while no game-voice system runs
+ * (system "none").
  *
  * Arguments:
  * 0: Unit <OBJECT>
@@ -25,11 +22,7 @@
 
 params [["_unit", objNull, [objNull]]];
 
-if (isNull _unit) exitWith {[]};
-if (!GVAR(active)) exitWith {
-    if !(_unit in [player, call CBA_fnc_currentUnit]) exitWith {[]};
-    +GVAR(myNets)
-};
+if (isNull _unit || !GVAR(active)) exitWith {[]};
 private _fill = (GVAR(rosterIndex) getOrDefault [getPlayerUID _unit, [objNull, "", [], 0]]) select 2;
 
 private _out = [];

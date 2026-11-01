@@ -51,6 +51,12 @@
 #define UAS_IED_TICK        0.5
 #define UAS_IED_ARM_DELAY   12
 
+// How long an FPV's wreck stays after it blows - see FUNC(fpvWreck). Long
+// enough for the other Killed handlers to read where it was.
+#define UAS_FPV_WRECK_S     0.2
+// How long FUNC(fpvWatch)'s wait for Drongo's Drone Tweaks sits before giving up.
+#define UAS_DDT_WAIT_S      600
+
 // HOW CLOSE A PLAYER HAS TO BE FOR A PATROL TO EXIST AT ALL.
 //
 // A drone orbiting a base nobody is near is a drone nobody will ever see, and
@@ -78,6 +84,17 @@
 // A patrol wanders this far around its orbit centre, so it is also the smallest
 // zone worth drawing - a module never resized is one orbit.
 #define UAS_ORBIT_RADIUS    800
+// A rotor UAV (anything not a Plane) patrols a ring of MOVE waypoints instead
+// of a LOITER, which only a fixed wing flies cleanly (user, 2026-10-24: the
+// patrol drones "were wobbling in place in the air"): this many points, on
+// this fraction of the zone's radius but never tighter than the minimum,
+// reached within the completion radius, at a rotor's height.
+#define UAS_ROTOR_RING_POINTS 6
+#define UAS_ROTOR_RING_FRAC   0.7
+#define UAS_ROTOR_RING_MIN    200
+#define UAS_ROTOR_WP_RADIUS   60
+#define UAS_ROTOR_ALT_MIN     90
+#define UAS_ROTOR_ALT_MAX     160
 
 // --- the swarm module -------------------------------------------------------
 // Two is the smallest thing worth calling a swarm; twelve is where a dozen

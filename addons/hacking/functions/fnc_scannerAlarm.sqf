@@ -31,7 +31,7 @@ GVAR(alarmPressAt) = time;
 [{
     params ["_stamp"];
     if (GVAR(alarmPressAt) != _stamp || GVAR(alarmPending) <= 0) exitWith {};
-    [QGVAR(alarmAdd), [GVAR(alarmPending), name player]] call CBA_fnc_serverEvent;
+    [GVAR(alarmPending)] remoteExecCall [QFUNC(srvAlarmAdd), SERVER_OWNER];
     ["Alarm", format ["Alarm armed: %1 min, all scanners.", GVAR(alarmPending) / 60],
         [0.914, 0.651, 0.235, 1]] call EFUNC(notify,notify);
     GVAR(alarmPending) = 0;

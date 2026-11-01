@@ -4,10 +4,11 @@
  * Stops the running tool. The map stops answering to it; everything it drew
  * stays where it is until CLEAR.
  *
- * Two things in flight are settled rather than left hanging: a ruler waiting
- * for its second point is dropped, and a protractor arm still following the
- * cursor is locked where it last pointed (or dropped with no cursor to point
- * at), so what is left on the map is a reading rather than a half-gesture.
+ * Three things in flight are settled rather than left hanging: a ruler or an
+ * LOS waiting for its second point is dropped, and a protractor arm still
+ * following the cursor is locked where it last pointed (or dropped with no
+ * cursor to point at), so what is left on the map is a reading rather than a
+ * half-gesture.
  * A viewshed still filling carries on - it was asked for and is coming.
  *
  * Arguments:
@@ -24,6 +25,7 @@
 
 GVAR(tool) = "";
 GVAR(anchor) = [];
+GVAR(losFrom) = [];
 uiNamespace setVariable [QGVAR(pressMap), controlNull];
 
 GVAR(protractor) params [["_centre", []], ["_arm", -1]];

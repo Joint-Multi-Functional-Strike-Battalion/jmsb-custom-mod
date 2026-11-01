@@ -27,7 +27,12 @@
 
 // The band is a little shorter than a row - 7px/12px padding on 9.5px type in
 // the handoff against 9px/14px on 13px for a row.
-#define GROUP_H_K 0.85
+// A SECTION OPENS WITH A SOLID BAND (user, 2026-10-24: "each section needs to
+// be more distinctive"): ink fill, ground text, the accent on its left edge,
+// taller than the rule it replaced, with air above it.
+#define GROUP_H_K 1.1
+#define GROUP_GAP_K 0.5
+#define GROUP_EDGE_PX 4
 #define GROUP_LABEL_W 0.3
 
 params [
@@ -43,16 +48,20 @@ if (isNull _parent) exitWith {_y};
 private _h = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * SUP_UNIT_H * GROUP_H_K;
 private _pad = PAD * SUP_UNIT_W;
 
-private _surface = ["surface"] call EFUNC(tacpad,theme);
 private _ink = ["ink"] call EFUNC(tacpad,theme);
-private _muted = ["muted"] call EFUNC(tacpad,theme);
-private _line = ["line"] call EFUNC(tacpad,theme);
 
-[_parent, [0, _y, _w, _h], _surface] call EFUNC(tacpad,drawFill);
-[_parent, [0, _y, _w, RULE_THICK * pixelH], _line] call EFUNC(tacpad,drawFill);
-[_parent, [0, _y + _h - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
+private _ground = +(["ground"] call EFUNC(tacpad,theme));
+_ground set [3, 1];
+private _accent = ["accent"] call EFUNC(tacpad,theme);
+private _guideInk = +_ground;
+_guideInk set [3, 0.75];
 
-[_parent, [_pad, _y, _w * GROUP_LABEL_W, _h], _label, _ink, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
-[_parent, [_w * GROUP_LABEL_W, _y, _w * (1 - GROUP_LABEL_W) - _pad, _h], _guide, _muted, TEXT_LABEL, false, "right"] call EFUNC(tacpad,drawText);
+// Air above the band, then the band itself: ink, with the accent on its edge.
+_y = _y + _h * GROUP_GAP_K;
+[_parent, [0, _y, _w, _h], _ink] call EFUNC(tacpad,drawFill);
+[_parent, [0, _y, GROUP_EDGE_PX * pixelW, _h], _accent] call EFUNC(tacpad,drawFill);
+
+[_parent, [_pad * 2, _y, _w * GROUP_LABEL_W, _h], _label, _ground, TEXT_BODY * SUP_TEXT_K, true, "left", true] call EFUNC(tacpad,drawText);
+[_parent, [_w * GROUP_LABEL_W, _y, _w * (1 - GROUP_LABEL_W) - _pad, _h], _guide, _guideInk, TEXT_LABEL * SUP_TEXT_K, false, "right"] call EFUNC(tacpad,drawText);
 
 _y + _h

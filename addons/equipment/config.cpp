@@ -23,6 +23,7 @@ class CfgPatches {
             "cba_main",
             "cba_xeh",
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_medbags",
             "jmfsb_notify",
             "ace_vector",

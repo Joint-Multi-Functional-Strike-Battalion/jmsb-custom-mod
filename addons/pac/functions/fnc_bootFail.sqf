@@ -72,15 +72,15 @@ private _unit = GVAR(settings) getOrDefault ["unitId", "?"];
     "  roles, ranks. None of it was read, so nothing is set up.",
     "",
     "  Check, in this order:",
-    "    1. Addon Options > 1st Joint Multi-Functional Strike Battalion PAC > Service > Database",
+    "    1. Addon Options > JMSB - Mission & Admin > TAC//PAC Service > Database",
     "       (or GHOSTD_PACDB_URL / pacdb.json on the server)",
     "    2. That this server's public IP is on the database's access list.",
-    "       Turn on 'Log this server's public IP at boot' to be told it.",
+    "       The host's panel shows it, or ask the host.",
     "    3. That ghostd_pacdb_x64.dll / .so is loaded - the boot log above",
     "       says so if the address could not be handed to the extension.",
     "",
     "  To run anyway on this server's own config, turn OFF:",
-    "    Addon Options > 1st Joint Multi-Functional Strike Battalion PAC > Service > Database required",
+    "    Addon Options > JMSB - Mission & Admin > TAC//PAC Service > Database required",
     "==============================================================",
     ""
 ];

@@ -34,6 +34,9 @@ Author:
 params [["_caller", objNull, [objNull]]];
 
 if (!isServer) exitWith {0};
+// An admin's button: a heavy walk of the config and a database write, so only
+// an admin by the server's records may start it (review S5).
+if !([] call EFUNC(common,senderIsAdmin)) exitWith {0};
 
 private _fnc_tell = {
     params ["_msg", "_colour"];

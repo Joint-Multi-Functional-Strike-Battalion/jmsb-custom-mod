@@ -24,7 +24,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_filter", "", [""]], ["_limit", 400, [0]]];
 
 if (!isServer) exitWith {0};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {0};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {0};
 
 _filter = toLower trim _filter;
 private _rows = [];

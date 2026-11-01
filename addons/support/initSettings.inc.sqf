@@ -4,7 +4,7 @@
 [
     QGVAR(tag), "EDITBOX",
     ["Support tasking tag", "Audience tag that may use TAC//SUPPORT - JFO, HQ, AVIATION, a squad, a callsign. JFO matches the mission's isJFO customVariable. Empty: everyone."],
-    ["1st Joint Multi-Functional Strike Battalion", "Tacpad"],
+    ["JMSB - Tablet & Map", "Tacpad"],
     "",
     true
 ] call CBA_fnc_addSetting;

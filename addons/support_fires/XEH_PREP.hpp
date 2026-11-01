@@ -32,6 +32,11 @@ PREP(inRange);
 PREP(partners);
 PREP(fmtDist);
 
+// The one order check, run on the requester's machine and again on the
+// server, and the server's own reading of who sent an order (review S6).
+PREP(check);
+PREP(requester);
+
 // The server side of an order, and what the side sees of it.
 PREP(request);
 PREP(openMission);
@@ -39,7 +44,12 @@ PREP(abort);
 PREP(finish);
 PREP(mark);
 PREP(unmark);
+PREP(say);
 PREP(sayLater);
+// Server to clients by remoteExec, taken only from the server (review S7).
+PREP(sayLocal);
+PREP(markLocal);
+PREP(unmarkLocal);
 PREP(sortieDone);
 PREP(threat);
 PREP(detonate);

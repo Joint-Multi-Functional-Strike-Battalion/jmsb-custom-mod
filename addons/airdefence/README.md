@@ -6,6 +6,8 @@ Places air defence for every ALiVE commander on the map. TEMPORARY - it stands i
 
 **JMSB - AA Base** (`jmfsb_moduleAABase`) builds one AA base where the mission maker places it, inside the module's area - no Air Defence module, ALiVE commander or TAOR marker needed. Radar at the module, SAM launchers (Missile Classes, picked at random per launcher) on an outer ring, AA guns (Gun Classes) on an inner ring as point defence, and 0-2 guard groups standing off the hardware. The area's radius sets the spread. The base's side is the radar class's own config side, else the first missile class's, else the first gun class's - nothing is built when none resolves. Radar, launchers, guns and crews stay live and out of ALiVE; only the guards are ALiVE-profiled, once ALiVE is up (without ALiVE they stay live). Guard Classes blank draws from the hardware's own faction.
 
+`#jmfsbaa` (the batteries, MANPAD teams and their grids) is admins only and answered to the caller alone: it is `#jmfsb aa` on the admin debug surface (review R1: it was a CBA event any player could raise to print every battery's position in everyone's chat). Nothing starts on the adapter's ready CBA event any more: the module waits on `jmfsb_adapter_alive_fnc_whenReady`, which runs once.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

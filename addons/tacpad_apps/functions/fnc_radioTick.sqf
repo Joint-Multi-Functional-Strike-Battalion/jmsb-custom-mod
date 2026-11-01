@@ -41,19 +41,16 @@ if (isNull _body) exitWith {controlNull};
 
 _rect params ["_x", "_y", "_w", "_h"];
 private _pad = PAD * HOST_W;
-private _ink = ["ink"] call EFUNC(tacpad,theme);
-private _dim = ["dim"] call EFUNC(tacpad,theme);
 
-private _side = _h * TICK_BOX_K;
-private _boxW = _side * (pixelW / pixelH);
-private _box = [_x + _pad * 0.5, _y + (_h - _side) * 0.5, _boxW, _side];
-private _colour = [_ink, _dim] select _dimmed;
-if (_ticked) then {
-    [_body, _box, _colour] call EFUNC(tacpad,drawFill);
-} else {
-    [_body, _box, _colour, RULE_THIN] call EFUNC(tacpad,drawFrame);
+// THE ONE CHIP PRIMITIVE (notes, 2026-10-30): ticked is the ink filled,
+// open an outline, and dim when the tick is not this cell's to change.
+private _style = switch (true) do {
+    case (_dimmed): {CHIP_DIM};
+    case (_ticked): {CHIP_INK_FILL};
+    default {CHIP_OUTLINE};
 };
-[_body, [_x + _boxW + _pad * 1.5, _y, _w - _boxW - _pad * 2, _h], _label, _colour, TEXT_LABEL, _ticked] call EFUNC(tacpad,drawText);
+private _chipH = _h * CHIP_H_K;
+[_body, [_x + _pad * 0.5, _y + (_h - _chipH) * 0.5], _chipH, _label, _style, _w - _pad] call EFUNC(tacpad,drawChip);
 
 if (_dimmed || {_onPress isEqualTo {}}) exitWith {controlNull};
 

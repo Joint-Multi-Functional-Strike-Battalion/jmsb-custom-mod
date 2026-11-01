@@ -36,6 +36,6 @@ private _rect = [_corners, 0, _view] call FUNC(boxRect);
 if (_rect isEqualTo []) exitWith {[]};
 
 private _dist = _camPos distance (_vehicle modelToWorldVisual ORIGIN);
-private _alpha = linearConversion [GVAR(nearDistance), GVAR(range), _dist, 1, FAR_ALPHA_MIN, true];
+private _alpha = linearConversion [GVAR(nearDistance), _vehicle getVariable [QGVAR(far), GVAR(rangeVehicle)], _dist, 1, FAR_ALPHA_MIN, true];
 
 [_rect, (_vehicle getVariable [QGVAR(rgb), UNKNOWN_RGB]) + [_alpha], [_vehicle, _dist] call FUNC(labelText)]

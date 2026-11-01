@@ -10,8 +10,9 @@
  *   3. unless the task is "rtb": the core cooldown ledger, then the
  *      provider's own "available" code if it has one
  *   4. the provider's "task" code, [assetId, task, pos, params]
- *   5. accepted: a cooldown it returned is booked on the server, and
- *      QGVAR(tasked) is raised globally for bookkeeping listeners
+ *   5. accepted: a cooldown it returned is booked on the server
+ *      (FUNC(bookCooldown), by remoteExec), and
+ *      QGVAR(tasked) is raised on this machine only (review S7/P8)
  *
  * RUNS WHERE IT IS CALLED. Today's providers task from the requesting client
  * and hand their heavy work to the server themselves (the CAS drones fly on
@@ -83,9 +84,13 @@ _res params [["_ok", false, [false]], ["_why", "", [""]], ["_cooldown", 0, [0]]]
 
 if (_ok) then {
     if (_cooldown > 0 && !_isRtb) then {
-        [QGVAR(cooldown), [_assetId, CBA_missionTime + _cooldown]] call CBA_fnc_serverEvent;
+        // By remoteExec, so the server knows who books it (review S6).
+        [_assetId, _cooldown] remoteExecCall [QFUNC(bookCooldown), SERVER_OWNER];
     };
-    [QGVAR(tasked), [_assetId, _task, _pos, _kind, player]] call CBA_fnc_globalEvent;
+    // Local only (review S7/P8): nothing listens elsewhere, and a global
+    // event's requester is whatever the raiser says. A count that must be
+    // trusted belongs on the provider's server end, which knows the sender.
+    [QGVAR(tasked), [_assetId, _task, _pos, _kind, player]] call CBA_fnc_localEvent;
     INFO_3("request: '%1' accepted '%2' for %3",_kind,_task,_assetId);
 } else {
     INFO_3("request: '%1' refused %2 - %3",_kind,_assetId,_why);

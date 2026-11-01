@@ -5,19 +5,30 @@
  * an unread count is the reader's own business and telling twenty clients that
  * somebody opened a thread is twenty messages for no gain.
  *
- * Arguments (CBA event):
- * 0: Player <OBJECT>
+ * A client sends it by remoteExecCall to the server. The player named must be
+ * the sending machine's own (review S7), so nobody marks another man's
+ * traffic read.
+ *
+ * Arguments:
+ * 0: Player - the sender's own <OBJECT>
  * 1: Thread id <STRING>
  *
  * Return Value:
  * None
+ *
+ * Example:
+ * [player, "T0007"] remoteExecCall ["jmfsb_messaging_fnc_srvMarkRead", 2]
  *
  * Public: No
  */
 
 params [["_unit", objNull, [objNull]], ["_threadId", "", [""]]];
 
-if (!isServer || {isNull _unit} || {!isPlayer _unit}) exitWith {};
+if (!isServer) exitWith {};
+if !([_unit] call EFUNC(common,senderIs)) exitWith {
+    WARNING_3("srvMarkRead: refused - machine %1 tried to mark %2 read as %3",remoteExecutedOwner,_threadId,_unit);
+};
+if (isNull _unit || {!isPlayer _unit}) exitWith {};
 
 private _thread = GVAR(threads) getOrDefault [_threadId, createHashMap];
 if (_thread isEqualTo createHashMap) exitWith {};

@@ -28,5 +28,5 @@ if !([player] call FUNC(canManageNets)) exitWith {
     false
 };
 
-[QGVAR(srvNetMembers), [player, _id, _squads apply {toUpper trim _x}, _uids]] call CBA_fnc_serverEvent;
+[player, _id, _squads apply {toUpper trim _x}, _uids] remoteExecCall [QFUNC(srvNetMembers), SERVER_OWNER];
 true

@@ -85,6 +85,12 @@
 // Cuts kept on a track (newest), and how far a DF line is drawn.
 #define CUTS_KEPT           8
 #define DF_LINE_M           4000
+// A JAMMER SITE DOES NOT MOVE (user, 2026-10-25: static sites easier): its
+// cuts are kept by where they were taken, not when - one per this much ground,
+// this many - and all of them cross into a fix, however old. A squad that
+// moves while it listens places the site; the fix stays while the site stands.
+#define STATIC_CUT_SPACING_M 100
+#define STATIC_CUTS_KEPT    16
 // A detection range ceiling, so a 50 W set does not price pairs across the map.
 #define DETECT_MAX_M        12000
 // DF ON YOU is told to one man once per this many seconds.
@@ -256,11 +262,16 @@
 #define THREATS_KEPT        8
 #define THREAT_SHOW_S       180
 #define THREAT_COLOUR       [0.914, 0.651, 0.235, 1]
+// The server's machine id: jamSet / decoyPlace go to it by remoteExec (R1).
+#define SERVER_OWNER        2
 
 // --- Slice and loops ---------------------------------------------------------
 // Positions in the slice are rounded to this, so a man standing still does not
 // re-send his side's picture every tick.
 #define SLICE_GRID_M        10
+// The spectrum's noise floor goes out in steps of this many dB, so a man
+// walking near a jammer does not change his slice every tick (review P8).
+#define SLICE_NOISE_DB      2
 #define CLIENT_TICK_S       1
 #define APP_REFRESH_S       2
 

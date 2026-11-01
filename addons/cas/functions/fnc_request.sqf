@@ -37,23 +37,42 @@
  * which is what makes the module's airframe count mean anything and what makes
  * the air defence on the ridge worth putting there.
  *
+ * WHO ASKED IS THE SENDING MACHINE (review S6). FUNC(task) sends this by
+ * remoteExec; the caller is that machine's player, his side must be the
+ * module's and the support tasking gate must let him (FUNC(mayTask)), all
+ * before the delayed spawn below, where the sender is no longer known. The
+ * store must be one this airframe carries and the mode one FUNC(task) sends.
+ *
  * Arguments:
  * 0: The module logic <OBJECT>
  * 1: Target grid <ARRAY> - ATL
  * 2: Ingress position, [] for auto <ARRAY> - ATL
  * 3: Egress position, [] for auto <ARRAY> - ATL
- * 4: Who asked <OBJECT>
- * 5: Store to use, "" for the heaviest thing aboard <STRING> (optional, default "")
- * 6: "strike" or "loiter" <STRING> (optional, default "strike")
+ * 4: Store to use, "" for the heaviest thing aboard <STRING> (optional, default "")
+ * 5: "strike" or "loiter" <STRING> (optional, default "strike")
  *
  * Return Value: None
+ *
+ * Example:
+ * [_logic, _pos, [], [], "", "strike"] remoteExecCall ["jmfsb_cas_fnc_request", 2]
  *
  * Public: No
  */
 
-params [["_logic", objNull, [objNull]], ["_pos", [], [[]]], ["_ingress", [], [[]]], ["_egress", [], [[]]], ["_caller", objNull, [objNull]], ["_mag", "", [""]], ["_mode", "strike", [""]]];
+params [["_logic", objNull, [objNull]], ["_pos", [], [[]]], ["_ingress", [], [[]]], ["_egress", [], [[]]], ["_mag", "", [""]], ["_mode", MODE_STRIKE, [""]]];
 
 if (!isServer || {isNull _logic} || {_pos isEqualTo []}) exitWith {};
+
+([_logic] call FUNC(mayTask)) params ["_may", "_caller", "_whyNot"];
+if (!_may) exitWith {
+    WARNING_2("request: refused from machine %1 - %2",remoteExecutedOwner,_whyNot);
+};
+if !(_mode in [MODE_STRIKE, MODE_LOITER]) exitWith {
+    WARNING_1("request: refused - unknown mode '%1'",_mode);
+};
+if (_mag isNotEqualTo "" && {([_logic getVariable [QGVAR(cls), ""]] call FUNC(stores)) findIf {(_x param [0, ""]) isEqualTo _mag} < 0}) exitWith {
+    WARNING_1("request: refused - '%1' is not a store this airframe carries",_mag);
+};
 
 private _callsign = _logic getVariable [QGVAR(callsign), "CAS"];
 private _delay = _logic getVariable [QGVAR(spawnDelay), 30];
@@ -80,7 +99,8 @@ _logic setVariable [QGVAR(plan), _plan, true];
 
 private _fromText = ["auto", mapGridPosition _ingress] select (_ingress isNotEqualTo []);
 INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_fromText);
-[QGVAR(inbound), [_logic, _pos, _delay, _mode]] call CBA_fnc_globalEvent;
+// To the side by remoteExec, taken only from the server (review S7).
+[_logic, _pos, _delay, _mode] remoteExecCall [QFUNC(inbound), _logic getVariable [QGVAR(side), west]];
 
 [{
     params ["_logic", "_pos", "_ingress", "_egress", "_caller", "_mag", "_mode"];
@@ -173,8 +193,16 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
     _grp createVehicleCrew _veh;
 
     // A UAV that comes out crewless flies nowhere - the same fault the patrol
-    // drones had, and the same fix.
-    if ((crew _veh) isEqualTo []) then {createVehicleCrew _veh};
+    // drones had, and the same fix. The unary form makes its own group, so the
+    // orders below follow the crew there and the empty one is dropped.
+    if ((crew _veh) isEqualTo []) then {
+        createVehicleCrew _veh;
+        private _crewGrp = group ((crew _veh) param [0, objNull]);
+        if (!isNull _crewGrp && _crewGrp isNotEqualTo _grp) then {
+            deleteGroup _grp;
+            _grp = _crewGrp;
+        };
+    };
 
     _logic setVariable [QGVAR(vehicle), _veh, true];
     // THE WORD THE SUPPORT PAGE DRAWS ON THE ROW. A loiter says so from the
@@ -307,7 +335,8 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
             _veh setVariable [QGVAR(onStation), true, true];
             if (!isNull _logic) then {_logic setVariable [QGVAR(status), "station", true]};
             INFO_2("%1 on station over %2 - the gunner is the drone controller's",_callsign,mapGridPosition _pos);
-            [QGVAR(onStation), [_logic, _veh, _veh getVariable [QGVAR(caller), objNull]]] call CBA_fnc_globalEvent;
+            // To the side by remoteExec, taken only from the server (review S7).
+            [_logic, _veh, _veh getVariable [QGVAR(caller), objNull]] remoteExecCall [QFUNC(onStation), _side];
         };
 
         // Outbound and clear: the run is over.
@@ -324,7 +353,7 @@ INFO_4("%1 tasked to %2 (%3), ingress %4",_callsign,mapGridPosition _pos,_mode,_
         ([_pos, _radius, _side] call FUNC(acquire)) params ["_aim", "_by", "_track"];
         _veh setVariable [QGVAR(released), true];
         INFO_3("%1 releasing on %2 (%3)",_callsign,mapGridPosition _aim,_by);
-        [QGVAR(release), [_logic, _aim, _by]] call CBA_fnc_globalEvent;
+        [_logic, _aim, _by] remoteExecCall [QFUNC(release), _side];
         [_veh, _aim, _track] call FUNC(fireAt);
     }, CAS_ACQUIRE_STEP, [_veh, _logic, _pos, _radius, _side, _end, _egressHdg, CBA_missionTime + ([CAS_RUN_TIMEOUT, CAS_LOITER_TIMEOUT] select (_mode isEqualTo "loiter")), _callsign, _mode]] call CBA_fnc_addPerFrameHandler;
 

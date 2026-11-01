@@ -108,7 +108,7 @@ Place from the 3DEN entity list under the listed category.
 
 - **Class** `jmfsb_moduleIntelPackage`
 - **Category** jmfsb_modules
-- Puts an intel package on a device. Hacking that device hands over a share of it.<br>Package - a class under Jmfsb_IntelPackages in the mission config Terminal Class - what to build if this is synchronised to nothing<br>How big a share one hack yields is a CBA setting - 1st Joint Multi-Functional Strike Battalion, Hacking. The package's own contents are mission config, not module attributes: see the wiki.
+- Puts an intel package on a device. Hacking that device hands over a share of it.<br>Package - a class under Jmfsb_IntelPackages in the mission config Terminal Class - what to build if this is synchronised to nothing<br>How big a share one hack yields is a CBA setting - JMSB - EW, Drones & Intel, Hacking. The package's own contents are mission config, not module attributes: see the wiki.
 - **Attributes** `package`, `terminal`
 
 ## Jamming (`jamming`)
@@ -177,8 +177,8 @@ Place from the 3DEN entity list under the listed category.
 
 - **Class** `jmfsb_moduleReaction`
 - **Category** jmfsb_modules
-- Placing this module turns on enemy reaction. Without it, the system is off.<br>Hack Fail Chance (%) - Chance an intrusion fails outright Detection Chance (%) - Chance a failure, a drone sighting or a transmission is noticed Barrage Rounds Min - Fewest shells a major response puts down Barrage Rounds Max - Most shells Radio Watts Watched - Transmit power at or above which a radio can be direction-found
-- **Attributes** `detectChance`, `failChance`, `roundsMax`, `roundsMin`, `watts`
+- Placing this module turns on enemy reaction. Without it, the system is off.<br>Hack Fail Chance (%) - Chance an intrusion fails outright Detection Chance (%) - Chance a failure, a drone sighting or a transmission is noticed Barrage Rounds Min - Fewest shells a major response puts down Barrage Rounds Max - Most shells Radio Watts Watched - Transmit power at or above which a radio can be direction-found<br>Counter-battery - player-crewed guns only; the players' virtual artillery (TAC , , ,
+- **Attributes** `cbChance`, `cbCooldown`, `cbDelayMax`, `cbDelayMin`, `cbRadar`, `cbRadarCooldown`, `cbRadarError`, `cbRounds`, `cbShots`, `cbSpread`, `cbWarn`, `cbWindow`, `detectChance`, `failChance`, `roundsMax`, `roundsMin`, `watts`
 
 ## Repair (`repair`)
 

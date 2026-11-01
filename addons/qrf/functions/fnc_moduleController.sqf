@@ -41,8 +41,12 @@ GVAR(cooldown) = _logic getVariable ["cooldown", 1800];
 // system uses is read from it. Both paths are covered: a module is normally
 // placed long before ALiVE finishes initialising, but one armed afterwards
 // would otherwise wait forever on an event that has already fired.
-if (EGVAR(adapter_alive,ready)) exitWith {
+// Without ALiVE the adapter PBO is skipped and its flag never exists; the
+// jmfsb_qrf markers still work, so start on those alone.
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    WARNING("ALiVE is not loaded - QRF watches jmfsb_qrf markers only");
     [] call FUNC(start);
 };
-
-[QEGVAR(adapter_alive,ready), { [] call FUNC(start) }] call CBA_fnc_addEventHandler;
+// Now when the adapter is ready already, and once only - not the ready CBA
+// event any client could raise again (review R1).
+[{ [] call FUNC(start) }] call EFUNC(adapter_alive,whenReady);

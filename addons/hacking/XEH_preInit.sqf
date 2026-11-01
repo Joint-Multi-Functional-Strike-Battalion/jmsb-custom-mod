@@ -24,16 +24,20 @@ GVAR(timerState) = SCN_T_IDLE;
 GVAR(timerHeld) = 0;
 GVAR(timerFrom) = 0;
 
-// Scanner alarms. The armed list is server-owned and publicVariable'd - an
-// alarm has to outlive its setter, and every screen has to show the same
-// countdown. Everything else is local: the total being dialled in, and how long
-// this handset keeps ringing.
+// Scanner alarms. The armed list is the server's, kept in localNamespace
+// (review S7), with a public copy here for the screens - an alarm has to
+// outlive its setter, and every screen has to show the same countdown.
+// Everything else is local: the total being dialled in, and how long this
+// handset keeps ringing.
 GVAR(alarms) = [];
 GVAR(alarmPending) = 0;
 GVAR(alarmPressAt) = -1;
 GVAR(alarmRingUntil) = -1;
 GVAR(alarmBeepPFH) = -1;
-if (isServer) then { GVAR(alarmNextId) = 0 };
+if (isServer) then {
+    localNamespace setVariable [QGVAR(alarms), []];
+    localNamespace setVariable [QGVAR(alarmNextId), 0];
+};
 
 // When the handset layer was last raised, so the tick knows when to renew.
 GVAR(scannerRaisedAt) = -1e9;

@@ -38,5 +38,7 @@ if (count (missionNamespace getVariable [QGVAR(bases), []]) >= _max) exitWith {
     if (_name isEqualTo "") exitWith {
         ["Patrol Base", "Cancelled - no name given.", [1, 0.8, 0.3, 1]] call EFUNC(notify,notify);
     };
-    [getPosATL player, getDir player, _name, side group player, player] remoteExec [QFUNC(serverBuild), 2];
+    // Only the name travels: the server takes the builder, his position and
+    // his side from the sending machine (review S7, FUNC(serverBuild)).
+    [_name] remoteExecCall [QFUNC(serverBuild), SERVER_OWNER];
 }] call FUNC(promptName);

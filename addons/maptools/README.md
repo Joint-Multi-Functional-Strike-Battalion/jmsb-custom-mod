@@ -15,6 +15,9 @@ is the tools themselves, and nothing here depends on another mod.
 | **GRID** | the ten-digit grid under the cursor, and a line under it with your own GPS grid (`jmfsb_ew_fnc_gpsState`): `GPS <grid>`, `SUSPECT` after it when an anti-spoof set flags it, `GPS NO FIX` when denied; spoofed, the false grid. |
 | **VIEWSHED** | press to shade what can be seen from that point: accent where a standing man can be seen from eye height, ink where he cannot. |
 | **ROUTE** | press waypoints in order: every leg shows its own distance and bearing, the last waypoint the total, and the leg the next press would add follows the cursor. Starting ROUTE starts a new route. |
+| **RINGS** | press to draw range rings about that point: `jmfsb_maptools_ringCount` rings `jmfsb_maptools_ringStep` metres apart, each read at its north. |
+| **LOS** | press where you look from, then where you look to: the line in the accent when a standing man there can be seen from eye height, in ink with a dot where the ground or a building stops it when not (`fnc_losCheck`). |
+| **GO TO GRID** | type a grid in the box and press GO: the map goes there at the zoom it is at (`fnc_goTo`). |
 | **CLEAR** | wipes everything the tools drew, and this player's own local marks. |
 
 Bearings read in degrees, NATO mils (6400) or both, per player
@@ -118,7 +121,7 @@ reads as a pan and the two-press ruler is the way to measure.
 
 ## Ships
 
-22 functions.
+25 functions.
 
 ## CBA settings
 
@@ -128,10 +131,12 @@ reads as a pan and the two-press ruler is the way to measure.
 | `jmfsb_maptools_markShare` | CHECKBOX | Share marks with group |
 | `jmfsb_maptools_viewshedRadius` | SLIDER | Viewshed radius |
 | `jmfsb_maptools_viewshedCell` | SLIDER | Viewshed resolution |
+| `jmfsb_maptools_ringStep` | SLIDER | Range ring spacing |
+| `jmfsb_maptools_ringCount` | SLIDER | Range rings |
 
 ## Functions
 
-<details><summary>22</summary>
+<details><summary>25</summary>
 
 - `jmfsb_maptools_fnc_attach`
 - `jmfsb_maptools_fnc_bearingText`
@@ -142,10 +147,13 @@ reads as a pan and the two-press ruler is the way to measure.
 - `jmfsb_maptools_fnc_drawLeg`
 - `jmfsb_maptools_fnc_drawProtractor`
 - `jmfsb_maptools_fnc_drawViewshed`
+- `jmfsb_maptools_fnc_goTo`
 - `jmfsb_maptools_fnc_gridCalibrate`
 - `jmfsb_maptools_fnc_gridText`
+- `jmfsb_maptools_fnc_gridToPos`
 - `jmfsb_maptools_fnc_hasInput`
 - `jmfsb_maptools_fnc_label`
+- `jmfsb_maptools_fnc_losCheck`
 - `jmfsb_maptools_fnc_mark`
 - `jmfsb_maptools_fnc_mouseDown`
 - `jmfsb_maptools_fnc_mouseMove`

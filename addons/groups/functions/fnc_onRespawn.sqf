@@ -4,13 +4,23 @@ params [
     ["_corpse",objNull,[objNull]]
 ];
 
-[_this select 0, _unit] call ace_medical_treatment_fnc_fullHeal;
-[_this select 0, _unit] call ACM_core_fnc_resetVariables;
-[_this select 0, _unit] call ACM_airway_fnc_resetVariables;
-[_this select 0, _unit] call ACM_breathing_fnc_resetVariables;
-[_this select 0, _unit] call ACM_circulation_fnc_resetVariables;
-[_this select 0, _unit] call ACM_damage_fnc_resetVariables;
-[_this select 0, _unit] call ACM_disability_fnc_resetVariables;
+// ACE medical and ACM are not required by this addon, so each reset runs
+// only when its mod is loaded - a missing one threw and stopped the re-slot.
+if (!isNil "ace_medical_treatment_fnc_fullHeal") then {
+    [_unit, _unit] call ace_medical_treatment_fnc_fullHeal;
+};
+{
+    if (!isNil _x) then {
+        [_unit] call (missionNamespace getVariable _x);
+    };
+} forEach [
+    "ACM_core_fnc_resetVariables",
+    "ACM_airway_fnc_resetVariables",
+    "ACM_breathing_fnc_resetVariables",
+    "ACM_circulation_fnc_resetVariables",
+    "ACM_damage_fnc_resetVariables",
+    "ACM_disability_fnc_resetVariables"
+];
 ["Respawn", "You have been REZED, praise ArmA.", NOTE_GOOD] call JMFSBFUNC(notify,notify);
 
 private _oldPath = [];

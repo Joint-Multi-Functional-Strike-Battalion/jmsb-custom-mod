@@ -5,8 +5,7 @@
  * under game voice the vanilla microphone is hidden and our chip says what the
  * player is talking on - "TX GHOST 1", "TX GLOBAL" - kept current every
  * VOICECHAT_TICK_S while the popup is up (he can change channel mid-key). Under
- * TFAR / ACRE voice has stood down and the popup is left as the game made it,
- * our chip hidden.
+ * any other system the popup is left as the game made it, our chip hidden.
  *
  * Arguments:
  * 0: The popup <DISPLAY>
@@ -25,7 +24,7 @@ params [["_display", displayNull, [displayNull]]];
 if (isNull _display) exitWith {};
 
 private _chip = _display displayCtrl IDC_VOICECHAT_TX;
-if (!EGVAR(voice,active)) exitWith {_chip ctrlShow false};
+if (VON_NOT_THE_SYSTEM) exitWith {_chip ctrlShow false};
 
 {
     if (_x isNotEqualTo _chip) then {_x ctrlShow false};

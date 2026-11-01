@@ -6,10 +6,10 @@
  * or hunted as an outline when the mission has one. It stays until the
  * mission ends (FUNC(finish) calls FUNC(unmark)).
  *
- * Raised on the server as a JIP global event under one id per asset, so a
- * player joining mid-mission sees it, and a later mission of the same asset
- * replaces it. Each client draws it locally only when he is on the asset's
- * side (XEH_postInit).
+ * Sent from the server by remoteExec, JIP included, under one id per asset,
+ * so a player joining mid-mission sees it, and a later mission of the same
+ * asset replaces it. Each client draws it locally only when he is on the
+ * asset's side (FUNC(markLocal), which takes only the server's word).
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -30,4 +30,5 @@ params [["_logic", objNull, [objNull]], ["_pos", [], [[]]], ["_text", "", [""]],
 if (!isServer || {isNull _logic} || {_pos isEqualTo []}) exitWith {};
 
 private _id = _logic getVariable [QGVAR(id), -1];
-[QGVAR(mark), [_id, _logic getVariable [QGVAR(side), sideUnknown], _pos, _text, _radius], format ["%1_mark_%2", QUOTE(ADDON), _id]] call CBA_fnc_globalEventJIP;
+// By remoteExec, taken only from the server (review S7).
+[_id, _logic getVariable [QGVAR(side), sideUnknown], _pos, _text, _radius] remoteExecCall [QFUNC(markLocal), 0, format ["%1_mark_%2", QUOTE(ADDON), _id]];

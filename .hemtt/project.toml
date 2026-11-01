@@ -13,8 +13,19 @@ include = [
     "logo_256.paa",
     # TAC//PAC's database extension (DIVINER tools/pacdb, v0.5.0 - the database
     # name comes from the connection string). Server-side only; clients never load it.
-    "ghostd_pacdb_x64.dll",
+    # ONLY THE LINUX .so SHIPS (2026-10-31). The Windows .dll is unsigned, and two
+    # of seventy antivirus engines flag it (ClamAV Win.Malware.Lazy, Gridinsoft
+    # Trojan.Heur - heuristics on an unsigned NativeAOT build); every player would
+    # download it for nothing. A Windows server or a Windows host with
+    # sync = "service" copies it from the repo root into the mod folder
+    # (docs/SETUP.md). The .so is the live Linux server's and never reaches
+    # Windows antivirus.
     "ghostd_pacdb_x64.so",
+    # Voice over LiveKit (extensions/jmsb_voice, docs/DESIGN_VOICE_LIVEKIT.md).
+    # The .dll is the player's (audio, and tokens for a Windows server); the .so
+    # is the Linux server's, tokens only.
+    "jmsb_voice_x64.dll",
+    "jmsb_voice_x64.so",
     "2035_modern_equipment_replacment_helmet.png",
     "2023-11-18_12-57-37.png"
 ]

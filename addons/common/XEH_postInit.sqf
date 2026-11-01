@@ -34,59 +34,33 @@ if (isNil "bis_fnc_cp_main") then {
     ] call BIS_fnc_loadFunctions;
 };
 
+// THE ADMIN FLAG IS THE SERVER'S (review S1, 2026-10-31). Each client used to
+// set QGVAR(isAdmin) on itself after #login, and server checks trusted it, so
+// any client could make itself admin. Now the client only asks - at start,
+// after #login and #logout, on a change of unit - and the server sets the flag
+// from its own records (FUNC(adminClaim), FUNC(adminCheck)). The host is the
+// server's own machine, so it is an admin without logging in, as before.
+
+// The tick timings' minute (FUNC(perfAdd), FUNC(perfReport); review R9).
+[{[] call FUNC(perfReport)}, PERF_REPORT_S] call CBA_fnc_addPerFrameHandler;
+
 if (hasInterface) then {
-    // THE MACHINE RUNNING THE SERVER IS ALREADY THE ADMIN. There is nothing for
-    // a host or a single player to log in TO - `#login` waits on
-    // serverCommandAvailable "#kick", which never becomes true in single player,
-    // so on a dev box the flag was never set and every `#jmfsb` command was
-    // silently swallowed. That is not a subtle failure to debug: the surface is
-    // deliberately silent to non-admins, so it looks exactly like a broken mod.
-    //
-    // In a real multiplayer session only the host satisfies this, and a
-    // dedicated server has no player to hold the flag at all - so it costs
-    // nothing there and makes the tools usable where they are actually used.
-    if (isServer) then {
-        [{!isNull player}, {
-            player setVariable [QGVAR(isAdmin), true, true];
-        }, [], 30] call CBA_fnc_waitUntilAndExecute;
-    };
+    private _fnc_claim = {[] remoteExecCall [QFUNC(adminClaim), SERVER_OWNER]};
+    [{!isNull player}, _fnc_claim] call CBA_fnc_waitUntilAndExecute;
 
     ["login", {
         [{IS_ADMIN}, {
-            player setVariable [QGVAR(isAdmin), true, true];
-        }, nil, 5] call CBA_fnc_waitUntilAndExecute;
+            [] remoteExecCall [QFUNC(adminClaim), SERVER_OWNER];
+        }, nil, ADMIN_LOGIN_WAIT] call CBA_fnc_waitUntilAndExecute;
     }, "all"] call CBA_fnc_registerChatCommand;
 
     ["logout", {
-        if (player getVariable [QGVAR(isAdmin), false]) then {
-            player setVariable [QGVAR(isAdmin), false, true];
-        };
+        [{!IS_ADMIN}, {
+            [] remoteExecCall [QFUNC(adminClaim), SERVER_OWNER];
+        }, nil, ADMIN_LOGIN_WAIT] call CBA_fnc_waitUntilAndExecute;
     }, "all"] call CBA_fnc_registerChatCommand;
 
-    ["unit", {
-        params ["_newPlayer", "_oldPlayer"];
-
-        if (IS_ADMIN) then {
-            _newPlayer setVariable [QGVAR(isAdmin), true, true];
-        };
-
-        if (_oldPlayer getVariable [QGVAR(isAdmin), false]) then {
-            _oldPlayer setVariable [QGVAR(isAdmin), false, true];
-        };
-    }, true] call CBA_fnc_addPlayerEventHandler;
-};
-
-// Server end of the admin debug commands: run the handler here and reply to the
-// admin who typed it. Registered unconditionally so a command added by any
-// addon works without that addon knowing about the transport.
-if (isServer) then {
-    [QGVAR(debugRun), {
-        params ["_name", "_args", "_caller"];
-        private _entry = (missionNamespace getVariable [QGVAR(debugCommands), createHashMap]) getOrDefault [_name, []];
-        if (_entry isEqualTo []) exitWith {};
-        private _reply = [_args, _caller] call (_entry select 2);
-        if (!isNil "_reply") then { [_reply, _caller] call FUNC(debugReply) };
-    }] call CBA_fnc_addEventHandler;
+    ["unit", _fnc_claim] call CBA_fnc_addPlayerEventHandler;
 };
 
 // Always-available commands. Everything else is registered by the addon that
@@ -111,9 +85,10 @@ if (isServer) then {
 }, true] call FUNC(addDebugCommand);
 
 // The alert bus: every jmfsb system that does something TO the players posts
-// here, and the devices draw from one place. See FUNC(alert).
+// here, and the devices draw from one place. See FUNC(alert). The server
+// reaches FUNC(onAlert) by remoteExec, not the "alert" CBA event any client
+// could raise (review S7).
 GVAR(alerts) = [];
-[QGVAR(alert), FUNC(onAlert)] call CBA_fnc_addEventHandler;
 
 // --- the threat board -------------------------------------------------------
 // What each side KNOWS: side -> [[id, side, target, pos, error, seen, first,

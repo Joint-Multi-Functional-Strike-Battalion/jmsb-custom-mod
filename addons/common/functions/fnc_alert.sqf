@@ -58,6 +58,6 @@ if (_who isEqualTo []) exitWith {};
 // would hand the player a solved problem; a grid makes them read a map.
 private _grid = if (_pos isEqualTo []) then {""} else {mapGridPosition _pos};
 
-{
-    [QGVAR(alert), [_source, _text, _grid, _severity, _life], _x] call CBA_fnc_targetEvent;
-} forEach _who;
+// By remoteExec to FUNC(onAlert), which takes it only from the server or from
+// its own machine - not a CBA event any client could raise (review S7).
+[_source, _text, _grid, _severity, _life] remoteExecCall [QFUNC(onAlert), _who];

@@ -5,8 +5,8 @@
  * devices a net use % of the 10 custom channels"): "CH 3/10 30%", from
  * jmfsb_voice_fnc_channelUse. Game voice has ten custom channels in all -
  * C2, A2G, each live CALL and anything the mission made - so this is how close
- * the next call is to having none. "" under TFAR / ACRE or before the
- * server's first count.
+ * the next call is to having none. "" with no game voice running here or
+ * before the server's first count.
  *
  * Arguments:
  * None

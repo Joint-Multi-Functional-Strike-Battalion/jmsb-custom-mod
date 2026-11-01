@@ -46,7 +46,7 @@ Messaging (TAC//MSG reader, compose, templates) is left out of this design.
 | Notification line | 30 | count, newest line, time. Click opens the log |
 | Live tiles | 96 + 3 rule | 8 tiles: NET, MESH, EW, DRONES, FIRES, HACK, TIMER, PAC |
 | Map area | rest (~789) | map control with floating panels |
-| Net row | 48 | nets you are on, name + ear tag; numpad 0 / . move the active net |
+| Net row | 56 | six equal cells (40 px) whatever the count, name + ear tag, empty ones dim outlines, the keys in a tooltip; numpad 0 / . move the active net (2026-10-30; was 48) |
 
 ### Map area
 

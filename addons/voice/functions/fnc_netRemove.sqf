@@ -24,5 +24,5 @@ if !([player] call FUNC(canManageNets)) exitWith {
     false
 };
 
-[QGVAR(srvNetRemove), [player, _id]] call CBA_fnc_serverEvent;
+[player, _id] remoteExecCall [QFUNC(srvNetRemove), SERVER_OWNER];
 true

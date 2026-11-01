@@ -4,44 +4,19 @@
  * A key-up on this client. Filtered here, locally, so only a DETECTABLE
  * transmission costs the server an event.
  *
- * SATCOM IS EXEMPT (new.md section 2), and the test is ACRE's own antenna
- * connection rather than a flag jmfsb keeps - a set talking to a satellite is
- * not radiating across the valley, and that is the point of carrying one.
+ * Power: game voice has no per-set transmit power, so its nets beyond the
+ * squad - the only ones that reach here - are treated as REACT_VOICE_WATTS,
+ * above any sane threshold, which is what they are. The ACRE path (the set's
+ * own power, the SATCOM antenna exemption) went with ACRE (DEC1, 2026-10-31).
  *
- * Power: ACRE knows the live channel's transmit power in milliwatts. Game
- * voice has no equivalent, so its nets beyond the squad - the only ones that
- * reach here - are treated as above any sane threshold, which is what they are.
- *
- * Arguments:
- * 0: Radio id or class <STRING>
+ * Arguments: None
  *
  * Return Value: None
  *
  * Public: No
  */
 
-params [["_radio", "", [""]]];
-
-// SATCOM: ACRE's own answer, asked of this radio. One condition, one
-// exitWith at function scope - the old inner exitWith only left its own
-// then-block, and the exemption never exempted anybody.
-if (
-    _radio isNotEqualTo ""
-    && {!isNil "acre_sys_gsa_fnc_isAntennaConnected"}
-    && {[_radio] call acre_sys_gsa_fnc_isAntennaConnected}
-) exitWith {};
-
-private _watts = 5;
-if (_radio isNotEqualTo "" && {!isNil "acre_api_fnc_getRadioChannelData"}) then {
-    private _data = [_radio] call acre_api_fnc_getRadioChannelData;
-    if (_data isEqualType []) then {
-        // ACRE's channel data carries power in mW; shapes differ by version,
-        // so a number is looked for rather than an index assumed.
-        private _mw = 0;
-        { if (_x isEqualType 0) then {_mw = _mw max _x} } forEach _data;
-        if (_mw > 0) then { _watts = _mw / REACT_MW_PER_WATT };
-    };
-};
+private _watts = REACT_VOICE_WATTS;
 
 // The threshold is a module attribute read on the SERVER and this filter
 // runs on a CLIENT - unbroadcast it was nil here, and every key-up died on
@@ -70,4 +45,5 @@ if (!isNil "jmfsb_jamming_fnc_jamFactor") then {
     if (_raw >= REACT_BURN_BAND && _eff < _raw) then { _source = "burnthrough" };
 };
 
-[QGVAR(event), [player, _source]] call CBA_fnc_serverEvent;
+// By remoteExec, so the server knows who sent it (review R1).
+[player, _source] remoteExecCall [QFUNC(report), SERVER_OWNER];

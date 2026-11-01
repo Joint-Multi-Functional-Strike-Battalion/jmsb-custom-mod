@@ -41,7 +41,7 @@ private _names = [GVAR(keyF1), GVAR(keyF2), GVAR(keyF3), GVAR(keyF4)];
     }];
     private _tip = if (_forEachIndex < SOFT_KEY_COUNT) then {
         private _app = _names select _forEachIndex;
-        format ["F%1 (numpad %1): %2", _forEachIndex + 1, ["not set", toUpper _app] select (_app isNotEqualTo "")]
+        format ["F%1 (numpad %2): %3", _forEachIndex + 1, BUTTON_HINTS select _forEachIndex, ["not set", toUpper _app] select (_app isNotEqualTo "")]
     } else {
         [
             ["Active net left (numpad 0)", "Active net right (numpad .)"],

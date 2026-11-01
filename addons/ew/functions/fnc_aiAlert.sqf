@@ -4,8 +4,10 @@
  * Where the group is local: an AI group has been told of a DF fix (BASIC's
  * "alert nearby groups, look toward the bearing"). It goes AWARE unless it
  * is already in COMBAT, and its men watch the fix for AI_WATCH_S, then stop.
- * Raised by FUNC(aiReact) with CBA_fnc_targetEvent on the leader, since a
- * group's behaviour and its men's watch are set where they are local.
+ * Sent by FUNC(aiReact) by remoteExec to the leader, since a group's
+ * behaviour and its men's watch are set where they are local, and taken only
+ * from the server (review R1: it was a CBA event any client could raise to
+ * turn any AI group).
  *
  * Arguments:
  * 0: Group <GROUP>
@@ -15,13 +17,16 @@
  * None
  *
  * Example:
- * [QGVAR(aiAlert), [_group, _at], leader _group] call CBA_fnc_targetEvent
+ * [_group, _at] remoteExecCall ["jmfsb_ew_fnc_aiAlert", leader _group]
  *
  * Public: No
  */
 
 params [["_group", grpNull, [grpNull]], ["_at", [], [[]]]];
 
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("aiAlert: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
 if (isNull _group || _at isEqualTo [] || !alive leader _group) exitWith {};
 
 if ((behaviour leader _group) isNotEqualTo "COMBAT") then {

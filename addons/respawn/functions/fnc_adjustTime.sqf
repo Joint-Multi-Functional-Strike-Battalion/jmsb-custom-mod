@@ -19,6 +19,7 @@ params ["_newTime"];
 
 if (!isServer) exitWith {};
 
-[QGVAR(adjustTimeLocal), _this] call CBA_fnc_globalEvent;
+// To every player by remoteExec, taken only from the server (review S7).
+[_newTime] remoteExecCall [QFUNC(adjustTimeLocal), 0];
 
 nil

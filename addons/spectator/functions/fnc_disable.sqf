@@ -3,6 +3,10 @@
  * Author: 3Mydlo3
  * Function disables spectator functionality.
  *
+ * Server only: every machine gets FUNC(stop) by remoteExec, which takes it
+ * only from the server (review R1: it was a CBA event any client could raise
+ * to throw every player out of spectator).
+ *
  * Arguments:
  * None
  *
@@ -15,6 +19,8 @@
  * Public: No
  */
 
-[QGVAR(stop)] call CBA_fnc_globalEvent;
+if (!isServer) exitWith {false};
+
+[] remoteExecCall [QFUNC(stop), 0];
 
 false

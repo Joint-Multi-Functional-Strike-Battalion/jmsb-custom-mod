@@ -52,9 +52,11 @@ if (GVAR(ticBroadcast)) then {
     // common's alert bus has no side filter and a TIC is not for the other
     // side, so the targeting is done here and the bus's own client handler does
     // the rest. Severity 2 is what makes it speak up rather than only file.
-    {
-        [QEGVAR(common,alert), ["TIC", _text, _grid, 2, 300], _x] call CBA_fnc_targetEvent;
-    } forEach (allPlayers select {alive _x && {side (group _x) isEqualTo _side}});
+    // By remoteExec, which the client takes only from the server (review S7).
+    private _told = allPlayers select {alive _x && {side (group _x) isEqualTo _side}};
+    if (_told isNotEqualTo []) then {
+        ["TIC", _text, _grid, 2, 300] remoteExecCall [QEFUNC(common,onAlert), _told];
+    };
 };
 
 if (GVAR(ticMarker)) then {
@@ -64,7 +66,7 @@ if (GVAR(ticMarker)) then {
     // a global marker is on the enemy's map too and a contact report that tells
     // the enemy where the contact is has the wrong readership.
     {
-        [QGVAR(marker), [_name, _pos, _label], _x] call CBA_fnc_targetEvent;
+        [_name, _pos, _label] remoteExecCall [QFUNC(cltMarker), _x];
     } forEach (allPlayers select {alive _x && {side (group _x) isEqualTo _side}});
 
     // The thread carries its marker name so the sweep can take it away with the
@@ -72,5 +74,3 @@ if (GVAR(ticMarker)) then {
     // in red.
     _thread set ["marker", _name];
 };
-
-[QGVAR(tic), [_thread get "id", _callsign, _grid, _side]] call CBA_fnc_globalEvent;

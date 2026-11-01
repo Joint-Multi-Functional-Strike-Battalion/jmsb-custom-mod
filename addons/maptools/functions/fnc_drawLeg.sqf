@@ -18,7 +18,7 @@
  * Example:
  * [_map, _from, _to, _accent, 0.045] call jmfsb_maptools_fnc_drawLeg
  *
- * Public: No
+ * Public: Yes
  */
 
 params ["_map", "_from", "_to", "_color", "_size"];

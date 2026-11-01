@@ -24,6 +24,9 @@
 params [["_fallback", true, [true]]];
 
 if (isNull player) exitWith {[false, "", CH_NONE]};
+// a refused PTT 2-4 key is down: its channel's voice is held off, nothing is
+// sent, so nothing is keyed (FUNC(applyOpen))
+if (GVAR(holdOff) isNotEqualTo []) exitWith {[false, "", CH_NONE]};
 
 private _i = PTT_ACTIONS findIf {(inputAction (_x select 0)) > 0};
 private _ch = CH_NONE;

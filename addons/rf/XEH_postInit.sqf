@@ -2,12 +2,9 @@
 
 // --- Server: the registry's front door and the tick -------------------------
 if (isServer) then {
-    // rf_register / rf_unregister / rf_setState / rf_netSet, raised by the
-    // adapters on clients with CBA_fnc_serverEvent
-    [QGVAR(register), {_this call FUNC(register)}] call CBA_fnc_addEventHandler;
-    [QGVAR(unregister), {_this call FUNC(unregister)}] call CBA_fnc_addEventHandler;
-    [QGVAR(setState), {_this call FUNC(setState)}] call CBA_fnc_addEventHandler;
-    [QGVAR(netSet), {_this call FUNC(netSet)}] call CBA_fnc_addEventHandler;
+    // A client's register / unregister / setState / netSet / batterySwap
+    // comes by remoteExec to FUNC(srvRequest), which checks the sender holds
+    // the node - no CBA handler, a CBA event carries no sender (review R1).
 
     // DATA is RF's own net: it runs with no radio backend at all (rule 5).
     // Its per-side keys are made here, once.

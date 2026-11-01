@@ -17,6 +17,9 @@ in so they arrive rather than appear.
 
     #jmfsbqrf    the watch list and what is currently held
 
+Admins only, on a dedicated server too; the answer goes to the admin who typed
+it, nobody else. Same as `#jmfsb qrf`.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

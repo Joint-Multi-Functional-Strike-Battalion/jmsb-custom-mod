@@ -21,10 +21,13 @@ if (hasInterface && {!isNil "jmfsb_tacpad_fnc_registerApp"}) then {
 // A PLAYER PUTS THEIR OWN RANK AND SKILLS ON, from the published roster, at
 // three moments: first spawn, every respawn, and every time the server
 // publishes - which is how an admin's edit reaches somebody already in the
-// field. All three call the same function; see FUNC(applyOnClient).
+// field. Spawn and respawn run FUNC(applyOnClient): rank, skills, and the
+// server's seeding, slotting and kept loadout. A publish runs only
+// FUNC(reapplyLocal) - rank and skills - so nobody's gear resets because
+// somebody else joined or was edited.
 //
-// The groups addon calls it too, at the end of its own role setup, so PAC's
-// answer goes on after the role's defaults and not under them.
+// The groups addon calls applyOnClient too, at the end of its own role setup,
+// so PAC's answer goes on after the role's defaults and not under them.
 if (hasInterface) then {
     // THE SERVER'S STRUCTURE AND SETTINGS WIN over what this machine compiled
     // from its own mission config - which, on a mission whose config lives in
@@ -55,7 +58,13 @@ if (hasInterface) then {
         if (!isNull player) then {[player] call FUNC(applyTemp)};
     };
     QGVAR(roster) addPublicVariableEventHandler {
-        [] call FUNC(applyOnClient);
+        // The spawn work runs here only if this life has not had it yet -
+        // the player's row was not on the roster when he spawned.
+        if (!isNull player && {!(player getVariable [QGVAR(spawnApplied), false])}) then {
+            [] call FUNC(applyOnClient);
+        } else {
+            [] call FUNC(reapplyLocal);
+        };
         ["roster"] call FUNC(uiRefresh);
     };
     QGVAR(summary) addPublicVariableEventHandler {
@@ -99,10 +108,14 @@ if (!isClass (missionConfigFile >> "CfgGFA_PAC")) exitWith {
 
 // THE SERVICE'S ANSWERS. The pacdb extension (tools/pacdb) replies through
 // this event, in chunks; FUNC(svcLoad) waits on the state it sets. Registered
-// before the boot so nothing can arrive unheard.
+// before the boot so nothing can arrive unheard. A get or list's last
+// answer pays the request's debt (GVAR(svcOwed)), so the next can go.
 addMissionEventHandler ["ExtensionCallback", {
     params ["_name", "_function", "_data"];
     if (_name isNotEqualTo "ghostd_pacdb") exitWith {};
+    if (_function in ["get.end", "get.error", "list", "list.error"]) then {
+        GVAR(svcOwed) = (GVAR(svcOwed) - 1) max 0;
+    };
     switch (_function) do {
         case "get.begin": {
             private _n = parseNumber _data;
@@ -130,10 +143,6 @@ addMissionEventHandler ["ExtensionCallback", {
         case "put.end": {TRACE_1("service put",_data)};
         case "put.error": {WARNING_1("service put failed: %1",_data)};
         case "ping": {INFO_1("pacdb extension: %1",_data)};
-        // The answer to the boot's network check - the address Atlas will see,
-        // and whether TLS works from this machine. Asked only when the admin
-        // turned the setting on; see initSettings.inc.sqf.
-        case "netcheck": {INFO_1("network check: %1",_data)};
     };
 }];
 
@@ -150,6 +159,8 @@ addMissionEventHandler ["ExtensionCallback", {
 // the database is dropped (user, 2026-09-05: "updating play time should be the
 // only exception ... make sure play time and actions do NOT get overwritten").
 addMissionEventHandler ["Ended", {
+    // nothing real to write or dump if the boot never loaded the store
+    if !(GVAR(storeReady)) exitWith {WARNING("mission ended before the store was loaded - nothing written")};
     [true, true] call FUNC(storeSave);
     ["mission end"] call FUNC(backupDump);
     INFO("mission ended - store written to profile and database (play-time commit)");
@@ -157,47 +168,42 @@ addMissionEventHandler ["Ended", {
 
 // A player is seeded the moment they arrive rather than when somebody first
 // edits them, so the Unassigned filter in the admin panel is a list of people
-// who have actually been on the server.
-// NEW PLAYERS: settings newPlayers (2026-09-10). "auto" seeds a record the
-// moment they arrive, as always; "apply" does not - they apply from the
-// tacpad's PAC tile (or the website) and an admin accepts them under
-// APPLICATIONS, which is what seeds the record. Somebody already on the
-// roster is never touched by the setting.
+// who have actually been on the server (FUNC(playerJoin), which also applies
+// settings newPlayers).
+//
+// NOT BEFORE THE STORE IS LOADED. Until the boot opens GVAR(storeReady) the
+// store in memory is empty; a connect then is queued and the boot replays it
+// once the store is in. Handling it at once wrote that empty store over the
+// profile.
+//
+// NOT A HEADLESS CLIENT (review L1): it connects like a player and would be
+// seeded as one.
 addMissionEventHandler ["PlayerConnected", {
-    params ["", "_uid", "_name"];
-    private _mode = toLower (GVAR(settings) getOrDefault ["newPlayers", "auto"]);
-    if (_mode isEqualTo "apply" && {!(_uid in GVAR(players))}) then {
-        INFO_2("%1 (%2) connected and is not on the roster - newPlayers is 'apply', no record seeded",_name,_uid);
-    } else {
-        [_uid, _name] call FUNC(record);
-    };
-    [_uid, _name] call FUNC(sessionStart);
-    [] call FUNC(publish);
+    params ["", "_uid", "_name", "", "", "_idstr"];
+    if ((getUserInfo _idstr) param [PAC_USERINFO_IS_HC, false]) exitWith {};
+    if !(GVAR(storeReady)) exitWith {GVAR(bootQueue) pushBack [true, _uid, _name]};
+    [_uid, _name] call FUNC(playerJoin);
 }];
 
 // ATTENDANCE. A disconnect closes the session; a heartbeat keeps lastSeenAt
-// honest for the server that dies without one. Sessions still open from a
-// previous run - nobody has connected yet, so every open row is stale - are
-// closed at their lastSeenAt, which is the best answer there is. An op window
-// left open is NOT closed: windows are started and stopped by an admin, and a
-// server restart mid-op should not end the op.
+// honest for the server that dies without one. Sessions left open by a
+// previous run are closed by the boot, after it has loaded them (FUNC(boot)
+// step 6), as is the manual op window restored.
 addMissionEventHandler ["PlayerDisconnected", {
     params ["", "_uid"];
+    if !(GVAR(storeReady)) exitWith {GVAR(bootQueue) pushBack [false, _uid, ""]};
     [_uid] call FUNC(sessionEnd);
 }];
 
-{
-    if ((_x # 4) isEqualTo "") then {_x set [4, _x # 3]};
-} forEach GVAR(sessions);
-
-GVAR(windowOpen) = "";
-{
-    if ((_x # 3) isEqualTo "" && {(_x # 4) isEqualTo "manual"}) then {GVAR(windowOpen) = _x # 0};
-} forEach GVAR(windows);
-
+// THE HEARTBEAT: attendance (FUNC(sessionTick)), the roster's totals
+// (FUNC(rosterTotals) - a publish when the promotion-due list changed), and a
+// save the debounce held back, so an edit is never left only in memory.
 [] spawn {
     while {true} do {
         sleep PAC_HEARTBEAT;
+        if !(GVAR(storeReady)) then {continue};
         [] call FUNC(sessionTick);
+        if ([] call FUNC(rosterTotals)) then {[] call FUNC(publish)};
+        if (GVAR(dirty) && {!GVAR(readOnly)}) then {[] call FUNC(storeSave)};
     };
 };

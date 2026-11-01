@@ -49,6 +49,14 @@ All of these, every frame - the moment one fails, the overlay and the HUD go:
   left the last boxes on screen over the map and the tablet (user, 2026-10-20)
 - he is wearing an opted-in NVG in **NVG mode** - or in day mode too when it says `jmfsb_ecoti_day = 1` (never TI)
 
+## How far it reaches
+
+Four ranges, each a player setting (user, 2026-10-24): **AI on foot 100 m**,
+**players on foot 250 m**, **vehicles and animals 250 m** - and **750 m for
+everything while he looks through a Vector** (the [JMSB] Vector Designator,
+or any ACE Vector: raised, in its optics, on foot). A target fades from the
+full-contrast distance to its own range.
+
 ## What it draws
 
 **One box per target** - every man, vehicle and animal in sensor range, in the
@@ -79,15 +87,15 @@ TAC//PAD - four more lines:
 ```
 SGT Reyes | MED                  rank, name and role
 OVERLORD 6 1                     his squad (group callsign)
-WIA 64% | CH 3 - GHOST | 43.100 MHz   health, channel, frequency
+WIA 64% | CH 3 - GHOST | NET C2   health, channel, active net
 ACE  A C E                       his ACE report, each letter coloured
 ```
 
 Rank and role names, the health test, the channel and the ACE report are the
 TAC//PAD squad page's own, so the card and the table never disagree. The
-frequency is ECOTI's: each player publishes his own current frequency (ACRE:
-the channel's in his radio's preset; game voice has no frequency, so his active
-net instead, `NET C2`), only when it changes. Without the TAC//PAD nobody is on the net and there are no cards.
+last field is ECOTI's: game voice has no frequency, so each player publishes
+his own active net, `NET C2`, only when it changes. The ACRE frequency it read
+before was removed on 2026-10-31 (DEC1). Without the TAC//PAD nobody is on the net and there are no cards.
 
 Hostile is `getFriend` below 0.6 from the player's side. A vehicle is what its
 commander is, and red if any civilian aboard is armed. Colour is worked out
@@ -150,14 +158,19 @@ refreshed every 0.2 s and no frame checks them all.
 
 ## Ships
 
-18 functions.
+20 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_ecoti_aitr` | CHECKBOX | Enable AiTR |
-| `jmfsb_ecoti_range` | SLIDER | Sensor range (m) |
+| `jmfsb_ecoti_rangeAi` | SLIDER | Range: AI on foot (m) |
+| `jmfsb_ecoti_rangePlayer` | SLIDER | Range: players on foot (m) |
+| `jmfsb_ecoti_rangeVehicle` | SLIDER | Range: vehicles and animals (m) |
+| `jmfsb_ecoti_rangeVector` | SLIDER | Range through a Vector (m) |
+| `jmfsb_ecoti_hideNear` | CHECKBOX | Hide close boxes |
+| `jmfsb_ecoti_hideNearDistance` | SLIDER | Hide close boxes inside (m) |
 | `jmfsb_ecoti_windowSize` | SLIDER | Thermal window size |
 | `jmfsb_ecoti_nearDistance` | SLIDER | Full contrast distance (m) |
 | `jmfsb_ecoti_lineWidth` | SLIDER | Box line width (px) |
@@ -168,7 +181,7 @@ refreshed every 0.2 s and no frame checks them all.
 
 ## Functions
 
-<details><summary>18</summary>
+<details><summary>20</summary>
 
 - `jmfsb_ecoti_fnc_boxRect`
 - `jmfsb_ecoti_fnc_draw`
@@ -184,9 +197,11 @@ refreshed every 0.2 s and no frame checks them all.
 - `jmfsb_ecoti_fnc_targetColour`
 - `jmfsb_ecoti_fnc_targetLabel`
 - `jmfsb_ecoti_fnc_targetVisibility`
+- `jmfsb_ecoti_fnc_toggleHideNear`
 - `jmfsb_ecoti_fnc_togglePower`
 - `jmfsb_ecoti_fnc_updateCandidates`
 - `jmfsb_ecoti_fnc_updateVisibility`
+- `jmfsb_ecoti_fnc_vectorView`
 - `jmfsb_ecoti_fnc_vehicleBox`
 
 </details>

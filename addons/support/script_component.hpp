@@ -26,6 +26,12 @@
 // cooldown: an asset you want home is by definition one that is busy.
 #define TASK_RTB "rtb"
 
+// The server's machine id - a cooldown is booked there by remoteExec, and
+// the longest a booking may hold an asset, in seconds (review S6). No
+// module's own cooldown comes near it.
+#define SERVER_OWNER 2
+#define COOLDOWN_MAX 3600
+
 // Order of a declared asset type nobody gave an order to - after every
 // type that did.
 #define TYPE_ORDER_LAST 1000

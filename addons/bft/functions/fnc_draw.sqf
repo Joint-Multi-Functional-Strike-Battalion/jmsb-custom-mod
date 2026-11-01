@@ -59,6 +59,14 @@ if (!_godView && {!isNil "jmfsb_messaging_fnc_linkState"}) then {
     _dataDenied = (([] call jmfsb_messaging_fnc_linkState) param [0, 0]) >= 2;
 };
 
+// GPS DENIAL TAKES THE WHOLE TRACKER OFF (user, 2026-10-24: "when gps is
+// jammed the bft needs to turn off, we could still see units on the map and
+// tablet"). No fix, no positions - your own group's included, and the virtual
+// friendlies. The jamming addon's own flag is the one truth; an admin in god
+// view keeps the picture. The marker clean-up below still runs, so last
+// tick's icons do not linger.
+private _gpsDenied = !_godView && {missionNamespace getVariable [QEGVAR(jamming,gpsDenied), false]};
+
 private _index = 0;
 private _memberGroups = [];
 
@@ -66,6 +74,7 @@ private _memberGroups = [];
     private _group = _x;
 
     if (units _group isEqualTo []) then {continue};
+    if (_gpsDenied) then {continue};
 
     // AN UNCONFIGURED GROUP DRAWS unless the mission said None. This
     // defaulted off in "Player" mode, which made every AI-only friendly
@@ -228,7 +237,7 @@ missionNamespace setVariable [QGVAR(lastMarkerCount), _index];
 // Drawn faded, unnamed, from that picture - a tracker that showed only the
 // spawned quarter of the army was lying by omission.
 private _vIndex = 0;
-if (GVAR(showVirtual) && {!isNil "jmfsb_adapter_alive_fnc_virtualFriendlies"}) then {
+if (GVAR(showVirtual) && !_gpsDenied && {!isNil "jmfsb_adapter_alive_fnc_virtualFriendlies"}) then {
     private _prefix = switch (_playerSide) do {
         case west: {"b"};
         case east: {"o"};

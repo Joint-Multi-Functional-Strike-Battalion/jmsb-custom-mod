@@ -10,6 +10,12 @@
  * look moved to the design: the rail on the surface tone, the selected net a
  * solid accent row, the roster's online state a 7 px square.
  *
+ * ONE REDRAW PER FRAME (code review R8). A net press and a squad fold ask for
+ * the reader's redraw through FUNC(nextFrameOnce), so any number of them in
+ * one frame draw the reader once, next frame. The rail itself
+ * is drawn whole with the reader (FUNC(readerDraw) throws its content group
+ * away), so it has no controls to keep between draws.
+ *
  * Arguments:
  * 0: Content group <CONTROL>
  * 1: Rail width <NUMBER>
@@ -132,7 +138,7 @@ private _codeW = _railW * 0.2;
         };
 
         GVAR(readerNet) = _pressed;
-        {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+        [QGVAR(readerDraw), {[] call FUNC(readerDraw)}] call FUNC(nextFrameOnce);
     }] call FUNC(drawHit);
     _hit setVariable [QGVAR(net), _net];
 } forEach _nets;
@@ -204,15 +210,26 @@ private _markH = READER_MARK_PX * pixelH;
         _root, [_side + _railW * 0.1, _rowY, _railW * 0.55, _lineH], toUpper _sq,
         [_muted, _ink] select (_sq isEqualTo _mySquad), READER_K_SIZE, true, "left", true
     ] call FUNC(drawText);
-    [_root, [_railW * 0.7, _rowY, _railW * 0.3 - _side, _lineH], format ["%1/%2", _up, count _men], _muted, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+    [_root, [_railW * 0.55, _rowY, _railW * 0.22, _lineH], format ["%1/%2", _up, count _men], _muted, READER_K_SIZE, true, "right", true] call FUNC(drawText);
 
-    private _hit = [_root, [0, _rowY, _railW, _lineH], {
+    // MSG on the squad's row writes to the whole squad - its G: box (user,
+    // 2026-10-24: "or the group/squad"); the name and the count still fold it.
+    [_root, [_railW * 0.78, _rowY, _railW * 0.22 - _side, _lineH], "MSG", _accent, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+    private _msgHit = [_root, [_railW * 0.78, _rowY, _railW * 0.22, _lineH], {
+        params ["_ctrl"];
+        private _sq = _ctrl getVariable [QGVAR(squad), ""];
+        if (_sq isEqualTo "") exitWith {};
+        ["", "", false, format ["G:%1", _sq]] call FUNC(composeOpen);
+    }] call FUNC(drawHit);
+    _msgHit setVariable [QGVAR(squad), _sq];
+
+    private _hit = [_root, [0, _rowY, _railW * 0.78, _lineH], {
         params ["_ctrl"];
         private _sq = _ctrl getVariable [QGVAR(squad), ""];
         private _fold = uiNamespace getVariable [QGVAR(readerNetFold), []];
         if (_sq in _fold) then {_fold = _fold - [_sq]} else {_fold pushBack _sq};
         uiNamespace setVariable [QGVAR(readerNetFold), _fold];
-        {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+        [QGVAR(readerDraw), {[] call FUNC(readerDraw)}] call FUNC(nextFrameOnce);
     }] call FUNC(drawHit);
     _hit setVariable [QGVAR(squad), _sq];
     _rowY = _rowY + _lineH;
@@ -231,6 +248,17 @@ private _markH = READER_MARK_PX * pixelH;
             };
             [_root, [_side + _markW + _pad * 2, _rowY, _railW * 0.55, _lineH], name _x, [_dim, _ink] select _alive, READER_ROSTER_SIZE] call FUNC(drawText);
             [_root, [_railW * 0.65, _rowY, _railW * 0.35 - _side, _lineH], [_x] call FUNC(roleShort), _muted, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+            // A MAN IS A NET OF ONE: pressing him opens a message to him
+            // (user, 2026-10-24: "click on a player to send them a message").
+            if (_x isNotEqualTo player) then {
+                private _manHit = [_root, [0, _rowY, _railW, _lineH], {
+                    params ["_ctrl"];
+                    private _uid = _ctrl getVariable [QGVAR(uid), ""];
+                    if (_uid isEqualTo "") exitWith {};
+                    ["", "", false, format ["P:%1", _uid]] call FUNC(composeOpen);
+                }] call FUNC(drawHit);
+                _manHit setVariable [QGVAR(uid), getPlayerUID _x];
+            };
             _rowY = _rowY + _lineH;
         } forEach _men;
     };

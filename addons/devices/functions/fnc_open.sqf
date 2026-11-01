@@ -26,13 +26,22 @@ params [["_device", "large", [""]], ["_vehicle", objNull, [objNull]]];
 
 // THE UAV OPERATOR'S TABLET. A player with the UAV trait gets the gripped
 // large tablet instead of the plain one (user, 2026-10-19); everything inside
-// it is the same suite. The player's Tablet frame setting can force either
-// one (user, 2026-10-21: "a way to toggle between the large and uav tablet").
+// it is the same suite. A player carrying the RDC (user, 2026-10-30) opens
+// that - it is the one screen he wears. The player's Tablet frame setting
+// can force any (user, 2026-10-21: "a way to toggle between the large and uav
+// tablet").
 if (_device isEqualTo LARGE_DEVICE) then {
     _device = switch (GVAR(tabletFrame)) do {
         case LARGE_DEVICE: {LARGE_DEVICE};
         case UAV_DEVICE: {UAV_DEVICE};
-        default {[LARGE_DEVICE, UAV_DEVICE] select ((call CBA_fnc_currentUnit) getUnitTrait UAV_TRAIT)};
+        case RDC_DEVICE: {RDC_DEVICE};
+        default {
+            switch (true) do {
+                case (([] call FUNC(overlayDevice)) isEqualTo RDC_DEVICE): {RDC_DEVICE};
+                case ((call CBA_fnc_currentUnit) getUnitTrait UAV_TRAIT): {UAV_DEVICE};
+                default {LARGE_DEVICE};
+            };
+        };
     };
 };
 

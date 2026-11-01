@@ -16,11 +16,11 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-9 functions.
+8 functions.
 
 ## Functions
 
-<details><summary>9</summary>
+<details><summary>8</summary>
 
 - `jmfsb_gear_fnc_applyLoadout`
 - `jmfsb_gear_fnc_hasSavedLoadout`
@@ -30,6 +30,5 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_gear_fnc_preInit`
 - `jmfsb_gear_fnc_removeLoadout`
 - `jmfsb_gear_fnc_saveLoadout`
-- `jmfsb_gear_fnc_setupRadios`
 
 </details>

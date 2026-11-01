@@ -23,6 +23,13 @@ refuels, re-arms and **re-crews** it there - the crew it was placed with in
 Eden is photographed at mission start and put back seat for seat
 (`fnc_restoreCrew`). The server flies everything; the client only asks.
 
+The ask goes by `remoteExecCall` to `fnc_order`, and the server trusts none
+of it (review S6): the requester is the sending machine's own player, he must
+pass the Support tasking tag gate, the module must be his side's, and the
+whole client check (`fnc_check`: available, a task this asset offers, the
+point, an LZ where one is needed, water for HELOCAST, a QRF squad) is run
+again for him. A refusal there is told to him alone.
+
 ## Every module
 
 - **Respawn Delay (sec)** - a lost aircraft is replaced after the delay: a
@@ -117,7 +124,10 @@ retired and left empty; 32-39 are support_fires'.
   (refused over land), puts AI out and drifts slowly forward until the cabin
   is empty or the wait is up, then climbs to a hover; PARADROP crosses the
   drop zone at the jump height and puts the whole cabin out one a second on
-  static lines (players too, on their own machines - `jmfsb_support_air_jumpOut`),
+  static lines (players too, on their own machines - the server sends
+  `jmfsb_support_air_fnc_jump` there by remoteExec, AI passengers put out by
+  `jmfsb_support_air_fnc_putOut` the same way; both take only the server's word,
+  as does `jmfsb_support_air_fnc_sayLocal`, the side's line on the notify rail),
   then goes home; SLINGLOAD hooks the nearest object it can lift within 80 m
   of the load point, carries it to the set-down point and lowers it. Players
   otherwise get out themselves. Bingo fuel sends it home. A class helicopter
@@ -156,7 +166,7 @@ Cooldowns are this addon's own; the provider returns no core cooldown.
 
 ## Ships
 
-4 unit classes, 62 functions.
+4 unit classes, 65 functions.
 
 ## Eden modules
 
@@ -256,7 +266,7 @@ One taskable quick reaction force on TAC , , , , Squad (CfgGroups) / Unit Classe
 
 ## Functions
 
-<details><summary>62</summary>
+<details><summary>65</summary>
 
 - `jmfsb_support_air_fnc_adopt`
 - `jmfsb_support_air_fnc_assetAvailable`
@@ -269,6 +279,7 @@ One taskable quick reaction force on TAC , , , , Squad (CfgGroups) / Unit Classe
 - `jmfsb_support_air_fnc_casPosture`
 - `jmfsb_support_air_fnc_casStrike`
 - `jmfsb_support_air_fnc_casTick`
+- `jmfsb_support_air_fnc_check`
 - `jmfsb_support_air_fnc_chuteTick`
 - `jmfsb_support_air_fnc_defaultClass`
 - `jmfsb_support_air_fnc_dropLaunch`
@@ -294,6 +305,7 @@ One taskable quick reaction force on TAC , , , , Squad (CfgGroups) / Unit Classe
 - `jmfsb_support_air_fnc_overlay`
 - `jmfsb_support_air_fnc_prepareAircraft`
 - `jmfsb_support_air_fnc_preview`
+- `jmfsb_support_air_fnc_putOut`
 - `jmfsb_support_air_fnc_qrfLanded`
 - `jmfsb_support_air_fnc_qrfLaunch`
 - `jmfsb_support_air_fnc_qrfOrder`
@@ -307,6 +319,7 @@ One taskable quick reaction force on TAC , , , , Squad (CfgGroups) / Unit Classe
 - `jmfsb_support_air_fnc_respawn`
 - `jmfsb_support_air_fnc_restoreCrew`
 - `jmfsb_support_air_fnc_say`
+- `jmfsb_support_air_fnc_sayLocal`
 - `jmfsb_support_air_fnc_sitrep`
 - `jmfsb_support_air_fnc_spawnAircraft`
 - `jmfsb_support_air_fnc_stockRopes`

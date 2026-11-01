@@ -38,7 +38,8 @@ if (_players isEqualTo []) exitWith {};
     if (isNull _seen) then {continue};
 
     _veh setVariable [QGVAR(spotCd), CBA_missionTime + UAS_SPOT_COOLDOWN];
-    [QEGVAR(reaction,event), [_seen, "drone"]] call CBA_fnc_localEvent;
+    // Straight into the detection roll (review R1: no CBA event to fake).
+    if (!isNil QEFUNC(reaction,roll)) then {[_seen, "drone"] call EFUNC(reaction,roll)};
 
     INFO_2("drone %1 has eyes on %2",typeOf _veh,name _seen);
 

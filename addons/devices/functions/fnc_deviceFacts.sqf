@@ -32,5 +32,13 @@ createHashMapFromArray [
     ["grid", _grid],
     ["gps", _gps],
     ["who", format ["%1 %2 %3", toUpper name _unit, MIDDOT, toUpper groupId group _unit]],
-    ["channels", [] call FUNC(channelText)]
+    ["channels", [] call FUNC(channelText)],
+    // Point Man's next waypoint while a route is walked, "" otherwise.
+    ["nav", if (isNil QEFUNC(pointman,navText)) then {""} else {[] call EFUNC(pointman,navText)}],
+    // The handheld's battery (jmfsb_voice_fnc_batteryLevel), "" without a set
+    // (user, 2026-10-30: "the battery % on the tablet ... needs to work").
+    ["batt", if (isNil QEFUNC(voice,batteryLevel)) then {""} else {
+        private _level = [] call EFUNC(voice,batteryLevel);
+        if (_level < 0) then {""} else {format ["BATT %1%2", round (_level * PERCENT), "%"]}
+    }]
 ]

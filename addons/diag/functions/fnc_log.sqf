@@ -34,8 +34,9 @@ private _logMessage = format ["%1%2%3: %4", _prefix, _componant, _type, _message
 
 diag_log text _logMessage;
 
+// By remoteExec, tagged on the server with who sent it (review R1).
 if (_sendToServer && !isServer) then {
-    [QEGVAR(log,text), _logMessage] call CBA_fnc_serverEvent;
+    [_logMessage] remoteExecCall [QFUNC(srvLog), SERVER_OWNER];
 };
 
 if (_showInChat && (!isMultiplayer || {is3DENMultiplayer})) then {

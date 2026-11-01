@@ -37,5 +37,5 @@ playSound "3DEN_notificationDefault";
 
 if (_player != player) then { // show selected player a message
     private _message = format ["%1 rearmed your vehicle!", name player];
-    [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+    ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
 };

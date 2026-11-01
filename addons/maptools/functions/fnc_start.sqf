@@ -10,7 +10,7 @@
  * strung onto the end of the first is not a thing anybody wants.
  *
  * Arguments:
- * 0: Tool id: "ruler", "protractor", "mark", "grid", "viewshed" or "route" <STRING>
+ * 0: Tool id: "ruler", "protractor", "mark", "grid", "viewshed", "route", "rings" or "los" <STRING>
  *
  * Return Value:
  * The tool now running, "" for none <STRING>

@@ -20,6 +20,14 @@
 // setPlayerVoNVolume). jmfsb_voice knows nets; this maps them onto channels.
 
 // --- VON channels (docs/DESIGN_VOICE.md "Channels") -----------------------------
+// This adapter runs only while the game's own VON is the system chosen
+// (jmfsb_voice_system) - the fallback where the voice server's extension is
+// not loaded (user, 2026-10-31: "no in-game VON" - LiveKit is the voice).
+#define VOICE_SYSTEM_VON    "von"
+#define VON_IS_THE_SYSTEM   ((missionNamespace getVariable [QEGVAR(voice,system), ""]) isEqualTo VOICE_SYSTEM_VON)
+#define VON_NOT_THE_SYSTEM  ((missionNamespace getVariable [QEGVAR(voice,system), ""]) isNotEqualTo VOICE_SYSTEM_VON)
+// The server's machine: the self test's T4 asks it by remoteExec (review S7).
+#define SERVER_OWNER        2
 #define CH_NONE             -1
 #define CH_GLOBAL           0
 #define CH_SIDE             1
@@ -113,6 +121,54 @@
 // Volume: VON's per-listener volume of a speaker, 0..1.
 #define VOLUME_FULL         1
 #define VOLUME_MUTE         0
+
+// THE PLAYER'S OWN KNOBS (user, 2026-10-24). Radio voice volume scales every
+// radio speaker on top of the mesh (fnc_applyVolume); Direct is left alone.
+// Under Arma's voice activation (GVAR(vad)) the current channel is the open
+// mic, so the talk keys and the OPEN CHANNEL toggle move it (fnc_openChannel,
+// fnc_applyOpen); a live call takes it while it lasts (GVAR(vaCalls)).
+#define DEFAULT_MASTER_VOLUME 1
+#define VOLUME_STEP         0.1
+#define PERCENT             100
+#define OPEN_TICK_S         0.25
+// THE PTT KEYS (user, 2026-10-30: "more than one ppt 4 avaible cba keybinds
+// kapslock is the defauult", then "make specific keybinds for our built in
+// von to use for push to talk and local"): PTT 1 (Caps Lock) talks on the
+// active net, PTT 2-4 on the net jmfsb_voice gives each (fnc_pttNet; set on
+// the tablet's RADIO app). Under VON a key only MOVES THE CHANNEL - the
+// engine's own Push To Talk, Caps Lock, opens the mic - so every talk key is
+// CAPS LOCK WITH A MODIFIER: the engine sees Caps Lock and transmits, the
+// modifier says where. Ctrl / Alt / Shift+Ctrl for PTT 2-4, Shift for TALK
+// LOCAL. Under voice activation the held key alone is the radio.
+#define HOLD_PTT            "ptt"
+#define HOLD_LOCAL          "local"
+#define KEY_NONE            -1
+// One per PTT key, 1..4 (jmfsb_voice PTT_KEYS); DIK_CAPITAL is Caps Lock.
+// A modifier set is [shift, ctrl, alt].
+#define PTT_DEFAULT_KEYS    [DIK_CAPITAL, DIK_CAPITAL, DIK_CAPITAL, DIK_CAPITAL]
+#define PTT_DEFAULT_MODS    [[false, false, false], [false, true, false], [false, false, true], [true, true, false]]
+#define PTT_DEFAULT_NAMES   ["Caps Lock", "Ctrl + Caps Lock", "Alt + Caps Lock", "Shift + Ctrl + Caps Lock"]
+#define PTT_ACTIVE_KEY      1
+#define LOCAL_DEFAULT_KEY   DIK_CAPITAL
+#define LOCAL_DEFAULT_MODS  [true, false, false]
+#define LOCAL_DEFAULT_NAME  "Shift + Caps Lock"
+#define OPEN_WORD_PTT       "PTT"
+#define OPEN_WORD_CALL      "CALL"
+#define OPEN_WORD_NET       "NET"
+#define OPEN_WORD_LOCAL     "LOCAL"
+// A call's net is named from its slot the way the voice core names it
+// (jmfsb_voice CALL_FORMAT).
+#define CALL_NET_FORMAT     "CALL %1"
+// PTT 2-4 ON A NET VON WILL NOT GIVE HIM (PLAN_VOICE_EW_PLAY V4): the net has
+// no channel, or VON refuses it (not yet a member). The engine's Push To Talk
+// would send on the channel he is on - PTT 1's net - so that channel's voice
+// is held off while the key is down (fnc_holdOff), and the key says why, once
+// per press.
+#define NOTE_PTT_REFUSED    "PTT %1: you are not on %2 yet - nothing sent."
+#define NOTE_PTT_NO_NET     "PTT %1 has no net - nothing sent. Set one on the tablet's RADIO app."
+#define NOTE_OPEN           "Open channel: %1."
+#define NOTE_OPEN_PTT       "Open channel: %1 - this applies with Arma's VON on voice activation (Options > Audio). On push to talk your key sends on the active net."
+#define NOTE_VOLUME         "Radio volume %1%%."
 #define DEFAULT_VOLUME_FLOOR 0.3
 
 // --- Self test ------------------------------------------------------------------

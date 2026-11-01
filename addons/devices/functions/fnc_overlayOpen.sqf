@@ -8,8 +8,9 @@
  *
  * THE MAP DRAWS THE BFT. jmfsb_bft hangs its member icons on the vanilla
  * map's Draw event; the same handler is hung on this map, so everyone round
- * the player is on the device the way he is on the map screen. Guarded, not
- * required: the suite is assembled from whatever a mission has.
+ * the player is on the device the way he is on the map screen. jmfsb_ew's
+ * map layer (jammers, fixes) is hung the same way. Guarded, not required:
+ * the suite is assembled from whatever a mission has.
  *
  * Arguments:
  * None
@@ -36,6 +37,11 @@ if (isNull _display) exitWith {
 // Follow first, so the icons below are drawn on the map as it now stands.
 (_display displayCtrl IDC_OVERLAY_MAP) ctrlAddEventHandler ["Draw", {_this call FUNC(overlayFollow)}];
 (_display displayCtrl IDC_OVERLAY_MAP) ctrlAddEventHandler ["Draw", {_this call FUNC(overlayDrawRings)}];
+// The EW layer under the members: fixed jammers and the side's own jammers,
+// as on the map screen and the tablet (jmfsb_ew hangs it on those itself).
+if (!isNil QEFUNC(ew,mapDraw)) then {
+    (_display displayCtrl IDC_OVERLAY_MAP) ctrlAddEventHandler ["Draw", {_this call EFUNC(ew,mapDraw)}];
+};
 if (!isNil QEFUNC(bft,drawMembers)) then {
     (_display displayCtrl IDC_OVERLAY_MAP) ctrlAddEventHandler ["Draw", {_this call EFUNC(bft,drawMembers)}];
 };

@@ -3,7 +3,9 @@
  * Author: JMSB
  * Server: a ringing person accepts or declines. Accepting joins him to the
  * call net (and the whole call, the moment it goes live); declining tells
- * the caller.
+ * the caller. Reached by remoteExec from FUNC(callAccept) / callDecline: the
+ * unit must be the sender (jmfsb_common_fnc_senderIs). The decline goes to
+ * the caller by remoteExec (FUNC(callFailed)).
  *
  * Arguments:
  * 0: Call id <STRING>
@@ -14,13 +16,14 @@
  * None
  *
  * Example:
- * ["123_1", player, true] call jmfsb_voice_fnc_srvAnswer
+ * ["123_1", player, true] remoteExecCall ["jmfsb_voice_fnc_srvAnswer", 2]
  *
  * Public: No
  */
 
 params [["_callId", "", [""]], ["_unit", objNull, [objNull]], ["_accept", true, [true]]];
 
+if (!isServer || {!([_unit] call EFUNC(common,senderIs))}) exitWith {};
 private _call = GVAR(calls) getOrDefault [_callId, createHashMap];
 if (count _call == 0 || isNull _unit) exitWith {};
 private _ringing = _call get "ringing";
@@ -45,7 +48,7 @@ if (_accept) then {
 } else {
     private _from = _call get "from";
     if (!isNull _from && _from isNotEqualTo _unit) then {
-        [QGVAR(callFailed), [_callId, REASON_DECLINED, [_unit]], _from] call CBA_fnc_targetEvent;
+        [_callId, REASON_DECLINED, [_unit]] remoteExecCall [QFUNC(callFailed), _from];
     };
 };
 

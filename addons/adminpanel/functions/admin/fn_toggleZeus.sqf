@@ -44,7 +44,7 @@ if (!_hasZeus) then { // player doesn't have zeus, create zeus module
 
     if (_player != player) then { // show promoted player a message
         private _message = format ["%1 promoted you to Zeus!", name player];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
     };
     
     _zeus_ctrl ctrlSetTextColor COL_BUTTON_TEXT_ACTIVE;
@@ -57,7 +57,7 @@ if (!_hasZeus) then { // player doesn't have zeus, create zeus module
 
     if (_player != player) then { // show promoted player a message
         private _message = format ["%1 removed your Zeus access!", name player];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _player] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _player] call EFUNC(notify,broadcast);
     };
 
     _zeus_ctrl ctrlSetTextColor COL_BUTTON_TEXT_INACTIVE;

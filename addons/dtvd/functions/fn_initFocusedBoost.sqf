@@ -7,6 +7,9 @@ params [
     ["_enable",true,[false]]
 ];
 
+// No player on a server or headless client (review L3).
+if (!hasInterface) exitWith {};
+
 if (_enable) then {
     DT_viewDistance_zoomTempOn = addUserActionEventHandler ["zoomTemp","Activate",DT_fnc_focusedZoom];
     DT_viewDistance_zoomTempOff = addUserActionEventHandler ["zoomTemp","Deactivate",DT_fnc_focusedZoom];

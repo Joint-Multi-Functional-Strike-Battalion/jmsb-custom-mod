@@ -4,17 +4,19 @@
  * What the walking view's call strip (over the map's bottom left) says about
  * calls, when it has something to say (docs/DESIGN_VOICE.md, the phone and side images):
  *
- *   quick add   ADD < NAME > 2/5 - F1 add - 0 / . move - F4 close
- *   ringing     CALL from NOMAD 2-1 - F1 accept - F4 decline
- *   in a call   CALL 02:14 - NOMAD 2-1, S3 - F4 hang up
- *   dialling    CALL dialling NOMAD 2-1 - F4 hang up
+ *   quick add   ADD < NAME > 2/5 - NUM * add - 0 / . move
+ *   ringing     CALL from NOMAD 2-1 - NUM * answer - NUM / decline
+ *   dialling    CALL dialling NOMAD 2-1 - NUM * hang up
+ *   (each key as bound; an unbound one is left out)
  *   callback    CALLBACK pending - NOMAD 2-1 - rings when in reach
  *   last word   CALL no route - CALL BACK is available (a failure reason, the
  *               priority warning or the end, off jmfsb_voice_callState, held
  *               CALL_STATE_HOLD seconds; the warning outranks a live call)
  *
- * Otherwise "" and the strip is hidden. The F-keys named are the device keys
- * (Ctrl + numpad 1-4 by default).
+ * A LIVE CALL IS QUIET HERE (notes, 2026-10-30: the strip only while a key
+ * press is wanted): its clock is the talking box's (FUNC(overlayTalker)).
+ * Otherwise "" and the strip is hidden. The keys named are as bound (the
+ * device keys numpad 6-9, answer * and decline / by default).
  *
  * Arguments:
  * None
@@ -43,19 +45,32 @@ private _fnc_line = {
 private _calls = [] call EFUNC(voice,calls);
 private _live = _calls select {(_x param [1, ""]) in [CALL_LIVE, CALL_OUTGOING]};
 
+// The call keys as he has them bound (the numpad standard, user 2026-10-25:
+// answer / hang up / add numpad *; decline and F1 have no default key). A key
+// he has not bound is left out of the line rather than shown as UNBOUND.
+private _fnc_hint = {
+    params ["_action", "_word"];
+    private _key = [_action] call FUNC(keyLabel);
+    if (_key in [KEY_LABEL_UNBOUND, KEY_LABEL_NONE]) exitWith {""};
+    format [" %1 %2 %3", MIDDOT, _key, _word]
+};
+private _hintAnswer = [QGVAR(answerKey), "answer"] call _fnc_hint;
+private _hintHang = [QGVAR(answerKey), "hang up"] call _fnc_hint;
+
 if (GVAR(quickOpen)) exitWith {
     private _offer = [(_live param [0, []]) param [2, []]] call EFUNC(tacpad_apps,radioQuick);
+    private _close = [QGVAR(button_F1), "close"] call _fnc_hint;
     if (_offer isEqualTo []) exitWith {
-        ["ADD", HTML_OK, format ["nobody in reach to add %1 F4 close", MIDDOT]] call _fnc_line
+        ["ADD", HTML_OK, "nobody in reach to add" + _close] call _fnc_line
     };
     GVAR(quickCursor) = (GVAR(quickCursor) max 0) min (count _offer - 1);
     [
         "ADD", HTML_OK,
         format [
-            "&lt; %1 &gt; %2/%3 %4 F1 add %4 0 / . move %4 F4 close",
+            "&lt; %1 &gt; %2/%3",
             [[_offer select GVAR(quickCursor)]] call _fnc_names,
-            GVAR(quickCursor) + 1, count _offer, MIDDOT
-        ]
+            GVAR(quickCursor) + 1, count _offer
+        ] + ([QGVAR(answerKey), "add"] call _fnc_hint) + format [" %1 0 / . move", MIDDOT] + _close
     ] call _fnc_line
 };
 
@@ -70,24 +85,19 @@ if (_lastState isEqualTo CALL_WARNING && _lastWord isNotEqualTo "") exitWith {
 
 private _ring = _calls select {(_x param [1, ""]) isEqualTo CALL_RINGING};
 if (_ring isNotEqualTo []) exitWith {
-    ["CALL", HTML_TX, format ["from %1 %2 F1 accept %2 F4 decline", [(_ring select 0) param [2, []]] call _fnc_names, MIDDOT]] call _fnc_line
+    [
+        "CALL", HTML_TX,
+        format ["from %1", [(_ring select 0) param [2, []]] call _fnc_names]
+            + _hintAnswer + ([QGVAR(declineKey), "decline"] call _fnc_hint)
+    ] call _fnc_line
 };
 
 if (_live isNotEqualTo []) exitWith {
-    (_live select 0) params ["", "_state", ["_members", [], [[]]], "", ["_startedAt", CBA_missionTime, [0]]];
-    if (_state isEqualTo CALL_OUTGOING) exitWith {
-        ["CALL", HTML_OK, format ["dialling %1 %2 F4 hang up", [_members] call _fnc_names, MIDDOT]] call _fnc_line
-    };
-    private _s = floor ((CBA_missionTime - _startedAt) max 0);
-    [
-        "CALL", HTML_OK,
-        format [
-            "%1:%2 %3 %4 %3 F2 add %3 F4 hang up",
-            [floor (_s / SECONDS_PER_MINUTE), 2] call CBA_fnc_formatNumber,
-            [_s mod SECONDS_PER_MINUTE, 2] call CBA_fnc_formatNumber,
-            MIDDOT, [_members] call _fnc_names
-        ]
-    ] call _fnc_line
+    (_live select 0) params ["", "_state", ["_members", [], [[]]]];
+    // Dialling still wants a key (hang up); a live call's clock is the
+    // talking box's and the strip stays quiet.
+    if (_state isNotEqualTo CALL_OUTGOING) exitWith {""};
+    ["CALL", HTML_OK, format ["dialling %1", [_members] call _fnc_names] + _hintHang] call _fnc_line
 };
 
 if (_lastWord isNotEqualTo "") exitWith {

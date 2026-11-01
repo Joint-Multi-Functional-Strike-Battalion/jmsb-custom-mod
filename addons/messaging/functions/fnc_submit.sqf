@@ -99,10 +99,12 @@ if (_link isEqualTo 1) then {
     // field strength at the moment of the press, and the set says what it is
     // doing rather than looking slow.
     private _delay = 1 + ceil (_factor * 9);
-    [{[QGVAR(submit), _this] call CBA_fnc_serverEvent}, _event, _delay] call CBA_fnc_waitAndExecute;
+    [{_this remoteExecCall [QFUNC(srvSubmit), SERVER_OWNER]}, _event, _delay] call CBA_fnc_waitAndExecute;
     [_templateId, format ["Link degraded - transmitting in %1 s.", _delay]] call FUNC(notify);
 } else {
-    [QGVAR(submit), _event] call CBA_fnc_serverEvent;
+    // By remoteExecCall, so the server knows which machine sent it and files
+    // it under that machine's player (review S7).
+    _event remoteExecCall [QFUNC(srvSubmit), SERVER_OWNER];
 };
 
 [true, ""]

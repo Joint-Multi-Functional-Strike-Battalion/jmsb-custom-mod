@@ -37,109 +37,18 @@ params ["_modulePos", "_objectPos"];
         ];
         _pos params ["_modulePos"];
 
-        // End endex
-        if (!_endex) then {
-            if (missionNamespace getVariable [QEGVAR(Mission,Endex), true]) exitWith {
-                ["ENDEX CANCELED", "The endex has been called off - carry on."] call JMFSBFUNC(notify,broadcast);
-                missionNamespace setVariable [QEGVAR(Mission,Endex), false];
-                private _endexName = QEGVAR(Mission,Endex);
-                private _endexSet = missionNamespace getVariable [QEGVAR(Mission,Endex), false];
-                INFO_2("ENDEX","Mission var %1 is set %2",_endexName,_endexSet);
-            };
-            if !(missionNamespace getVariable [QEGVAR(Mission,Endex), true]) exitWith {
-                INFO("ENDEX","No endex in progress");
-            };
-        };
-    
-        //Endex message
-        ["ENDEX ENDEX ENDEX", "Debrief - leaders debrief in the channel below."] call JMFSBFUNC(notify,broadcast);
-
-        //hint Endex message - stays a hint, the notification panel cannot carry the logo splash
-        private _title = "<t color='#ffc61a' size='1.2' shadow='1' shadowColor='#000000' align='center'>ENDEX ENDEX ENDEX!</t><br />";
-        private _image = "<img size='5' image='z\jmfsb\addons\media\images\logo_512.paa' align='center'/><br /><br />";
-        private _text0 = "<t font='PuristaMedium' size='1.1'>Mission complete</t><br /><br />";
-        private _text1 = "Hold your fire and report to your Squad Leaders for debriefing.<br />";
-        private _text3 = "<t font='PuristaMedium' size='1.1'>Please safe your weapons if you haven't already!</t>";
-
-        parseText(_title + _text0 + _image + _text1 + _text3) remoteExecCall ["hint", -2];
-
-        //Set Safety to all Players
-        if (_weaponsSafe) then {
-            [{
-                private _weapon = currentWeapon player; 
-                private _safedWeapons = player getVariable ["ace_safemode_safedWeapons", []];
-                if !(_weapon in _safedWeapons) then {  
-                    [player, currentWeapon player, currentMuzzle player] call ace_safemode_fnc_lockSafety;
-                    INFO_4("ENDEX","Player %1 [%2] weapon ([%3 / %4]) have been set to safe.",player,typeOf player,currentWeapon player,currentMuzzle player);
-                };
-            }] remoteExec ["call", -2]; 
+        // The server decides, sets the Endex flag, says it to everyone and
+        // sends each machine its share - safety, healing, hold-fire, AI
+        // orders - after checking this machine is a Zeus or an admin (review
+        // S7). The flag and the notices used to be set from here, so any
+        // client could set them.
+        [_weaponsSafe, _aiPacified, _holdFireMessage, _healAllPlayers, _endex] remoteExecCall [QFUNC(endexRequest), SERVER_OWNER];
+        if (!_endex) exitWith {
+            ["Endex call-off sent"] call zen_common_fnc_showMessage;
         };
 
-        if (_healAllPlayers) then {
-            [{
-                [player, player] call ace_medical_fnc_treatmentAdvanced_fullHealLocal;
-                INFO_2("ENDEX","%1 [%2] have been healed.",player,typeOf player);
-            }] remoteExec ["call", -2]; 
-        };
-
-        //Change AI to careless (doesn't affected AI created after Endex)
-        if (_aiPacified) then {
-            {
-                (group _x) setBehaviourStrong "CARELESS";
-                (group _x) setCombatMode "BLUE";
-                INFO_2("ENDEX","AI %1 group (%2) have been set to careless and blue.",_x,group _x);
-            } forEach ((allUnits) - (allPlayers));
-        };
-
-        if (_holdFireMessage) then {
-            [
-                {
-                    [{
-
-                        private _fn_handleDischarge = {
-                            params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_magazine", "_projectile", "_gunner"];
-
-                            if !(missionNamespace getVariable [QEGVAR(Mission,Endex), false]) exitWith {};
-                            private _hftitle = format[
-                                "<t color='#ffc61a' size='1.2' shadow='1' shadowColor='#000000' align='center'>%1 %2<br />hold your Fire!</t><br /><br />",
-                                [_unit, 'USA'] call EFUNC(players,getRank),
-                                [_unit] call EFUNC(players,unit_getName)
-                            ];
-                            private _hfimage = "<img size='5' image='z\jmfsb\addons\media\images\logo_512.paa' align='center'/><br /><br />";
-                            private _hftext = "You are not allowed to discharge your weapon during Endex.<br />";
-
-                            hint parseText (_hftitle + _hfimage + _hftext);
-                            format ["Player %1 have discharge his weapon (%2; %3) during endex.", name _unit, _weapon, _muzzle] remoteExecCall [QEFUNC(diag,info), 0];
-                            if ( _unit getVariable [QEGVAR(player,endexFiredWeapon), ""] != _muzzle ) then {
-                                [
-                                    "ENDEX",
-                                    format [
-                                        "Hold your fire %1 %2!",
-                                        [_unit, 'USA'] call EFUNC(players,getRank),
-                                        [_unit] call EFUNC(players,unit_getName)
-                                    ],
-                                    NOTE_WARN
-                                ] call JMFSBFUNC(notify,broadcast);
-                                _unit setVariable [QEGVAR(player,endexFiredWeapon), _muzzle];
-                            };
-                        };
-                        if (!isNil{_unit getVariable [QEGVAR(Endex,EventsAdded), nil]}) then {
-                            [player, "fired", {player call _thisArgs#0}, [_fn_handleDischarge]] call CBA_fnc_addBISEventHandler;
-                            ["ace_firedPlayer", {player call _thisArgs#0;}, [_fn_handleDischarge]] call CBA_fnc_addEventHandlerArgs;
-                            ["ace_firedPlayerVehicle", {player call _thisArgs#0}, [_fn_handleDischarge]] call CBA_fnc_addEventHandlerArgs;
-                            _unit setVariable [QEGVAR(Endex,EventsAdded), true];
-                        };
-                    }] remoteExec ["call", -2];
-                },
-            [], 10] call CBA_fnc_waitAndExecute;
-        };
-
-        missionNamespace setVariable [QEGVAR(Mission,Endex), true];
-        private _endexName = QEGVAR(Mission,Endex);
-                private _endexSet = missionNamespace getVariable [QEGVAR(Mission,Endex), false];
-                INFO_2("ENDEX","Mission var %1 is set %2",_endexName,_endexSet);
-
-        [QEGVAR(init,getAttendance)] call CBA_fnc_localEvent;
+        // The server checks this sender too (review S7).
+        [] remoteExecCall [QEFUNC(init,srvAttendance), SERVER_OWNER];
 
         ["Endex called"] call zen_common_fnc_showMessage;
     },

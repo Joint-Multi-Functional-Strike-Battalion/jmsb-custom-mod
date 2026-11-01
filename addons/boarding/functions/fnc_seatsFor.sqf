@@ -13,20 +13,24 @@
  *
  * Arguments:
  * 0: The module <OBJECT>
+ * 1: Synchronised vehicles (optional, default the logic's public copy; the
+ *    server passes its own - review R1) <ARRAY>
  *
  * Return Value:
  * Vehicles with at least one free cargo seat <ARRAY>
  *
  * Example:
  * [_logic] call jmfsb_boarding_fnc_seatsFor
+ *
+ * Public: No
  */
 
-params [["_logic", objNull, [objNull]]];
+params [["_logic", objNull, [objNull]], ["_vehicles", nil, [[]]]];
 
 if (isNull _logic) exitWith {[]};
 
 private _at = getPosATL _logic;
-private _vehicles = _logic getVariable [QGVAR(vehicles), []];
+if (isNil "_vehicles") then {_vehicles = _logic getVariable [QGVAR(vehicles), []]};
 
 if (_vehicles isEqualTo []) then {
     _vehicles = (_at nearEntities [["Car", "Truck", "Tank", "Air", "Ship"], BOARD_VEH_SEARCH]);

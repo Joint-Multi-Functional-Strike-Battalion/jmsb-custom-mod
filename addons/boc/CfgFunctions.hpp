@@ -13,10 +13,9 @@ class CfgFunctions {
             class canAddItemToChestpack{file=REDIRECT_PATH;};
             class chestpack{file=REDIRECT_PATH;};
             class chestpackContainer{file=REDIRECT_PATH;};
-            class chestpackItems{file=REDIRECT_PATH;};
-            class chestpackMagazines{file=REDIRECT_PATH;};
+            // chestpackItems, chestpackMagazines and loadChestpack are gone:
+            // jmfsb_boc has no function they could redirect to (review L4).
             class clearAllItemsFromChestpack{file=REDIRECT_PATH;};
-            class loadChestpack{file=REDIRECT_PATH;};
             class removeChestpack{file=REDIRECT_PATH;};
             class removeItemFromChestpack{file=REDIRECT_PATH;};
             class removeMagFromChestpack{file=REDIRECT_PATH;};

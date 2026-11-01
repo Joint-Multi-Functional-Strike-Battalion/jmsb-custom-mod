@@ -48,7 +48,7 @@ private _eta = _wait + CM_BOOST_TIME + (_logic distance2D _target) / (_logic get
 [_logic, _target, format ["%1 - CRUISE STRIKE", _callsign]] call FUNC(mark);
 
 if (_wait >= 1) then {
-    [QGVAR(say), [_logic, format ["strike received - launch in %1 sec", round _wait], "normal"]] call CBA_fnc_globalEvent;
+    [_logic, format ["strike received - launch in %1 sec", round _wait], "normal"] call FUNC(say);
 };
 
 [_assetId, true, format [

@@ -61,7 +61,7 @@ _uav flyInHeight _alt;
 private _wp = _grp addWaypoint [_target, 0];
 _wp setWaypointType "MOVE";
 
-[QGVAR(say), [_logic, "munition launched", "normal"]] call CBA_fnc_globalEvent;
+[_logic, "munition launched", "normal"] call FUNC(say);
 
 [LINKFUNC(loiterTick), LM_TICK, [
     _uav, _logic, _target, _radius, _token, _enemy,

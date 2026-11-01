@@ -2,7 +2,8 @@
 /*
  * Author: JMSB
  * Puts the local player's active voice net where everyone else's squad table
- * and target card can read it: the name (QGVAR(radio)).
+ * and target card can read it: the name (QGVAR(radio)), on the unit he
+ * controls (CBA_fnc_currentUnit).
  *
  * ONLY WHEN IT CHANGES. A public variable is a network message, and sixteen
  * players broadcasting an unchanged string every few seconds is sixteen messages
@@ -23,9 +24,12 @@
 
 params ["", ""];
 
-if (isNull player) exitWith {};
+// The unit the player is in now - a Zeus-controlled one included - is the one
+// the squad table and target card look at (review L4).
+private _unit = call CBA_fnc_currentUnit;
+if (isNull _unit) exitWith {};
 
 private _net = [] call FUNC(radioState);
-if (_net isEqualTo (player getVariable [QGVAR(radio), ""])) exitWith {};
+if (_net isEqualTo (_unit getVariable [QGVAR(radio), ""])) exitWith {};
 
-player setVariable [QGVAR(radio), _net, true];
+_unit setVariable [QGVAR(radio), _net, true];

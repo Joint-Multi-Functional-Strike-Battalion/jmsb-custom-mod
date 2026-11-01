@@ -135,6 +135,14 @@ private _beaufort = switch (true) do {
 
 private _colW = _w - 2 * _pad;
 
+// THE VALUE COLUMN (user, 2026-10-30: "move this data to the left, hard to
+// read across screen like this"). The values were right-aligned at the far
+// edge of a row as wide as the page, so reading LOCAL TIME meant crossing the
+// whole screen for its figure. They start at WX_VALUE_AT of the row now,
+// left-aligned, one column just past the longest label; the labels and the
+// rules are where they were.
+private _valueX = _colW * WX_VALUE_AT;
+
 {
     _x params ["_label", "_value", "_hot"];
 
@@ -145,8 +153,8 @@ private _colW = _w - 2 * _pad;
     private _cx = _pad + _col * (_colW + _pad);
     private _ry = _y + (_forEachIndex - _col * _perCol) * _rowH;
 
-    [_body, [_cx, _ry, _colW * 0.46, _rowH], _label, _mute, (TEXT_BODY * _kFit), true, "left", true] call EFUNC(tacpad,drawText);
-    [_body, [_cx + _colW * 0.46, _ry, _colW * 0.54, _rowH], _value, ([_ink, _accent] select _hot), (TEXT_TITLE * _kFit), true, "right"] call EFUNC(tacpad,drawText);
+    [_body, [_cx, _ry, _valueX - _pad, _rowH], _label, _mute, (TEXT_BODY * _kFit), true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_cx + _valueX, _ry, _colW - _valueX, _rowH], _value, ([_ink, _accent] select _hot), (TEXT_TITLE * _kFit), true, "left"] call EFUNC(tacpad,drawText);
     [_body, [_cx, _ry + _rowH - RULE_THIN * pixelH, _colW, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 } forEach [
     ["LOCAL TIME", _clock, false],

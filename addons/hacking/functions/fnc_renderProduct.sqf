@@ -3,7 +3,8 @@
 Function: jmfsb_hacking_fnc_renderProduct
 
 Description:
-    Client end of every intel product. The server sends one event to everyone and
+    Client end of every intel product. The server sends it to everyone by
+    remoteExec (FUNC(sendProduct)) and
     the side filter is applied HERE, so an enemy client never draws the markers -
     and there is exactly one place that decides how intel looks.
 
@@ -19,7 +20,9 @@ Author:
 ---------------------------------------------------------------------------- */
 params ["_kind"];
 
-if (!hasInterface) exitWith {};
+// Taken only from the server (FUNC(sendProduct), by remoteExec): no client
+// can draw false intel on his side's maps (review S7).
+if (!hasInterface || {!([] call EFUNC(common,fromServer))}) exitWith {};
 
 private _lifetime = [QGVAR(cfg_intel_lifetime)] call FUNC(hackSetting);
 private _alpha = [QGVAR(cfg_intel_alpha)] call FUNC(hackSetting);

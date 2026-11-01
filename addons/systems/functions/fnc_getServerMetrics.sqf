@@ -15,7 +15,15 @@
  * Public: No
  */
  
-params ["_clientID"];
+params [["_clientID", 0, [0]]];
+
+if (!isServer) exitWith {};
+// By remoteExec: an admin's request, answered to his own machine, never to
+// one the arguments name (review R1).
+if (isRemoteExecuted) then {
+    _clientID = [-1, remoteExecutedOwner] select ([] call JMFSBFUNC(common,senderIsAdmin));
+};
+if (_clientID <= 0) exitWith {};
 
 private _countUnits = ({ local _x } count allUnits);
 private _countGroups = ({ local _x } count allGroups);
@@ -45,4 +53,4 @@ private _report = format [
     _fps, _fpsMin, _upTime, _missionTime
 ];
 
-[QJMFSBGVAR(notify,post), ["Server Metrics", _report, NOTE_INFO, sideUnknown], _clientID] call CBA_fnc_targetEvent;
+["Server Metrics", _report, NOTE_INFO, _clientID] call JMFSBFUNC(notify,broadcast);

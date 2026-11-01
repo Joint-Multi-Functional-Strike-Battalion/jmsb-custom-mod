@@ -34,8 +34,16 @@ PREP(platoonTags);
 PREP(tagSet);
 PREP(tagCallout);
 PREP(cltMarker);
+PREP(cltReject);
+PREP(cltCacheClear);
+// Hooks for the server's refusal, run by cltReject, and for traffic
+// arriving, run by cltReceive (review S7).
+PREP(onReject);
+PREP(onReceive);
 
-// Server
+// Server. A client reaches only srvSubmit, srvRequestIndex, srvRequestThread,
+// srvMarkRead and srvClaim, by remoteExecCall, and each checks the sender at
+// its top (review S7).
 PREP(srvSubmit);
 PREP(srvThreadFor);
 PREP(srvDeliver);
@@ -45,6 +53,7 @@ PREP(srvMembers);
 PREP(srvBoxesFor);
 PREP(srvIndexFor);
 PREP(srvRequestIndex);
+PREP(srvIndexPush);
 PREP(srvRequestThread);
 PREP(srvMarkRead);
 PREP(srvClaim);

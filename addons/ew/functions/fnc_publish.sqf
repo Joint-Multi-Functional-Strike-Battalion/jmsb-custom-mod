@@ -101,7 +101,7 @@ private _clients = [];
 
     private _eye = eyePos _p;
     private _spectrum = BANDS_ALL apply {
-        [_x, round ([_eye, _x, "", 0] call EFUNC(rf,noise)), round ((([_x] call EFUNC(rf,bandInfo)) param [2, 0]))]
+        [_x, SLICE_NOISE_DB * round (([_eye, _x, "", 0] call EFUNC(rf,noise)) / SLICE_NOISE_DB), round ((([_x] call EFUNC(rf,bandInfo)) param [2, 0]))]
     };
 
     private _kit = [_p] call FUNC(kit);

@@ -32,12 +32,6 @@
 #define JAM_RF_RADIO_BANDS      ["VHF", "UHF"]
 #define JAM_RF_DATA_NET         "DATA"
 
-// ACRE2 jamming levers - fraction of received signal STRENGTH removed, applied
-// through acre_api_fnc_setCustomSignalFunc (strengthPct *= 1 - frac).
-#define ACRE_JAM_FULL           0.98    // fraction removed inside a jammer's core
-#define ACRE_JAM_NEAR           0.6     // at the inner edge of the falloff band
-#define ACRE_JAM_FAR            0       // at the outer edge (no jam)
-
 // --- zone registry ---------------------------------------------------------
 // One entry per zone. Indices 0-2 are FROZEN: pre-registry consumers (the jam
 // loop, fnc_hasDetector, hacking's fnc_nearestTower) read them positionally.
@@ -100,7 +94,7 @@
 
 // THE THREE DOMAINS (user, 2026-08-31). A zone denies one or more of them, and
 // every consumer asks about the one it cares about rather than about "jamming".
-//   radio - the voice net: game voice (through RF) and ACRE degradation
+//   radio - the voice net: game voice (through RF)
 //   data  - TAC//MSG traffic and other groups' BFT markers
 //   gps   - the GPS item and the map self-icon
 // DOM_ANY is not a domain a zone can carry; it is the question the HUD and the
@@ -136,6 +130,21 @@
 // One of each of these joins it, rolled per site so no two look identical.
 #define JAM_PROP_OMNI       ["OmniDirectionalAntenna_01_sand_F", "OmniDirectionalAntenna_01_black_F", "OmniDirectionalAntenna_01_olive_F"]
 #define JAM_PROP_DISH       ["SatelliteAntenna_01_Sand_F", "SatelliteAntenna_01_Olive_F", "SatelliteAntenna_01_Black_F"]
+// The terminals an ACE menu is put on (fnc_disableStart, fnc_hackStart).
+#define JAM_PROP_TERMINALS  [JAM_PROP_GPS, JAM_PROP_DATA, JAM_PROP_RADIO]
+// Disabling by hand: how close, the unit traits that may (fnc_canDisable),
+// the menu's icon, and the notification accents.
+#define DISABLE_RANGE       4
+// The server's re-check of a disable (FUNC(disableSite), review R1) allows
+// this much more, for the position the client last sent.
+#define DISABLE_RANGE_SLACK 3
+#define SERVER_OWNER        2
+#define DISABLE_TIME_DEF    20
+#define TRAIT_ENGINEER      "engineer"
+#define TRAIT_EOD           "explosiveSpecialist"
+#define JAM_ACTION_ICON     "\a3\ui_f\data\igui\cfg\simpleTasks\types\interact_ca.paa"
+#define NOTIFY_OK           [0.4, 0.702, 0.4, 1]
+#define NOTIFY_WARN         [0.871, 0.361, 0.188, 1]
 
 // How far the two dressing props stand from the terminal, and how big the ALiVE
 // objective the site is registered as ends up being.

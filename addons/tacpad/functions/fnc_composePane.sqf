@@ -269,19 +269,15 @@ private _tagSet = [];
 if (!isNil QEFUNC(messaging,tagSet)) then {_tagSet = [player] call EFUNC(messaging,tagSet)};
 if (_tagSet isNotEqualTo []) then {
     private _picked = ((GVAR(composeTags) splitString ",") apply {toUpper (trim _x)}) select {_x isNotEqualTo ""};
-    private _chipH = _btnH * 0.75;
+    private _chipH = _btnH * CHIP_H_K;
     private _chipW = (_dw - 2 * _pad) / ((count _tagSet) max 4) - _pad;
 
     {
         private _on = _x in _picked;
         private _sx = _dx + _pad + _forEachIndex * (_chipW + _pad);
 
-        if (_on) then {
-            [_root, [_sx, _y, _chipW, _chipH], _accent] call FUNC(drawFill);
-        } else {
-            [_root, [_sx, _y, _chipW, _chipH], _line, RULE_THIN] call FUNC(drawFrame);
-        };
-        [_root, [_sx + _pad * 0.5, _y, _chipW - _pad, _chipH], _x, ([_mute, _ground] select _on), TEXT_LABEL, true, "center"] call FUNC(drawText);
+        // The one chip primitive (notes, 2026-10-30): picked is the accent filled.
+        [_root, [_sx, _y], _chipH, _x, [CHIP_OUTLINE, CHIP_ACCENT_FILL] select _on, _chipW] call FUNC(drawChip);
 
         private _hit = [_root, [_sx, _y, _chipW, _chipH], {
             params ["_ctrl"];

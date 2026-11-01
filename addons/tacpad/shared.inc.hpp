@@ -140,12 +140,57 @@
 #define TEXT_DISPLAY 1.6
 // LABEL and BODY are drawn this many pixels larger than the scale (FUNC(textSize);
 // user, 2026-10-21: "make the font on all the apps 1px larger, not the headers").
-#define APP_TEXT_PX 1
+// Raised to 3 (user, 2026-10-24: "larger font for all apps").
+#define APP_TEXT_PX 3
 // Two pixels more than that for the text the user asked up on 2026-10-22 -
 // the squad rail and the tiles' small lines ("2px larger") - through
 // jmfsb_tacpad_fnc_textPx, whose answer FUNC(textSize) then leaves alone.
 #define TEXT_UP_PX 2
 #define APP_TEXT_UP_PX (APP_TEXT_PX + TEXT_UP_PX)
+
+// THE TWO TYPE ROLES (TAC//APP UI notes, 2026-10-30): words in the condensed
+// sans; numbers - values, grids, times, callsigns - in the monospace, so a
+// value changing width never moves a neighbour. FUNC(drawText) takes the font
+// as its ninth argument, "" being the label role; bold picks the bold cut.
+#define FONT_LABEL "RobotoCondensed"
+#define FONT_LABEL_BOLD "RobotoCondensedBold"
+#define FONT_MONO "EtelkaMonospacePro"
+#define FONT_MONO_BOLD "EtelkaMonospaceProBold"
+#define TEXT_MONO FONT_MONO
+
+// THE ROW RHYTHM (notes, 2026-10-30): a row is this many screen pixels on a
+// full-size host - the vanilla map, the tablets - and this many on the hand
+// devices' own rows. ROW_H_SCREEN is what a list row measures: the class's
+// pixels, grown by the text scale only when the type would overflow them
+// (FUNC(row) holds its type to the row either way). Rules: 1 px between rows
+// (RULE_THIN), 2 px between regions (RULE_THICK), 3 px under the tile band.
+#define ROW_PX_FULL 28
+#define ROW_PX_DEVICE 24
+#define ROW_FIXED (ROW_PX_FULL * pixelH)
+#define ROW_H_SCREEN ((ROW_H * EGVAR(tacpad,textScale) * HOST_H) max ROW_FIXED)
+#define RULE_BAND 3
+// A dashed outline (FUNC(drawFrame)): dash and gap, screen pixels. STALE is a
+// dashed outline with dim text, never dim text alone.
+#define DASH_PX 6
+#define DASH_GAP_PX 4
+
+// THE CHIP (FUNC(drawChip)), one primitive for the priority chips, the
+// compose tags, the reader's net tabs and the RADIO board's ticks: this share
+// of a row tall, this much air either side of its word, the word in the
+// monospace at this share of the label size and tracked. CHIP_GLYPH is a
+// tracked monospace glyph's advance against the line height (FUNC(chipWidth)).
+#define CHIP_H_K 0.75
+#define CHIP_PAD_PX 10
+#define CHIP_SIZE_K 0.85
+// (0.55 cut the third letter of ALL and the last of GHOST on the reader's
+// tabs - the structured text keeps a margin each side; user, 2026-10-31:
+// "overlapping text")
+#define CHIP_GLYPH 0.68
+#define CHIP_OUTLINE "outline"
+#define CHIP_ACCENT_OUTLINE "accentOutline"
+#define CHIP_ACCENT_FILL "accentFill"
+#define CHIP_INK_FILL "inkFill"
+#define CHIP_DIM "dim"
 
 // Where a panel goes when it has never been placed, as [x, y, w, h] fractions.
 // Taken off the mockup: tiles across the top band, squad down the left rail,

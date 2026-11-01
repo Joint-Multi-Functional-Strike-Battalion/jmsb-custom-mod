@@ -7,7 +7,8 @@ class CfgPatches {
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
-            "jmfsb_main"
+            "jmfsb_main",
+            "jmfsb_common"
         };
         author = QAUTHOR;
         VERSION_CONFIG;

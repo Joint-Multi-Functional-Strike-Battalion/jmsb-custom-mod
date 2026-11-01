@@ -4,6 +4,12 @@
 
 The safe-start hold that keeps a mission frozen until it is time.
 
+At start the player's weapon goes on his back (`lowerWeapon`) and, with
+Lock weapon on and ACE safe mode loaded, its safety goes on (`enableSafety`).
+Both are plain calls on the player's own machine; `lowerWeapon` on a unit
+local elsewhere is sent there by the server alone. They were CBA events any
+client could raise to make anyone sling his weapon (review R1).
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -12,7 +18,7 @@ The safe-start hold that keeps a mission frozen until it is time.
 
 ## Ships
 
-4 functions.
+5 functions.
 
 ## CBA settings
 
@@ -22,8 +28,9 @@ The safe-start hold that keeps a mission frozen until it is time.
 
 ## Functions
 
-<details><summary>4</summary>
+<details><summary>5</summary>
 
+- `jmfsb_safestart_fnc_enableSafety`
 - `jmfsb_safestart_fnc_grenadeBindCondition`
 - `jmfsb_safestart_fnc_grenadeBindWarn`
 - `jmfsb_safestart_fnc_lowerWeapon`

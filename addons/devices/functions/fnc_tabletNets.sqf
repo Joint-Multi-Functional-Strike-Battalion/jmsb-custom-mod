@@ -3,8 +3,10 @@
  * Author: JMSB
  * The tablet's net row (docs/images/voice_tablet_nets.png): one square cell
  * per voice net the player is on - the same nets the walking view shows, from
- * the same function (FUNC(overlayNets)), never a frequency. The frame's LEFT /
- * RIGHT keys step the active net.
+ * the same function (FUNC(overlayNets)), never a frequency. A CELL IS A
+ * BUTTON (user, 2026-10-31: "the von chips should be clickable"): a press
+ * makes that net the active one (FUNC(netSelect)), as its SELECT NET key
+ * does; the frame's LEFT / RIGHT keys page the live tiles, not the nets.
  *
  * THE OUTLINE IS THE NET'S STATE, the walking view's answer (FUNC(netOutline)):
  * green good, amber weak or jammed, red no route (never hidden), dim muted.
@@ -46,7 +48,7 @@ private _cells = ([] call FUNC(overlayNets)) apply {
 };
 
 private _global = !isNil QEFUNC(voice,global)
-    && {missionNamespace getVariable [QEGVAR(voice,active), false]}
+    && {(missionNamespace getVariable [QEGVAR(voice,system), ""]) isEqualTo VOICE_SYSTEM_VON}
     && {[player] call EFUNC(voice,canGlobal)};
 private _globalOn = _global && {missionNamespace getVariable [QEGVAR(voice,globalOn), false]};
 
@@ -69,7 +71,7 @@ private _dimOnInk = [0, 1, 2] apply {(_solid select _x) + ((_ink select _x) - (_
 _dimOnInk pushBack 1;
 
 if (_cells isEqualTo []) exitWith {
-    [_body, [_gapX, 0, _w - 2 * _gapX, _h], (switch (true) do {case (isNil QEFUNC(voice,netState)): {"NO VOICE ADDON"}; case !(missionNamespace getVariable [QEGVAR(voice,active), true]): {format ["%1: NO NET", toUpper (missionNamespace getVariable [QEGVAR(voice,system), ""])]}; default {"NO VOICE NET"}}), _dimOnInk, TABLET_TEXT_NET, true] call EFUNC(tacpad,drawText);
+    [_body, [_gapX, 0, _w - 2 * _gapX, _h], (switch (true) do {case (isNil QEFUNC(voice,netState)): {"NO VOICE ADDON"}; case !(missionNamespace getVariable [QEGVAR(voice,active), true]): {TEXT_VOICE_UNAVAILABLE}; default {"NO VOICE NET"}}), _dimOnInk, TABLET_TEXT_NET, true] call EFUNC(tacpad,drawText);
     true
 };
 
@@ -87,16 +89,24 @@ if (_global) then {
     [_body, _rect, {[] call EFUNC(voice,global)}] call EFUNC(tacpad,drawHit);
 };
 
-private _count = count _cells;
+// SIX EQUAL CELLS ACROSS THE FULL WIDTH whatever the count (notes,
+// 2026-10-30), NET_CELL_PX_TABLET tall, an empty one a dim outline. The
+// legend - the keys - is a tooltip over the row: text only on hover.
+private _count = NET_ROW_CELLS;
 private _inner = _w - ([0, _globalW + _gapX] select _global);
-private _cellW = ((_inner - (_count + 1) * _gapX) / _count) min (TABLET_NET_CELL_MAX_W * _unitW);
-private _cellH = _h - 2 * _gapY;
+private _cellW = (_inner - (_count + 1) * _gapX) / _count;
+private _cellH = (_h - 2 * _gapY) min (NET_CELL_PX_TABLET * pixelH);
+private _cellY = (_h - _cellH) / 2;
 // The ear tag sits in a square at the cell's right end.
 private _tagW = _cellH * pixelW / pixelH;
 
-{
-    _x params ["_label", "_active", "_outline", "_ear", "_muted", "_ring", "_tx"];
-    private _rect = [_gapX + _forEachIndex * (_cellW + _gapX), _gapY, _cellW, _cellH];
+for "_i" from 0 to (_count - 1) do {
+    private _rect = [_gapX + _i * (_cellW + _gapX), _cellY, _cellW, _cellH];
+    if (_i >= count _cells) then {
+        ([_body, _rect, _dimOnInk, RULE_THIN] call EFUNC(tacpad,drawFrame)) apply {_x ctrlSetTooltip TABLET_NET_LEGEND};
+        continue;
+    };
+    (_cells select _i) params ["_label", "_active", "_outline", "_ear", "_muted", "_ring", "_tx"];
     private _fill = switch (true) do {
         case (_tx): {COLOUR_TX};
         case (_ring): {COLOUR_ALERT};
@@ -109,13 +119,23 @@ private _tagW = _cellH * pixelW / pixelH;
         default {_solid};
     };
 
-    [_body, _rect, _fill] call EFUNC(tacpad,drawFill);
+    ([_body, _rect, _fill] call EFUNC(tacpad,drawFill)) ctrlSetTooltip TABLET_NET_LEGEND;
     [_body, _rect, _outline, NET_EDGE_PX] call EFUNC(tacpad,drawFrame);
-    [_body, _rect, _label, _text, TABLET_TEXT_NET, true, "center"] call EFUNC(tacpad,drawText);
+    // The label's box stops where the ear tag's begins (user, 2026-10-31:
+    // "overlapping text"), so a long name never runs under the tag.
+    _rect params ["_cx", "_cy", "_cw", "_ch"];
+    private _labelW = _cw - ([0, _tagW] select (_ear isNotEqualTo ""));
+    ([_body, [_cx, _cy, _labelW, _ch], _label, _text, TABLET_TEXT_NET, true, "center"] call EFUNC(tacpad,drawText)) ctrlSetTooltip TABLET_NET_LEGEND;
     if (_ear isNotEqualTo "") then {
-        _rect params ["_cx", "_cy", "_cw", "_ch"];
         [_body, [_cx + _cw - _tagW, _cy, _tagW, _ch], _ear, COLOUR_DIM, TABLET_TEXT_NET, true, "center"] call EFUNC(tacpad,drawText);
     };
-} forEach _cells;
+    // The press: the cell's number is its SELECT NET number.
+    private _hit = [_body, _rect, {
+        params ["_ctrl"];
+        [_ctrl getVariable [QGVAR(netIndex), 0]] call FUNC(netSelect);
+    }] call EFUNC(tacpad,drawHit);
+    _hit setVariable [QGVAR(netIndex), _i + 1];
+    _hit ctrlSetTooltip TABLET_NET_LEGEND;
+};
 
 true

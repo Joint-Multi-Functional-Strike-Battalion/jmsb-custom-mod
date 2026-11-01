@@ -17,7 +17,7 @@
         "Use squad tags in names",
         "Reads each player's squad.xml tag and puts it in front of their name. Off (the default) leaves the profile name untouched and never asks the engine for squad data - which also stops the engine trying to draw a squad logo it may not have on disk."
     ],
-    ["1st Joint Multi-Functional Strike Battalion", "Players"],
+    ["JMSB - Mission & Admin", "Players"],
     false,
     true
 ] call CBA_fnc_addSetting;

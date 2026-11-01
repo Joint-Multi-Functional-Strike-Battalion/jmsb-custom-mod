@@ -670,6 +670,7 @@ terrain or under a jammer.
 | P12.40 | Field Manual (2026-10-23): pause menu > Field Manual | A **1st JMSB** category with four topics - Radio voice, Staging zone, Map and tablet, Ammunition - 25 entries; each opens with its sign board as the picture and the board's words as the text, colours and line breaks intact (nothing shows as raw `<t ...>` tags) | ☐ |
 | P12.41 | Field Manual: Radio voice > The tablet | The tablet board with its 13 numbered callouts; the text lists 1-13 in order and matches the board | ☐ |
 | P2.2i | Tablet corners (2026-10-23): open the tablet, look at all four corners of the dark recess band | Each corner is slightly round - the frame's olive fills the corner outside the arc, no square dark corner, no gap; the left corners' rubber lobes sit over the screen as before | ☐ |
+| P2.2j | STABILIZE (2026-10-31), an ACM night with Require antibiotics on: **[2P]** he is down and bleeding, no Ertapenem in him; select him in the console, press **STABILIZE** (the medical block, above WAKE UP; TAC//PAC beside the three buttons at their height) | Notification "<name>: bleeding stopped, Ertapenem 1 g IV given" in green; his bleeding stops, he stays unconscious, his triage card reads Ertapenem IV (1g); a medic's Convert Casualty action is offered within 5 s (his side met: medic skill, place, tickets). Press again: "already meets what ACM's conversion needs of him". On a conscious man the note ends "conscious, and ACM converts unconscious casualties only"; without ACM loaded: "ACM is not loaded" in red | ☐ |
 
 ### P13. Numpad keys
 
@@ -815,3 +816,224 @@ staging zone.
 | P19.10 | RTO: a slot with no RTO role description and no RTO skill; CALLS contacts and MANAGE | You are **not** the RTO (no RTO tag, no FLASH). A slot named "RTO" (or the PAC RTO skill) is | ☐ |
 
 ---
+
+### P20. Echo test (voice over LiveKit)
+
+Built 2026-10-29 (docs/DESIGN_VOICE_LIVEKIT.md "Echo test",
+addons/adapter_livekit). Needs the LiveKit voice server (the Pelican egg) up
+with Echo test true, and the server's CBA settings JMSB - Voice (Built-in) >
+Voice server (LiveKit) set: `ws://VOICE-SERVER:7880` (or `wss://game9001.ghostsofbattle.com:7880`
+with the egg's Encryption on: run P20.2-P20.5 once each way), the egg's key and secret. Windows
+client; the mod's `jmsb_voice_x64.dll` loads with it. A headset, so the
+playback does not reach your mic.
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P20.1 | Start; read your client RPT | `jmsb_voice extension 0.1.0`. (On a client without the DLL: `jmsb_voice extension not loaded - no echo test`, and no ECHO TEST row anywhere) | ☐ |
+| P20.2 | Phone RADIO app, CALLS tab | First row ECHO TEST, VOICE SERVER, READY, CALL | ☐ |
+| P20.3 | Cursor on ECHO TEST, F2 | Notification "Calling the voice server..."; row CALLING, then within ~2 s LIVE and the notification "Talk, then pause: you hear it back". Header ECHO TEST - LIVE; F4 reads HANG UP. Voice server console: `echo: answered echo-<your UID>` | ☐ |
+| P20.4 | Say a sentence, then stop | About 1 s after you stop, you hear the sentence back. Voice server console: `recording <UID>`, `playing N s back to <UID>` | ☐ |
+| P20.5 | F4 | Notification "Ended."; row READY. Voice server console: `left echo-<UID>` | ☐ |
+| P20.6 | Tablet RADIO page, CONTACTS: ECHO TEST CALL; talk; HANG UP | Same as P20.3-P20.5 on the tablet's row | ☐ |
+| P20.7 | **[2P]** Both run the echo test at the same time | Each hears only his own words back | ☐ |
+| P20.8 | Voice server egg: Echo test false (restart it); call ECHO TEST | After 15 s: "No answer: the voice server, or its echo test, is off." Row READY | ☐ |
+| P20.9 | Admin: clear the API secret setting (server); call ECHO TEST | "...the voice server's address, key or secret is not set..." at once. Set it back | ☐ |
+| P20.10 | Start the echo test, leave it LIVE, Escape and abort the mission | Voice server console: `left echo-<UID>` within a few seconds (the mic closes with the mission) | ☐ |
+
+---
+
+### P21. Holiday crests on the loading screen
+
+Built 2026-10-30 (addons/loading `CfgLoadingScreen.hpp` Holidays,
+`fnc_holiday`, `fnc_holidayDate`). The crest beside the mission box is a
+holiday's from 7 days before its day through the day (New Year's: Dec 26 to
+Jan 2), the unit's otherwise. The picker takes a date, so the rest is the
+debug console on any day - no clock changes.
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P21.1 | Load any mission between Oct 24 and Oct 31 | The pumpkin crest (halloween) where the unit crest stands, 512 px square, top on the mission box's top; the unit crest on Nov 1 | ☐ |
+| P21.2 | Debug console: `configName ([[2026, 12, 25]] call jmfsb_loading_fnc_holiday)` | `"christmas"` | ☐ |
+| P21.3 | The same with `[2026, 12, 26]`, `[2027, 1, 2]`, `[2027, 1, 3]`, `[2026, 12, 17]` | `"newYearsDay"`, `"newYearsDay"`, `""`, `""` | ☐ |
+| P21.4 | The same with `[2026, 11, 19]`, `[2026, 11, 27]`, `[2026, 5, 18]`, `[2026, 10, 5]`, `[2027, 3, 21]` | `"thanksgiving"` (Nov 26), `""`, `"memorialDay"` (May 25), `"indigenousPeoplesDay"` (Oct 12), `"easter"` (Mar 28) | ☐ |
+| P21.5 | `([configFile >> "jmfsb_loading_CfgLoadingScreen" >> "Holidays" >> "thanksgiving", 2026] call jmfsb_loading_fnc_holidayDate) - ([2026, 11, 1] call jmfsb_common_fnc_daysFromCivil) + 1` | `26` | ☐ |
+| P21.6 | A mission with a database boot (the TAC//PAC INITIALISING THE UNIT overlay shows), inside a holiday window | The overlay's mark is the holiday's crest, square, where the unit crest stood; outside a window the unit crest | ☐ |
+| P21.7 | Start the game inside a holiday window; look at the main menu | The crest above the three server buttons is the holiday's; outside a window the unit crest. Client RPT with debug on: `Main menu crest` names the holiday | ☐ |
+
+---
+
+### P22. Voice over the voice server (LiveKit is the VON)
+
+Built 2026-10-31 (addons/adapter_livekit, docs/DESIGN_VOICE_LIVEKIT.md).
+Needs the LiveKit egg up and the server's JMSB - Voice (Built-in) > Voice
+server (LiveKit) settings set, as P20. Two Windows clients with the mod's
+`jmsb_voice_x64.dll`. Headsets. Game VON must carry nothing.
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P22.1 | Start; read the client RPT | `voice: livekit carries the voice`, `voice adapter in use: livekit`, then `voice server: in the room mission-...`; notification VOICE "On the voice server." | ☐ |
+| P22.2 | Esc > chat channel list; try Arma's Push To Talk on every channel | No channel carries voice (the speaker icon stays off); text still works on all | ☐ |
+| P22.3 | **[2P]** Both on the same TEAM net; hold Caps Lock, talk | The other hears you; the net chip reads TX on your side, your name on his talking chip. Release: silence | ☐ |
+| P22.4 | **[2P]** Set net 2's ear to L on the RADIO app; the other talks on it | Heard in the left ear only | ☐ |
+| P22.5 | **[2P]** The other walks 100 m off and holds Shift + Caps Lock (talk local) | Nothing. At 40 m faint, beside you full; from your right in the right ear | ☐ |
+| P22.6 | **[2P]** Both in one vehicle; talk local | Full volume whatever the seats | ☐ |
+| P22.7 | **[2P]** Mute net 1 (Ctrl + numpad 1); the other talks on it | Silence; unmute: heard | ☐ |
+| P22.8 | Call the ECHO TEST (P20), hang up | Works; RPT: the room left, then `in the room` again within a second | ☐ |
+| P22.9 | Kill the LiveKit egg; wait; start it again | Notification "The voice server dropped you ... Rejoining."; within 10 s of the egg being back: "On the voice server." | ☐ |
+| P22.10 | Server: clear the API secret, restart the mission | One notification "No voice: the voice server's address, key or secret is not set"; RPT `voice server: the server cannot sign us in` every 60 s. Set it back | ☐ |
+| P22.11 | Rename `jmsb_voice_x64.dll` away on one client, start | That client's RPT: `jmsb_voice extension not loaded - no voice server`; `voice: von carries the voice`; Group / Vehicle / Direct carry voice for him. Put it back | ☐ |
+| P22.12 | Settings untouched (Speakers and Microphone empty); call the ECHO TEST | The echo plays in the headset: `%LOCALAPPDATA%\Arma 3\jmsb_voice.log` says `speakers: Windows' communications device 'Headset Earphone (...)'` and `microphone: ...`. If Windows has no communications device set, the default device, and then: Addon Options > JMSB - Voice (Built-in) > Speakers = part of the headset's name (the RPT lists the names after `voice devices`); the log says `reopened` | ☐ |
+| P22.13 | End the mission, exit the game from the main menu | No crash on exit (2026-10-31's two runs crashed there). The log's last line: `process exit with the voice runtime up: ending the process here`. The RPT may end before the `Extensions:` list - that is the DLL ending the process after the engine's own shutdown | ☐ |
+| P22.14 | Tablet SETTINGS, the walking view | No NET cell on the phone's status line; the status facts in one line of one size, each cell as wide as its text; the first net chip a gutter in from the screen's edge; the tablet bar's facts on one line either side of the clock; two-letter tile badges (RF, UP) on one line; the reader's ALL and GHOST tabs whole; no white hairline down the tablet frame's outer edges | ☐ |
+
+### P23. Code review fixes (2026-10-31)
+
+From docs/REVIEW_CODE_2026-10-31.json. Nothing below was run before this list
+was written. A dedicated server, two clients and, where it says so, a headless
+client. **[CHEAT]** rows use a client's debug console (local exec) to play a
+client that lies; each must be refused, with a WARNING in the server RPT.
+
+**Admin and trust (S1-S7)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.1 | Join, not logged in, not on any admin list; `#jmfsb admin.me` | Nothing (the surface is silent). Then `#login`: within 5 s the console opens for you and `#jmfsb admin.me` says "server says admin: true (... #login: true)" | ☐ |
+| P23.2 | **[CHEAT]** As a non-admin: `player setVariable ["jmfsb_common_isAdmin", true, true]`, then open the console and press SET TIME, GRANT ADMIN, ZEUS, RANK | The console may open (screens trust the flag) but nothing happens on the server; each refused in the server RPT | ☐ |
+| P23.3 | **[CHEAT]** As a non-admin: `["hint 'pwned'", clientOwner] remoteExec ["admp_fnc_compileAndExec", 2]` | No hint anywhere; server RPT "compileAndExec refused: machine N is not an admin" | ☐ |
+| P23.4 | **[CHEAT]** As a non-admin: `admp_authorisedIDs pushBack getPlayerUID player; publicVariable "admp_authorisedIDs"`; then any PAC admin page action | Refused; the server's list is unchanged (`#jmfsb admin.list` from a real admin) | ☐ |
+| P23.5 | **[CHEAT]** As a non-admin, pass an admin's unit: `[<adminUnit>, getPlayerUID player, "rankId", "COL"] remoteExec ["jmfsb_pac_fnc_adminSet", 2]` | Refused - the caller is not the sender | ☐ |
+| P23.6 | Admin: code box REMOTE on the other client: `hint str clientOwner` | The hint shows on his screen; the return line comes back to your console | ☐ |
+| P23.7 | Admin: GRANT ADMIN on the other player, then revoke; then try to revoke a TAC//PAC admin the same way | He gets access, then loses it; the PAC admin: "is an admin by the mod's list or TAC//PAC's admins, not by a grant here" | ☐ |
+| P23.8 | Admin: TIME / WEATHER SET on both; STABILIZE a bleeding casualty | Time, weather (both clients' overcast) and the casualty change as before (P2.2j) | ☐ |
+| P23.9 | Add a Steam id on the PAC admins page; that player reopens the console | He is an admin at once (server list follows the section); remove it - he is not | ☐ |
+| P23.10 | Mission `cba_settings.sqf` with `jmfsb_adminpanel_everyoneAdmin = true` | Everyone passes; **[CHEAT]** on a mission without it, publishing the variable true changes nothing | ☐ |
+| P23.11 | A player types `#jmfsb state` as an admin, with two other clients connected | The reply comes once, to him only; other clients see nothing and do not run it | ☐ |
+| P23.11a | Normal use, dedicated: task support_air (CAS, transport, drop, QRF) and RTB; a support_fires FFE and CHECK FIRE; CAS drone SAD / LOITER / RTB; artillery carrier pre-deploy, deploy, pack, clear spot; a medic evac; a tower hack and an intel deposit (3 items, deposit pressed twice); a free-text to HQ; Zeus Call Endex; ZEN respawn; drop kits and build a patrol base; UAV GO TO / ORBIT / RTB / LASE | All work as before. The deposit banks 3 once; a tower hacked again while cooling says "Tower cooling down" and runs no bar | ☐ |
+| P23.11b | **[CHEAT]** Other side: `[jmfsb_support_air_entities select 0, "SAD", getPosATL player, []] remoteExecCall ["jmfsb_support_air_fnc_order", 2]`; same idea for `jmfsb_support_fires_fnc_request` / `fnc_abort` and `jmfsb_cas_fnc_request` / `fnc_abort` | Nothing flies or fires, the other side's mission continues; RPT "refused" | ☐ |
+| P23.11c | **[CHEAT]** `[someDownedPlayer] remoteExecCall ["jmfsb_evac_fnc_evacServer", 2]` from 500 m | No heal, no clone; "Failed."; RPT "evacServer: refused" | ☐ |
+| P23.11d | **[CHEAT]** `[cursorObject, "drone", "none"] remoteExecCall ["jmfsb_hacking_fnc_srvHackComplete", 2]` with no hack run | Nothing deleted; "Intrusion refused" | ☐ |
+| P23.11e | **[CHEAT]** `[playerB, "x1", "freetext", [["Text.A","fake"]], ["B:HQ"], "", "", "", [], []] remoteExecCall ["jmfsb_messaging_fnc_srvSubmit", 2]`; `[playerB, "T0001"] remoteExecCall ["jmfsb_messaging_fnc_srvRequestThread", 2]` | Nothing filed in B's name; B's thread not sent; RPT refusals | ☐ |
+| P23.11f | **[CHEAT]** `[player] remoteExecCall ["jmfsb_curator_fnc_zeusAssign", 2]`; `[sideUnknown, {diag_log "PWNED"; true}] call jmfsb_respawn_fnc_forceRespawn`; `[player, "x", west] remoteExecCall ["jmfsb_teleport_fnc_addPoint", 2]`; `["X"] remoteExecCall ["jmfsb_patrol_base_fnc_serverBuild", 2]` with no kits | No Zeus, no "PWNED" in the server RPT, no point, no base; RPT refusals | ☐ |
+| P23.11g | **[CHEAT]** Without the drone: `["rtb", uav, [getPosATL player, 300]] remoteExecCall ["jmfsb_devices_fnc_uavOrder", 2]`; and `[false,true,false,true] remoteExecCall ["jmfsb_zenmodules_fnc_endexRequest", 2]` as a non-Zeus | The drone ignores it; nobody healed, AI unchanged | ☐ |
+| P23.11h | Kill an enemy AI owned by a headless client | The body yields intel | ☐ |
+
+**PAC store and roster (B1-B4, P4)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.12 | `sync = "service"`, slow or blocked database: join while the boot overlay is up, then restart the server | The profile still holds the full roster; RPT "N connect(s) / disconnect(s) held during the boot, applied now"; you have an open session | ☐ |
+| P23.13 | End the mission before the boot finishes | RPT "mission ended before the store was loaded - nothing written"; profile unchanged | ☐ |
+| P23.14 | Kill the server process with a player on; restart | His session is closed at its last heartbeat time | ☐ |
+| P23.15 | Admin starts a manual op window; restart the server | The window is still open; new joins are filed under it | ☐ |
+| P23.16 | A takes a kept loadout, changes gear; B joins | A's gear does not change | ☐ |
+| P23.17 | Admin changes A's rank or skills mid-mission | Rank and skills update at once; gear and slot do not | ☐ |
+| P23.18 | Two players open their PAC application or ticket list at the same moment | Each sees only his own; RPT shows the requests answered one after the other | ☐ |
+| P23.19 | Two admin edits within 30 s, wait 70 s, kill the server | Both edits are in the profile after restart | ☐ |
+| P23.20 | Dedicated server with a headless client; TAC//PAC Roster | The HC has no record and no session | ☐ |
+| P23.21 | PAC player page KICK not logged in; then after `#login` | "Log in as the server's admin (#login) to kick."; then he is kicked and the log shows it | ☐ |
+| P23.22 | currentOpord set; two admins spawn together | One OPORD message in C2 | ☐ |
+
+**Voice (B14, B15, V1-V8; LiveKit egg up)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.23 | Two players on different nets; A talks on his | B hears nothing; B joins A's net: B hears A at once, in that net's ear | ☐ |
+| P23.24 | B leaves a net while A is talking on it | A's voice stops for B within a second | ☐ |
+| P23.25 | A walks in from 100 m talking local | B hears him come in at the local range, no lost first words | ☐ |
+| P23.26 | Respawn, or a voice-server reconnect, while someone talks | His volume stays as it was, never full | ☐ |
+| P23.27 | Microphone disabled in Windows privacy; join | One "No microphone" notice; he still hears the nets | ☐ |
+| P23.28 | Plain Caps Lock under LiveKit, check every game channel, again after respawn | Arma's VON never transmits | ☐ |
+| P23.29 | Server chose LiveKit; a client without the DLL joins | One VOICE UNAVAILABLE notice; text works; the RADIO app shows NONE: NO NET | ☐ |
+| P23.30 | Listener on EMCON 3, then unconscious, while a squad mate talks; then dead | Hears in the first two, cannot talk; dead hears nothing | ☐ |
+| P23.31 | Server key and secret settings EMPTY, `JMSB_LIVEKIT_KEY` / `JMSB_LIVEKIT_SECRET` set in the server's environment (the egg's variables); join and ECHO TEST | Join works; the echo is heard. Unset them: one "not set" notice | ☐ |
+| P23.32 | Game VON server, client with the DLL | The client runs game VON; no voice-server join | ☐ |
+| P23.33 | Under game VON, PTT 2 set to a net you are not on; hold it | "PTT 2: you are not on ... yet - nothing sent", once per press | ☐ |
+
+**Will-break bugs and the rest**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.34 | ACRE night, dedicated: wait 30 s, get in one of our trucks | Two 117F racks; no "Suspending not allowed" in the server RPT | ☐ |
+| P23.35 | Two clients: one fires a 40 mm PAB, a 30 mm PROX burst and a Mk380 relay near a drone | One flash, one frag event, one relay each - not one per client | ☐ |
+| P23.36 | Mission without ALiVE, QRF module and a `jmfsb_qrf_test` marker | RPT "ALiVE is not loaded - QRF watches jmfsb_qrf markers only"; QRF arms | ☐ |
+| P23.37 | Tablet Intel app, recover a file; Support map with no task point | The file pane shows its text; no getDir errors | ☐ |
+| P23.38 | Zeus Call Endex unticked with no endex running; then ticked, with a headless client | Only a log line; then players healed and safe, AI on server and HC careless | ☐ |
+| P23.39 | Ten players at a boarding point, two trucks of six | Six and four; nobody told he was seated when he was not | ☐ |
+| P23.40 | Call a CAS drone that comes out crewless; then a pylon-only airframe | It flies its waypoints and fires; if the store does not fire, the RPT shows the fallback warning | ☐ |
+| P23.41 | A player on a deployed mortar while the driver packs | "Pack refused - a player is still on the gun" | ☐ |
+| P23.42 | APS setting OFF, RPG at a fitted tank; then ON, RPG and Titan from another client | No intercept; then each dies about 30 m out and is gone on the shooter's screen | ☐ |
+| P23.43 | Respawn without ACM | No undefined-variable errors | ☐ |
+| P23.44 | `#attendance` as admin on dedicated | Names, not uids, in the server's and the admin's RPT | ☐ |
+| P23.45 | Run without the messaging addon, open TAC//MSG | "Messaging is not loaded"; no script error | ☐ |
+| P23.46 | Two Boo Boo Bag unpacks pressed quickly; two medics take one casualty's bag at once | One bag used, contents once; exactly one medic gets the bag | ☐ |
+| P23.47 | Fire a drone40 relay; the launcher disconnects | Within 5 s the relay is back on DATA, held by nobody | ☐ |
+| P23.48 | Zeus supply crate; a player joins in progress | Host and joiner can drag and carry it | ☐ |
+| P23.49 | Logged-in admin on dedicated: `#jmfsbreact`, `#jmfsbqrf`, `#jmfsbleaders`; a non-admin the same | Admin gets one line each, alone; the non-admin gets nothing | ☐ |
+
+**TFAR and ACRE removed (DEC1)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.49a | Server profile or `cba_settings` with the voice system set to `"tfar"`, then `"acre"` | No error; voice runs as Automatic; RPT says it was reset | ☐ |
+| P23.49b | Server on LiveKit, a client without the DLL | Net row, HUD radio widget and all three RADIO tabs read VOICE UNAVAILABLE | ☐ |
+| P23.49c | A calls B, B accepts, B hangs up; A dials someone out of DATA reach; a callback request expires | Rings, connects, ends; "No route on DATA..."; "A callback request expired." | ☐ |
+| P23.49d | **[CHEAT]** `[_otherCallId, B, true] remoteExecCall ["jmfsb_voice_fnc_srvAnswer", 2]` naming another player | Nothing happens | ☐ |
+| P23.49e | Vehicle spawn, ZEN Rekit Vehicle, respawn, Back to Game, arsenal; grep the RPT for `adapter_tfar`, `acre_`, `radio_mesh` | No script errors; no radio racks; no Radios arsenal button; no hits | ☐ |
+| P23.49f | Field Manual > Radio voice and Radios | No TFAR or ACRE text; "No man packs: the handhelds carry every net" | ☐ |
+
+**Performance (P1-P10)** - with `#jmfsb` diag on, 20+ players or AI with radios
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.50 | Everyone stands still for a minute, then moves | No frame-time spike every 5 s on the server (edge casts staggered, at most 150 a tick); RF links as before | ☐ |
+| P23.51 | Ten fitted AI tanks idle, engines on | Server FPS steady; fire an RPG at one: intercepted as before | ☐ |
+| P23.52 | Viewshed at 3000 m radius, 20 m resolution | Fills with coarser cells; map stays smooth | ☐ |
+| P23.53 | Stand in a heal area unhurt; then get hurt | No banner or heal while unhurt; healed when hurt | ☐ |
+| P23.54 | QRF captures twice | No server hitch on the second | ☐ |
+| P23.55 | Any load test, Log tick timings on (default) | Once a minute the server RPT has `perf rf.tick: ... avg ... worst ... budget 8 ms, over N` and `perf aps.watch: ...`; note the numbers at 10, 20 and 40 players | ☐ |
+
+**Screens built once (P5, P6)** - each must look exactly as before
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.61 | HUD SQUAD left, SCANNER right, 30 s; cycle every readout (Alt+[ / ]), slots off and on (Shift+[ / ]); move and resize a slot in Layout; change scheme, scales, opacity; a squadmate wounded then healed; open and close the admin console | Same look, no flicker, values change in place; OFF leaves no box; APS tile only in a vehicle; layout and theme changes apply at once; the HUD hides under the console and comes back current | ☐ |
+| P23.62 | A live call with the tablet open, then the phone shown; open and close an app; step the corner (numpad 0 / .) | The call window does not flicker, its caption follows the talker, it stays on top in every corner | ☐ |
+| P23.63 | Phone / side rows: key a net, mute one, take a ring; change device opacity and side; RADIO app cursor, tabs, group mode | TX red at once; everything reacts as before; no flicker when idle | ☐ |
+| P23.64 | TIMER: arm 1 and 2 minute alarms, start the stopwatch, rest the pointer on the page; DEL, START/STOP, RESET with slow presses; let an alarm ring | Clocks tick every second (they used to pause under the pointer); every press lands; RINGING - SILENCE within a second | ☐ |
+| P23.65 | EW SCANNER with a drone near; tile band on map and tablet: TIMER tile running, a tile going stale, paging, drag and resize, theme change | Values update in place every 2 s; rows change when a drone enters or leaves 2 km; tiles open on press; outlines switch dashed / solid; redraws correct | ☐ |
+| P23.66 | Reader: press nets and fold squads in the rail; TO line, CC @-completion, picker | As before, same targets | ☐ |
+
+**The last event paths (S7, P8)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.67 | Transport LAND with AI aboard; PARADROP with players and AI; QRF paradrop | AI get out; one man jumps per tick, each on a canopy | ☐ |
+| P23.68 | Zeus places a unit; respawn setting off and on, delay changed while dead; ISR LOITER; Zeus teleport point; artillery, cruise missile, loitering munition with a JIP player | Second Zeus can edit it; timers stop and resume and adjust; gunner and notice; point works and goes with its object; shot / splash and the marker for your side only, also for the JIP player | ☐ |
+| P23.69 | Two players hack one tower; A closes at 60 %, B resumes | B from 50 %, A from where he was; progress goes out at 25 / 50 / 75 % only | ☐ |
+| P23.70 | **[CHEAT]** `jmfsb_teleport_list = [[player,"X",west]]; publicVariable "jmfsb_teleport_list"`; `jmfsb_Mission_Endex = true; publicVariable "jmfsb_Mission_Endex"`; `jmfsb_hacking_banked = 999; publicVariable "jmfsb_hacking_banked"`; `["jmfsb_respawn_disable"] call CBA_fnc_globalEvent`; `[[cursorObject]] remoteExecCall ["jmfsb_curator_fnc_editableAdd",2]` on an object you do not own | The server's values come back; respawn unchanged; nothing added to Zeus | ☐ |
+| P23.71 | **[CHECK]** On a client: `<enemy AI> getVariable "jmfsb_ew_gps"` | nil (AI spoof offsets are no longer public) | ☐ |
+| P23.72 | Hack a pop, leader product; deliver a cuffed leader to a `jmfsb_prison` marker | Orange SAFE HOUSE circle, then the INTERROGATION icon - your side's map only | ☐ |
+| P23.73 | TIMER as the host of a hosted game: arm 1 min, DEL it; as a dedicated client arm 5 min and ALARM AT | Host's DEL removes it, nothing rings; the client's alarms show on every scanner and DEL removes them for all | ☐ |
+| P23.74 | Send a FLASH; TIC with TIC broadcast on; a tacpad countdown expires | Banner for the recipient only; your side's red TIC popup; "TIMER Countdown expired" still shows | ☐ |
+| P23.75 | Jumpmaster: SL launches HALO auto, two passes; ABORT on another run | Boarded, RED / GREEN words, out one by one, "The jump is over."; ABORT holds the aircraft | ☐ |
+| P23.76 | Disconnect and reconnect (Back to Game); `#jmfsbfire` as non-admin then after `#login` | Teleport dialog, confirm puts you back; nothing, then it runs | ☐ |
+| P23.77 | **[CHEAT]** `["jmfsb_messaging_received",[createHashMap,createHashMapFromArray [["priority","high"]]]] call CBA_fnc_globalEvent`; the same with `jmfsb_common_alert`, `jmfsb_cas_offStation`, `jmfsb_jumpmaster_jumpOut`, `jmfsb_support_air_say`, `jmfsb_back_to_game_teleportPlayer`, `jmfsb_qrf_captured`, `jmfsb_hacking_product`; `["X","fake","",2,60] remoteExecCall ["jmfsb_common_fnc_onAlert",0]`; `[otherPlayer] remoteExecCall ["jmfsb_jumpmaster_fnc_srvLaunch",2]` | None has any effect; RPT refusals | ☐ |
+
+**Every client request checked (R1, the rest)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.78 | Normal play: admin panel heal / Zeus / STABILIZE on another player; artillery deploy and pack; role grant; Heal All at a crate; fire during endex; ALiVE spotting, counter-battery and FRONT lines; spectator on death; radio battery swap and respawn; EW jammer and decoy; chestpack on and off; a jammer disabled by an engineer; `#jmfsbjam` as admin; a failed hack | Every line, effect and screen as before, to the same people | ☐ |
+| P23.79 | **[CHEAT]** Raise `jmfsb_notify_post`, `jmfsb_spectator_start`, `jmfsb_adapter_alive_ready`, `jmfsb_reaction_event`, `jmfsb_ew_aiAlert` and the boc `clearAllCargo` event; remoteExec `jmfsb_notify_fnc_notify` to everyone; remoteExec `jmfsb_rf_fnc_srvRequest` "unregister" on another player's node | Nothing happens anywhere; RPT refusals | ☐ |
+| P23.80 | **[CHEAT]** `jmfsb_common_debugCommands = createHashMap; publicVariable "jmfsb_common_debugCommands"`, then an admin types `#jmfsb help` | The admin gets the real list; nothing the cheater sent runs | ☐ |
+| P23.81 | **[CHEAT]** `[otherPlayer, [0,0], "rifleman"] remoteExecCall ["jmfsb_groups_fnc_assignPlayer", 2]`; `["fake", objNull] remoteExec ["jmfsb_common_fnc_debugReply", otherPlayer]` | He is not moved; no "[jmfsb] fake" line in his chat | ☐ |
+
+**Secrets entered in game (R4)**
+
+| # | Do | Should happen | P/F |
+|---|---|---|---|
+| P23.56 | `#login`, then `#jmfsb secrets` | A dialog over the console (or the tablet): four rows, each NOT SET or SET ...last four | ☐ |
+| P23.57 | LiveKit key and secret settings empty, no environment variables; type the key and secret in the dialog, SET each; ECHO TEST | Rows turn SET ...xxxx, the fields empty; the echo works without a restart | ☐ |
+| P23.58 | An empty field, SET | That row NOT SET | ☐ |
+| P23.59 | **[CHEAT]** Not logged in: `["livekitSecret", "x"] remoteExecCall ["jmfsb_common_fnc_secretSet", 2]`; `[] remoteExecCall ["jmfsb_common_fnc_secretStatus", 2]` | Refused in the server RPT; no status comes back | ☐ |
+| P23.60 | Database string entered in the dialog, settings empty, restart the mission | PAC boots from the database | ☐ |

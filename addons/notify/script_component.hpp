@@ -26,3 +26,7 @@
 #define FONT_BASE       0.0165
 #define ROW_LINES       2.7     // title + body + breathing room, in font heights
 #define ROW_GAP         0.5     // between rows, in font heights
+
+// The default accent (ember) and the server's machine id (FUNC(broadcast)).
+#define NOTE_DEFAULT    [ARR_4(0.871,0.361,0.188,1)]
+#define SERVER_OWNER    2

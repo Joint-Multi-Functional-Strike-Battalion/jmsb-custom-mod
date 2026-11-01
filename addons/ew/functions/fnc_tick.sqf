@@ -137,7 +137,11 @@ private _now = CBA_missionTime;
     private _lost = [];
     {
         private _track = _y;
-        if ((_now - (_track get "last")) > GVAR(trackTtl)) then {
+        // A fixed site is kept while it stands, heard or not.
+        private _standing = (_track getOrDefault ["source", ""]) isEqualTo SRC_ZONE
+            && {(_track get "fix") isNotEqualTo []}
+            && {(_track get "emitter") in GVAR(lastEmitters)};
+        if (!_standing && {(_now - (_track get "last")) > GVAR(trackTtl)}) then {
             _lost pushBack _x;
             continue;
         };
