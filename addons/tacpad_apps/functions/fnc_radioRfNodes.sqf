@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RF nodes the local player holds, with the nets each is on - read, never
  * computed. On a client that is his slice (jmfsb_rf_slice, which the server
  * sends him for exactly the nodes he holds); on the server - a hosted or

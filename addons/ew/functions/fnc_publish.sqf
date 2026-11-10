@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: each player's EW slice - his side's tracks and his own state - sent
  * with publicVariableClient only when it changed (positions on a 10 m grid,
  * dB as integers, so standing still is not a change). Tracks are the
@@ -101,7 +101,7 @@ private _clients = [];
 
     private _eye = eyePos _p;
     private _spectrum = BANDS_ALL apply {
-        [_x, round ([_eye, _x, "", 0] call EFUNC(rf,noise)), round ((([_x] call EFUNC(rf,bandInfo)) param [2, 0]))]
+        [_x, SLICE_NOISE_DB * round (([_eye, _x, "", 0] call EFUNC(rf,noise)) / SLICE_NOISE_DB), round ((([_x] call EFUNC(rf,bandInfo)) param [2, 0]))]
     };
 
     private _kit = [_p] call FUNC(kit);

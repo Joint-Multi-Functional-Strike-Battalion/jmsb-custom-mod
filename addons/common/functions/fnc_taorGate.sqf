@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE PRE-SPAWN GATE: may this side put something at this position? Asked by
  * every module system before a computed-position spawn, after wrong-side
  * sightings kept coming back one addon at a time - the answer belongs in one
@@ -8,7 +8,8 @@
  *
  * The rule: inside the side's own ground, and never on somebody else's. The
  * TAOR comes from the caller when it has its own markers (a module attribute),
- * from the adapter's taorFor otherwise.
+ * from FUNC(groundFor) otherwise - ALiVE's TAORs with ALiVE, the mission's
+ * jmfsb_taor_<side> markers without it.
  *
  * NO TAOR OF ITS OWN MEANS THE WHOLE MAP - ALiVE's own convention, and the
  * hole this gate used to have. It read "no TAOR, no gate" and waved every
@@ -62,10 +63,12 @@ if (_pos isEqualTo []) exitWith {true};
 // would permanently grow its caller's blacklist.
 _black = +_black;
 
-private _haveAdapter = !isNil "jmfsb_adapter_alive_fnc_taorFor";
-
-if (_taor isEqualTo [] && {_side isNotEqualTo sideUnknown} && _haveAdapter) then {
-    ([_side] call jmfsb_adapter_alive_fnc_taorFor) params [["_t", []], ["_b", []]];
+// THE SIDE'S GROUND, WITH OR WITHOUT ALiVE (user, 2026-11-02). FUNC(groundFor)
+// is the adapter's taorFor when ALiVE is loaded and the mission's own
+// jmfsb_taor_<side> / jmfsb_black_<side> markers when it is not - so the gate
+// holds on a mission without ALiVE too, instead of waving everything through.
+if (_taor isEqualTo [] && {_side isNotEqualTo sideUnknown}) then {
+    ([_side] call FUNC(groundFor)) params [["_t", []], ["_b", []]];
     _taor = _t;
     if (_black isEqualTo []) then {_black = +_b};
 };
@@ -91,7 +94,7 @@ if (_taor isEqualTo [] && {_side isNotEqualTo sideUnknown} && _haveAdapter) then
 // NOTHING - which reads as the whole map, and is the hole this gate was
 // written to close: that side is still bounded by everybody else's
 // declarations.
-if (_taor isEqualTo [] && {_side isNotEqualTo sideUnknown} && _haveAdapter) then {
+if (_taor isEqualTo [] && {_side isNotEqualTo sideUnknown}) then {
     private _cache = missionNamespace getVariable [QGVAR(foreignTaorCache), createHashMap];
     (_cache getOrDefault [str _side, [-1e9, []]]) params ["_stamp", "_foreign"];
 
@@ -107,7 +110,7 @@ if (_taor isEqualTo [] && {_side isNotEqualTo sideUnknown} && _haveAdapter) then
 
             {
                 _foreign pushBackUnique _x;
-            } forEach (([_other] call jmfsb_adapter_alive_fnc_taorFor) select 0);
+            } forEach (([_other] call FUNC(groundFor)) select 0);
         } forEach [west, east, independent];
 
         _cache set [str _side, [time, _foreign]];

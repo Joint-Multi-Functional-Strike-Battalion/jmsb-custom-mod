@@ -8,7 +8,12 @@ class RscDisplayMain: RscStandardDisplay {
         // halves the same number it is drawn with, and the height is measured
         // UP from the button row (0.37) so the two always read as one block
         // whatever the screen.
+        // THE CREST IS THE HOLIDAY'S IN ITS WINDOW (user, 2026-10-31: "and
+        // the menu page"): XEH_mainDisplay swaps this picture for the crest
+        // jmfsb_loading's Holidays table names for today; this text is the
+        // unit's crest, which stands the rest of the year.
         class GVAR(logo61): RscActivePictureKeepAspect {
+            idc = IDC_MAINMENU_LOGO;
             text = QPATHTOEF(media,images\logo_512.paa);
             x = "0.5 - (0.5 * 5) * (pixelW * pixelGridNoUIScale * 2)";
             y = "0.37 - (10) * (pixelH * pixelGridNoUIScale * 2)";

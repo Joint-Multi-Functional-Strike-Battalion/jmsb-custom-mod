@@ -2,7 +2,7 @@
 /*
  * Author: YonV
  * Mk383 EMP-M — kinetic EW burst; soft-kills UAVs and blinds optics in radius.
- * Comms-mod integration: search for HOOK comments to connect ACRE2/Drongo EW.
+ * Comms-mod integration: search for HOOK comments to connect Drongo EW.
  *
  * Arguments:
  * 0: Firer <OBJECT>
@@ -42,8 +42,6 @@ params [
     };
     // HOOK: Drongo EW jam call on _x here
     if (GVAR(hasDEW)) then {};
-    // HOOK: comms jam on _x here
-    if (GVAR(hasACRE)) then {};
 } forEach (
     (_pos nearEntities [["Man"], _radius]) select {
         [side group _unit, side group _x] call BIS_fnc_sideIsEnemy

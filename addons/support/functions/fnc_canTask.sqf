@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE TASKING TAG GATE - may this man task support assets? The Support
  * tasking tag setting through EFUNC(messaging,tagMatch), default empty
  * (everyone). Moved here from TAC//SUPPORT so FUNC(request) and the screen ask

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Infantry classes belonging to a faction, for crewing MANPAD teams.
  *
  * Its own men, so a team looks like the rest of the commander's force rather

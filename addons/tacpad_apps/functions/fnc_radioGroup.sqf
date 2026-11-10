@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The people one group add would ring (DESIGN_VOICE.md, "Add people"): + MY
  * TEAM is the player's own group, the others are the voice contacts carrying
  * that group's tag (RADIO_GROUPS). Group adds skip anyone out of reach, so only

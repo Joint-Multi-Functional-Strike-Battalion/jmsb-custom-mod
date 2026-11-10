@@ -38,6 +38,8 @@ CHECKS = [
     # CfgPatches units[]/weapons[] against the classes that exist. The same
     # drift has shipped three times; HEMTT calls it L-C15.
     ("cfgpatches", [sys.executable, "tools/check_patches.py"]),
+    # A client DLL changed is a new BattlEye submission (docs/SIGNING.md).
+    ("dll lock", [sys.executable, "tools/check_dll_lock.py"]),
 ]
 
 
@@ -57,8 +59,11 @@ def main():
             continue
         out = (result.stdout or "") + (result.stderr or "")
 
-        # hemtt exits 0 on warnings, so its own exit code is not the whole story
-        noisy = name == "hemtt check" and ("warning[" in out or "error[" in out)
+        # hemtt exits 0 on warnings, so its own exit code is not the whole story.
+        # HINTS FAIL TOO (user, 2026-11-01: "why do you keep doing this, fix
+        # it"): help[...] lints passed the gate and came back to the user to
+        # paste in by the dozen. Nothing ships with one.
+        noisy = name == "hemtt check" and ("warning[" in out or "error[" in out or "help[" in out)
 
         if result.returncode != 0 or noisy:
             failed.append(name)

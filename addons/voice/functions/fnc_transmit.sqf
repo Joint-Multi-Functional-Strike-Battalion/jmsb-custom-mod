@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the local player's own push-to-talk, on its edges (fnc_frame reads
  * the adapter's "ptt" hook every frame). SPEAKER-PUSHED KEYING: on key-down
  * the speaker himself tells everyone who can hear him on that net (the
@@ -63,7 +63,7 @@ private _kind = [_net] call FUNC(netKind);
 private _mesh = _kind in MESH_KINDS;
 if (GVAR(level) >= ([_net] call FUNC(blockNeed))) exitWith {
     ["blocked", _net] call FUNC(playCue);
-    [QGVAR(note), [BLOCK_TITLE, GVAR(blockReason)]] call CBA_fnc_localEvent;
+    [BLOCK_TITLE, GVAR(blockReason)] call EFUNC(notify,notify);
 };
 
 GVAR(keyNet) = _net;
@@ -77,14 +77,22 @@ if (_kind isNotEqualTo KIND_DIRECT) then {
 if !(_net in (GVAR(myNets) apply {_x select 0})) exitWith {
     if (_mesh) then {
         ["blocked", _net] call FUNC(playCue);
-        [QGVAR(note), [BLOCK_TITLE, format [REASON_NO_SET, [_net] call FUNC(netName)]]] call CBA_fnc_localEvent;
+        [BLOCK_TITLE, format [REASON_NO_SET, [_net] call FUNC(netName)]] call EFUNC(notify,notify);
     };
 };
 
 GVAR(keyLive) = true;
 [QGVAR(talk), [player, _net, true]] call CBA_fnc_localEvent;
 if (!_mesh) exitWith {};
-private _cue = ["txChirp", "blocked"] select !([_net] call FUNC(reachable));
+// THE BUSY TONE (user, 2026-10-30, the MPU5's): keying a net someone else is
+// already talking on plays the busy cue in place of the TX chirp. The key
+// still goes through - it is a warning, not a lockout.
+private _busy = (GVAR(talkers) findIf {(_x select 1) isEqualTo _net && {(_x select 0) isNotEqualTo player}}) >= 0;
+private _cue = switch (true) do {
+    case (!([_net] call FUNC(reachable))): {"blocked"};
+    case (_busy): {"busy"};
+    default {"txChirp"};
+};
 [_cue, _net] call FUNC(playCue);
 private _rfNet = [_net] call FUNC(rfNet);
 {

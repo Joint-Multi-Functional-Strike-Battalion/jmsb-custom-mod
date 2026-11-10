@@ -21,3 +21,14 @@
 #define BASE_BEACON     "SatelliteAntenna_01_Black_F"
 #define KIT_MASS        180     // 3x a vanilla ToolKit (mass 60)
 #define MARKER_TYPE     "Contact_pencilTask2"
+
+// --- requests (review S7) ---
+// remoteExec target of the server: kit drops, builds and unbuilds are asked
+// for by remoteExec so the server knows who sent them.
+#define SERVER_OWNER    2
+// How far from the beacon the server still takes an unbuild: the action's own
+// 3 m, with room for the man's position to lag on the server.
+#define UNBUILD_RANGE   10
+// Notify colours: done, refused.
+#define NOTE_DONE       [0.914, 0.651, 0.235, 1]
+#define NOTE_FAIL       [1, 0.3, 0.3, 1]

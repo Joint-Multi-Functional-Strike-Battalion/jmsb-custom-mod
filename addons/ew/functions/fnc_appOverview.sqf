@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The EW app's OVERVIEW tab: what he carries (sets, receiver, jammer, ISR,
  * GPS), the side's picture in three numbers, the MAP LAYER switch, and the
  * threat warnings of the last THREAT_SHOW_S, newest first, each with its time,

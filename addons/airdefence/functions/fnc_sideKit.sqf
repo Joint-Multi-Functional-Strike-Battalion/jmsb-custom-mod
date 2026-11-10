@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What a commander fields for air defence: a radar, a launcher and a MANPAD.
  *
  * The module's own class attributes win when a mission sets them. Left blank,

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an RTO net's name as typed, checked and turned into its id. The id
  * IS the name, upper-cased and trimmed - it is what the chip shows and what
  * FUNC(netKind) and the adapter's channel key go by - so it must be short,

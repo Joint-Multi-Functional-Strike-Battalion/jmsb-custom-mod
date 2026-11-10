@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps the cursor's world position for the readouts that follow it - GRID,
  * a ruler's rubber band, the protractor's free arm, the next route leg. The
  * cursor leaving the map clears it, so nothing is drawn to where it last was.

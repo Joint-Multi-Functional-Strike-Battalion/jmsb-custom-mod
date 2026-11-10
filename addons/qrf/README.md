@@ -15,7 +15,15 @@ no gun line, so 3-4 mortar rounds about half the time), a **drone** out of its
 cache-limited ceiling, and **squads** spawned 3-6 km out, profiled, and walked
 in so they arrive rather than appear.
 
+**Without ALiVE (2026-11-02)** the `jmfsb_qrf*` markers are the whole watch
+list, the mission's enemy answers (in the faction its men on the map wear),
+its squads walk in live, and no artillery is asked - there are no commander's
+guns to ask. Built, not seen in game.
+
     #jmfsbqrf    the watch list and what is currently held
+
+Admins only, on a dedicated server too; the answer goes to the admin who typed
+it, nobody else. Same as `#jmfsb qrf`.
 
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
@@ -38,7 +46,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 `jmfsb_moduleQRF`, category jmfsb_modules
 
-Placing this module turns on qrf. Without it, the system is off.<br>Hold Time (sec) - How long players must hold an objective, uncontested, before it counts as taken Players Needed - How many players inside before a hold counts at all Squads Min - Fewest squads the third wave sends Squads Max - Most squads Asymmetric Mortar Chance (%) - An asymmetric commander answers with a few mortar rounds or with nothing - never a full barrage Cooldown (sec) - Retaking the same objective inside this window brings no second QRF
+Placing this module turns on qrf. Without it, the system is off.<br>Without ALiVE: only jmfsb_qrf area markers are watched, the mission's enemy answers, and its squads walk in live. No artillery is asked - there are no commander's guns.<br>Hold Time (sec) - How long players must hold an objective, uncontested, before it counts as taken Players Needed - How many players inside before a hold counts at all Squads Min - Fewest squads the third wave sends Squads Max - Most squads Asymmetric Mortar Chance (%) - An asymmetric commander answers with a few mortar rounds or with nothing - never a full barrage Cooldown (sec) - Retaking the same objective inside this window brings no second QRF
 
 <details><summary>6 attributes</summary>
 

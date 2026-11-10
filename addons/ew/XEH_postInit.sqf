@@ -7,12 +7,12 @@ if (isServer) then {
     [{_this call FUNC(listener)}] call EFUNC(rf,addListener);
     [{_this call FUNC(noise)}] call EFUNC(rf,addNoiseSource);
 
-    // Raised by FUNC(jamSet) / FUNC(decoyPlace) on clients; the EP tab asks
-    // for a fresh slice after an EMCON change.
-    [QGVAR(jamSet), {_this call FUNC(jamSet)}] call CBA_fnc_addEventHandler;
-    [QGVAR(decoyPlace), {_this call FUNC(decoyPlace)}] call CBA_fnc_addEventHandler;
-    // The hacking addon's SPOOF, from the hacker's client.
-    [QGVAR(spoofNode), {_this call FUNC(spoofNode)}] call CBA_fnc_addEventHandler;
+    // FUNC(jamSet) / FUNC(decoyPlace) on a client come by remoteExec and
+    // check the sender (review R1: no CBA handler). The EP tab asks for a
+    // fresh slice after an EMCON change.
+    // The hacking addon's SPOOF is called on the server by its
+    // srvHackComplete, after it has checked the hack - no CBA event: any
+    // client could have spoofed any group's GPS with one (review S7).
     [QGVAR(refresh), {
         params [["_unit", objNull, [objNull]]];
         if (!isNull _unit) then {[[_unit], false] call FUNC(publish)};
@@ -30,12 +30,12 @@ if (isServer) then {
 };
 
 // --- Wherever an AI group is local: told of a DF fix (FUNC(aiReact)) --------
-[QGVAR(aiAlert), {_this call FUNC(aiAlert)}] call CBA_fnc_addEventHandler;
+// by remoteExec to FUNC(aiAlert), which takes it only from the server (R1).
 
 // --- Clients: the slice, threat warnings, the map layer, the app ------------
 if (hasInterface) then {
     QGVAR(slice) addPublicVariableEventHandler {_this call FUNC(receiveSlice)};
-    [QGVAR(threat), {_this call FUNC(onThreat)}] call CBA_fnc_addEventHandler;
+    // Threat warnings come by remoteExec to FUNC(onThreat) (review R1).
 
     // The layer on both hosts' maps - see FUNC(mapHook).
     [LINKFUNC(mapHook), CLIENT_TICK_S, []] call CBA_fnc_addPerFrameHandler;

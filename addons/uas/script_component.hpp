@@ -51,6 +51,9 @@
 #define UAS_IED_TICK        0.5
 #define UAS_IED_ARM_DELAY   12
 
+// How long FUNC(fpvWatch)'s wait for Drongo's Drone Tweaks sits before giving up.
+#define UAS_DDT_WAIT_S      600
+
 // HOW CLOSE A PLAYER HAS TO BE FOR A PATROL TO EXIST AT ALL.
 //
 // A drone orbiting a base nobody is near is a drone nobody will ever see, and
@@ -78,6 +81,17 @@
 // A patrol wanders this far around its orbit centre, so it is also the smallest
 // zone worth drawing - a module never resized is one orbit.
 #define UAS_ORBIT_RADIUS    800
+// A rotor UAV (anything not a Plane) patrols a ring of MOVE waypoints instead
+// of a LOITER, which only a fixed wing flies cleanly (user, 2026-10-24: the
+// patrol drones "were wobbling in place in the air"): this many points, on
+// this fraction of the zone's radius but never tighter than the minimum,
+// reached within the completion radius, at a rotor's height.
+#define UAS_ROTOR_RING_POINTS 6
+#define UAS_ROTOR_RING_FRAC   0.7
+#define UAS_ROTOR_RING_MIN    200
+#define UAS_ROTOR_WP_RADIUS   60
+#define UAS_ROTOR_ALT_MIN     90
+#define UAS_ROTOR_ALT_MAX     160
 
 // --- the swarm module -------------------------------------------------------
 // Two is the smallest thing worth calling a swarm; twelve is where a dozen
@@ -104,6 +118,17 @@
 #define UAS_SWARM_FUSE      6       // m
 #define UAS_SWARM_TIMEOUT   120     // s before a lost airframe deletes itself
 #define UAS_SWARM_WARHEAD   "Sh_122mm_AMOS"
+
+// THE REST OF THE FUSE - see FUNC(swarmImpact). How far ahead the dive looks
+// for a surface or the ground before the next step: two steps' travel and the
+// fuse, so a long frame still finds the wall before the airframe does. How
+// many hits that look may return - the airframe's own crew come back first.
+// Under this height over the terrain the airframe is on the ground. Inside
+// this many metres of the aim, moving away from it counts as having arrived.
+#define UAS_SWARM_REACH     (UAS_SWARM_SPEED * UAS_SWARM_STEP * 2 + UAS_SWARM_FUSE)
+#define UAS_SWARM_SCAN_HITS 4
+#define UAS_SWARM_DECK      1
+#define UAS_SWARM_TERMINAL  50
 
 // CIRCLE
 #define UAS_SWARM_RADIUS    400     // m orbit when the module was never resized

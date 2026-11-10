@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A cache died: that side's ceiling drops to the reduced number for a random
  * window.
  *

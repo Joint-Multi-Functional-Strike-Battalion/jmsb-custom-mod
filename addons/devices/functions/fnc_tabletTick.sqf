@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps the tablet's rows current: the device bar, the notification line, the
  * net row and the who-is-talking chip whenever what they say has changed, the
  * live tiles on their own period when theirs has, every ground recoloured when
@@ -87,3 +87,7 @@ if (diag_tickTime >= (_keys getOrDefault ["tilesDue", 0])) then {
 };
 
 [] call FUNC(tabletStack);
+
+// The call's window, drawn last so it is on top of any row or panel rebuilt
+// this tick; it has no buttons, so drawing it every tick loses no press.
+[_display] call FUNC(tabletCall);

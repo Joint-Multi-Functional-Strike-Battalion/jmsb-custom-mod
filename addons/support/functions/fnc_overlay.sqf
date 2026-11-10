@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Asks the provider that owns an asset what it wants drawn on TAC//SUPPORT's
  * map while that asset is picked - an artillery battery's minimum and
  * maximum range rings, say. The provider's optional "overlay" code; a
@@ -12,6 +12,9 @@
  *   ["ring", centre <ARRAY>, radius m <NUMBER>, label <STRING>]
  *   ["line", from <ARRAY>, to <ARRAY>, label <STRING>]
  *   ["point", at <ARRAY>, label <STRING>]
+ *   ["round", lands at <ARRAY>, number <NUMBER>, lands when (CBA_missionTime)
+ *    <NUMBER>, salvo <NUMBER>] - one round of a fire mission (2026-11-01:
+ *    the ARTY screen's round log; the board's drawers skip it)
  *
  * Arguments:
  * 0: Asset id <STRING>
@@ -44,6 +47,7 @@ _res select {
             case "ring": {((_x param [1, []]) call _isPos) && {(_x param [2, 0]) isEqualType 0} && {(_x param [3, ""]) isEqualType ""}};
             case "line": {((_x param [1, []]) call _isPos) && {(_x param [2, []]) call _isPos} && {(_x param [3, ""]) isEqualType ""}};
             case "point": {((_x param [1, []]) call _isPos) && {(_x param [2, ""]) isEqualType ""}};
+            case "round": {((_x param [1, []]) call _isPos) && {(_x param [2, ""]) isEqualType 0} && {(_x param [3, ""]) isEqualType 0} && {(_x param [4, ""]) isEqualType 0}};
             default {false};
         }
     }

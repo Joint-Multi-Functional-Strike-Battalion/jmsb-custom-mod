@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the Ambient Kamikaze module and runs the clock. PLACING THE MODULE
  * IS THE ENABLE - no module, no drones.
  *

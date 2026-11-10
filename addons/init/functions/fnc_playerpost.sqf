@@ -33,8 +33,7 @@ call EFUNC(init,staging);
 //     [jmfsb] (initDiary) INFO: Applying Diary Records to <NULL-object>
 //
 // CBA's waitUntilAndExecute does the same wait from a per-frame handler,
-// which needs no suspension - the pattern this file already uses for ACRE
-// and TFAR below. `profileName` is folded in because FUNC(diary) wanted it
+// which needs no suspension. `profileName` is folded in because FUNC(diary) wanted it
 // too. A dedicated server never has a player, so hasInterface skips both
 // outright rather than parking a handler that can never fire.
 if (hasInterface) then {
@@ -51,30 +50,6 @@ if (hasInterface) then {
     ] call CBA_fnc_waitUntilAndExecute;
 };
 
-onPlayerConnected { 
-    [QEGVAR(log,player), [getPlayerUID player, player]] call CBA_fnc_serverEvent;
-};
-
-//radio - clients program their own local ACRE preset (the server already did in fn_gear_postInit;
-//ACRE presets are per-machine, so each client still needs its own copy).
-if (!isServer) then { call EFUNC(gear,setupRadios); };
-
-//login default: once ACRE is up, tune radios to the pre-join defaults (343 -> COMMON ch241,
-//152/148 -> DET, 117F -> DET) and make the SR handheld the active radio. This holds until the
-//player joins a dynamic group, at which point fn_setupPlayer re-tunes to that group's nets.
-if (EGVAR(patches,usesACRE) && GVAR(isPlayer)) then {
-    [{[] call acre_api_fnc_isInitialized}, {
-        [player] call EFUNC(players,setRadioChannel);
-        [jmfsbFR_radio_acreActiveRadio] call EFUNC(players,setActiveRadio);
-    }, []] call CBA_fnc_waitUntilAndExecute;
-};
-
-//same login default under TFAR - wait until the SW handheld exists, then tune to the net plan
-//(jmfsb_adapter_tfar_fnc_tune through setRadioChannel) and put the plan's handheld in hand
-if (EGVAR(patches,usesTFAR) && GVAR(isPlayer)) then {
-    [{ private _r = call TFAR_fnc_activeSwRadio; !isNil "_r" && {_r isEqualType "" && _r isNotEqualTo ""} }, {
-        [player] call EFUNC(players,setRadioChannel);
-        [missionNamespace getVariable ["jmfsbFR_radio_tfarActiveRadio", ""]] call EFUNC(players,setActiveRadio);
-    }, []] call CBA_fnc_waitUntilAndExecute;
-};
+// No radio presets or tuning at login: game voice takes a squad's nets from
+// the PAC net plan (jmfsb_voice). The ACRE / TFAR tuning went with DEC1.
 

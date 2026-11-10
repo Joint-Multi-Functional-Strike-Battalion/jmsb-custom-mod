@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TAC//EW - the EW app (DESIGN_EW, DESIGN_TABLET_APPS). Four tabs over one
  * frame, the doctrinal split:
  *

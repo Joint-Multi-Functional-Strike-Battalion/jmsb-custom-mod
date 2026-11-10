@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: how well the local player reaches a net of his, 0 to 1 - the colour
  * round a net chip on the devices (user, 2026-10-21: "put net state as a
  * color around the net chips"). A radio net: the best quality any of his

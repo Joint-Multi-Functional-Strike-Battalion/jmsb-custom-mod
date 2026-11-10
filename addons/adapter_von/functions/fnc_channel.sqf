@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "channel": the VON channel a net is on - TEAM 3 (Group), VEH 4
  * (Vehicle), DIRECT 5, C2-kind, A2G and CALL nets on their custom channel
  * (5 + custom id).

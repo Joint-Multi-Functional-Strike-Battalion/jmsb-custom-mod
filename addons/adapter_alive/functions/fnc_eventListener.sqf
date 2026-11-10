@@ -1,17 +1,19 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ALiVE's event log calls this for every event once FUNC(eventBridge) has
  * registered it. ALiVE dispatches as [listener, "handleEvent", event] to the
  * function named in the listener's "class" key (x_lib fnc_eventLog.sqf:229).
  *
  * WHAT LEAVES HERE IS A SUMMARY, NOT THE EVENT. The event carries ALiVE hashes
  * (objective hashes, profiles) that no other addon may read - that is the
- * seam. Each type is reduced to plain values here, once, and re-raised as a
- * local CBA event on the server:
+ * seam. Each type is reduced to plain values here, once, and handed on on the
+ * server:
  *
- *   jmfsb_adapter_alive_event    [type <STRING>, summary <ARRAY>]   every type
- *   jmfsb_adapter_alive_capture  [sideText, objectiveID, pos, size] OPCOM_CAPTURE
+ *   jmfsb_adapter_alive_event    [type <STRING>, summary <ARRAY>]   every type,
+ *                                a local CBA event, for mission scripts
+ *   FUNC(onCapture) hooks        [sideText, objectiveID, pos, size] OPCOM_CAPTURE
+ *                                (review R1: not a CBA event any client can raise)
  *
  * Summaries by type:
  *   OPCOM_CAPTURE / OPCOM_DEFEND / OPCOM_RECON / OPCOM_RESERVE / OPCOM_TERRORIZE
@@ -76,6 +78,10 @@ private _summary = switch (_type) do {
 };
 
 [QGVAR(event), [_type, _summary]] call CBA_fnc_localEvent;
+// The capture goes to FUNC(onCapture)'s hooks, not a CBA event any client
+// could raise (review R1).
 if (_type isEqualTo "OPCOM_CAPTURE" && {_summary isNotEqualTo []}) then {
-    [QGVAR(capture), _summary] call CBA_fnc_localEvent;
+    {
+        _summary call _x;
+    } forEach (localNamespace getVariable [QGVAR(captureHooks), []]);
 };

@@ -79,7 +79,16 @@ A jammer on air is itself an emitter and gets DF'd.
 net - a handset, or a vehicle RF says carries a set) lands in
 `fnc_spoofNode`: every man of that group is walked off true by the same
 engine for the "Hacked GPS spoof" setting's length, then walks back. Gated
-as a TAP on that net is (range, clock, fail and detection rolls).
+as a TAP on that net is (range, clock, fail and detection rolls). Server
+only: hacking's `srvHackComplete` calls it after checking the hack; the
+`spoofNode` CBA event a client could raise for any group is gone (review S7).
+
+**Who may ask (review R1).** No CBA events: any client could raise one.
+`jamSet` and `decoyPlace` on a client go to the server by `remoteExec`, which
+takes them only for the sender's own unit. The server sends the AI alert
+(`aiAlert`, where the group is local) and threat warnings (`onThreat`, to the
+man) by `remoteExec`, and both take a remote call only from the server. The
+reaction ladder on a fix is called on the server, not raised.
 
 **Decoys (ISR):** a ground antenna registered in RF with a handheld, manpack
 or legacy profile, claiming his first voice net under a key nobody holds:
@@ -91,8 +100,10 @@ man; the battery is the decoy setting.
 The spoof engine (`fnc_spoof`) runs for players (every DF tick, from
 `fnc_publish`) and for the AI men it has to keep (`fnc_spoofTick`: a hacked
 net's men, the enemy's DF sensors while a spoofer is on air, anyone still off
-true). Each man's state and offset are hung on him (`jmfsb_ew_gps`, public,
-10 m grid, on change); his own client reports GPS denial on the edge
+true). Each man's state and offset are hung on him (`jmfsb_ew_gps`, 10 m
+grid, on change) - public for a player, server-only for an AI man (review
+P8: the only client readers are the BFT dots, which never draw the spoofed
+enemy AI; an admin's god view shows those at their true place); his own client reports GPS denial on the edge
 (`jmfsb_ew_gpsDenied`, from the jamming addon's `jmfsb_jamming_gpsDenied`,
 `fnc_gpsWatch`). Four states: GOOD, SPOOFED (the false position, nothing
 said), SUSPECT (an EW Receiver holds the fix and flags it), NO FIX (denied:
@@ -155,9 +166,10 @@ far each is heard (`fnc_exposure`: a -115 dBm, 3 dBi receiver without the key).
 
 App `ew` (`jmfsb_tacpad_fnc_registerApp`), opened from the EW tile (a tile
 provider, like MEDIC): OVERVIEW, ES (spectrum rise per band, track table, tap
-to show on map), EA, EP. The map layer draws the side's fresh DF lines with
-their error wedge, fixes with their error circle and label, and the side's own
-jammers, on the vanilla map and the device host's map. Everything is drawn
+to show on map), EA, EP. The map layer draws fixes with their error circle and
+label, and the side's own jammers, on the vanilla map and the device host's
+map - no DF bearing lines (user, 2026-11-01: "remove them"; the cuts stay in
+the ES tab). Everything is drawn
 from the man's slice (`jmfsb_ew_slice`, sent with `publicVariableClient` on
 change - see `fnc_publish` for the layout).
 

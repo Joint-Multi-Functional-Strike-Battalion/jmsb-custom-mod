@@ -37,7 +37,8 @@ private _iconRespawn = getText (configFile >> "CfgVehicles" >> QGVAR(moduleRespa
             private _players = allPlayers select {side group _x in _sides && !alive _x};
 
             ["Respawn", format ["Respawning %1 players", count _players], [1, 0.8, 0.3, 1]] call EFUNC(notify,notify);
-            [QGVAR(force), nil, _players] call CBA_fnc_targetEvent;
+            // The server checks this Zeus and respawns them (review S7).
+            [_players] remoteExecCall [QFUNC(forceRespawnRequest), SERVER_OWNER];
         }
     ] call zen_dialog_fnc_create;
 }, _iconRespawn] call zen_custom_modules_fnc_register;
@@ -72,7 +73,7 @@ private _iconRespawn = getText (configFile >> "CfgVehicles" >> QGVAR(moduleRespa
 
             ["Respawn", format ["Respawning %1", name _selected], [1, 0.8, 0.3, 1]] call EFUNC(notify,notify);
 
-            [QGVAR(force), nil, _selected] call CBA_fnc_targetEvent;
+            [[_selected]] remoteExecCall [QFUNC(forceRespawnRequest), SERVER_OWNER];
         },
         {},
         _deadPlayers

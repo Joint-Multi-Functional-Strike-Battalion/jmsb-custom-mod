@@ -2,14 +2,17 @@
 // goes in the GPS slot, replaces the vanilla GPS there, and keeps the engine's
 // own GPS behaviour (the mini-map stays available). The walking view shows
 // only while one of these is assigned - see FUNC(overlayDevice) - and a
-// player carries ONE of the three.
+// player carries ONE of the four.
 //
 // THE PICTURE is the device with a lit screen (tools/gen_device_icons.py), not
 // the frame texture, whose screen is a transparent hole and read as an empty
 // dark rectangle in the arsenal (user, 2026-10-21).
 //
 // On the ground they wear the vanilla UAV terminal's model (user, 2026-10-19):
-// the frames are screen textures, not objects.
+// the frames are screen textures, not objects. The RDC has a model of its own
+// in the MPU5 asset (jmfsb_radios data\rdc.p3d, tools/gen_radios.py), not worn
+// until the generated meshes have been seen in game - the MPU5's was reported
+// invisible on the ground (addons/radios/README.md).
 
 class CfgWeapons {
     class ItemGPS;
@@ -38,6 +41,17 @@ class CfgWeapons {
         displayName = "[JMSB] Side Device 2";
         descriptionShort = "Side device, second pattern. A GPS with the unit's walking view on it, against the left or right edge of the screen.";
         picture = QPATHTOF(data\side2_icon_ca.paa);
+        model = "\A3\Drones_F\Weapons_F_Gamma\Items\UAV_controller_F.p3d";
+    };
+
+    // The MPU5's chest screen (user, 2026-10-30): the walking view where the
+    // phone's is, and the tablet its carrier opens wears its frame.
+    class GVAR(rdc): ItemGPS {
+        author = QAUTHOR;
+        MACRO_ITEM_COMMON
+        displayName = "[JMSB] RDC";
+        descriptionShort = "Rugged Display Controller, the MPU5's chest screen. A GPS with the unit's walking view on it, bottom centre of the screen; the tablet opens in its frame.";
+        picture = QPATHTOF(data\rdc_icon_ca.paa);
         model = "\A3\Drones_F\Weapons_F_Gamma\Items\UAV_controller_F.p3d";
     };
 };

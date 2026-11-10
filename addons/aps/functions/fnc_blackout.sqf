@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A vehicle in the burst's near field loses its sensors and its datalink
  * for the jam duration (runs where the vehicle is local), then gets back
  * exactly what it had.

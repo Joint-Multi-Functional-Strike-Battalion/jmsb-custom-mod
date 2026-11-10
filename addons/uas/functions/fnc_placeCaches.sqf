@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Each side's drone supply caches: real crates, in that side's own TAOR, away
  * from each other and from its objectives' centres - a cache under the guns
  * of the thing it supplies is not a target, it is scenery.

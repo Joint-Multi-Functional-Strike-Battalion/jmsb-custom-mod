@@ -1,13 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The net name of the platoon a squad belongs to, from the unit's ORBAT.
  *
- * WHY THIS EXISTS. The MR plan is written per PLATOON, not per squad (user,
+ * WHY THIS EXISTS. Nets are written per PLATOON, not per squad (user,
  * 2026-09-01: "4 plt nets ever one sees then squad net only a squad sees") -
- * four channels for a task force of fourteen elements. fn_getRadioChannel
- * matches a channel by name against the group id, so "NOMAD 2-3" finds nothing
- * and would land on the detachment default; this is what it asks next.
+ * so "NOMAD 2-3" names no net of its own; this answers its platoon's.
  *
  * THE ORBAT ALREADY SAYS WHICH SQUADS ARE IN WHICH PLATOON - the platoon rows
  * the role screen draws its tabs from - so a platoon that wants a radio net
@@ -17,9 +15,8 @@
  *
  * ONE TABLE. The platoon a squad belongs to, and the net on that platoon.
  * There was a "shared radio nets" table asked first; it is gone, and so is
- * the idea (user, 2026-09-09: "noi fucking shared nets ... acre and tfar tab
- * only for fucking radios"). Radio channels are the ACRE plan and the net
- * plan (game voice); messaging nets are mailboxes on the messaging tab.
+ * the idea (user, 2026-09-09). Radio nets are the net plan (game voice);
+ * messaging nets are mailboxes on the messaging tab.
  *
  * A platoon with no net, a unit with no platoons, or a squad in no platoon all
  * answer "" and leave the caller on its default.
@@ -60,10 +57,8 @@ private _fnc_lookup = {
 
 // THE PLATOON'S NET, AND NOTHING ELSE. There was a "shared nets" table asked
 // first - rows pairing squads across a platoon boundary onto one net - and it
-// is gone (user, 2026-09-09: "no fucking shared nets ... if there is acre use
-// the acre tab to configure all radios"). A squad's channel is the radio
-// plan's business: ACRE matches this name against an MR channel label, the
-// net plan reads the squad's own row.
+// is gone (user, 2026-09-09). A squad's radio net is the net plan's business:
+// it reads the squad's own row.
 private _net = [_platoons, 3, 4] call _fnc_lookup;
 
 _net

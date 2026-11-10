@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where one device and its screen land on this monitor.
  *
  * THE DEVICE FILLS THE SCREEN, NOT THE TEXTURE. A frame texture is a square
@@ -42,11 +42,28 @@ if (!isClass _cfg) exitWith {
 (getArray (_cfg >> "body")) params ["_bx", "_by", "_bw", "_bh"];
 (getArray (_cfg >> "screen")) params ["_sx", "_sy", "_sw", "_sh"];
 
+// A DEVICE'S OWN VIEW (DEVICE_VIEWS; user, 2026-10-24, the vehicle tablet: "show
+// in game only the red box area, let the top go off the screen or get cut off,
+// and make it 30% wider"). The body is fitted from its top edge down, so what is
+// above runs off the top of the monitor, and the canvas is drawn wider than tall
+// by the stretch - clamped so the device still fits across the monitor.
+private _stretch = 1;
+private _view = DEVICE_VIEWS findIf {(_x # 0) isEqualTo _device};
+if (_view >= 0) then {
+    (DEVICE_VIEWS # _view) params ["", "_top", "_wide"];
+    private _bottom = _by + _bh;
+    _by = _by max _top;
+    _bh = _bottom - _by;
+    _stretch = _wide;
+};
+
 // The monitor in pixels, and the canvas side that puts the body exactly on it
 // along whichever axis the body meets first.
 private _availW = (safeZoneW / pixelW) * (_fill max 0.1);
 private _availH = (safeZoneH / pixelH) * (_fill max 0.1);
-private _side = (_availW / _bw) min (_availH / _bh);
+private _side = (_availW / (_bw * _stretch)) min (_availH / _bh);
+// Only as wide as the monitor allows: a narrow monitor gives up stretch, not height.
+_stretch = 1 max (_stretch min (_availW / (_bw * _side)));
 
 // ONE SCREEN SIZE FOR THE MATCHED DEVICES (user, 2026-10-21: "two different
 // frames but the screen in the center is the same size"). The UAV tablet is
@@ -71,7 +88,7 @@ if (_group isNotEqualTo []) then {
     } forEach _group;
     _side = _screenPx / _sw;
 };
-private _cw = _side * pixelW;
+private _cw = _side * pixelW * _stretch;
 private _ch = _side * pixelH;
 
 // The body centred on the monitor; the canvas placed so its body lands there.

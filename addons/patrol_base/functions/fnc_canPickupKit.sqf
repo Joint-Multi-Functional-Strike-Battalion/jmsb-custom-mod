@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a unit can pick a deployed kit object back up into its inventory.
  *
  * Arguments:

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The template picker, drawn into the compose pane: the deck as cards, two up,
  * with what each one will ask you for.
  *
@@ -13,7 +13,9 @@
  * engine's own legality check, so the picker can never show a report the server
  * would refuse - the thread's state (allowedFrom) and, where the cached thread
  * says who issued and who claimed it, the registry's senderMustBe: WILCO, ON
- * TASK and CANTCO are the assignee's, CLOSE the issuer's.
+ * TASK and CANTCO are the assignee's, CLOSE the issuer's. In a support
+ * thread (FUNC(threadLegal), 2026-11-02) the asset's own cards are offered
+ * to its issuer as a new task there, and the asset's words to nobody.
  *
  * A REPLY WITH NOTHING TO FILL IN IS A TILE, NOT A FORM (the handoff's 1b):
  * ROGER, WILCO and ON TASK send on the one press and move the thread. The
@@ -49,13 +51,15 @@ private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
 private _threadId = GVAR(composeThread);
 
+// In a thread, FUNC(threadLegal) (2026-11-02): its replies, and in an asset's
+// thread its own cards to the issuer - a new CAS REQUEST, a NEXT LIFT.
 private _thread = createHashMap;
 private _ids = if (_threadId isEqualTo "") then {
     ["root"] call EFUNC(messaging,templateIds)
 } else {
     private _cached = (missionNamespace getVariable [QEGVAR(messaging,cache), createHashMap]) getOrDefault [_threadId, []];
     if (_cached isNotEqualTo []) then {_thread = _cached # 0};
-    ["reply", _thread getOrDefault ["status", ""]] call EFUNC(messaging,templateIds)
+    [_threadId] call FUNC(threadLegal)
 };
 
 // THE SENDER RULE, as the server reads it (EFUNC(messaging,srvThreadFor)): an
@@ -158,7 +162,24 @@ private _glyph = ([CARD_TAG_SIZE] call FUNC(textH)) / 1.25 * CARD_GLYPH_W * pixe
 
     private _hit = [_body, [_cx, _cy, _colW, _cardH], {
         params ["_ctrl"];
-        GVAR(composeTemplate) = _ctrl getVariable [QGVAR(pick), ""];
+        private _picked = _ctrl getVariable [QGVAR(pick), ""];
+        // A FRAGO opens the thread's order (FUNC(composeFrago)); a support
+        // request in a report opens with its asset and the report's point
+        // (FUNC(starterInReport)) - 2026-11-09.
+        if (GVAR(composeThread) isNotEqualTo "" && _picked isEqualTo FRAGO_ID) exitWith {
+            [] call FUNC(composeHarvest);
+            [GVAR(composeThread)] call FUNC(composeFrago);
+        };
+        private _host = ((missionNamespace getVariable [QEGVAR(messaging,cache), createHashMap]) getOrDefault [GVAR(composeThread), []]) param [0, createHashMap];
+        private _hostAsset = ((_host getOrDefault ["boxes", []]) findIf {
+            _x isEqualType "" && {(toUpper (_x select [0, count SUPPORT_BOX_PREFIX])) isEqualTo SUPPORT_BOX_PREFIX}
+        }) >= 0;
+        if (GVAR(composeThread) isNotEqualTo "" && !_hostAsset && (_host getOrDefault ["rootTemplateId", ""]) in REPORT_HOSTS && _picked in REPORT_STARTERS) exitWith {
+            [GVAR(composeThread), _picked] call FUNC(starterInReport);
+        };
+        GVAR(composeTemplate) = _picked;
+        GVAR(composeFrago) = [];
+        GVAR(composeShortOn) = [] call FUNC(composeShortDefault);
         GVAR(composePick) = false;
         GVAR(composeMarker) = "";
         GVAR(composePin) = [];

@@ -17,7 +17,7 @@ GVAR(maskCache) = createHashMap;
     QGVAR(ACE),
     "CHECKBOX",
     ["Use ACE color preset", "Enable if using ACE"],
-    COMPONENT_NAME,
+    ["JMSB - Gear & Vision", "NVG"],
     false,
     true
 ] call CBA_fnc_addSetting;
@@ -29,7 +29,7 @@ GVAR(maskCache) = createHashMap;
         "NVG Effect",
         "Green Phosphor (no effect).\nModern Warfare (greenish tint WP)\nWhite Phosphor (White Phosphor)"
     ],
-    COMPONENT_NAME,
+    ["JMSB - Gear & Vision", "NVG"],
     [
         [
             "",
@@ -58,7 +58,7 @@ GVAR(maskCache) = createHashMap;
     QGVAR(Blacklist),
     "EDITBOX",
     ["Blacklisted NVG classnames", "Separate classnames with commas. Example: className1, className2, className3"],
-    COMPONENT_NAME,
+    ["JMSB - Gear & Vision", "NVG"],
     "",
     true
 ] call CBA_fnc_addSetting;

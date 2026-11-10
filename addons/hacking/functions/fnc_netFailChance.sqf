@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How likely THIS net break is to be noticed, given how many the operator has
  * already done recently.
  *

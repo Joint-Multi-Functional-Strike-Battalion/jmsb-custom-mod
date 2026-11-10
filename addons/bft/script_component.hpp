@@ -25,6 +25,13 @@
 #define MEMBER_BLANK "#(argb,8,8,3)color(0,0,0,0)"
 #define MEMBER_OUTLINE_RGBA [0.13, 0.12, 0.11, 1]
 #define MEMBER_DOWN_ALPHA 0.5
+// THE BUDDY (user, 2026-11-05: "buddy is picked with ace interact"): a star
+// over the upper left of your buddy's circle (docs/DESIGN_PHONE_WALKING.md,
+// "Map"), as a share of MEMBER_SIZE - offset and size - in the BUDDY colour.
+#define BUDDY_STAR QPATHTOF(data\member_buddy_ca.paa)
+#define BUDDY_OFFSET 0.55
+#define BUDDY_SIZE 0.6
+#define BUDDY_RGBA [0.99, 0.85, 0.21, 1]
 // Who is talking, as FUNC(draw) records it: nothing, direct voice, a radio net.
 #define VOICE_NONE 0
 #define VOICE_DIRECT 1

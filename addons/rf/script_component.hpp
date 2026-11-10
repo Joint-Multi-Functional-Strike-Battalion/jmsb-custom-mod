@@ -19,6 +19,10 @@
 // and the consumers depend on it, never the reverse (docs/DESIGN_RF.md). Only
 // the two headers above are shared, at compile time.
 
+// The server's machine id: a client's registry request goes to it by
+// remoteExec (FUNC(srvRequest), review R1).
+#define SERVER_OWNER        2
+
 // --- Radio profiles (docs/DESIGN_RF.md, "Radio profiles") -------------------
 // THE ONE PLACE A PROFILE IS WRITTEN. Adapters map their radio classes onto
 // these ids; the core never knows a class name.
@@ -39,6 +43,17 @@
     ["legacy",   ["VHF"],               37, -110,  2, 0, false,  0,  30], \
     ["satcom",   ["SAT"],               40, -120, 12, 0, false, 10,  60] \
 ]
+// --- Batteries (FUNC(batteryTick); user, 2026-10-30) --------------------------
+// The Battery life setting is hours for a set of BATTERY_REF_WH (the
+// handheld); a bigger battery lasts in proportion. Keyed, a set drains this
+// many times faster; in a running vehicle it charges to full in this many
+// seconds; levels reach the holder in these steps (FUNC(batteryPublish)).
+#define BATTERY_REF_WH      38
+#define BATTERY_TX_FACTOR   4
+#define BATTERY_CHARGE_S    3600
+#define BATTERY_STEP        0.05
+#define SECONDS_PER_HOUR    3600
+
 #define RF_PATTERN_OMNI     "omni"
 // A lobe: so many degrees wide about an azimuth, nothing outside it
 // (FUNC(patternGain)). EW's jammer module can be set to it.
@@ -65,7 +80,7 @@
 // "handheld"), so RF recognises a set with no radio mod and no class list. An
 // item in the radio slot that names none is a handheld. Under game voice
 // nothing on the back is a set - no man packs (user, 2026-10-21); the
-// "manpack" profile is TFAR's and ACRE's long range sets.
+// "manpack" profile is kept for the radio bags that still name it.
 #define RADIO_ITEM_SIMULATION       "ItemRadio"
 #define RADIO_ITEM_DEFAULT_PROFILE  "handheld"
 // The kind of set in a node id: the radio slot.
@@ -141,7 +156,18 @@
 // further than this and it is younger than the static tick.
 #define EDGE_REUSE_M        10
 // ...and forgotten when nobody has asked for it for this many static ticks.
-#define EDGE_CACHE_KEEP     2
+#define EDGE_CACHE_KEEP     3
+// Each entry lives the static tick plus up to this share of it more, at random,
+// so pairs cast together do not all expire together (review P2) ...
+#define EDGE_LIFE_JITTER    0.5
+// ... and past this many casts in one tick, a pair that has not moved keeps its
+// old loss until a later tick. A pair that moved is always cast.
+#define EDGE_REBUILD_CAP    150
+
+// The server tick's budget, ms (review R9): it runs once a second, so a few ms
+// is its share of the frame it lands on. Over it is logged, not stopped.
+#define RF_TICK_BUDGET_MS   8
+#define MS_PER_S            1000
 
 // --- Mesh -----------------------------------------------------------------------
 // Link quality is quantised before it is stored, so a slice only "changes"

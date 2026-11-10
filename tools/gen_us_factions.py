@@ -1114,6 +1114,19 @@ def load_vanilla():
 # the index and look exactly like a dropped mod's. Its PARENT gives it away.
 DUMP_PARENT = {}
 
+# PARENTS THAT ONLY EXIST WITH ALiVE LOADED, {dumped class: base-game class}.
+# The OPF_F dump was taken with ALiVE in the load order, and ALiVE adds east
+# copies of the NATO air defence and a quad bike. Without ALiVE those parents
+# are inert forward declarations and the editor floods the RPT with "No entry
+# .scope / .model" for every one (2026-11-07). The class keeps its own name -
+# the groups point at it - and only its parent moves to the base game's.
+PARENT_FIX = {
+    "O_SAM_System_01_F": "B_SAM_System_01_F",
+    "O_SAM_System_02_F": "B_SAM_System_02_F",
+    "O_AAA_System_01_F": "B_AAA_System_01_F",
+    "O_Quadbike_ALIVE": "O_Quadbike_01_F",
+}
+
 
 def _vanilla_by_parent(c, vanilla, depth=4):
     """Base-game after all? True when the parent chain reaches the index.
@@ -4024,7 +4037,12 @@ def main():
         _emb = EXTRA_MAN_BASE.get(newfac)
         if _emb and _emb not in _ext:
             _ext.append(_emb)
+        _decl = []
         for c in _ext:
+            p = PARENT_FIX.get(c, c)
+            if p not in _decl:
+                _decl.append(p)
+        for c in _decl:
             L.append("    class %s;" % c)
         L.append("")
 
@@ -4034,7 +4052,7 @@ def main():
             gv = lambda n: pr.get(n, (None, None))[1]
             man = R.is_man(gv("vehicleClass") or "", pr)
 
-            L += ["    class %s: %s {" % (new[c], c),
+            L += ["    class %s: %s {" % (new[c], PARENT_FIX.get(c, c)),
                   "        scope = %d;" % u["scope"],
                   "        scopeCurator = %s;" % (gv("scopeCurator") or "2"),
                   "        author = QAUTHOR;",

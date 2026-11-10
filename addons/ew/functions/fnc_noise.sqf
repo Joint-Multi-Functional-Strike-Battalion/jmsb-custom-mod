@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RF noise source (jmfsb_rf_fnc_addNoiseSource), server: what this addon's
  * jammers on the air ("tx", FUNC(jamUpdate)) put into a receiver (DESIGN_EW
  * "Jam modes") -

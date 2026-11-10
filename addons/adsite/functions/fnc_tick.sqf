@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The one engagement pass, every ADS_TICK seconds while threats are in the
  * air. Server only.
  *

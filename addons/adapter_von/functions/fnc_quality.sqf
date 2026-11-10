@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "quality", client: the quality the local player hears a speaker
  * at on a net (grace time and mute already applied by the voice core). Kept
  * for when he talks on that net; applied at once if he is talking on it now

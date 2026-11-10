@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How many seconds from now a given time of day is - the bridge between "wake
  * me at 0430" and the only thing the alarm roster understands, which is a delay.
  *

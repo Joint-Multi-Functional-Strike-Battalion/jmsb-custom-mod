@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The text under a target's box this frame, as structured text: the AiTR line
  * (FUNC(targetLabel)) with its range, in the box's colour, and under it the net
  * card for a friendly player on the net (FUNC(targetCard)). Both are settled
@@ -24,11 +24,7 @@ params ["_target", "_dist"];
 
 if (!GVAR(labels)) exitWith {["", 0]};
 
-private _range = if (_dist < LABEL_KM) then {
-    format ["%1 m", round _dist]
-} else {
-    format ["%1 km", (round (_dist / 100)) / 10]
-};
+private _range = [_dist] call FUNC(rangeText);
 
 (_target getVariable [QGVAR(card), ["", 0]]) params ["_card", "_cardLines"];
 

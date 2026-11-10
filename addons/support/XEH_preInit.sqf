@@ -22,4 +22,26 @@ if (isNil QGVAR(readyAt)) then {
     GVAR(readyAt) = createHashMap;
 };
 
+// THE CALL SIGNS ASSET MAILBOXES READ AS (2026-11-01), asset id -> call sign,
+// learnt on this machine from the viewer's rows (FUNC(boxName),
+// FUNC(mailboxes)). Only ever added to: an asset that has since gone still
+// reads as the name its thread was filed under.
+GVAR(boxNames) = createHashMap;
+GVAR(boxNamesDue) = 0;
+
+// THE SUPPORT THREADS' MAP PINS (2026-11-01, DESIGN_SUPPORT_MESSAGING 6.3),
+// client: thread id -> [order, asset id] held for its pin (FUNC(pinRoot)),
+// and thread id -> its markers' names -> the spec each was drawn from
+// (FUNC(pinTick)).
+GVAR(pinRoots) = createHashMap;
+GVAR(pinDrawn) = createHashMap;
+
+// THE SUPPORT CARDS THE MOD CARRIES (user, 2026-11-01): here, right after
+// messaging's preInit registered the mission's deck and its own cards, so
+// every machine has them in the same place. THE MOD'S OWN CARD ALWAYS WINS
+// (user, 2026-11-02): a mission card of the same id is replaced, and the
+// TAC//PAC deck, later, adds only the ids the mod does not have
+// (EFUNC(messaging,registerBuiltins), pac templatesApply).
+[[] call FUNC(builtinCards), QUOTE(COMPONENT)] call EFUNC(messaging,registerBuiltins);
+
 ADDON = true;

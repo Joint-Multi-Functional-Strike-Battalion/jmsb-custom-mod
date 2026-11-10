@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the custom channel for a key, made with radioChannelCreate the
  * first time it is needed and published to everyone (jmfsb_adapter_von_
  * channelMap). Custom channels the mission made itself are left alone; when

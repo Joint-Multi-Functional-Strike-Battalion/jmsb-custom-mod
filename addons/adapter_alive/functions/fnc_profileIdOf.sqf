@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The id of a profile entity.
  *
  * Exists so no feature addon has to name an ALiVE function to ask a profile

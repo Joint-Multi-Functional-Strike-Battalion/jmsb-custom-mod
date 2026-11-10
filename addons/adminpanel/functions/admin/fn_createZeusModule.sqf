@@ -13,7 +13,12 @@
 
 #include "\z\jmfsb\addons\adminpanel\script_component.hpp"
 
-params ["_player"];
+params [["_player", objNull, [objNull]]];
+
+// Only an admin by the server's records may hand out Zeus (review S4).
+if (!isServer || {isNull _player} || {!([] call EFUNC(common,senderIsAdmin))}) exitWith {
+    WARNING_1("createZeusModule refused: machine %1 is not an admin",remoteExecutedOwner);
+};
 
 if (isNull admp_admin_zeusLogicGroup) then { // if the logic group doesn't exist, create a new one
     admp_admin_zeusLogicGroup = createGroup sideLogic;

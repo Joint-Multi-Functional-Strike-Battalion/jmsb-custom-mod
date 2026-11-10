@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes the walking-view layer down, if it is up.
  *
  * DOWN, NOT HIDDEN. A named title layer is not cleared by leaving a mission -

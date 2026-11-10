@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The nets one man may see on a rail, in the order they are drawn.
  *
  * THE RAIL WAS SHOWING EVERY SQUAD IN THE TASK FORCE (user, 2026-09-03, having

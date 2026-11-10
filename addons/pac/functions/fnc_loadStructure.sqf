@@ -125,6 +125,9 @@ private _deck = createHashMap;
     {
         if (isArray (_tCfg >> _x)) then {_options pushBack [_x, getArray (_tCfg >> _x)]};
     } forEach ["replyableWith", "allowedFrom"];
+    {
+        if (isNumber (_tCfg >> _x)) then {_options pushBack [_x, getNumber (_tCfg >> _x)]};
+    } forEach ["dangerClose"];
     private _lines = [];
     {
         private _lCfg = _tCfg >> "Lines" >> _x;

@@ -29,6 +29,8 @@ Author:
 params [["_unit", objNull, [objNull]]];
 
 if (!isServer || isNull _unit) exitWith {false};
+// A client asks only for his own kept loadout (review S5).
+if !([_unit] call EFUNC(common,senderIs)) exitWith {false};
 if ((GVAR(settings) getOrDefault ["savedLoadouts", 3]) isEqualTo 0) exitWith {false};
 
 private _uid = [_unit] call FUNC(uid);

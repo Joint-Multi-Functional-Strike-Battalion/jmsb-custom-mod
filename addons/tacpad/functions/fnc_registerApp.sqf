@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers a full-size app, which is what a live tile opens. Kept separate
  * from FUNC(register) because a panel and an app are different things: a panel
  * is always on the map screen if the player wants it, an app is opened over the

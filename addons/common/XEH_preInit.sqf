@@ -17,7 +17,6 @@ GVAR(aceSafemode) = IS_MOD_LOADED(ace_safemode);
 GVAR(aceTagging) = IS_MOD_LOADED(ace_tagging);
 GVAR(aceThrowing) = IS_MOD_LOADED(ace_advanced_throwing);
 GVAR(aceTowing) = IS_MOD_LOADED(ace_towing);
-GVAR(acre) = IS_MOD_LOADED(acre_main);
 
 GVAR(playerMarkerIdx) = 0;
 

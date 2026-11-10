@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Flips one shared net between ALERT and MUTED for this player and redraws the
  * settings page it was pressed on.
  *

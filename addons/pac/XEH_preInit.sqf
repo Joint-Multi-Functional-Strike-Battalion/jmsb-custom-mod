@@ -108,8 +108,11 @@ GVAR(docsCount) = 0;
 GVAR(docCache) = createHashMap;
 
 // Whether the current OPORD has been posted to C2 messaging this mission - the
-// server flips it when it picks the admin who posts (FUNC(opordAsk)).
+// server flips it when the admin it asked says it went out (FUNC(opordAsk),
+// review L1), and when it last asked one, so a second admin is not asked
+// while the first is still posting.
 GVAR(opordPosted) = false;
+GVAR(opordAskedAt) = -PAC_OPORD_ASK_WAIT;
 
 // Every OPORD this server has ever compiled, keyed by id - the mission only
 // carries the current one, and this is how the app still shows the last five.
@@ -132,6 +135,30 @@ GVAR(svcState) = "idle";      // idle | waiting | ok | empty | error
 GVAR(svcChunks) = [];
 GVAR(svcUp) = false;
 GVAR(svcMissing) = false;
+// one request in flight (FUNC(svcLoad)): the next ticket, the one being
+// served, and answers still owed to requests that timed out
+GVAR(svcTicket) = 0;
+GVAR(svcServing) = 0;
+GVAR(svcOwed) = 0;
+
+// THE STORE GATE (server). False until the boot has loaded the store; until
+// then FUNC(storeSave) writes nothing and connects / disconnects wait in
+// bootQueue ([connected, uid, name]) for the boot to replay them.
+GVAR(storeReady) = false;
+GVAR(bootQueue) = [];
+
+// FUNC(storeSync): a database write running, another round asked for, and the
+// next round to push without merging (after a restore or a sample remove).
+GVAR(syncBusy) = false;
+GVAR(syncAgain) = false;
+GVAR(syncReplace) = false;
+
+// What FUNC(rosterTotals) last worked out on the heartbeat, for FUNC(publish):
+// uid -> [minutes, joins], and the promotion-due rows. archiveSent is the
+// opordArchive as last published, so an unchanged one is not sent again.
+GVAR(rosterTotals) = createHashMap;
+GVAR(promotable) = [];
+GVAR(archiveSent) = "";
 
 
 // The boot sequence as lines, for the log and the page.

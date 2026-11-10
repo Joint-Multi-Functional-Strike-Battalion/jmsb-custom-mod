@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reports a scripted round to the air defence intercept (addons/adsite), so
  * its AD units can shoot it down - the same way they meet a fired one.
  *
@@ -43,6 +43,7 @@ GVAR(nextThreat) = GVAR(nextThreat) + 1;
 private _id = format ["%1:%2", QUOTE(ADDON), GVAR(nextThreat)];
 
 EGVAR(adsite,owned) set [_id, _proj];
-[QEGVAR(adsite,threat), [_id, _proj, getPosASL _proj, velocity _proj, _info, _target, _side]] call CBA_fnc_serverEvent;
+// Called here on the server, not raised as a CBA event (review R1).
+[_id, _proj, getPosASL _proj, velocity _proj, _info, _target, _side] call EFUNC(adsite,threat);
 
 true

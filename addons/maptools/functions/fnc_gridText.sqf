@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A ten-digit grid - five an axis, one metre - for a world position.
  *
  * The engine's own square (mapGridPosition) gives the leading digits, so the

@@ -27,10 +27,7 @@ EGVAR(patches,usesACEArsenal)   = isClass (configFile >> "CfgPatches" >> "ace_ar
 EGVAR(patches,usesACETagging)   = isClass (configFile >> "CfgPatches" >> "ace_tagging");
 EGVAR(patches,usesACEX)         = isClass (configFile >> "CfgPatches" >> "acex_main");
 EGVAR(patches,usesKat)          = isClass (configFile >> "CfgPatches" >> "kat_main");
-EGVAR(patches,usesACRE)         = isClass (configFile >> "CfgPatches" >> "acre_sys_core");
-// TFAR (classic or standalone). Then jmfsb_adapter_tfar tunes from the PAC net
-// plan; with neither radio mod voice is game VoIP (jmfsb_voice).
-EGVAR(patches,usesTFAR)         = isClass (configFile >> "CfgPatches" >> "task_force_radio") || {isClass (configFile >> "CfgPatches" >> "tfar_core")};
+// No usesACRE / usesTFAR: those radio mods are no voice option (DEC1, 2026-10-31).
 EGVAR(patches,usesZen)          = isClass (configFile >> "CfgPatches" >> "zen_main");
 // ALiVE IS DELIBERATELY NOT IN THIS LIST. EGVAR(patches,usesAlive) is set by
 // EFUNC(adapter_alive,XEH_preInit) instead, because that addon is the only one
@@ -65,7 +62,6 @@ INFO("preInit","Initializing...");
 // whichever arrives first - see that function.
 EGVAR(DATABASE,DONE) = false;
 EGVAR(PYLONS,DONE) = false;
-EGVAR(gear,Radio) = false;
 
 call FUNC(missionConfigsReady);
 

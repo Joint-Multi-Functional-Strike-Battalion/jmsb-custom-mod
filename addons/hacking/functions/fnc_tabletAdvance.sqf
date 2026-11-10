@@ -44,9 +44,15 @@ if (_session getOrDefault ["running", false]) then {
     _session set ["last", _now];
 
     if ([_device, _session] call FUNC(tabletInRange)) then {
-        private _p = ((_session getOrDefault ["progress", 0]) + (_dt / _duration)) min 1;
+        private _was = _session getOrDefault ["progress", 0];
+        private _p = (_was + (_dt / _duration)) min 1;
         _session set ["progress", _p];
-        if (!isNull _device) then { _device setVariable [QGVAR(progress), _p, true] };
+        // Local every tick, public only at each quarter (review P8): this
+        // machine resumes exactly, another operator from the last quarter.
+        if (!isNull _device) then {
+            private _public = _p < 1 && {floor (_p * HACK_PROGRESS_STEPS) > floor (_was * HACK_PROGRESS_STEPS)};
+            _device setVariable [QGVAR(progress), _p, _public];
+        };
 
         if (_p >= 1) then {
             _session set ["running", false];

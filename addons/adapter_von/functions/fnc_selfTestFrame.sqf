@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every frame for TEST_WINDOW_S after fnc_selfTest: times T3 (own PTT
  * press, any PTT input, to own getPlayerChannel change; remote changes and
  * pushed key events counted), watches T2

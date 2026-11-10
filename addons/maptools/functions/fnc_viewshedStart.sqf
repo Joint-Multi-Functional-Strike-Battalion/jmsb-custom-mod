@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts working out line of sight from a point, out to the radius setting,
  * replacing any viewshed already on the map.
  *
@@ -35,6 +35,17 @@ private _cell = GVAR(viewshedCell) max VS_CELL_MIN;
 private _rings = ceil ((GVAR(viewshedRadius) max _cell) / _cell);
 private _radius = _rings * _cell;
 private _sectors = (VS_SECTORS_MIN max (ceil (2 * pi * _radius / _cell))) min VS_SECTORS_MAX;
+
+// AT MOST VS_CELLS_MAX CELLS (review P7, 2026-10-31). Every cell is two
+// triangles redrawn each frame the map is open; the finest cell at the widest
+// radius made ~27,000 cells, ~160,000 vertices a frame. Past the cap the cell
+// grows (fewer, wider rings) until the grid fits, and the radius stays what
+// was asked.
+if (_rings * _sectors > VS_CELLS_MAX) then {
+    _rings = floor (VS_CELLS_MAX / _sectors) max 1;
+    _cell = _radius / _rings;
+    _sectors = (VS_SECTORS_MIN max (ceil (2 * pi * _radius / _cell))) min VS_SECTORS_MAX;
+};
 
 private _centre = [_pos # 0, _pos # 1, 0];
 private _eye = AGLToASL [_pos # 0, _pos # 1, VS_EYE];

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends a profiled group somewhere, virtually: the profile walks the map
  * without its units existing and materialises near players.
  *

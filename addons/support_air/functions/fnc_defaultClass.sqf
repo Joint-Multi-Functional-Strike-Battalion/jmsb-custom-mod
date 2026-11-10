@@ -1,11 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The vanilla aircraft a module with a blank class flies, by asset type and
  * side. A mission maker who wants "some CAS" and does not care which gets CAS.
  *
  * Arguments:
- * 0: Asset type - KIND_CAS, KIND_TRANSPORT, KIND_LOGISTICS, KIND_QRF <STRING>
+ * 0: Asset type - KIND_CAS, KIND_TRANSPORT, KIND_QRF <STRING>
  * 1: Side <SIDE>
  *
  * Return Value:

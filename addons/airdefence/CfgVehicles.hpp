@@ -84,7 +84,7 @@ class CfgVehicles {
             class taorWest: Edit {
                 property = QGVAR(taorWest);
                 displayName = "BLUFOR TAOR Markers";
-                tooltip = "Comma-separated area-marker names BLUFOR air defence must stay inside. BLANK reads the BLUFOR commander's ALiVE placements. Other sides keep out of these markers either way.";
+                tooltip = "Comma-separated area-marker names BLUFOR air defence must stay inside. BLANK reads the BLUFOR commander's ALiVE placements (without ALiVE, jmfsb_taor_west markers). Other sides keep out of these markers either way.";
                 typeName = "STRING";
                 defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('taorWest',_value)]);
@@ -92,7 +92,7 @@ class CfgVehicles {
             class taorEast: Edit {
                 property = QGVAR(taorEast);
                 displayName = "OPFOR TAOR Markers";
-                tooltip = "Comma-separated area-marker names OPFOR air defence must stay inside. BLANK reads the OPFOR commander's ALiVE placements. Other sides keep out of these markers either way.";
+                tooltip = "Comma-separated area-marker names OPFOR air defence must stay inside. BLANK reads the OPFOR commander's ALiVE placements (without ALiVE, jmfsb_taor_east markers). Other sides keep out of these markers either way.";
                 typeName = "STRING";
                 defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('taorEast',_value)]);
@@ -100,7 +100,7 @@ class CfgVehicles {
             class taorGuer: Edit {
                 property = QGVAR(taorGuer);
                 displayName = "Independent TAOR Markers";
-                tooltip = "Comma-separated area-marker names Independent air defence must stay inside. BLANK reads the Independent commander's ALiVE placements. Other sides keep out of these markers either way.";
+                tooltip = "Comma-separated area-marker names Independent air defence must stay inside. BLANK reads the Independent commander's ALiVE placements (without ALiVE, jmfsb_taor_guer markers). Other sides keep out of these markers either way.";
                 typeName = "STRING";
                 defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('taorGuer',_value)]);
@@ -236,6 +236,8 @@ class CfgVehicles {
                 "Conventional commanders (invasion, occupation) get radar-cued missile batteries. Asymmetric commanders get MANPAD teams instead - a guerrilla does not field a battery.",
                 "",
                 "Where they go is read from ALiVE: each commander's own TAOR and objectives, never anything set here. Everything placed is profiled, so it costs nothing while nobody is near it.",
+                "",
+                "Without ALiVE: every side with a TAOR field here or jmfsb_taor_west / _east / _guer area markers gets batteries over the towns on that ground. No ground drawn at all: the mission's enemy, over towns clear of the players' start.",
                 "",
                 "Batteries Per Side - conventional commanders only, asymmetric get none",
                 "Launchers Per Battery - set back from the radar that cues them",

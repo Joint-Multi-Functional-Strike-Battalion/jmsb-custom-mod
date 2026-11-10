@@ -36,7 +36,9 @@ private _newTaskState = switch (_finishType) do {
 // Call code
 call compile (_taskNamespace getVariable [format ["on%1Code", _finishType], ""]);
 
-// Raise events
+// Raise events: to the tasks waiting on them (FUNC(raise), server-side - review
+// R1), and as a local CBA event for mission scripts that listen on this server.
 {
-    [_x] call CBA_fnc_serverEvent;
+    [_x] call FUNC(raise);
+    [_x] call CBA_fnc_localEvent;
 } forEach (_taskNamespace getVariable [format ["on%1Events", _finishType], []]);

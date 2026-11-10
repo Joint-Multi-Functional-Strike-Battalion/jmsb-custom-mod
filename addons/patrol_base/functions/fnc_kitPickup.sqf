@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Picks a deployed kit object up: deletes the world object (server-side) and puts
  * the matching kit item in the unit's inventory.
  *

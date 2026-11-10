@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everyone on the local player's side he could call: reachable = he reaches
  * them on DATA now (a call needs it); inCall = in a call or ringing.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The skill one AI gets, from the settings.
  *
  * THIS REPLACES config\config_skill.hpp (2026-09-09). That was a block of SQF

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The chrome every full-size app is drawn in: a centred panel over the map, an
  * inverted title bar with CLOSE at its right, and an empty body handed back.
  *
@@ -80,9 +80,15 @@ _group ctrlSetPosition [HOST_X + (HOST_W - _w) / 2, HOST_Y + (HOST_H - _h) / 2, 
 _group ctrlCommit 0;
 uiNamespace setVariable [QGVAR(appGroup), _group];
 
+// SOLID GROUND UNDER EVERY APP (review 2026-11-01, item 2.2). The theme's
+// ground carries the panel opacity setting, and the panels may be see-through;
+// an app may not. WEATHER, TIMER and JAMMER drew over the map with its contours
+// and labels showing through the readout. The app's ground is the theme ground
+// at full alpha whatever jmfsb_tacpad_opacity says - the same answer the reader
+// gives inside the tablet (FUNC(openReader)).
 private _fill = _display ctrlCreate [QGVAR(fill), -1, _group];
 _fill ctrlSetPosition [0, 0, _w, _h];
-_fill ctrlSetBackgroundColor _ground;
+_fill ctrlSetBackgroundColor [_ground # 0, _ground # 1, _ground # 2, 1];
 _fill ctrlCommit 0;
 
 // THE BOTTOM NET. The ground is the LOWEST control in the window - a press

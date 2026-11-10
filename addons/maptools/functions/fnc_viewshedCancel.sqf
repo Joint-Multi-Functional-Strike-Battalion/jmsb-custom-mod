@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Stops a viewshed that is still filling. What it has drawn so far stays -
  * FUNC(clear) is what wipes it.
  *

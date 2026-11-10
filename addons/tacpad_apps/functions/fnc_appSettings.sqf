@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The settings app, built to the design: a section rail down the left, the
  * chosen section's controls in the pane beside it.
  *
@@ -79,6 +79,7 @@ private _navH = _rowH * 1.4;
     _hit setVariable [QGVAR(section), _key];
 } forEach (([
     ["scheme", "COLOUR SCHEME"],
+    ["display", "DISPLAY"],
     ["panels", "PANELS"],
     ["tiles", "LIVE TILES"],
     ["nets", "NETS & ALERTS"],
@@ -435,6 +436,50 @@ if (_section == "size") exitWith {
 private _fnc_onOff = {["OFF", "ON"] select _this};
 
 private _rows = switch (_section) do {
+    // DISPLAY (DESIGN_TABLET_APPS.md SETTINGS: "mode (native / tablet) ... HUD
+    // tiles, where notifications go"): three settings that already exist,
+    // each its owner's - the shell's display mode, the HUD's two switches and
+    // the notification stack's corner. A row whose addon is not loaded is not
+    // offered. Changing the mode takes the suite down and rebuilds it on the
+    // other host (jmfsb_tacpad's displayMode_changed), so this screen closes.
+    case "display": {
+        private _list = [
+            [
+                "DISPLAY MODE - CLOSES THIS SCREEN",
+                toUpper EGVAR(tacpad,displayMode),
+                {[QEGVAR(tacpad,displayMode), DISPLAY_MODE_IDS, 1] call FUNC(settingCycle)},
+                {},
+                [QEGVAR(tacpad,displayMode)] call FUNC(settingLocked)
+            ]
+        ];
+        if (!isNil QEGVAR(hud,enabled)) then {
+            _list pushBack [
+                "HUD READOUTS",
+                EGVAR(hud,enabled) call _fnc_onOff,
+                {[QEGVAR(hud,enabled), !EGVAR(hud,enabled)] call FUNC(setSetting)},
+                {},
+                [QEGVAR(hud,enabled)] call FUNC(settingLocked)
+            ];
+            _list pushBack [
+                "HUD IN TABLET MODE",
+                EGVAR(hud,showInTablet) call _fnc_onOff,
+                {[QEGVAR(hud,showInTablet), !EGVAR(hud,showInTablet)] call FUNC(setSetting)},
+                {},
+                [QEGVAR(hud,showInTablet)] call FUNC(settingLocked)
+            ];
+        };
+        if (!isNil QEGVAR(notify,corner)) then {
+            _list pushBack [
+                "NOTIFICATIONS CORNER",
+                NOTIFY_CORNER_NAMES param [(NOTIFY_CORNER_IDS find EGVAR(notify,corner)) max 0, ""],
+                {[QEGVAR(notify,corner), NOTIFY_CORNER_IDS, 1] call FUNC(settingCycle)},
+                {[QEGVAR(notify,corner), NOTIFY_CORNER_IDS, -1] call FUNC(settingCycle)},
+                [QEGVAR(notify,corner)] call FUNC(settingLocked),
+                ["<", ">"]
+            ];
+        };
+        _list
+    };
     case "panels": {
         [
             ["SHOW SQUAD LIST", GVAR(show_squad) call _fnc_onOff, {
@@ -449,11 +494,54 @@ private _rows = switch (_section) do {
         ]
     };
     case "tiles": {
-        [
+        private _list = [
             ["SHOW LIVE TILES", GVAR(show_tiles) call _fnc_onOff, {
                 [QGVAR(show_tiles), !GVAR(show_tiles)] call FUNC(setSetting);
             }]
-        ]
+        ];
+        // ONE ROW PER POSITION, AS MANY AS THERE ARE TILES, each showing the
+        // tile standing there now (user, 2026-10-25: "it needs to be slot or
+        // position and in the drop down the apps or tiles"; 2026-10-30: "auto
+        // is annoying, fill in what's there now ... increase the slot count
+        // with every new app"). Picking another tile moves it here and the one
+        // it displaces goes back to the default order (FUNC(tileLayoutSet));
+        // positions past TILE_SLOTS are the band's next pages. The providers'
+        // tiles too: the declared list first, then theirs (FUNC(tileChoices)).
+        private _layout = [] call FUNC(tileLayout);
+        private _choices = [] call FUNC(tileChoices);
+        private _order = [_choices apply {_x # 0}] call FUNC(tileOrder);
+        // ...and "-" for a position nothing stands in (tiles switched off).
+        private _items = (_choices apply {_x # 1}) + ["-"];
+        for "_pos" from 1 to count _choices do {
+            private _here = _choices findIf {(_x # 0) isEqualTo (_order param [_pos - 1, ""])};
+            if (_here < 0) then {_here = count _choices};
+            _list pushBack [
+                format ["POSITION %1%2", _pos, ["", format [" (PAGE %1)", ceil (_pos / TILE_SLOTS)]] select (_pos > TILE_SLOTS)], "",
+                {
+                    params ["_tag", "_index"];
+                    private _choices = [] call FUNC(tileChoices);
+                    if (_index < 0 || {_index >= count _choices}) exitWith {};
+                    [(_choices # _index) # 0, 0, parseNumber _tag] call FUNC(tileLayoutSet);
+                },
+                {}, false, ["-", "+"], [_items, _here, str _pos]
+            ];
+        };
+        // Back to the default order; the tiles switched off stay off.
+        _list pushBack ["RESET TO DEFAULT ORDER", "", {
+            private _layout = [] call FUNC(tileLayout);
+            private _off = (keys _layout) select {(_layout get _x) isEqualTo TILE_SLOT_OFF};
+            _off sort true;
+            [QGVAR(tileLayout), (_off apply {format ["%1:off", _x]}) joinString ","] call FUNC(setSetting);
+        }];
+        // ...and each tile ON or OFF, under the positions (user, 2026-10-24:
+        // "turn on and off live tiles in settings").
+        {
+            _x params ["_tileId", "_tileName"];
+            private _off = (_layout getOrDefault [_tileId, TILE_SLOT_AUTO]) isEqualTo TILE_SLOT_OFF;
+            private _toggle = compile format ["['%1', 0, %2] call %3", _tileId, [TILE_SLOT_OFF, TILE_SLOT_AUTO] select _off, QFUNC(tileLayoutSet)];
+            _list pushBack [format ["TILE - %1", _tileName], (!_off) call _fnc_onOff, _toggle];
+        } forEach _choices;
+        _list
     };
     case "nets": {
         private _list = [
@@ -476,6 +564,18 @@ private _rows = switch (_section) do {
         // badges - the rail's unread counts always move - and FLASH traffic or
         // being called out by name always breaks through. Your own squad and
         // your own name are not subscriptions and are not offered.
+        // HOW LONG A NOTIFICATION STAYS - the notify addon's own setting, stepped
+        // within its slider range - and the way back into the notices log
+        // (user, 2026-10-24).
+        if (!isNil QEGVAR(notify,duration)) then {
+            _list pushBack [
+                "NOTIFICATION TIME ON SCREEN",
+                format ["%1 S", EGVAR(notify,duration)],
+                {[QEGVAR(notify,duration), (EGVAR(notify,duration) + 1) min NOTIFY_DURATION_MAX] call FUNC(setSetting)},
+                {[QEGVAR(notify,duration), (EGVAR(notify,duration) - 1) max NOTIFY_DURATION_MIN] call FUNC(setSetting)}
+            ];
+        };
+        _list pushBack ["NOTICES LOG", "OPEN", {[] call FUNC(openLog)}];
         if (!isNil QEFUNC(messaging,setNetLevel)) then {
             _list pushBack ["YOUR SQUAD & DIRECT TRAFFIC", "ALERT - ALWAYS", {}];
             {
@@ -526,11 +626,13 @@ if (_registered >= 0) then {
 };
 
 {
-    _x params ["_label", "_value", "_action", ["_down", {}], ["_locked", false], ["_glyphs", ["-", "+"]]];
+    _x params ["_label", "_value", "_action", ["_down", {}], ["_locked", false], ["_glyphs", ["-", "+"]], ["_combo", [], [[]]]];
+    // Settings rows read larger than the rest of the suite (user, 2026-10-24).
+    private _rowH = _rowH * SETTINGS_ROW_K;
     private _y = _padY + _forEachIndex * _rowH;
     private _stepper = _down isNotEqualTo {};
 
-    [_body, [_px, _y, _pw * 0.6, _rowH], _label, _ink, TEXT_TITLE, false] call EFUNC(tacpad,drawText);
+    [_body, [_px, _y, _pw * 0.6, _rowH], _label, _ink, SETTINGS_TEXT, false] call EFUNC(tacpad,drawText);
     [_body, [_px, _y + _rowH - RULE_THIN * pixelH, _pw, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
     // FORCED BY THE SERVER OR MISSION: the value it is held at, muted, and
@@ -540,8 +642,33 @@ if (_registered >= 0) then {
         continue;
     };
 
+    // A DROPDOWN (user, 2026-10-24: "a drop down to set tile pos 1-10"): a row
+    // that carries [items, selected index, tag] is a real combo box; picking an
+    // item calls the row's action with [tag, index] a frame later, because the
+    // write rebuilds the screen the combo is on.
+    if (_combo isNotEqualTo []) then {
+        _combo params [["_items", [], [[]]], ["_sel", 0, [0]], ["_tag", "", [""]]];
+        private _boxW = _pw * SETTINGS_COMBO_W;
+        private _box = (ctrlParent _body) ctrlCreate ["RscCombo", -1, _body];
+        _box ctrlSetPosition [_px + _pw - _boxW, _y + _padY * 0.5, _boxW, _rowH - _padY];
+        _box ctrlSetFontHeight (_rowH * SETTINGS_COMBO_FONT_K);
+        _box ctrlCommit 0;
+        {_box lbAdd _x} forEach _items;
+        _box lbSetCurSel _sel;
+        _box setVariable [QGVAR(settingAction), _action];
+        _box setVariable [QGVAR(comboTag), _tag];
+        _box ctrlAddEventHandler ["LBSelChanged", {
+            params ["_ctrl", "_index"];
+            [
+                {(_this # 0) call (_this # 1)},
+                [[_ctrl getVariable [QGVAR(comboTag), ""], _index], _ctrl getVariable [QGVAR(settingAction), {}]]
+            ] call CBA_fnc_execNextFrame;
+        }];
+        continue;
+    };
+
     if (!_stepper) then {
-        [_body, [_px + _pw * 0.6, _y, _pw * 0.4, _rowH], _value, _accent, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
+        [_body, [_px + _pw * 0.6, _y, _pw * 0.4, _rowH], _value, _accent, SETTINGS_TEXT, true, "right"] call EFUNC(tacpad,drawText);
 
         if (_action isNotEqualTo {}) then {
             private _hit = [_body, [_px, _y, _pw, _rowH], {
@@ -558,13 +685,13 @@ if (_registered >= 0) then {
         private _plusX = _px + _pw - _stepW;
         private _valueW = _pw * SETTINGS_STEP_VALUE_W;
 
-        [_body, [_minusX - _valueW - _pad, _y, _valueW, _rowH], _value, _accent, TEXT_TITLE, true, "right"] call EFUNC(tacpad,drawText);
+        [_body, [_minusX - _valueW - _pad, _y, _valueW, _rowH], _value, _accent, SETTINGS_TEXT, true, "right"] call EFUNC(tacpad,drawText);
 
         {
             _x params ["_sx", "_glyph", "_code"];
 
             [_body, [_sx, _y + _padY * 0.5, _stepW, _rowH - _padY], _ink, RULE_THIN] call EFUNC(tacpad,drawFrame);
-            [_body, [_sx, _y, _stepW, _rowH], _glyph, _ink, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
+            [_body, [_sx, _y, _stepW, _rowH], _glyph, _ink, SETTINGS_TEXT, true, "center"] call EFUNC(tacpad,drawText);
 
             private _hit = [_body, [_sx, _y + _padY * 0.5, _stepW, _rowH - _padY], {
                 params ["_ctrl"];

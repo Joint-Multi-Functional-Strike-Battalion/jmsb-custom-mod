@@ -69,6 +69,15 @@ GVAR(tileProviders) = createHashMap;
 // role tiles[] - written before the id existed - cannot hide them.
 GVAR(tileUngated) = [];
 
+// ARTY (FUNC(appArty)): the target the calculator solves for (ASL, [] none)
+// and the counter-battery radar's last fix sent to this player's team
+// ([pos, mission time, what], [] none).
+GVAR(artyTarget) = [];
+GVAR(artyFix) = [];
+// The ARTY tile gates itself on the artillery team, so a role's tiles[] list
+// written before it existed does not hide it.
+GVAR(tileUngated) pushBack "arty";
+
 // Registered in preInit so the shell knows the whole suite before a map can be
 // opened. Whether any of them is actually drawn is the player's setting, read
 // by the shell at build time - registering is not the same as showing.

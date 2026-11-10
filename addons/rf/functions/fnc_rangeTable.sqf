@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE RANGE SELF-TEST. For every profile and each of its bands: the distance
  * at which a link between two sets of that profile drops to quality 0 over
  * flat, clear ground - path loss only, no terrain, clutter or body, noise at

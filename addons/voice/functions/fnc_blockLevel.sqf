@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: how far the local player is cut off from transmitting, and why.
  * Dead, or unable to breathe (underwater without a rebreather): nothing, not
  * even Direct. Unconscious (lifeState "INCAPACITATED", which ACE's

@@ -35,7 +35,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_mode", "add", [""]]];
 
 if (!isServer) exitWith {0};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {0};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {0};
 if (GVAR(readOnly)) exitWith {0};
 
 #define SAMPLE_TAG "sample"
@@ -57,6 +57,8 @@ if (_mode isEqualTo "remove") exitWith {
     } forEach +GVAR(players);
     GVAR(sessions) = GVAR(sessions) select {(_x # 5) isNotEqualTo SAMPLE_WINDOW};
     GVAR(windows) = GVAR(windows) select {(_x # 0) isNotEqualTo SAMPLE_WINDOW};
+    // the next database write must not merge the samples back in (FUNC(storeSync))
+    GVAR(syncReplace) = true;
 
     [true] call FUNC(storeSave);
     [] call FUNC(publish);

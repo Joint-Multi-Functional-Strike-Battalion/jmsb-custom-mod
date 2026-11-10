@@ -22,9 +22,11 @@ if (!isServer || _uid isEqualTo "") exitWith {false};
 
 private _now = [] call FUNC(stamp);
 private _found = false;
+private _server = GVAR(settings) getOrDefault ["serverId", PAC_SERVER_DEV];
 
+// Only this server's open row: the same man on another server is still on there.
 {
-    if ((_x # 0) isEqualTo _uid && {(_x # 4) isEqualTo ""}) then {
+    if ((_x # 0) isEqualTo _uid && {(_x # 4) isEqualTo ""} && {(_x param [PAC_ROW_SERVER, _server]) isEqualTo _server}) then {
         _x set [3, _now];
         _x set [4, _now];
         _found = true;

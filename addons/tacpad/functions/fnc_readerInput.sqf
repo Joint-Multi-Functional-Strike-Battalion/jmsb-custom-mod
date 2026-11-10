@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The reply box, made fresh and put on top.
  *
  * WHY IT IS MADE HERE AND NOT DECLARED. A control declared in the dialog is

@@ -11,6 +11,7 @@ class CfgPatches {
         // rather than checked at runtime.
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_notify",
             "ace_interact_menu",
             "cba_xeh"

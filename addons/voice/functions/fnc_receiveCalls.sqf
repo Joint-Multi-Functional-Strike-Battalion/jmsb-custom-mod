@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every machine: the server's call table and pending callbacks. On a client,
  * the local player's calls are diffed against the last table and the
  * events and sounds follow from the difference:

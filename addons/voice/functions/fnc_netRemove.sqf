@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: asks the server to remove one of the RTO nets
  * (FUNC(srvNetRemove)). Refused here only for what a client can tell.
  *
@@ -24,5 +24,5 @@ if !([player] call FUNC(canManageNets)) exitWith {
     false
 };
 
-[QGVAR(srvNetRemove), [player, _id]] call CBA_fnc_serverEvent;
+[player, _id] remoteExecCall [QFUNC(srvNetRemove), SERVER_OWNER];
 true

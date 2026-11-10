@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The key a node holds for a net: the one it was registered with, or, when
  * that is "", its side's key for the net (jmfsb_rf_fnc_netSet makes one per
  * side when the net is created). Resolved at mesh time, so a node can be

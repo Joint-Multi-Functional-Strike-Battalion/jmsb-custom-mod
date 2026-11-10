@@ -557,8 +557,9 @@ force force ace_viewdistance_viewDistanceAirVehicle = 0;
 force force ace_viewdistance_viewDistanceLandVehicle = 0;
 force force ace_viewdistance_viewDistanceOnFoot = 0;
 
-// ACE View Restriction
-force acex_viewrestriction_mode = 3;
+// ACE View Restriction: off. Selective (3) with every sub-mode off was the
+// same thing and made ACE warn about it on every start (RPT, 2026-10-30).
+force acex_viewrestriction_mode = 0;
 force acex_viewrestriction_modeSelectiveAir = 0;
 force acex_viewrestriction_modeSelectiveFoot = 0;
 force acex_viewrestriction_modeSelectiveLand = 0;
@@ -602,26 +603,6 @@ force force ace_zeus_remoteWind = false;
 force force ace_zeus_revealMines = 0;
 force force ace_zeus_zeusAscension = true;
 force force ace_zeus_zeusBird = false;
-
-// ACRE2
-acre_sys_core_automaticAntennaDirection = false;
-acre_sys_core_defaultRadioVolume = 0.8;
-force acre_sys_core_fullDuplex = true;
-acre_sys_core_godVolume = 1;
-acre_sys_core_ignoreAntennaDirection = false;
-acre_sys_core_interference = true;
-acre_sys_core_postmixGlobalVolume = 1;
-acre_sys_core_premixGlobalVolume = 1;
-acre_sys_core_radioNoise = true;
-acre_sys_core_revealToAI = 1;
-acre_sys_core_spectatorVolume = 1;
-acre_sys_core_terrainLoss = 1;
-force acre_sys_core_ts3ChannelName = "acre";
-force acre_sys_core_ts3ChannelPassword = "1234";
-acre_sys_core_ts3ChannelSwitch = true;
-acre_sys_core_unmuteClients = true;
-force acre_sys_radio_defaultRadio = "";
-force acre_sys_signal_signalModel = 3;
 
 // Action Menu
 GW_setting_customConfig = "";
@@ -793,11 +774,9 @@ force Rev_tp_action_radius = 5;
 force Rev_tp_action_time = 6;
 force jmfsb_Settings_addEarplugs = true;
 force jmfsb_Settings_allowInsigniaApplication = true;
-force jmfsb_Settings_enableRadios = true;
 force jmfsb_Settings_enableStagingSystem = true;
 force jmfsb_Settings_enableVehicleInventory = true;
 force jmfsb_Settings_enableVehiclePylon = true;
-force jmfsb_Settings_enableVehicleRadios = false; // the dead YMF_ line said true but never applied; addon default kept - flip deliberately
 force jmfsb_Settings_enableVehicleSystem = true;
 force force jmfsb_Settings_jumpSimulation = 2;
 force force jmfsb_Settings_jumpSimulationGlasses = true;
@@ -810,7 +789,6 @@ force jmfsb_patrol_base_maxCount = 3;
 force jmfsb_Settings_setAiSystemDifficulty = 0;   // off by default (user, 2026-09-01) - Arma Default runs no skill script at all
 force jmfsb_Settings_setMissionType = 1;
 force jmfsb_Settings_setPlayerRank = true;
-force jmfsb_Settings_setRadio = true;
 force jmfsb_Settings_showDiaryRecords = true;
 force jmfsb_Settings_vehicleFactions = "[""BLU_W_F"",""BLU_T_F"",""BLU_NATO_lxWS"",""BLU_F"",""USAF"",""tweed_UA_21"",""jmfsb_EUDF"",""jmfsb_EUDF_arc"",""jmfsb_EUDF_des"",""jmfsb_EUDF_tna"",""jmfsb_EUDF_wdl"",""jmfsb_GEN"",""jmfsb_HIMF"",""jmfsb_Marine_des"",""jmfsb_Marine_wdl"",""jmfsb_faction_jmsb_ocp"",""jmfsb_US_JTF_des"",""jmfsb_US_JTF_ocp"",""jmfsb_US_JTF_tna"",""jmfsb_US_JTF_wdl""]";   // THE 17 WEST jmfsb_* FACTIONS ADDED 2026-09-01. The bare "jmfsb" that used to stand here matched nothing: jmfsb_systems_fnc_isValidFaction is an exact match and every 2040 vehicle is faction jmfsb_<something>, so the whole vehicle pipeline - cargo, cosmetics, radios, pylons, staging actions - exited on the gate for every one of them. East and independent stay out on purpose.
 

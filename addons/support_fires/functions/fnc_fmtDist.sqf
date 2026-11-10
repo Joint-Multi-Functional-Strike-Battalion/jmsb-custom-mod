@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A distance as the board reads it: metres under a kilometre, kilometres to
  * one decimal above ("400 m", "12 km", "14.2 km").
  *

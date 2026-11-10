@@ -1,32 +1,29 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Banks every carried intel item into this drop. THE ONLY PLACE THE COUNTER
- * MOVES - carried intel is worth nothing until it is in a case.
+ * Author: YonV
+ * Banks every carried intel item into this drop - the drop's ACE action.
+ * Carried intel is worth nothing until it is in a case.
+ *
+ * THE SERVER COUNTS (review S7). This asks; FUNC(srvDeposit) checks the
+ * sender stands at a real drop, counts the intel his unit carries by its own
+ * view of his inventory, banks that, and has this machine take the items out
+ * (FUNC(depositTake)). No count travels from here.
  *
  * Arguments:
  * 0: The drop <OBJECT>
  * 1: The player <OBJECT>
  *
- * Return Value: None
+ * Return Value:
+ * None
+ *
+ * Example:
+ * [_target, _player] call jmfsb_hacking_fnc_depositIntel
  *
  * Public: No
  */
 
 params [["_drop", objNull, [objNull]], ["_unit", objNull, [objNull]]];
 
-if (isNull _unit) exitWith {};
+if (isNull _unit || {isNull _drop}) exitWith {};
 
-// Every kind of intel counts, and all of it goes in one deposit - a player
-// who has to make three trips because he picked up three different objects
-// is being punished for what the bodies happened to carry.
-private _kinds = INTEL_ITEMS;
-private _carried = (items _unit) select {_x in _kinds};
-private _n = count _carried;
-if (_n <= 0) exitWith {};
-
-{
-    _unit removeItem _x;
-} forEach _carried;
-
-[QGVAR(deposited), [_n, _unit]] call CBA_fnc_serverEvent;
+[_drop] remoteExecCall [QFUNC(srvDeposit), SERVER_OWNER];

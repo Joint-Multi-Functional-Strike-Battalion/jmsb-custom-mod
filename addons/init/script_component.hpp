@@ -10,3 +10,7 @@
 // against, plus the notification colours and the logistics shorthand. Included
 // AFTER jmfsb's macros so the #undef in there lands on the right definitions.
 #include "\z\jmfsb\addons\diag\roomba_macros.hpp"
+
+// remoteExec target of the server (review S7: attendance is asked for by
+// remoteExec so the server knows who sent it).
+#define SERVER_OWNER 2

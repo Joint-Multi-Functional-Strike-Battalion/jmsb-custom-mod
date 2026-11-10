@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_nodesFor: the nodes a man holds (server). Every node whose holder is
  * the given unit - his radios as the adapters registered them, and any set
  * another mod registered with him as the holder - with the fill each holds.

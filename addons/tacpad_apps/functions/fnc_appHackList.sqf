@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * HACK - NODES IN REACH: node, type, range, security and RF quality, one row
  * each (FUNC(appHackNodes)). A suite device's row is a button that selects it
  * through the suite (jmfsb_hacking_fnc_tabletSelectDevice) - refused while a

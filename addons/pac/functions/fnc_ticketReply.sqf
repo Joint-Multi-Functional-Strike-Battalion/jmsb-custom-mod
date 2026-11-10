@@ -21,6 +21,8 @@
 params [["_caller", objNull, [objNull]], ["_id", "", [""]], ["_text", "", [""]]];
 
 if (!isServer || isNull _caller || _id isEqualTo "") exitWith {};
+// A reply goes in the sender's own name only (review S5).
+if !([_caller] call EFUNC(common,senderIs)) exitWith {};
 _text = trim _text;
 if (_text isEqualTo "") exitWith {};
 if ((GVAR(settings) getOrDefault ["sync", "off"]) isNotEqualTo "service") exitWith {

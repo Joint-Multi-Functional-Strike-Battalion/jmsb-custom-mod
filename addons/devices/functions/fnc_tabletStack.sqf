@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Stacks the tablet's right-hand column from the panels' real bottoms: map
  * tools under TROOPS IN CONTACT, the reader under the map tools and down to
  * the foot of the map area.

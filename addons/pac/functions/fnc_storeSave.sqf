@@ -6,8 +6,13 @@ Description:
     Writes the store to the server's profile - and, when the service is up,
     to the service - at most once every PAC_SAVE_DEBOUNCE seconds. It is
     written when something changed: a connect, a disconnect, an admin's
-    edit, a window started or stopped, an import, the mission ending.
-    Never on a timer.
+    edit, a window started or stopped, an import, the mission ending. A
+    save the debounce held back leaves GVAR(dirty) set, and the heartbeat
+    (XEH_postInit) writes it then.
+
+    NOTHING IS WRITTEN BEFORE GVAR(storeReady) - the boot sets it once the
+    store is loaded (FUNC(boot) step 6). Before that the in-memory store is
+    empty, and a write would overwrite the real one.
 
     THE DEBOUNCE IS NOT AN OPTIMISATION, IT IS THE FEATURE. saveProfileNamespace
     serialises the whole profile and writes it to disk, on the main thread. An
@@ -41,6 +46,8 @@ Parameters:
     0: Force the write, ignoring the debounce <BOOL> (optional, default false)
     1: Also write the database, not just the profile <BOOL> (optional, default
        false - profile only)
+    2: Push at once, without the merge's read <BOOL> (optional, default false -
+       mission end only, where a scheduled read would not finish)
 
 Returns:
     Whether it wrote <BOOL>
@@ -49,9 +56,17 @@ Author:
     YonV
 ---------------------------------------------------------------------------- */
 
-params [["_force", false, [false]], ["_toService", false, [false]]];
+params [["_force", false, [false]], ["_toService", false, [false]], ["_atOnce", false, [false]]];
 
 if (!isServer) exitWith {false};
+
+// NOTHING BEFORE THE STORE IS LOADED. Until the boot sets storeReady the
+// in-memory store is preInit's empty one; writing it would blank the profile
+// and its meta, so the lost-store check could not catch it.
+if !(GVAR(storeReady)) exitWith {
+    TRACE_1("store not loaded yet - not writing",_force);
+    false
+};
 
 GVAR(dirty) = true;
 
@@ -97,7 +112,15 @@ GVAR(savedAt) = [] call FUNC(stamp);
 // window (the host's own, always) must not push that copy over the real
 // store. Before READY nothing writes the database; the session row is in
 // memory and the next write carries it.
-if (_toService && GVAR(svcUp) && {missionNamespace getVariable [QGVAR(ready), false]}) then {[] call FUNC(svcSave)};
+//
+// MERGED, NOT PUSHED BLIND (2026-11-07): FUNC(storeSync) reads the database's
+// copy first and folds in what the other servers wrote. At mission end the
+// push goes at once: a scheduled read would be cut off with the mission. It
+// carries this server's store as of its last merge; the other servers still
+// hold their own rows and put them back with their next save.
+if (_toService && GVAR(svcUp) && {missionNamespace getVariable [QGVAR(ready), false]}) then {
+    if (_atOnce) then {[] call FUNC(svcSave)} else {[] call FUNC(storeSync)};
+};
 
 TRACE_2("store written",count GVAR(players),count GVAR(sessions));
 

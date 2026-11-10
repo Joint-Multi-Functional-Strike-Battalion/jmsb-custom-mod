@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes a jmfsb site an OPCOM objective, so the commander defends it, sends
  * TACOM orders around it and counts it when he weighs the war.
  *

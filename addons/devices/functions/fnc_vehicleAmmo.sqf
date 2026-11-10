@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A vehicle's ammunition, turret by turret and weapon by weapon, and its
  * countermeasures - smoke and flares - counted apart.
  *

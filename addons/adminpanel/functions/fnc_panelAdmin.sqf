@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The ADMIN button, between SETTINGS and HIDE ALL on the map screen.
  *
  * IT IS ONLY THERE FOR ADMINS. Not disabled for everyone else - absent. The

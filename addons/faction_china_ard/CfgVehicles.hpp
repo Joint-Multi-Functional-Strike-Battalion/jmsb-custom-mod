@@ -114,7 +114,6 @@ class CfgVehicles {
     class O_Plane_Fighter_02_F;
     class O_Plane_Fighter_02_Stealth_F;
     class O_Quadbike_01_F;
-    class O_Quadbike_ALIVE;
     class O_Radar_System_02_F;
     class O_SAM_System_04_F;
     class O_SDV_01_F;
@@ -1592,7 +1591,7 @@ class CfgVehicles {
             QPATHTOF(data\camo\made\quadbike_01\Quadbike_01_wheel_RUkhk_cnarid_co.paa)
         };
     };
-    class GVAR(O_Quadbike_ALIVE): O_Quadbike_ALIVE {
+    class GVAR(O_Quadbike_ALIVE): O_Quadbike_01_F {
         scope = 2;
         scopeCurator = 2;
         author = QAUTHOR;

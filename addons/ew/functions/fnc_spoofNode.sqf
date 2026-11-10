@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Spoofs a broken net's GPS (DESIGN_EW "Hacking: SPOOF") - the hacking
  * addon's SPOOF action lands here when the hack completes. Every man of the
  * group walks off his true position through the same engine as a spoofer's
@@ -10,27 +10,27 @@
  * take, so the fixes their side makes - and the patrols it sends - land off
  * target.
  *
- * On a client this forwards to the server.
+ * Server only: the hacking addon calls it from its srvHackComplete once it has
+ * checked the hack. It used to forward from a client on a CBA event, which any
+ * client could raise to spoof any group's GPS (review S7); a client's call
+ * now does nothing.
  *
  * Arguments:
  * 0: The hacked net's group <GROUP>
  * 1: The hacker <OBJECT>
  *
  * Return Value:
- * Accepted (server), forwarded (client) <BOOL>
+ * Accepted <BOOL>
  *
  * Example:
- * [group _device, player] call jmfsb_ew_fnc_spoofNode
+ * [group _device, _hacker] call jmfsb_ew_fnc_spoofNode
  *
  * Public: Yes
  */
 
 params [["_group", grpNull, [grpNull]], ["_hacker", objNull, [objNull]]];
 
-if (!isServer) exitWith {
-    [QGVAR(spoofNode), [_group, _hacker]] call CBA_fnc_serverEvent;
-    true
-};
+if (!isServer) exitWith {false};
 if (isNull _group || {(units _group) isEqualTo []}) exitWith {false};
 
 GVAR(spoofNodes) set [hashValue _group, [_group, CBA_missionTime + GVAR(spoofHackTime), str side group _hacker]];

@@ -14,6 +14,16 @@ if (!hasInterface) exitWith {};
 ["squad", FUNC(appSquad)] call EFUNC(tacpad,registerApp);
 ["weather", FUNC(appWeather)] call EFUNC(tacpad,registerApp);
 
+// ARTY, the artillery team's calculator (user, 2026-10-25), and the
+// counter-battery radar's last fix, which jmfsb_reaction sends the team with
+// its TAC//MSG report: kept here for the tile and the calculator's RADAR FIX.
+["arty", FUNC(appArty)] call EFUNC(tacpad,registerApp);
+[QEGVAR(reaction,cbFix), {
+    params [["_pos", [], [[]]], ["_at", 0, [0]], ["_what", "", [""]]];
+    if (_pos isEqualTo []) exitWith {};
+    GVAR(artyFix) = [_pos, _at, _what];
+}] call CBA_fnc_addEventHandler;
+
 // The other three tiles. Every tile on the band now opens something - a tile
 // that logs "no app registered" and does nothing is the exact failure this
 // suite has spent the week chasing.
@@ -33,17 +43,23 @@ if (!hasInterface) exitWith {};
 
 // A message arriving while the map is open should show up in the docked reader.
 //
-// BOTH EVENTS. This listened to `received` only, which is traffic addressed to
+// BOTH PATHS. This listened to arrivals only, which is traffic addressed to
 // this player - and a message filed to a shared channel reaches its own sender
 // on the QUIET path, as `indexRefreshed`. So sending to a channel updated
 // nothing on screen until something else forced a redraw.
-{
-    [_x, {
-        if (!isNull (HOST_DISPLAY)) then {
-            ["reader"] call EFUNC(tacpad,rebuild);
-        };
-    }] call CBA_fnc_addEventHandler;
-} forEach [QEGVAR(messaging,received), QEGVAR(messaging,indexRefreshed)];
+//
+// Arrivals come through messaging's onReceive hook, run only by its
+// server-checked cltReceive - not the `received` CBA event any client could
+// raise (review S7).
+private _fnc_readerRebuild = {
+    if (!isNull (HOST_DISPLAY)) then {
+        ["reader"] call EFUNC(tacpad,rebuild);
+    };
+};
+[QEGVAR(messaging,indexRefreshed), _fnc_readerRebuild] call CBA_fnc_addEventHandler;
+if (!isNil QEFUNC(messaging,onReceive)) then {
+    [_fnc_readerRebuild] call EFUNC(messaging,onReceive);
+};
 
 // The map closing drops the reader back to the list. A thread left open across
 // two map opens is a panel showing something the player has forgotten they
@@ -73,66 +89,27 @@ addMissionEventHandler ["Map", {
 // recovered them. See EFUNC(hacking,productPackage).
 ["intel", FUNC(appIntel)] call EFUNC(tacpad,registerApp);
 
-// TAC//SUPPORT - combat support fronted through the support core
-// (jmfsb_support), gated by a messaging tag rather than a role tree. One board,
-// any number of back ends: every provider registered with
-// EFUNC(support,registerProvider) - ALiVE's ATO and NEO combat support through
-// the adapter, jmfsb's own CAS drones, support_fires and support_air.
+// NO TAC//SUPPORT APP (user, 2026-11-01, docs/DESIGN_SUPPORT_MESSAGING.md
+// step 9: "no support interface. The support system stays. The JTAC requests
+// support by sending a message to the asset"). Support is called from TAC//MSG.
 //
-// NO SIMPLEX (user, 2026-10-20: "no simplex dependency"). Our own support
-// addons replace it; nothing here detects, lists or opens Simplex Support
-// Services, and the mod forces none of its settings.
-//
-// REGISTERED WHEN THE CORE IS LOADED, NOT WHEN ALiVE IS. The core is the
-// board's only way in; ALiVE is one optional provider of it, so a mission with
-// our own support modules and no ALiVE still gets the board.
-if (!isNil QEFUNC(support,assets)) then {
-    [SUP_APP, FUNC(appSupport)] call EFUNC(tacpad,registerApp);
+// THE DELIVERY RECEIPT from the support core stays: a provider's asset
+// consumed an order, or never did, and the notify rail says so. A local hook,
+// not a CBA event (review R1): any client could raise the old
+// jmfsb_support_ack event on every machine.
+if (!isNil QEFUNC(support,onAck)) then {
+    [{
+        params [["_assetId", ""], ["_ok", true], ["_said", ""]];
+        ["SUPPORT", _said, ["high", "normal"] select _ok] call EFUNC(messaging,notify);
+    }] call EFUNC(support,onAck);
 };
 
-// THE DELIVERY RECEIPT from the support core: a provider's asset consumed the
-// order, or never did. Lands in the support screen's verdict row and the
-// notify rail, and forces a redraw so it shows the moment it arrives rather
-// than on the next poll tick - the dialog on the vanilla map, the open app on
-// the tablet (SUP_SHOWN).
-[QEGVAR(support,ack), {
-    params [["_assetId", ""], ["_ok", true], ["_said", ""]];
-    missionNamespace setVariable [QGVAR(supportFlash), [_said, _ok, CBA_missionTime]];
-    ["SUPPORT", _said, ["high", "normal"] select _ok] call EFUNC(messaging,notify);
-    if (SUP_SHOWN) then {
-        {[SUP_APP] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
-    };
-}] call CBA_fnc_addEventHandler;
-
-// ON THE TABLET THE BOARD IS SEVERAL TOP-LEVEL CONTROLS, not
-// one app group - the map hole between them is the point. FUNC(appFrame)
-// replaces only the group, so when any other app takes the screen the rest
-// goes here, and the board's hold on the host's map with it.
-// On the vanilla map the board is a dialog and its controls die with it.
-private _fnc_supportDrop = {
-    params [["_keep", "", [""]]];
-    if (_keep isNotEqualTo SUP_APP) then {
-        private _roots = uiNamespace getVariable [QGVAR(supportRoot), []];
-        if (_roots isEqualType controlNull) then {_roots = [_roots]};
-        {if (!isNull _x) then {ctrlDelete _x}} forEach _roots;
-        uiNamespace setVariable [QGVAR(supportRoot), []];
-    };
-    if (_keep isNotEqualTo SUP_APP && {(uiNamespace getVariable [QEGVAR(tacpad,appMapClaim), ""]) isEqualTo SUP_APP}) then {
-        uiNamespace setVariable [QEGVAR(tacpad,appMapClaim), ""];
-    };
-};
-[QEGVAR(tacpad,appOpened), {
-    params [["_app", "", [""]]];
-    if (HOST_DEVICE) then {[_app] call _thisArgs};
-}, _fnc_supportDrop] call CBA_fnc_addEventHandlerArgs;
-
-// And closing it takes all of it at once, rather than leaving the slabs
-// for EFUNC(tacpad,appClose)'s orphan sweep a frame later.
-[QEGVAR(tacpad,appClosed), {
-    params [["_app", "", [""]]];
-    if (HOST_DEVICE && _app isEqualTo SUP_APP) then {[""] call _thisArgs};
-}, _fnc_supportDrop] call CBA_fnc_addEventHandlerArgs;
 ["settings", FUNC(appSettings)] call EFUNC(tacpad,registerApp);
+// LOG - the notices log as an app again (user, 2026-11-09: "add back in the
+// logs app"): the MENU row and the LOG tile open the reader's LOG view.
+[LOG_APP, FUNC(appLog)] call EFUNC(tacpad,registerApp);
+// The tablet bar's MENU: every app and the settings (user, 2026-10-30).
+[MENU_APP, FUNC(appMenu)] call EFUNC(tacpad,registerApp);
 
 // Each client publishes its own radio state, because only his own client knows
 // it - see FUNC(radioState). Five seconds is slower than a man can change net

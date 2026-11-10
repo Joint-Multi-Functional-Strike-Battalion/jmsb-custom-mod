@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How much of a target the player can see, 0 to 1. NO SEEING THROUGH WALLS:
  * a target hidden from every point checked is 0 and is not drawn; vegetation
  * in the VIEW LOD is part-transparent, so a man in a bush comes back as a

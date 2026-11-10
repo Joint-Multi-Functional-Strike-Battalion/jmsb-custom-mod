@@ -372,9 +372,9 @@ class GVAR(console) {
         };
 
         // TAC//PAC - the website's pages in game. In the box under the vehicle
-        // column, beside WAKE UP / HEAL FULL and their height (user,
-        // 2026-09-10: "move the TAC/PAC button and make the size of the green
-        // box"); it only does anything with the pac addon loaded.
+        // column, beside STABILIZE / WAKE UP / HEAL FULL and their height
+        // (user, 2026-09-10: "move the TAC/PAC button and make the size of the
+        // green box"); it only does anything with the pac addon loaded.
         class ADMIN_PAC: RscADMPButton {
             idc = IDC_ADMINPANEL_ADMIN_PAC;
             text = "TAC//PAC";
@@ -382,9 +382,9 @@ class GVAR(console) {
             font = "RobotoCondensedBold";
             sizeEx = "1.1 * (0.025 * safezoneH)";
             x = "0.702 * safezoneW + safezoneX";
-            y = "0.892 * safezoneH + safezoneY";
+            y = "0.870 * safezoneH + safezoneY";
             w = "0.143 * safezoneW";
-            h = "0.070 * safezoneH";
+            h = "0.092 * safezoneH";
             // ONE DIALOG (2026-09-09), opening on the dashboard as the website
             // does, with the website's nav bar along its top. On a tablet it
             // opens inside the device and the console closes - FUNC(openPac).
@@ -1241,7 +1241,7 @@ class GVAR(console) {
             x = "0.849 * safezoneW + safezoneX";
             y = "0.634 * safezoneH + safezoneY";
             w = "0.143 * safezoneW";
-            h = "0.240 * safezoneH";
+            h = "0.232 * safezoneH";
             colorBackground[] = {0.08, 0.08, 0.08, 1};
         };
 
@@ -1309,13 +1309,29 @@ class GVAR(console) {
             h = "0.028 * safezoneH";
         };
 
+        // STABILIZE (user, 2026-10-31: "a stable button above wake up, this
+        // stabilizes the patient to the requirements of ACM for conversion"):
+        // what ACM's casualty conversion asks of the patient - not bleeding,
+        // Ertapenem in him - FUNC(stabilize). Three buttons in the room of
+        // two: the box ends under BLOOD TYPE, and TAC//PAC keeps their height.
+        class PLAYER_MEDICAL_STABILIZE: RscADMPButton {
+            idc = IDC_ADMINPANEL_PLAYER_MEDICAL_STABILIZE;
+            text = "STABILIZE";
+            tooltip = "What ACM's casualty conversion needs of him: bleeding stopped, Ertapenem given when ACM requires it. Not woken, not healed.";
+            x = "0.849 * safezoneW + safezoneX";
+            y = "0.870 * safezoneH + safezoneY";
+            w = "0.143 * safezoneW";
+            h = "0.028 * safezoneH";
+            onButtonClick = QUOTE([] call FUNC(stabilize));
+        };
+
         class PLAYER_MEDICAL_WAKEUP: RscADMPButton {
             idc = IDC_ADMINPANEL_PLAYER_MEDICAL_WAKEUP;
             text = "WAKE UP";
             x = "0.849 * safezoneW + safezoneX";
-            y = "0.892 * safezoneH + safezoneY";
+            y = "0.902 * safezoneH + safezoneY";
             w = "0.143 * safezoneW";
-            h = "0.032 * safezoneH";
+            h = "0.028 * safezoneH";
             onButtonClick = "[] spawn admp_fnc_wakeUp;";
         };
 
@@ -1323,9 +1339,9 @@ class GVAR(console) {
             idc = IDC_ADMINPANEL_PLAYER_MEDICAL_FULLHEAL;
             text = "HEAL FULL";
             x = "0.849 * safezoneW + safezoneX";
-            y = "0.930 * safezoneH + safezoneY";
+            y = "0.934 * safezoneH + safezoneY";
             w = "0.143 * safezoneW";
-            h = "0.032 * safezoneH";
+            h = "0.028 * safezoneH";
             colorBackground[] = {0.761, 0.659, 0.471, 1};
             colorText[] = {0.05, 0.05, 0.05, 1};
             onButtonClick = "[] call admp_fnc_fullHeal;";
@@ -1797,6 +1813,102 @@ class GVAR(environment) {
             onButtonClick = QUOTE((ctrlParent (_this select 0)) closeDisplay 2;);
             x = "0.338 * safezoneW + safezoneX";
             y = "0.690 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.032 * safezoneH";
+        };
+    };
+};
+
+// SECRETS (code review R4, 2026-10-31). A small dialog over the console, opened
+// with `#jmfsb secrets`: the LiveKit key and secret and the database string and
+// key, typed here and sent by remoteExec to the server alone, which keeps them in
+// its own profile and never shows them back - each row says SET and the last four
+// characters, or NOT SET. A CBA setting would send them to every player.
+// FUNC(secretsLoad) paints it and asks the server; FUNC(secretsSet) sends a row.
+#define SECRET_ROW(N,Y) \
+    class LABEL_##N: RscADMPStructuredText { \
+        idc = 2641##N; \
+        text = ""; \
+        x = "0.338 * safezoneW + safezoneX"; \
+        y = QUOTE(Y * safezoneH + safezoneY); \
+        w = "0.200 * safezoneW"; \
+        h = "0.024 * safezoneH"; \
+    }; \
+    class STATUS_##N: RscADMPStructuredText { \
+        idc = 2642##N; \
+        text = ""; \
+        x = "0.540 * safezoneW + safezoneX"; \
+        y = QUOTE(Y * safezoneH + safezoneY); \
+        w = "0.122 * safezoneW"; \
+        h = "0.024 * safezoneH"; \
+    }; \
+    class EDIT_##N: RscADMPEdit { \
+        idc = 2643##N; \
+        text = ""; \
+        x = "0.338 * safezoneW + safezoneX"; \
+        y = QUOTE((Y + 0.026) * safezoneH + safezoneY); \
+        w = "0.250 * safezoneW"; \
+        h = "0.032 * safezoneH"; \
+    }; \
+    class SET_##N: RscADMPButton { \
+        idc = 2644##N; \
+        text = "SET"; \
+        x = "0.594 * safezoneW + safezoneX"; \
+        y = QUOTE((Y + 0.026) * safezoneH + safezoneY); \
+        w = "0.068 * safezoneW"; \
+        h = "0.032 * safezoneH"; \
+        onButtonClick = QUOTE([N] call FUNC(secretsSet)); \
+    }
+
+class GVAR(secrets) {
+    idd = IDD_ADMINPANEL_SECRETS;
+    movingEnable = 0;
+    enableSimulation = 1;
+
+    onLoad = QUOTE([_this select 0] call FUNC(secretsLoad););
+
+    class controlsBackground {
+        class BACKGROUND: RscADMPText {
+            idc = IDC_ADMINSECRETS_BACKGROUND;
+            text = "";
+            x = "0.330 * safezoneW + safezoneX";
+            y = "0.280 * safezoneH + safezoneY";
+            w = "0.340 * safezoneW";
+            h = "0.420 * safezoneH";
+            colorBackground[] = {0.05, 0.05, 0.05, 0.96};
+        };
+    };
+
+    class controls {
+        class TITLE: RscADMPStructuredText {
+            idc = IDC_ADMINSECRETS_TITLE;
+            text = ""; // written at runtime - see FUNC(secretsLoad)
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.288 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.036 * safezoneH";
+        };
+
+        class NOTE: RscADMPStructuredText {
+            idc = IDC_ADMINSECRETS_NOTE;
+            text = "<t font='RobotoCondensed' size='0.7'>Sent to the server only and kept in its profile - never shown to players. An empty field and SET clears it. The database string takes effect at the next mission start.</t>";
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.328 * safezoneH + safezoneY";
+            w = "0.324 * safezoneW";
+            h = "0.050 * safezoneH";
+        };
+
+        SECRET_ROW(0,0.382);
+        SECRET_ROW(1,0.450);
+        SECRET_ROW(2,0.518);
+        SECRET_ROW(3,0.586);
+
+        class CLOSE: RscADMPButton {
+            idc = IDC_ADMINSECRETS_CLOSE;
+            text = "CLOSE";
+            onButtonClick = QUOTE((ctrlParent (_this select 0)) closeDisplay 2;);
+            x = "0.338 * safezoneW + safezoneX";
+            y = "0.656 * safezoneH + safezoneY";
             w = "0.324 * safezoneW";
             h = "0.032 * safezoneH";
         };

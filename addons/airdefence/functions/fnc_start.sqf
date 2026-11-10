@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Plans and builds every commander's air defence, once.
  *
  * Called by FUNC(moduleController) when ALiVE is up - never on its own. The

@@ -2,8 +2,9 @@
 
 ["CAManBase", "fired", {
     params ["_unit", "", "", "", "_ammo", "", "_proj"];
-    // second name is the pre-side-prefix compat alias
-    if (_ammo in ["FA_b_12G_Mk353_BRC", "FA_12G_Mk353_BRC"] && GVAR(enableBreaching)) then {
+    // second name is the pre-side-prefix compat alias; Fired runs on every
+    // machine, so only the shooter's tracks the round
+    if (_ammo in ["FA_b_12G_Mk353_BRC", "FA_12G_Mk353_BRC"] && GVAR(enableBreaching) && {local _proj}) then {
         [_unit, _proj] call FUNC(breach);
     };
 }] call CBA_fnc_addClassEventHandler;

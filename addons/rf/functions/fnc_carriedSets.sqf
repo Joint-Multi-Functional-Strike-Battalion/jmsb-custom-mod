@@ -1,15 +1,14 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The radio sets a man carries, as RF sees them (FUNC(itemProfile)): the set in
  * his radio slot. What a voice adapter registers as his nodes. No radio mod is
  * asked.
  *
- * NO MAN PACKS UNDER GAME VOICE (user, 2026-10-21: "for game voip no
- * manpacks, tfar and acre yes they can have them"). Nothing on his back is a
+ * NO MAN PACKS UNDER GAME VOICE (user, 2026-10-21). Nothing on his back is a
  * radio here: range away from the bases comes from base stations, vehicles
- * and the mesh of handhelds. TFAR's and ACRE's adapters read their own long
- * range sets, man packs included.
+ * and the mesh of handhelds. (TFAR and ACRE, which had man packs, were
+ * removed 2026-10-31, DEC1.)
  *
  * Arguments:
  * 0: Unit <OBJECT>

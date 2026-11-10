@@ -41,33 +41,27 @@ private _kind = _session get "kind";
 // from a hack that never ran. The hack runs; FUNC(serverPick) says honestly that
 // there was nothing on the network.
 
-// Towers hold a cooldown; -1 makes them one-shot.
-if (_kind isEqualTo "tower") then {
-    private _cd = [QGVAR(cfg_hack_cooldown)] call FUNC(hackSetting);
-    private _last = _device getVariable [QGVAR(lastHack), -1e9];
-    if (_cd < 0 && {_last > -1e8}) exitWith {
-        ["Hack", "That tower is spent.", [1, 0.3, 0.3, 1]] call EFUNC(notify,notify);
-    };
-    if (_cd >= 0 && {(CBA_missionTime - _last) < _cd}) exitWith {
-        ["Hack", format ["Tower cooling down - %1s.", round (_cd - (CBA_missionTime - _last))], [1, 0.3, 0.3, 1]] call EFUNC(notify,notify);
-    };
+// Towers hold a cooldown; -1 makes them one-shot. Guards at function scope:
+// an exitWith inside a then-block leaves only the block, and the hack started
+// anyway - the server now refuses that hack (review S7), so the refusal has to
+// happen here, before the clock runs.
+private _cd = [QGVAR(cfg_hack_cooldown)] call FUNC(hackSetting);
+private _last = _device getVariable [QGVAR(lastHack), -1e9];
+if (_kind isEqualTo "tower" && _cd < 0 && _last > -1e8) exitWith {
+    ["Hack", "That tower is spent.", [1, 0.3, 0.3, 1]] call EFUNC(notify,notify);
+};
+if (_kind isEqualTo "tower" && _cd >= 0 && {(CBA_missionTime - _last) < _cd}) exitWith {
+    ["Hack", format ["Tower cooling down - %1s.", round (_cd - (CBA_missionTime - _last))], [1, 0.3, 0.3, 1]] call EFUNC(notify,notify);
 };
 
 // Each kind runs on its own clock.
-private _time = switch (_kind) do {
-    case "unit": { missionNamespace getVariable [QGVAR(rh_hack_time), RH_TIME_DEF] };
-    case "drone": { HACK_DURATION };
-    // A wreck has no security left to beat, only a card to copy.
-    case "wreck": { HACK_WRECK_DURATION };
-    default { [QGVAR(cfg_hack_time)] call FUNC(hackSetting) };
-};
+_session set ["time", [_kind] call FUNC(hackDuration)];
 
-_session set ["time", _time max 1];
-
-// A pop is public furniture - being seen starting on one has a price.
-if (_device getVariable ["jmfsb_leaders_pop", false]) then {
-    [player, _device] call FUNC(popWitness);
-};
+// A pop's witnesses are the server's call, in FUNC(srvHackStart) (review S7).
 _session set ["last", CBA_missionTime];
 _session set ["running", true];
+
+// THE SERVER STARTS ITS OWN CLOCK (review S7): a completion it never saw start,
+// or one that comes sooner than the kind's clock allows, is refused there.
+[_device, _kind] remoteExecCall [QFUNC(srvHackStart), SERVER_OWNER];
 

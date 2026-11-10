@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A colour written down, as RGBA. The other half of FUNC(hexOf).
  *
  * HEX OR r,g,b. The design writes its tokens as #F3F2F2 and that is what anyone

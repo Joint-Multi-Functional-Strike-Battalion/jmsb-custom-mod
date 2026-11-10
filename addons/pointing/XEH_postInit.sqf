@@ -2,8 +2,5 @@
 
 #include "initKeybinds.inc.sqf"
 
-if (IS_MOD_LOADED(diwako_dui_radar)) then {
-    [QGVAR(pointed), {
-        _this call diwako_dui_radar_fnc_incomingFinger;
-    }] call CBA_fnc_addEventHandler;
-};
+// A crewmate's point comes from the server by remoteExec (FUNC(srvPoint) ->
+// FUNC(pointed), which hands it to DUI's radar) - no CBA event (review R1).

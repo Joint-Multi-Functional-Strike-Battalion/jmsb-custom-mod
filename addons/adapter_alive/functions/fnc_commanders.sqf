@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every ALiVE AI commander: who it is, what kind of war it runs, what it
  * fights with, and its module logic.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The capture condition, over every watch: enough players of one side inside,
  * nobody hostile, held continuously. Any break resets the clock - taking
  * ground means clearing it AND staying.
@@ -57,6 +57,7 @@ private _min = GVAR(minPlayers);
     _w set ["last", CBA_missionTime];
 
     INFO_2("'%1' taken by %2",_w get "name",_holder);
-    [QGVAR(captured), [_w get "name", _holder, +(_w get "pos"), _w get "radius"]]
-        call CBA_fnc_globalEvent;
+    // Called here, on the server, not raised as a CBA event: any client could
+    // raise that one and have a QRF sent at any position (review S7).
+    [_w get "name", _holder, +(_w get "pos"), _w get "radius"] call FUNC(onCaptured);
 } forEach GVAR(watches);

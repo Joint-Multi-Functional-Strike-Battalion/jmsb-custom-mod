@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every machine: the roster the server published - per player his radio nets
  * (from his RF fill) and his EMCON level - indexed by player UID. The server
  * calls it directly, since a public variable handler does not fire where the

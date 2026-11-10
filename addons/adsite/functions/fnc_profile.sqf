@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is this vehicle air defence, and with what - read once per class from its
  * own loadout and cached, so every later vehicle of the class is one lookup.
  *

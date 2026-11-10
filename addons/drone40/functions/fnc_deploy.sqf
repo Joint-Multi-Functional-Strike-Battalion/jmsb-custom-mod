@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a drone40 variant is up, or its mode was switched (FUNC(setMode)).
  * Its role is its mode (GVAR(mode), public on the drone) when one was set,
  * else its round's (GVAR(role) in config); in mode "off" nothing is
@@ -39,6 +39,13 @@
 params [["_drone", objNull, [objNull]], ["_launcher", objNull, [objNull]]];
 
 if (!isServer || {isNull _drone} || {!alive _drone}) exitWith {""};
+// Reached by remoteExec from FUNC(init) on the machine that made the drone:
+// the drone must be local to the sender and the launcher his own unit
+// (review R1). The server's own calls (FUNC(setMode), FUNC(tick)) pass.
+if (!([_drone] call EFUNC(common,senderIs)) || {!isNull _launcher && {!([_launcher] call EFUNC(common,senderIs))}}) exitWith {
+    WARNING_3("deploy: refused - machine %1 named %2 / %3, not its own",remoteExecutedOwner,_drone,_launcher);
+    ""
+};
 
 private _cfgRole = getText (configOf _drone >> QGVAR(role));
 if !(_cfgRole in ROLES) exitWith {""};

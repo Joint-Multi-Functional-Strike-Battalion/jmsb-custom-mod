@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
-    Author: JMSB
+    Author: YonV
 
     Description:
         Paints and sizes the role selection screen from the player's jmfsb

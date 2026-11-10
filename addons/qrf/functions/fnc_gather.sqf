@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds the watch list: every commander's objectives, plus any jmfsb_qrf*
  * marker.
  *
@@ -53,14 +53,17 @@ private _push = {
     };
 } forEach allMapMarkers;
 
-if (!isNil "jmfsb_adapter_alive_fnc_commanders") then {
+// Without ALiVE there are no commanders' objectives: the markers above are the
+// whole watch list (user, 2026-11-02) - and with ALiVE loaded but no
+// commanders, once the adapter has given up ("same as not loaded").
+if (!isNil QEFUNC(adapter_alive,commanders) && {[] call EFUNC(common,aliveLoaded)}) then {
     {
         _x params ["_side"];
         {
             _x params ["_id", "_pos", "_size"];
             [_id, _pos, _size] call _push;
-        } forEach ([_side] call jmfsb_adapter_alive_fnc_objectivesFor);
-    } forEach (call jmfsb_adapter_alive_fnc_commanders);
+        } forEach ([_side] call EFUNC(adapter_alive,objectivesFor));
+    } forEach (call EFUNC(adapter_alive,commanders));
 };
 
 GVAR(watches) = _out;

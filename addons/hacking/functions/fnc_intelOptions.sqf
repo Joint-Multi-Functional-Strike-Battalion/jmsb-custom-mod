@@ -76,11 +76,12 @@ if (!isNull _device && {(_device getVariable [QGVAR(package), ""]) isNotEqualTo 
 };
 
 // --- the integrated defence network -----------------------------------------
-// The counts are read as PUBLISHED VARIABLES BY LITERAL NAME, not through the
-// adapter's data functions: those answer only on the server and this runs on a
-// client. The adapter republishes them on a 30s beat.
+// The counts are read as PUBLISHED VARIABLES, not through the adapter's data
+// functions: those answer only on the server and this runs on a client. The
+// adapter republishes them on a 30s beat. Without ALiVE they never exist, read
+// as 0, and those hunts are simply not offered (user, 2026-11-02).
 if (_conventional) then {
-    if ((missionNamespace getVariable ["jmfsb_adapter_alive_aaCount", 0]) > 0) then {
+    if ((missionNamespace getVariable [QEGVAR(adapter_alive,aaCount), 0]) > 0) then {
         _avail pushBack ["aa", "LOCATE AA"];
     };
     // The anti-ship network, split into the launchers and the eyes that feed
@@ -94,18 +95,18 @@ if (_conventional) then {
     // FUNC(productLocateRadar) merges both pools, so either one is enough to
     // put the button up.
     if ((missionNamespace getVariable [QEGVAR(antiship,radars), []]) isNotEqualTo []
-        || {(missionNamespace getVariable ["jmfsb_adapter_alive_radarCount", 0]) > 0}) then {
+        || {(missionNamespace getVariable [QEGVAR(adapter_alive,radarCount), 0]) > 0}) then {
         _avail pushBack ["radar", "LOCATE RADAR"];
     };
-    if ((missionNamespace getVariable ["jmfsb_adapter_alive_artyCount", 0]) > 0) then {
+    if ((missionNamespace getVariable [QEGVAR(adapter_alive,artyCount), 0]) > 0) then {
         _avail pushBack ["arty", "LOCATE ARTILLERY"];
     };
     // The rear: where the men not on the line sleep, and where what feeds the
     // line comes from.
-    if ((missionNamespace getVariable ["jmfsb_adapter_alive_campCount", 0]) > 0) then {
+    if ((missionNamespace getVariable [QEGVAR(adapter_alive,campCount), 0]) > 0) then {
         _avail pushBack ["camp", "LOCATE CAMP"];
     };
-    if ((missionNamespace getVariable ["jmfsb_adapter_alive_hubCount", 0]) > 0) then {
+    if ((missionNamespace getVariable [QEGVAR(adapter_alive,hubCount), 0]) > 0) then {
         _avail pushBack ["hub", "LOCATE LOGISTICS"];
     };
 };
@@ -122,8 +123,9 @@ if (_asymmetric) then {
     if ((missionNamespace getVariable ["jmfsb_leaders_upCount", 0]) > 0) then {
         _avail pushBack ["leader", "TRACE NETWORK"];
     };
-    if (!isNil "jmfsb_adapter_alive_fnc_installations"
-        && {([] call jmfsb_adapter_alive_fnc_installations) isNotEqualTo []}) then {
+    if (!isNil QEFUNC(adapter_alive,installations)
+        && {[] call EFUNC(common,aliveLoaded)}
+        && {([] call EFUNC(adapter_alive,installations)) isNotEqualTo []}) then {
         _avail pushBack ["installation", "LOCATE INSTALLATION"];
     };
 };

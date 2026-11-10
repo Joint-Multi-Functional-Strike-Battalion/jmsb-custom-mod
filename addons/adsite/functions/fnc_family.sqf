@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which threat family an ammo class is, and how fast it flies - read once per
  * class from config and cached, so every later shot of it is one lookup.
  *

@@ -7,6 +7,7 @@
 if (hasInterface) then {
     #include "initKeybinds.inc.sqf"
 
-    [QGVAR(marker3D), {_this call FUNC(show3DMarker)}] call CBA_fnc_addEventHandler;
+    // The 3D marker comes from the server by remoteExec (FUNC(srvMarker3D),
+    // FUNC(show3DMarker)) - no CBA event (review R1).
 };
 

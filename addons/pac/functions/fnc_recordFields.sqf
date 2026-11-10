@@ -25,7 +25,10 @@ Description:
                      citation]], excused [windowId] (absences an admin
                      excused), adminActions [[LOG-n, type, date, byUid,
                      byName, notes]], notes [[date, by, text]],
-                     training [[date, by, text]] (courses held, back-datable)
+                     training [[date, by, text]] (courses held, back-datable),
+                     ranges [[date, range, mode, detail, hits, shown,
+                     seconds]] (shooting-range runs, jmfsb_range - the last
+                     PAC_RANGE_KEEP of each range)
         the rest     loadouts, updatedAt, serverId
 
     The pay grade is the RANK's (structure ranks >> payGrade), the platoon
@@ -64,6 +67,7 @@ Author:
     ["adminActions", []],
     ["notes", []],
     ["training", []],
+    ["ranges", []],
     ["loadouts", createHashMap],
     ["updatedAt", ""],
     ["serverId", ""]

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The batteries that can join a coordinated fire mission - Simplex's
  * coordination: other batteries near the one tasked, carrying the same round,
  * free, and in range of the target.

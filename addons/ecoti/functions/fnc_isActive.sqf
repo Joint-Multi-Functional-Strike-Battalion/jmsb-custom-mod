@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether ECOTI is drawing this frame. Every condition has to hold; the moment
  * one fails the overlay goes with it.
  *

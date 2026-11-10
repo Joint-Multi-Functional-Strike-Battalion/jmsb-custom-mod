@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: opens a call in a free slot. The people in "ringing" ring until
  * they accept or decline; the call goes live (its members join the call
  * net through the adapter) from CALL_MIN_MEMBERS members.

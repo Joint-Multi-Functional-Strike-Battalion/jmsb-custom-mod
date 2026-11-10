@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The player's squad tag, from their squad.xml, or "" if they have none.
  *
  * THIS WAS CALLED AND NEVER WRITTEN. FUNC(unit_getVariables) and

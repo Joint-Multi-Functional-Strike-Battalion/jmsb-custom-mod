@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * EA: places a decoy at a man's feet (DESIGN_EW "Decoy"; ISR only). The
  * decoy is a ground antenna registered in RF with a chosen profile's band and
  * power, claiming one net under a key nobody else holds - so it carries no
@@ -26,10 +26,16 @@
 params [["_unit", objNull, [objNull]], ["_profile", "handheld", [""]], ["_net", "", [""]]];
 
 if (!isServer) exitWith {
-    [QGVAR(decoyPlace), [_unit, _profile, _net]] call CBA_fnc_serverEvent;
+    [_unit, _profile, _net] remoteExecCall [QFUNC(decoyPlace), SERVER_OWNER];
     ""
 };
 if (isNull _unit || {!alive _unit}) exitWith {""};
+// By remoteExec, for the sender's own unit only (review R1: it was a CBA
+// event, so any client could place decoys as another operator).
+if !([_unit] call EFUNC(common,senderIs)) exitWith {
+    WARNING_2("decoyPlace: refused - machine %1 named %2",remoteExecutedOwner,_unit);
+    ""
+};
 
 private _uid = getPlayerUID _unit;
 private _refuse = switch (true) do {

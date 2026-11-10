@@ -29,10 +29,6 @@
 // setting in the CBA menu. See docs/faction_setting_overrides.md.
 #define SETTING_OVERRIDE_HOOK {if !(isNil QEFUNC(fa_main,applySettingOverrides)) then {[true] call EFUNC(fa_main,applySettingOverrides)}}
 
-// Extension macros
-#define EXT "1st Joint Multi-Functional Strike Battalion_mods"
-#define EXT_LOG "1st Joint Multi-Functional Strike Battalion_mods_log"
-
 // JMFSB Debug macros
 #include "\z\jmfsb\addons\fa_main\script_debug.hpp"
 

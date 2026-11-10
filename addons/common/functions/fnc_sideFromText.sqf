@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The side behind a side name, however the caller spells it.
  *
  * Accepts ALiVE's vocabulary ("GUER"), Arma's ("RESISTANCE"), the mod's own

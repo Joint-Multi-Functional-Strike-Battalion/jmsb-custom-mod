@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: what kind of signal an emitter looks like to ES (DESIGN_EW
  * "Identify"), by band, intent and duty - never by the decoy mark, which is
  * exactly what a decoy hides:

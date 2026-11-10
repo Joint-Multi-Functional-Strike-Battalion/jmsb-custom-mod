@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: every emitter ES can hear this DF tick, in one shape, from four
  * places -
  *
@@ -75,14 +75,17 @@ private _out = [];
 if (!isNil QEFUNC(jamming,emitters)) then {
     private _domainBands = createHashMapFromArray ZONE_DOMAIN_BANDS;
     {
-        _x params ["_id", "_obj", "_pos", "", "_domains", "_owner"];
+        _x params ["_id", "_obj", "_pos", "", "_domains", "_owner", ["_zoneSide", sideUnknown]];
         if (_owner isEqualTo OWNER_TAG) then {continue};
         private _bands = [];
         {
             {_bands pushBackUnique _x} forEach (_domainBands getOrDefault [_x, []]);
         } forEach _domains;
         if (_bands isEqualTo []) then {continue};
-        private _side = if (isNull _obj) then {""} else {str side group _obj};
+        // The commander's side stamped on the site, not the terminal's: a prop
+        // has no group, so side group read nobody's, and every side - its own
+        // included - heard its own sites as hostile jammers.
+        private _side = if (_zoneSide isEqualTo sideUnknown) then {""} else {str _zoneSide};
         _out pushBack createHashMapFromArray [
             ["id", _id], ["object", _obj], ["pos", _pos], ["bands", _bands],
             ["txDbm", SITE_TX_DBM], ["gainDbi", JAM_GAIN_DBI], ["side", _side], ["tx", true],

@@ -19,6 +19,21 @@ GVAR(zones) = [];
 // When each zone last called artillery, keyed by its index in GVAR(zones).
 GVAR(artyLast) = createHashMap;
 
+// FPV WRECKS GO AS SOON AS THEY BLOW, on every machine - see FUNC(fpvWatch).
+// The Switchblade airframes by their base class, whoever flies them: the mod's
+// own Killed cleanup is clientInit, so on a dedicated server nobody else takes
+// a Switchblade's wreck away - and Drongo's Drone Tweaks keeps the 600 on its
+// anti-armour list, not the FPV one, so both lists are read.
+GVAR(fpvWatched) = [];
+[QGVAR(UAV_06_IED_I)] call FUNC(fpvWatch);
+["SwitchBlade_Base"] call FUNC(fpvWatch);
+[{missionNamespace getVariable ["ddtReady", false]}, {
+    {[_x] call FUNC(fpvWatch)} forEach (
+        (missionNamespace getVariable ["ddtClassesFPV", []])
+        + (missionNamespace getVariable ["ddtClassesFPVAT", []])
+    );
+}, [], UAS_DDT_WAIT_S] call CBA_fnc_waitUntilAndExecute;
+
 #include "initSettings.inc.sqf"
 
 ADDON = true;

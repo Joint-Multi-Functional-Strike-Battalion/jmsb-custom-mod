@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TROOPS IN CONTACT. One press, under everything else on the right rail, and the
  * only control in the suite that is loud on purpose.
  *

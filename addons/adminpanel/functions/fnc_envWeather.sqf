@@ -1,33 +1,39 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * SET WEATHER, on every machine: overcast is set everywhere, and the server
- * also sets rain, fog and wind and forces the change through at once - ZEN's
- * split, which is the one the engine syncs cleanly. Wind keeps the direction it
- * blows in now; out of a calm it blows north.
+ * Author: YonV
+ * SET WEATHER, by remoteExec from FUNC(envApply) to the server, which checks
+ * the sender is an admin (review S7), sets rain, fog and wind, forces the
+ * change through at once, and passes the overcast on to every other machine
+ * by remoteExec - ZEN's split, which is the one the engine syncs cleanly. A
+ * client takes it only from the server. Wind keeps the direction it blows in
+ * now; out of a calm it blows north.
  *
  * Arguments:
  * 0: Overcast, 0-1 <NUMBER>
  * 1: Rain, 0-1 <NUMBER>
  * 2: Fog, 0-1 <NUMBER>
  * 3: Wind, m/s <NUMBER>
- * 4: Admin who set it <STRING>
  *
  * Return Value:
  * None
  *
  * Example:
- * [1, 1, 0.1, 14, "YonV"] call jmfsb_adminpanel_fnc_envWeather
+ * [1, 1, 0.1, 14] remoteExecCall ["jmfsb_adminpanel_fnc_envWeather", 2]
  *
  * Public: No
  */
 
-params ["_overcast", "_rain", "_fog", "_wind", "_by"];
+params [["_overcast", 0, [0]], ["_rain", 0, [0]], ["_fog", 0, [0]], ["_wind", 0, [0]]];
+
+if (!isServer) exitWith {
+    if ([] call EFUNC(common,fromServer)) then {0 setOvercast _overcast};
+};
+if !([] call EFUNC(common,senderIsAdmin)) exitWith {};
+([] call EFUNC(common,sender)) params ["", "_admin"];
+private _by = [name _admin, "server"] select isNull _admin;
 
 0 setOvercast _overcast;
-
-if (!isServer) exitWith {};
-
+[_overcast, _rain, _fog, _wind] remoteExecCall [QFUNC(envWeather), -ADMIN_SERVER];
 0 setRain _rain;
 0 setFog _fog;
 

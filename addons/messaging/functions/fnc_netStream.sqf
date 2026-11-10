@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everything filed in one net, as ONE conversation in time order.
  *
  * A NET IS A CONVERSATION, NOT A FOLDER. It was a filter: picking HQ narrowed a
@@ -60,7 +60,7 @@ private _pending = 0;
         _pending = _pending + 1;
         if !(_threadId in _asked) then {
             _asked pushBack _threadId;
-            [QGVAR(requestThread), [player, _threadId]] call CBA_fnc_serverEvent;
+            [player, _threadId] remoteExecCall [QFUNC(srvRequestThread), SERVER_OWNER];
         };
         continue;
     };

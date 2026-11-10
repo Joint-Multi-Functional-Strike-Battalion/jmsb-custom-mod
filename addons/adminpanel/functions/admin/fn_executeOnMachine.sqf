@@ -29,7 +29,8 @@ admp_debug_codeIndex = (count admp_debug_previousCode-1); // set index to be mos
 switch (_execType) do {
     case 0: { // use selected client
         if (isNull _player) exitWith {["Admin Panel", "No target found!", [0.831, 0.267, 0.267, 1]] call EFUNC(notify,notify); playSound "addItemFailed";};
-        [_code, clientOwner] remoteExec ["admp_fnc_compileAndExec", _player, false];
+        // through the server, which checks the admin and forwards (review S3)
+        [_code, clientOwner, _player] remoteExec ["admp_fnc_compileAndExec", 2, false];
         [format ["> remote exec  %1", name _player]] call FUNC(execLog);
         ["Admin Panel", format ["Executed code on %1's client!", name _player], [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);
         playSound "3DEN_notificationDefault";
@@ -41,7 +42,7 @@ switch (_execType) do {
         playSound "3DEN_notificationDefault";
     }; 
     case 2: { // use local client
-        [_code, clientOwner] remoteExec ["admp_fnc_compileAndExec", player, false];
+        [_code, clientOwner] spawn admp_fnc_compileAndExec;
         ["> local exec"] call FUNC(execLog);
         ["Admin Panel", "Executed code on local client!", [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);
         playSound "3DEN_notificationDefault";

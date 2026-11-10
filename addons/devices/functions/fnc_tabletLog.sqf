@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The notification line was clicked: everything in the history so far is now
  * seen, any open app closes, and the docked reader turns to its LOG view - the
  * page back through every notification that scrolled past

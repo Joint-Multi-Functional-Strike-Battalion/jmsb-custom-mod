@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The key, and the tablet's SETTINGS > DEVICES row: hides the walking view,
  * or shows it again. A side device comes back on the edge it was last on
  * (FUNC(overlaySetEdge)). The choice is kept in the profile

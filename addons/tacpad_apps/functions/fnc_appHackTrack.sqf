@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Writes the HACK board's LOG: what changed in the suite's session since the
  * last look - a hack started, crossed a quarter, lost and regained range,
  * finished, or was aborted from the board. The session is jmfsb_hacking's;

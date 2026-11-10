@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Launches one cruise missile and flies it to the target.
  *
  * A REAL PROJECTILE THE WHOLE WAY. The missile ammo class itself leaves the
@@ -17,20 +17,26 @@
  * the same: out of fuel. The first missile of a salvo to come within
  * SPLASH_LEAD seconds of the target calls SPLASH.
  *
+ * A CALL FOR FIRE'S THREAD (2026-11-01): the first missile of a launch to
+ * leave files SHOT with its time of flight there, and its SPLASH is filed
+ * too - only while the mission is still the one it was launched for
+ * (FUNC(threadCard) files nothing for a launcher with no thread).
+ *
  * Arguments:
  * 0: The module logic <OBJECT>
  * 1: Target position, ATL <ARRAY>
  * 2: Mission token <NUMBER>
+ * 3: The launch's number (QGVAR(launchNo)) <NUMBER> (optional, default 0)
  *
  * Return Value: None
  *
  * Example:
- * [_logic, _pos, 1] call jmfsb_support_fires_fnc_flyCruise
+ * [_logic, _pos, 1, 1] call jmfsb_support_fires_fnc_flyCruise
  *
  * Public: No
  */
 
-params ["_logic", "_target", "_token"];
+params ["_logic", "_target", "_token", ["_launch", 0, [0]]];
 
 if (isNull _logic || {(_logic getVariable [QGVAR(token), -1]) isNotEqualTo _token}) exitWith {};
 
@@ -70,11 +76,18 @@ _missile setPosASL _from;
 _missile setVectorDirAndUp [[0, 0, 1], [0, 1, 0]];
 _missile setVelocity [0, 0, CM_BOOST_SPEED];
 
-[QGVAR(say), [_logic, "missile away", "normal"]] call CBA_fnc_globalEvent;
+[_logic, "missile away", "normal"] call FUNC(say);
+
+// SHOT in the call for fire's thread, once per launch.
+if ((_logic getVariable [QGVAR(shotKey), []]) isNotEqualTo [_token, _launch]) then {
+    _logic setVariable [QGVAR(shotKey), [_token, _launch]];
+    private _tof = CM_BOOST_TIME + (_from distance2D _tgt) / _speed;
+    [_logic, CARD_SHOT, [[CARD_TEXT_KEY, format [CARD_TOF, round _tof]]]] call FUNC(threadCard);
+};
 
 [{
     params ["_args", "_handle"];
-    _args params ["_m", "_logic", "_route", "_tgt", "_speed", "_alt", "_warhead", "_fuze", "_boostUntil", "_side", "_token", "_reported"];
+    _args params ["_m", "_logic", "_route", "_tgt", "_speed", "_alt", "_warhead", "_fuze", "_boostUntil", "_side", "_token", "_reported", "_launch"];
 
     if (isNull _m) exitWith {
         [_handle] call CBA_fnc_removePerFrameHandler;
@@ -105,10 +118,14 @@ _missile setVelocity [0, 0, CM_BOOST_SPEED];
         _args set [11, true];
     };
 
-    // SPLASH, once per salvo, from whichever missile gets there first.
-    if (_d / _speed <= SPLASH_LEAD && {(_logic getVariable [QGVAR(splashed), -1]) isNotEqualTo _token}) then {
-        _logic setVariable [QGVAR(splashed), _token];
-        [QGVAR(say), [_logic, format ["splash grid %1, over", mapGridPosition ASLToAGL _tgt], "high"]] call CBA_fnc_globalEvent;
+    // SPLASH, once per launch, from whichever missile gets there first - in
+    // the call for fire's thread too while its mission is still this one.
+    if (_d / _speed <= SPLASH_LEAD && {(_logic getVariable [QGVAR(splashed), []]) isNotEqualTo [_token, _launch]}) then {
+        _logic setVariable [QGVAR(splashed), [_token, _launch]];
+        [_logic, format ["splash grid %1, over", mapGridPosition ASLToAGL _tgt], "high"] call FUNC(say);
+        if ((_logic getVariable [QGVAR(token), -1]) isEqualTo _token) then {
+            [_logic, CARD_SPLASH, []] call FUNC(threadCard);
+        };
     };
 
     private _d2 = _p distance2D _tgt;
@@ -144,5 +161,5 @@ _missile setVelocity [0, 0, CM_BOOST_SPEED];
     _m setVelocity (_dir vectorMultiply _speed);
 }, CM_TICK, [
     _missile, _logic, _route, _tgt, _speed, _logic getVariable [QGVAR(altitude), 60], _warhead, _fuze,
-    CBA_missionTime + CM_BOOST_TIME, _logic getVariable [QGVAR(side), west], _token, false
+    CBA_missionTime + CM_BOOST_TIME, _logic getVariable [QGVAR(side), west], _token, false, _launch
 ]] call CBA_fnc_addPerFrameHandler;

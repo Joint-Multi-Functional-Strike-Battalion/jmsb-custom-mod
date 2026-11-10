@@ -1,13 +1,10 @@
 PREP(exportRanks);
 PREP(getClanTag);
 PREP(hasClanTag);
-PREP(getRadioChannel);
 PREP(getRank);
 PREP(isCurator);
 PREP(platoonNet);
 PREP(platoonOf);
-PREP(setActiveRadio);
-PREP(setRadioChannel);
 PREP(setRank);
 PREP(setRankOverride);
 PREP(unit_getName);

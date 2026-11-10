@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE SERVER TICK (CBA per-frame handler at the player tick rate):
  *
  *   0. the satellite's rain fade for this tick (setting x rain / overcast)
@@ -39,11 +39,15 @@
 params [["_args", [], [[]]], ["_handle", -1, [0]]];
 
 if (!isServer) exitWith {};
+private _t0 = diag_tickTime;
 
 // THE SATELLITE'S WEATHER, once per tick: rain fades it, overcast a share
 GVAR(satFade) = GVAR(satFadeDb) * ((rain + SAT_OVERCAST_SHARE * overcast) min 1);
 
 private _now = CBA_missionTime;
+// Seconds since the last tick, for the batteries; none on the first.
+private _dt = [0, _now - GVAR(lastTick)] select (GVAR(lastTick) >= 0);
+GVAR(lastTick) = _now;
 private _info = createHashMap;
 private _emitters = [];
 private _gone = [];
@@ -57,6 +61,8 @@ private _gone = [];
     };
     if (!alive _obj) then {continue};
     private _state = _node get "state";
+    // the battery runs down, charges, and switches a flat set off
+    [_x, _node, _state, _holder, _dt] call FUNC(batteryTick);
     if !(_state get "on") then {continue};
 
     // AI NODES only when the setting or the node says so; vehicles and
@@ -142,4 +148,16 @@ private _stale = [];
     GVAR(edgeCache) deleteAt _x;
 } forEach _stale;
 
+// a mesh memo not used this tick belongs to a node set that no longer exists
+{
+    GVAR(meshMemo) deleteAt _x;
+} forEach ((keys GVAR(meshMemo)) select {((GVAR(meshMemo) get _x) select 4) < _now});
+
 [_ctx] call FUNC(slices);
+[] call FUNC(batteryPublish);
+
+// THE TICK'S COST against its budget, once a minute in the RPT (review R9).
+// Soft: the timer is jmfsb_common's, which this base addon does not require.
+if (!isNil "jmfsb_common_fnc_perfAdd") then {
+    ["rf.tick", (diag_tickTime - _t0) * MS_PER_S, RF_TICK_BUDGET_MS] call jmfsb_common_fnc_perfAdd;
+};

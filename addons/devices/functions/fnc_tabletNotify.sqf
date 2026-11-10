@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet's notification line: how many notifications have come in since
  * the log was last opened, the newest one, and its time. Clicking it opens the
  * reader's LOG view (FUNC(tabletLog)).

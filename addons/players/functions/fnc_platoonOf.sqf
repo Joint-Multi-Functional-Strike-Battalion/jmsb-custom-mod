@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The ID of the platoon a squad belongs to, from the unit's ORBAT.
  *
  * WHY THIS AND NOT FUNC(platoonNet). That one answers with the platoon's

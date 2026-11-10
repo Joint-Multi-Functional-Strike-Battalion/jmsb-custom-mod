@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Asks the provider that owns an asset for its one-line state - TAC//SUPPORT's
  * SITREP button. A provider with no "sitrep" code answers "no report".
  *

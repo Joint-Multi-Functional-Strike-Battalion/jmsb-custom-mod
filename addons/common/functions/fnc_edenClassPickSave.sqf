@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Eden attributeSave handler for the class picker (jmfsb_ClassPick_*).
  *
  * The cumulative selection on the display, re-synced with the listbox for a

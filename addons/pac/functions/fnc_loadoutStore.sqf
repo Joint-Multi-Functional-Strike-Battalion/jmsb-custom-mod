@@ -77,6 +77,16 @@ GVAR(players) set [_uid, _rec];
 
 [] call FUNC(storeSave);
 
-["TAC//PAC", format ["Loadout kept for %1 (%2 of %3).", _key, count _loadouts, _cap], [0.4, 0.702, 0.4, 1]] remoteExec ["jmfsb_notify_fnc_notify", owner _unit];
+// THE ROLE'S NAME, NOT ITS KEY (tablet review 2026-11-01, 2.1: "Loadout kept
+// for teamleadBanshee"): the key is a class name; the structure's role record
+// carries what the player knows it as (FUNC(rolesFromMission) fills it from
+// the Dynamic_Roles class's name). A key the structure does not know is
+// called what it is to him - his role.
+private _roleRec = (GVAR(structure) getOrDefault ["roles", createHashMap]) getOrDefault [_key, createHashMap];
+private _roleName = "";
+if (_roleRec isEqualType createHashMap) then {_roleName = _roleRec getOrDefault ["name", ""]};
+if !(_roleName isEqualType "") then {_roleName = ""};
+if (_roleName isEqualTo "") then {_roleName = "your role"};
+["TAC//PAC", format ["Loadout kept for %1 (%2 of %3).", _roleName, count _loadouts, _cap], [0.4, 0.702, 0.4, 1]] remoteExec ["jmfsb_notify_fnc_notify", owner _unit];
 
 _key

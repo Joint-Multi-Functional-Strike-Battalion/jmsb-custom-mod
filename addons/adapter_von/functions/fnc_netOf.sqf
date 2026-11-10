@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The voice net a speaker is on when he talks on a VON channel: Group = his
  * TEAM net, Vehicle = VEH, Direct = DIRECT, the C2 channel = his own C2-kind
  * net, the A2G channel = his own A2G-kind net, a CALL channel = its key

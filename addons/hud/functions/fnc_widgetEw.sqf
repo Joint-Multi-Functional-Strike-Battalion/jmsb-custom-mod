@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SCANNER: the sweep, on the HUD.
  *
  * THREE READINGS, AND THAT IS THE SCANNER. The handset's screen carries more
@@ -26,7 +26,7 @@
  * screens read, so no two surfaces can disagree about what is in the air.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -34,12 +34,13 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetEw
+ *
  * Public: No
  */
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 // THE HANDSET'S OWN PALETTE, not the tacpad's. This is a terminal readout and it
 // is green because the device is green; taking the scheme's ink here would make
@@ -91,19 +92,19 @@ private _fnc_line = {
     private _ry = _y + _row * _rowH;
 
     if (_centre) exitWith {
-        [_ctrl, [_pad, _ry, _w - 2 * _pad, _rowH], _label, _colour, _size, true, "center"] call EFUNC(tacpad,drawText);
+        _ops pushBack [HUD_OP_TEXT, [[_pad, _ry, _w - 2 * _pad, _rowH], _label, _colour, _size, true, "center"]];
     };
 
     private _gx = _pad * 2;
     if (_icon isNotEqualTo "") then {
-        [_ctrl, [_gx, _ry + (_rowH - _icoH) * 0.5, _icoH], _icon, _colour] call EFUNC(tacpad,drawIcon);
+        _ops pushBack [HUD_OP_ICON, [[_gx, _ry + (_rowH - _icoH) * 0.5, _icoH], _icon, _colour]];
         _gx = _gx + _gutter;
     };
 
     // 58/42, not half and half - the values are short words and the labels
     // are what kept wrapping; the split follows the need.
-    [_ctrl, [_gx, _ry, _w * 0.58 - _gx, _rowH], _label, _colour, _size, true] call EFUNC(tacpad,drawText);
-    [_ctrl, [_w * 0.58, _ry, _w * 0.42 - _pad * 2, _rowH], _value, _colour, _size, true, "right"] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_gx, _ry, _w * 0.58 - _gx, _rowH], _label, _colour, _size, true]];
+    _ops pushBack [HUD_OP_TEXT, [[_w * 0.58, _ry, _w * 0.42 - _pad * 2, _rowH], _value, _colour, _size, true, "right"]];
 };
 
 private _sweep = [] call FUNC(sweep);

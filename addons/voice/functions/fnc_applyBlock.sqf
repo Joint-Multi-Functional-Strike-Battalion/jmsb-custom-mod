@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every frame and on the player's Killed / Respawn: the cut-offs.
  * When the block level (fnc_blockLevel) changes the adapter is told (its
  * "block" hook closes or reopens the channels), a transmission the new level

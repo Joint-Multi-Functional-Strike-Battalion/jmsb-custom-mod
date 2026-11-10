@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE LINK BUDGET, as a pure function (docs/DESIGN_RF.md "Link budget"):
  *
  *   rx      = tx + gainTx + gainRx - loss

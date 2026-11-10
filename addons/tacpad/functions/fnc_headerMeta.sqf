@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Writes a panel's header readout - the right-aligned line the design puts
  * opposite every title. "13 / 16" on the squad rail, "3 NETS MONITORED" on the
  * reader.
@@ -40,9 +40,11 @@ if (isNull _meta) exitWith {};
 
 private _color = [[_ink # 0, _ink # 1, _ink # 2, 0.62], _accent] select _alert;
 
+// A live number, in the monospace (notes, 2026-10-30): 7 / 8, 3 NEW, RULER.
 _meta ctrlSetStructuredText parseText format [
-    "<t font='RobotoCondensedBold' size='0.7' align='right' color='%1'>%2</t>",
+    "<t font='%3' size='0.7' align='right' color='%1'>%2</t>",
     _color call BIS_fnc_colorRGBAtoHTML,
-    [toUpper _text] call FUNC(xmlSafe)
+    [toUpper _text] call FUNC(xmlSafe),
+    FONT_MONO_BOLD
 ];
 _meta ctrlCommit 0;

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hook "reserve": the server gives a net its custom channel now, rather than
  * at the first join - so the voice core can refuse an RTO net while there is
  * still a chance to say so (jmfsb_voice_fnc_srvNetAdd). The channel is kept by

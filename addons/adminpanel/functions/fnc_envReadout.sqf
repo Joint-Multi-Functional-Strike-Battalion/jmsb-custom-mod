@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Writes what the world is doing now at the top of the TIME / WEATHER dialog:
  * date, time and its speed; overcast, rain, fog and wind. Run every
  * ENV_READOUT_TICK by the handler FUNC(envLoad) starts, which goes when this

@@ -59,30 +59,33 @@ class CfgVehicles {
             // ever is a cheat code with a cooldown on it. One that is gone
             // when it is gone makes shooting it down worth doing, and makes
             // the man on the radio ask whether this grid is worth the
-            // airframe.
-            class airframes: Edit {
-                property = QGVAR(airframes);
-                displayName = "Airframes Available";
-                tooltip = "How many times this drone may be shot down before the asset is expended and leaves the support page for good. 0: unlimited.";
+            // airframe. THE RESPAWN COUNT (user, 2026-11-02: "make sure there
+            // is a respawn count for each support, default no respawns")
+            // replaces Airframes Available: the replacements after the first
+            // drone, none by default.
+            class respawns: Edit {
+                property = QGVAR(respawns);
+                displayName = "Respawns";
+                tooltip = "How many replacement drones this asset gets after a drone is LOST (shot down). The drone is virtual until tasked and goes home after each run without using one. After a loss the asset reads REARMING for the Respawn Delay; the next tasking then makes a new drone over the module. 0: none - the first drone lost is the asset gone from the support list.";
                 typeName = "NUMBER";
-                defaultValue = "3";
-                expression = QUOTE(_this setVariable [ARR_2('airframes',_value)]);
+                defaultValue = "0";
+                expression = QUOTE(_this setVariable [ARR_2('respawns',_value)]);
+            };
+            class respawnDelay: Edit {
+                property = QGVAR(respawnDelay);
+                displayName = "Respawn Delay (sec)";
+                tooltip = "Time after a drone is lost before the asset can be tasked again with a new drone - only while Respawns has one left.";
+                typeName = "NUMBER";
+                defaultValue = "300";
+                expression = QUOTE(_this setVariable [ARR_2('respawnDelay',_value)]);
             };
             class spawnDistance: Edit {
                 property = QGVAR(spawnDistance);
                 displayName = "Ingress Distance (m)";
-                tooltip = "How far out the drone appears on the requested ingress bearing, and how far it runs on the egress bearing before the asset is free again. It then flies on off the map edge and despawns there.";
+                tooltip = "The run-in: an ingress point (or, with none, the module the drone is made over) closer to the target than this is pushed back to it, and the drone runs this far on the egress bearing before the asset is free again. It then flies back to the module and is removed.";
                 typeName = "NUMBER";
                 defaultValue = "4000";
                 expression = QUOTE(_this setVariable [ARR_2('spawnDistance',_value)]);
-            };
-            class altitude: Edit {
-                property = QGVAR(altitude);
-                displayName = "Attack Altitude (m)";
-                tooltip = "Height ABOVE THE TERRAIN (ATL) the run is flown at, so the aircraft climbs with rising ground rather than into it. High enough to live through small arms, low enough to see what it is shooting.";
-                typeName = "NUMBER";
-                defaultValue = "700";
-                expression = QUOTE(_this setVariable [ARR_2('altitude',_value)]);
             };
             class speed: Edit {
                 property = QGVAR(speed);
@@ -92,14 +95,9 @@ class CfgVehicles {
                 defaultValue = "400";
                 expression = QUOTE(_this setVariable [ARR_2('speed',_value)]);
             };
-            class spawnDelay: Edit {
-                property = QGVAR(spawnDelay);
-                displayName = "Response Delay (sec)";
-                tooltip = "Time between the request being accepted and the aircraft appearing. Support that arrives instantly is not support, it is a button.";
-                typeName = "NUMBER";
-                defaultValue = "30";
-                expression = QUOTE(_this setVariable [ARR_2('spawnDelay',_value)]);
-            };
+            // RESPONSE DELAY RETIRED (user, 2026-11-02: "virtual till tasked,
+            // then they spawn in"): the drone is made at once when tasked. A
+            // mission that set spawnDelay still loads; the value is not read.
             class cooldown: Edit {
                 property = QGVAR(cooldown);
                 displayName = "Cooldown (sec)";
@@ -127,19 +125,22 @@ class CfgVehicles {
             description[] = {
                 "One taskable CAS drone on the support page. Place one module per airframe - many are allowed, and each is its own asset with its own losses.",
                 "",
-                "The player sets the TARGET GRID, the INGRESS bearing and the EGRESS bearing on the support page. The drone appears at the ingress distance on that bearing, runs the target, and leaves on the egress bearing - off the map edge, where it despawns.",
+                "VIRTUAL UNTIL TASKED: no drone is up between tasks. A request makes one in the air over the module at its hold altitude, dark, full of fuel and stores; after the task it flies back to the module and is removed.",
+                "",
+                "The requester sets the TARGET GRID and the INGRESS and EGRESS points. Only a drone LOST uses one of the Respawns.",
                 "",
                 "ORDNANCE on the support page lists what THIS airframe is carrying, by name - the run uses the heaviest thing aboard unless one is picked.",
                 "",
-                "LOITER holds the drone over the point instead of striking it, and hands the gunner's seat to the ISR operator who asked for it - he needs the UAV operator trait and the isISR variable, no UAV terminal. RTB ends it.",
+                "LOITER holds the drone over the grid instead of striking, and hands the gunner's seat to the ISR operator who asked for it - he needs the UAV operator trait and the isISR variable, no UAV terminal. RTB ends it.",
+                "",
+                "Flies tactically: no lights, strikes from 4000 m above the terrain.",
                 "",
                 "Airframe Class - Classname of the fixed-wing drone; blank for the side's vanilla UCAV",
                 "Callsign - What the support page and the radio call it",
-                "Airframes Available - How many times it may be shot down before the asset is expended; 0 for unlimited",
-                "Ingress Distance (m) - How far out it appears, and how far past the target it runs before the asset is free again",
-                "Attack Altitude (m) - Height above the terrain (ATL) the run is flown at",
+                "Respawns - Replacement drones after a drone is lost; 0 for none. Going home uses none",
+                "Respawn Delay (sec) - Time after a loss before the asset can be tasked again",
+                "Ingress Distance (m) - The run-in floor, and how far past the target it runs before the asset is free again",
                 "Run Speed (km/h) - Capped at the airframe's own maximum",
-                "Response Delay (sec) - Time from accepted request to the aircraft appearing",
                 "Cooldown (sec) - Time after a run before this asset can be tasked again",
                 "Terminal Search (m) - How far from the grid a laser spot or smoke is accepted as the real target; 0 for none"
             };

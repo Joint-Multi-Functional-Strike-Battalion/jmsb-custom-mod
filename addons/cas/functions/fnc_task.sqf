@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes one order from the support page and either flies it or says why not.
  *
  * THE SUPPORT CORE'S PROVIDER TASK SIGNATURE (addons/support/README.md):
@@ -38,13 +38,16 @@
  *    point, anything else is a strike on the point
  * 2: Target position <ARRAY> - the grid; terminal guidance may move it
  * 3: The support page's parameter array <ARRAY> - ingress POSITION at index 8,
- *    egress position at 9, [] for either meaning auto. Those two slots are past
- *    everything ALiVE's own tasking reads, so one array serves both kinds of
- *    asset and the page does not have to know which it is filling in.
+ *    egress position at 9, [] for either meaning auto. Those two slots mean the
+ *    same to support_air's CAS, so one array serves both kinds of asset and
+ *    the page does not have to know which it is filling in.
  *
  * Return Value:
  * 0: Accepted <BOOL>
  * 1: Why not, "" when accepted <STRING>
+ *
+ * Example:
+ * ["cas:0", "SAD", getPosATL player, []] call jmfsb_cas_fnc_task
  *
  * Public: No
  */
@@ -52,8 +55,8 @@
 params [["_assetId", "", [""]], ["_task", "cas", [""]], ["_pos", [], [[]]], ["_prm", [], [[]]]];
 private _ingress = _prm param [8, []];
 private _egress = _prm param [9, []];
-// THE ORDNANCE CHOICE RIDES AT 10, past ALiVE's own slots and past the two
-// points, for the same reason those two do: one parameter array serves every
+// THE ORDNANCE CHOICE RIDES AT 10, past the two points, for the same reason
+// those two do: one parameter array serves every
 // kind of asset and the page fills in the slots its own row asked about. It is
 // an INDEX into the list this addon published on the row - the airframe's own
 // stores behind a leading AUTO - so the page never learns what it selects.
@@ -74,7 +77,8 @@ if (isNull _logic) exitWith {
 private _callsign = _logic getVariable [QGVAR(callsign), "CAS"];
 
 if (_task isEqualTo "rtb") exitWith {
-    [QGVAR(abort), [_logic]] call CBA_fnc_serverEvent;
+    // By remoteExec, so the server knows who recalls it (review S6).
+    [_logic] remoteExecCall [QFUNC(abort), SERVER_OWNER];
     INFO_1("%1 recalled",_callsign);
     [true, ""]
 };
@@ -102,10 +106,12 @@ if (_pos isEqualTo []) exitWith {[false, "no target grid"]};
 // through as its own words; only LOITER means something different here, and
 // everything else - SAD, ATTACK RUN, a token this addon has never heard of -
 // is the strike this asset has always flown.
-private _mode = ["strike", "loiter"] select (toUpper _task isEqualTo "LOITER");
+private _mode = [MODE_STRIKE, MODE_LOITER] select (toUpper _task isEqualTo "LOITER");
 
 // THE ORDER GOES TO THE SERVER AND THE RUN IS FLOWN THERE. A client that
 // spawned its own aircraft would own an airframe nobody else could see hit.
-[QGVAR(request), [_logic, _pos, _ingress, _egress, player, _mag, _mode]] call CBA_fnc_serverEvent;
+// By remoteExec, and without a caller: the server takes him from the sending
+// machine and checks his side and the tasking gate again (review S6).
+[_logic, _pos, _ingress, _egress, _mag, _mode] remoteExecCall [QFUNC(request), SERVER_OWNER];
 
 [true, ""]

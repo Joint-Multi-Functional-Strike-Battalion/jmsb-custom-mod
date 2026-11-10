@@ -1,4 +1,5 @@
-// CBA Settings [ADDON: jmfsb_pac] - category "1st Joint Multi-Functional Strike Battalion PAC" (user, 2026-09-05)
+// CBA Settings [ADDON: jmfsb_pac] - page "JMSB - Mission & Admin", "TAC//PAC Service" (was its own page from 2026-09-05; the
+// options were split into seven JMSB pages on 2026-10-24: "the big single page is hard to tell folks where to find things")
 //
 // THE ONE EXCEPTION to "TAC//PAC has no CBA settings" (user, 2026-09-05:
 // "that needs to be in cba, a lot of hosted servers do not give the right to
@@ -22,8 +23,8 @@
 
 [
     QGVAR(serviceUrl), "EDITBOX",
-    ["Database", "The MongoDB connection string - mongodb+srv://user:password@cluster.../ from Atlas (Database > Connect > Drivers) - the server talks to it directly, nothing else runs. Or http://host:8085 for a pacdb service. Used with sync = ""service"" in the mission's CfgGFA_PAC; read once, at mission start. Empty: the server's GHOSTD_PACDB_URL, or pacdb.json in its root."],
-    ["1st Joint Multi-Functional Strike Battalion PAC", "Service"],
+    ["Database", "The MongoDB connection string - mongodb+srv://user:password@cluster.../ from Atlas (Database > Connect > Drivers) - the server talks to it directly, nothing else runs. Or http://host:8085 for a pacdb service. Used with sync = ""service"" in the mission's CfgGFA_PAC; read once, at mission start. Empty: the server's GHOSTD_PACDB_URL, or pacdb.json in its root. LEAVE IT EMPTY ON A LIVE SERVER: CBA copies every server setting to every player, password included - use GHOSTD_PACDB_URL."],
+    ["JMSB - Mission & Admin", "TAC//PAC Service"],
     "",
     true,
     {},
@@ -39,7 +40,7 @@
 [
     QGVAR(testUid), "EDITBOX",
     ["Test as Steam id (editor only)", "Editor and singleplayer have no Steam id. Put yours here (17 digits) to test as your real operator - the database record for you loads. Empty = a throwaway test id. Does nothing in multiplayer."],
-    ["1st Joint Multi-Functional Strike Battalion PAC", "Service"],
+    ["JMSB - Mission & Admin", "TAC//PAC Service"],
     "",
     true
 ] call CBA_fnc_addSetting;
@@ -64,23 +65,15 @@
 [
     QGVAR(svcRequired), "CHECKBOX",
     ["Database required", "For a mission that ships no config folder. If the database cannot be read at mission start, TAC//PAC stops and writes a PAC BOOT FAILED block to the .rpt instead of running unconfigured. Leave off for a mission that carries its own config\\ files - it will fall back to those."],
-    ["1st Joint Multi-Functional Strike Battalion PAC", "Service"],
-    false,
-    true
-] call CBA_fnc_addSetting;
-
-[
-    QGVAR(netCheck), "CHECKBOX",
-    ["Log this server's public IP at boot", "Off by default. At mission start the server asks an outside service (api.ipify.org) what address it calls out from, and writes it to the .rpt with a verdict on TLS - the address to put in MongoDB Atlas > Network Access, and whether this machine can make an HTTPS connection at all. One request per mission start, to a third party. Turn it off again once the database connects."],
-    ["1st Joint Multi-Functional Strike Battalion PAC", "Service"],
+    ["JMSB - Mission & Admin", "TAC//PAC Service"],
     false,
     true
 ] call CBA_fnc_addSetting;
 
 [
     QGVAR(serviceKey), "EDITBOX",
-    ["Service key", "Only for an http:// pacdb service: the X-Api-Key it expects. Leave empty with a mongodb+srv:// connection string."],
-    ["1st Joint Multi-Functional Strike Battalion PAC", "Service"],
+    ["Service key", "Only for an http:// pacdb service: the X-Api-Key it expects. Leave empty with a mongodb+srv:// connection string. Better empty always: every player receives this setting - use GHOSTD_PACDB_KEY on the server."],
+    ["JMSB - Mission & Admin", "TAC//PAC Service"],
     "",
     true,
     {},

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The local player's calls. members are the people in the call (not those
  * still ringing); startedAt is CBA_missionTime.
  *

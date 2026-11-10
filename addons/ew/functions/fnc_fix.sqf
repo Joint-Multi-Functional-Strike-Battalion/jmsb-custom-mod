@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: crosses a track's recent cuts into a fix (DESIGN_EW "2+ cuts within
  * 30 s make a fix with an error ellipse"). Every pair of cuts inside the fix
  * window, from sensors at least FIX_MIN_BASELINE_M apart and crossing at
@@ -25,7 +25,9 @@
 params [["_track", createHashMap, [createHashMap]]];
 
 private _now = CBA_missionTime;
-private _fresh = (_track get "cuts") select {(_now - (_x select 3)) <= GVAR(fixWindow)};
+// A jammer site does not move: every cut it kept counts (fnc_cut keeps them by place).
+private _static = (_track getOrDefault ["source", ""]) isEqualTo SRC_ZONE;
+private _fresh = (_track get "cuts") select {_static || {(_now - (_x select 3)) <= GVAR(fixWindow)}};
 private _minCross = sin FIX_MIN_CROSS_DEG;
 
 private _sumW = 0;

@@ -1,26 +1,37 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends one thread's bodies to a player who is entitled to them. A player who
  * is not gets an empty answer rather than an error: refusing loudly would
  * confirm the thread exists, which is itself worth knowing.
  *
- * Arguments (CBA event):
- * 0: Player <OBJECT>
+ * A client asks by remoteExecCall to the server. The player named must be the
+ * sending machine's own (review S7), so a client can only ever ask for what it
+ * may read itself, and the answer goes back to that player alone.
+ *
+ * Arguments:
+ * 0: Player - the sender's own <OBJECT>
  * 1: Thread id <STRING>
  *
  * Return Value:
  * None
+ *
+ * Example:
+ * [player, "T0007"] remoteExecCall ["jmfsb_messaging_fnc_srvRequestThread", 2]
  *
  * Public: No
  */
 
 params [["_unit", objNull, [objNull]], ["_threadId", "", [""]]];
 
-if (!isServer || {isNull _unit} || {!isPlayer _unit}) exitWith {};
+if (!isServer) exitWith {};
+if !([_unit] call EFUNC(common,senderIs)) exitWith {
+    WARNING_3("srvRequestThread: refused - machine %1 asked for %2 as %3",remoteExecutedOwner,_threadId,_unit);
+};
+if (isNull _unit || {!isPlayer _unit}) exitWith {};
 
 private _fnc_deny = {
-    [QGVAR(threadPush), [[], []], _unit] call CBA_fnc_targetEvent;
+    [[], []] remoteExecCall [QFUNC(cltThread), _unit];
 };
 
 private _thread = GVAR(threads) getOrDefault [_threadId, createHashMap];
@@ -41,5 +52,6 @@ private _messages = [];
     };
 } forEach (_thread get "messages");
 
-// Pairs, not [keys, values] - see FUNC(srvDeliver).
-[QGVAR(threadPush), [_thread toArray false, _messages], _unit] call CBA_fnc_targetEvent;
+// Pairs, not [keys, values] - see FUNC(srvDeliver). By remoteExecCall, which
+// the client takes only from the server (review S7).
+[_thread toArray false, _messages] remoteExecCall [QFUNC(cltThread), _unit];

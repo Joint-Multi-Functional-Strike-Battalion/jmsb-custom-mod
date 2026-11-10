@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Does ALiVE still know this profile id? The seam the uas patrol prune
  * needed: its keep-predicate for profiled patrols had decayed into a bare
  * function-existence check - a constant - so dead profiled patrols counted

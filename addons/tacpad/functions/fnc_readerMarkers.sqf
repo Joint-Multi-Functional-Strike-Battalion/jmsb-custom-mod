@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The + MARKER list: the map's markers with their grids, one press sends the
  * name and the grid into the thread as a free-text reply. Half of what gets
  * typed into a thread is somebody reading a grid off the map and typing it

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is there anything for this boarding point to do right now?
  *
  * The action is hidden rather than shown-and-refusing: a button that is there

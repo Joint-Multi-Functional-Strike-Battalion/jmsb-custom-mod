@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The vehicles the map panel shows, in the order it shows them: the one the
  * player is in first, then the rest by distance. WHICH VEHICLES is the APS
  * Panel Scope setting - own vehicle only, every vehicle the player's group is

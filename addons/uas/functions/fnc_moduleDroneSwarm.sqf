@@ -50,7 +50,7 @@ private _class = trim (_logic getVariable ["swarmClass", ""]);
 // postInit and an Eden-placed module can reach here before the setting's stored
 // value has been applied - reading it directly would throw on the one ordering
 // that matters. The default is the shipped list.
-private _allowedRaw = missionNamespace getVariable [QGVAR(swarmClasses), "O_UAV_01_F,B_UAV_01_F,I_UAV_01_F"];
+private _allowedRaw = missionNamespace getVariable [QGVAR(swarmClasses), "O_UAV_01_F,B_UAV_01_F,I_UAV_01_F,B_SwitchBlade_300,B_SwitchBlade_600"];
 private _allowed = (_allowedRaw splitString ",") apply {trim _x} select {_x isNotEqualTo ""};
 
 if (_class isEqualTo "") then { _class = _allowed param [0, ""] };
@@ -62,8 +62,10 @@ if (_class isEqualTo "" || {!isClass (configFile >> "CfgVehicles" >> _class)}) e
 
 // THE SETTING IS THE WHOLE PERMISSION. A picker that offered every UAV in the
 // game and a setting that said which were fielded would disagree the first time
-// somebody used the picker, so the setting wins and says so.
-if (_allowed isNotEqualTo [] && {!(_class in _allowed)}) exitWith {
+// somebody used the picker, so the setting wins and says so. A class on the
+// list or a variant of one (RPT, 2026-10-30: a faction's own Switchblade is
+// a kind of the Switchblade mod's, not a different airframe).
+if (_allowed isNotEqualTo [] && {_allowed findIf {_class isKindOf _x} < 0}) exitWith {
     WARNING_2("drone swarm: '%1' is not in the available list (%2) - nothing launched",_class,_allowedRaw);
     [objNull, format ["Drone Swarm: %1 is not an available airframe", _class]]
         call BIS_fnc_showCuratorFeedbackMessage;

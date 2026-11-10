@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The one place this addon talks to the notification widget. Everything else
  * calls here, so when the widget is replaced there is a single line to change
  * and no chance of half the addon still calling the old one.

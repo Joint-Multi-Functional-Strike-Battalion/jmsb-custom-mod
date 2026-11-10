@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the same threat warning to every player of a side - a new jammer,
  * spoofer or drone link one of its sensors heard is the whole side's news,
  * because its tracks are shared on the side.

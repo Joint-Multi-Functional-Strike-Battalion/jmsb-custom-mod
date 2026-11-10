@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the RF nodes an operator's own set can hear - the HACK board's
  * NODES IN REACH as RF sees them (docs/DESIGN_TABLET_APPS.md, HACK).
  *

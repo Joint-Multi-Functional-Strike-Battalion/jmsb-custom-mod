@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps a hunter group walking onto whichever player is inside the hunt
  * trigger, re-tasking every 15 s until the group is dead.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RF net that carries a voice net: TEAM, C2 and A2G are RF nets of the
  * same id; a CALL rides DATA (a call needs reach on DATA). VEH and DIRECT are
  * not radio.

@@ -1,19 +1,26 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The leg home every sortie ends with, one tick at a time - shared by the
- * CAS, drop and QRF watches so the four kinds of aircraft go home the same
+ * CAS, transport and QRF watches so every kind of aircraft goes home the same
  * way. Phases, in the sortie's state hashmap:
  *
  *   "home"     turn for the module (or the synced aircraft's stand)
- *   "homing"   on the way. A CLASS aircraft is removed over the module; a
- *              synced helicopter lands on its stand, a synced plane at the
- *              nearest airfield
+ *   "homing"   on the way. A CLASS aircraft is removed - crew and airframe,
+ *              no wreck (FUNC(sweep)) - inside HOME_RING of the module, and
+ *              the module is virtual again (user, 2026-11-02: "virtual till
+ *              tasked"; the next task makes a fresh one); a synced
+ *              helicopter lands on its stand, a synced plane at the nearest
+ *              airfield
  *   "parking"  a synced aircraft settling. Down, it is shut down, refuelled
  *              and re-armed for the next sortie - it IS the asset
  *
  * Patience: a leg home that has not finished by "homeBy" ends anyway - a
  * class aircraft is removed where it is, a synced one is left where it is.
+ *
+ * Home at the tactical transit height (user, 2026-11-01): a helicopter nap of
+ * the earth, a fixed-wing at its transit altitude (EFUNC(support,flyAt)) -
+ * the leg back is flown as covertly as the leg out.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -41,19 +48,14 @@ private _fnc_done = {
     true
 };
 
-// A CLASS AIRCRAFT WITH AN EXIT (a CAS sortie flown Simplex-style, in on
-// the ingress and out on the egress) leaves by it and is removed there
-// rather than flying back to the module.
-private _exit = _st getOrDefault ["exit", []];
-if (!_synced && {_exit isNotEqualTo []}) then {_home = _exit};
-
 if (_phase isEqualTo "home") exitWith {
+    _logic setVariable [QGVAR(onStation), false];
     _st set ["phase", "homing"];
     _st set ["homeBy", CBA_missionTime + SORTIE_TIMEOUT];
     _logic setVariable [QGVAR(status), "rtb", true];
-    _logic setVariable [QGVAR(plan), [[_home, [PLAN_BASE, PLAN_EGRESS] select (!_synced && {_exit isNotEqualTo []})]], true];
-    _veh flyInHeight (((getPos _veh) select 2) max HOME_HEIGHT);
-    if (_synced && {!(_veh isKindOf "Helicopter")}) then {
+    _logic setVariable [QGVAR(plan), [[_home, PLAN_BASE]], true];
+    [_veh, FLY_TRANSIT] call EFUNC(support,flyAt);
+    if (_synced && {!([_veh] call EFUNC(support,isRotary))}) then {
         if ([_veh, _home] call FUNC(landAt)) then {_st set ["phase", "parking"]};
     } else {
         [_veh, _home, "FULL"] call FUNC(moveTo);
@@ -72,7 +74,10 @@ if (_phase isEqualTo "homing") exitWith {
         false
     };
     if (_veh distance2D _home < ARRIVE_RING) then {
-        [_veh, _home, "LAND"] call FUNC(landAt);
+        // A stand on the ground gets a pad clear of the rotor's way
+        // (2026-11-02, FUNC(clearSpot)); one on a deck or a roof is kept.
+        private _homeASL = _logic getVariable [QGVAR(homeASL), AGLToASL _home];
+        [_veh, _home, "LAND", (_homeASL select 2) - getTerrainHeightASL _homeASL < ROTOR_DISC_LOW] call FUNC(landAt);
         _st set ["phase", "parking"];
     };
     false

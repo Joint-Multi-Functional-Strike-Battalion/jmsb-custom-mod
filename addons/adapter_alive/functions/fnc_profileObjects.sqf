@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Profiles spawned hardware and its crews - rule 3, every jmfsb spawn is
  * profiled, extended to vehicles as well as men.
  *

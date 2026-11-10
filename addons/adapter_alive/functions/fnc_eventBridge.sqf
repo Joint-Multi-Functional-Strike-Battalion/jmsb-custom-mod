@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Subscribes to ALiVE's event log once, on the server, after the adapter is
  * ready. From then on every ALiVE event reaches jmfsb as a plain CBA event -
  * see FUNC(eventListener) for the names and the summaries.

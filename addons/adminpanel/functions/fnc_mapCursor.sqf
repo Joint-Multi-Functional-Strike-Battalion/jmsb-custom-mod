@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The grid under the pointer, in the map's title bar.
  *
  * An admin teleports somebody by clicking the map, and the only way to know

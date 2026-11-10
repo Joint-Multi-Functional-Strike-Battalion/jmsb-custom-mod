@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "current", client: the net the game's push-to-talk sends on now
  * (the current VON channel), so a channel picked with the game's own keys
  * becomes the active net.

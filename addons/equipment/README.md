@@ -5,6 +5,13 @@
 Field equipment: the Vector designator map marker, fortify tooling
 and the odds and ends that did not deserve an addon each.
 
+The Vector marker's in-world name goes by the server (review R1): the
+client sends the point by `remoteExecCall` to `srvMarker3D`, which names the
+sender himself, checks he holds a Vector and the point is in its reach, and
+sends it to every client's `show3DMarker`, which takes it only from the
+server. It was the `jmfsb_equipment_marker3D` CBA event, which any client
+could raise to put any text anywhere on every screen.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -13,6 +20,7 @@ and the odds and ends that did not deserve an addon each.
 - `cba_main` _(external)_
 - `cba_xeh` _(external)_
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_medbags`
 - `jmfsb_notify`
 - `ace_vector` _(external)_
@@ -23,7 +31,7 @@ and the odds and ends that did not deserve an addon each.
 
 ## Ships
 
-4 unit classes, 4 weapon/item classes, 4 functions.
+4 unit classes, 4 weapon/item classes, 5 functions.
 
 ## CBA settings
 
@@ -40,11 +48,12 @@ and the odds and ends that did not deserve an addon each.
 
 ## Functions
 
-<details><summary>4</summary>
+<details><summary>5</summary>
 
 - `jmfsb_equipment_fnc_placeTargetMarker`
 - `jmfsb_equipment_fnc_placeWaypoint`
 - `jmfsb_equipment_fnc_show3DMarker`
+- `jmfsb_equipment_fnc_srvMarker3D`
 - `jmfsb_equipment_fnc_vectorTarget`
 
 </details>

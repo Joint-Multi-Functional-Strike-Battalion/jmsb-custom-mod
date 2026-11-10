@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Asks a side's artillery commander for fire, on ALiVE's own event bus.
  *
  * Raises ARTY_REQUEST with the payload mil_artillery actually reads

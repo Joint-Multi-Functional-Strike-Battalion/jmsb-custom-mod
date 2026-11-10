@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is it safe to redraw the open app right now?
  *
  * THIS IS THE ANSWER TO "THE APP PAGES WILL NOT TAKE A CLICK". A live app keeps

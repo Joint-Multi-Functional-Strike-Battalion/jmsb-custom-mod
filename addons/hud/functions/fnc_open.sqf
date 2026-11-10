@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the layer up, if it is not already.
  *
  * Arguments:

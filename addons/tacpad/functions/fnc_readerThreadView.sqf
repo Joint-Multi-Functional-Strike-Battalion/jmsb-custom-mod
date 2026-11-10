@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The reader's right-hand pane: the opened thread (handoff 1a, pane 3). Header
  * with the priority chip, subject and NOTIFY / PIN TO MAP / ACK; the submitted
  * template as a read-only card (FUNC(readerCard)); the reply spine
@@ -49,11 +49,11 @@ private _threadId = _thread getOrDefault ["id", ""];
 
 // The engine's states are uppercase and the thread carries a real closed flag.
 private _closed = (_thread getOrDefault ["closed", false]) isEqualTo true
-    || {(_thread getOrDefault ["status", ""]) in ["CLOSED", "ABORTED"]};
+    || {(_thread getOrDefault ["status", ""]) in THREAD_OVER_STATES};
 
-private _legal = if (_closed) then {[]} else {
-    ["reply", _thread getOrDefault ["status", ""]] call EFUNC(messaging,templateIds)
-};
+// FUNC(threadLegal) (2026-11-02): the state's replies, an asset's own cards
+// to its thread's issuer, never the asset's words to a player.
+private _legal = [_threadId, _thread] call FUNC(threadLegal);
 
 // ---------------------------------------------------------------- header ---
 private _y = READER_INSET * _padY;
@@ -141,12 +141,23 @@ private _net = "";
 if (_rowAt >= 0) then {
     _net = ((EGVAR(messaging,index) # _rowAt) getOrDefault ["boxId", ""]) select [2];
 };
+// A thread in a support asset's box is TO the asset, by its call sign
+// (2026-11-01, design D1) - not "SUPPORT:CAS:0 NET".
+private _asset = "";
+if (_net isNotEqualTo "" && !isNil QEFUNC(support,boxName)) then {_asset = [_net] call EFUNC(support,boxName)};
 private _meta = [format ["THREAD %1", _threadId]];
-if (_net isNotEqualTo "") then {_meta pushBack format ["%1 NET", _net]};
+if (_asset isNotEqualTo "") then {
+    _meta pushBack format ["TO %1", _asset];
+} else {
+    if (_net isNotEqualTo "") then {_meta pushBack format ["%1 NET", _net]};
+};
 _meta pushBack format ["OPENED %1 BY %2", [_root0 getOrDefault ["sentTime", 0]] call FUNC(clock), _root0 getOrDefault ["fromCallsign", "?"]];
-_meta pushBack format ["%1 REPLIES", (count _messages) - 1 max 0];
+// Singular at one (tablet review 2026-11-01, 2.7).
+private _replyCount = (count _messages) - 1 max 0;
+_meta pushBack format ["%1 %2", _replyCount, ["REPLIES", "REPLY"] select (_replyCount isEqualTo 1)];
 _meta pushBack toUpper (_thread getOrDefault ["status", ""]);
-[_root, [_bx, _y, _bw, _rowH * 0.8], _meta joinString " - ", _muted, READER_K_SIZE, true, "left", true] call FUNC(drawText);
+// Ids, call signs and times: values, untracked (tablet review 2026-11-01, 2.3).
+[_root, [_bx, _y, _bw, _rowH * 0.8], toUpper (_meta joinString " - "), _muted, READER_K_SIZE, true] call FUNC(drawText);
 _y = _y + _rowH + READER_INSET * _padY;
 
 [_root, [_dx, _y, _dw, RULE_THICK * pixelH], _dim] call FUNC(drawFill);
@@ -160,7 +171,8 @@ private _callUids = ((_messages apply {_x getOrDefault ["fromUid", ""]}) + (_thr
     _x isEqualType "" && _x isNotEqualTo ""
 };
 _callUids = _callUids arrayIntersect _callUids;
-private _composerH = [_root, _thread, _legal, [_bx, _bw, _h], true] call FUNC(readerQuick);
+// The messages go with it: a `prompt` as the newest sets its tiles (doc 7).
+private _composerH = [_root, _thread, _legal, [_bx, _bw, _h], true, [], _messages] call FUNC(readerQuick);
 private _floor = _h - _composerH;
 
 _y = [_root, _root0, [_bx, _y, _bw]] call FUNC(readerCard);
@@ -169,4 +181,4 @@ _y = _y + READER_INSET * _padY;
 [_root, _messages, [_bx, _y, _bw, _floor - _padY]] call FUNC(readerReplies);
 
 // Last, so the + MARKER list it may open is on top of the replies.
-[_root, _thread, _legal, [_bx, _bw, _h], false, _callUids] call FUNC(readerQuick);
+[_root, _thread, _legal, [_bx, _bw, _h], false, _callUids, _messages] call FUNC(readerQuick);

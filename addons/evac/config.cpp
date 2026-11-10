@@ -10,6 +10,7 @@ class CfgPatches {
         // ace_medical for setUnconscious, ace_medical_treatment for isMedic + fullHeal.
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_notify",
             "ace_interact_menu",
             "ace_common",

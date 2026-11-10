@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The reply. Which commander answers is whichever is hostile to the captors -
  * and what it can send depends on what kind of war it fights.
  *
@@ -18,21 +18,18 @@
 params ["_name", "_side", "_pos", "_radius"];
 
 if (!isServer) exitWith {};
-if (isNil "jmfsb_adapter_alive_fnc_commanders") exitWith {
-    INFO_1("'%1' taken - no adapter, so nobody to answer",_name);
+
+// THE MODULE IS THE ENABLE, and the waves read its values. Reaction's
+// burn-through calls here on a mission with no QRF module placed, where those
+// values do not exist; without ALiVE that is now reached (user, 2026-11-02).
+if (!GVAR(moduleUp)) exitWith {
+    INFO_1("'%1' taken - no QRF module placed, nobody sent",_name);
 };
 
-private _answering = sideUnknown;
-private _ctype = "";
-private _faction = "";
-{
-    _x params ["_cside", "_ct", "_cf"];
-    if (_cside getFriend _side < 0.6) exitWith {
-        _answering = _cside;
-        _ctype = _ct;
-        _faction = _cf;
-    };
-} forEach (call jmfsb_adapter_alive_fnc_commanders);
+// The first ALiVE commander hostile to the captors - or, without ALiVE, the
+// mission's enemy with the faction its men wear and no kind of war, so no
+// guns to ask (user, 2026-11-02: "works with or without").
+([_side] call EFUNC(common,hostileCommander)) params ["_answering", "_ctype", "_faction"];
 
 if (_answering isEqualTo sideUnknown) exitWith {
     INFO_1("'%1' taken - nobody hostile to answer it",_name);

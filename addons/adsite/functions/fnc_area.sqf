@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An alarm area, made the first time a unit is filed into it. Its loudspeakers
  * are found HERE, with one nearestObjects, and cached - never per salvo.
  *

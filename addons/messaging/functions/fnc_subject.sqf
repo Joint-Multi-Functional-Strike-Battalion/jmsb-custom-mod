@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds a thread's subject line from its root message. The subject is derived,
  * never typed: a player asked to name a report names it "asdf" once and then
  * nobody can find it again.
@@ -65,12 +65,22 @@ private _out = _format;
 {
     private _token = format ["{%1}", _x];
     if (_token in _out) then {
-        _out = [_out, _token, [_values getOrDefault [_x, ""]] call _fnc_text] call CBA_fnc_replace;
+        private _text = [_values getOrDefault [_x, ""]] call _fnc_text;
+        // A grid picked from a map marker carries the marker's name (user,
+        // 2026-11-05): "RESUPPLY 041117 (LZ RAVEN) - SLING".
+        private _marker = _values getOrDefault [_x + MARKER_NAME_SUFFIX, ""];
+        if (_text != "" && _marker isEqualType "" && _marker != "") then {_text = format ["%1 (%2)", _text, _marker]};
+        _out = [_out, _token, _text] call CBA_fnc_replace;
     };
 } forEach (_template get "order");
 
 // Anything the format asked for that the template does not have would otherwise
 // sit in the subject as a literal {Line9.A}.
 _out = _out regexReplace ["\{[^}]*\}", ""];
+
+// AN OPTIONAL FIELD LEFT EMPTY (report-card review, 2026-11-02: required is
+// only what the receiver cannot act without) leaves its joiner behind -
+// "TIC 045 782 -" - so a dash or space at either end, and a doubled space, go.
+_out = (_out regexReplace [SUBJECT_DANGLING, ""]) regexReplace [SUBJECT_SPACES, " "];
 
 trim _out

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * HACK - ACTION: the selected node and what the suite will do to it.
  *
  *   TARGET    the node and its grid

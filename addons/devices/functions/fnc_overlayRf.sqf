@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What RF says about the player's own sets, boiled down for the walking
  * view: which nets have a path, which are receive only, the hops to the
  * nearest relay on the data net, and every node he can reach.
@@ -18,15 +18,17 @@
  * the hops to it are its own link's hops. No relay seen but peers in reach
  * reads "direct only".
  *
- * RECEIVE ONLY: PLACEHOLDER, always false. It is EMCON SILENT on the node
- * (DESIGN_EW), and RF's public API does not yet tell a client a node's EMCON.
+ * RECEIVE ONLY: EMCON 3 (SILENT) on any of his sets, as jmfsb_ew's client
+ * slice tells him (FUNC(emconLevel)); never without EW. Any one set at SILENT
+ * closes every radio net of his in voice, so it marks every net here. The
+ * summary is rebuilt when that level changes as well (XEH_postInit).
  *
  * Arguments:
  * None
  *
  * Return Value:
  * <HASHMAP>: ready <BOOL> (RF loaded), nodes <ARRAY of STRINGs>, nets
- * (net id -> [path <BOOL>, receive only <BOOL>, always false]) <HASHMAP>, peers (every
+ * (net id -> [path <BOOL>, receive only <BOOL>]) <HASHMAP>, peers (every
  * reachable node id) <ARRAY of STRINGs>, relayHops (-1 none seen) <NUMBER>,
  * meshReach (peers on the data net) <NUMBER>
  *
@@ -42,6 +44,7 @@ private _peers = [];
 private _relayHops = -1;
 private _meshReach = 0;
 private _ready = !isNil QEFUNC(rf,reach) && {!isNil QEFUNC(rf,link)} && {!isNil QEFUNC(rf,quality)};
+private _receiveOnly = ([] call FUNC(emconLevel)) >= EMCON_RECEIVE_ONLY;
 
 if (_ready) then {
     private _slice = missionNamespace getVariable [QEGVAR(rf,slice), []];
@@ -61,7 +64,7 @@ if (_ready) then {
             private _reach = [_node, _net] call EFUNC(rf,reach);
             private _quality = [_node, _net] call EFUNC(rf,quality);
             private _path = (_nets getOrDefault [_net, [false, false]]) select 0;
-            _nets set [_net, [_path || _quality > 0, false]];
+            _nets set [_net, [_path || _quality > 0, _receiveOnly]];
             _peers append _reach;
 
             if (_net isEqualTo MESH_NET) then {

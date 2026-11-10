@@ -100,35 +100,19 @@ if (!isNil "jmfsb_jamming_fnc_jamFactor") then {
 };
 
 // --- 3. own net ------------------------------------------------------------
+// GAME VOICE (jmfsb_voice): a net, not a channel, and no frequency - the
+// second column is whether the net reaches anyone (netState's reachable).
+// The ACRE channel / frequency read went with ACRE (DEC1, 2026-10-31).
 private _chanText = "NO RADIO";
 private _freqText = "";
-if (!isNil "acre_api_fnc_getCurrentRadio") then {
-    private _cur = call acre_api_fnc_getCurrentRadio;
-    if (_cur isEqualType "" && _cur isNotEqualTo "") then {
-        private _i = _cur find "_ID_";
-        private _base = if (_i > 0) then { _cur select [0, _i] } else { _cur };
-        private _preset = [_cur] call acre_api_fnc_getPreset;
-        private _ch = [_cur] call acre_api_fnc_getRadioChannel;
-        private _f = [_base, _preset, _ch, "frequencyTX"] call acre_api_fnc_getPresetChannelField;
-        // ACRE's getRadioChannel ALREADY RETURNS 1-N ("Channel number, 1-N
-        // depending on the radio", api\fnc_getRadioChannel.sqf) - the +1 here
-        // is what had the app and the sensor panel reading CH 2 while the
-        // radio in hand said CH 1.
-        _chanText = format ["CH %1", _ch];
-        _freqText = if (isNil "_f") then { "-- MHz" } else { format ["%1 MHz", _f] };
-    };
-} else {
-    // GAME VOICE (jmfsb_voice): a net, not a channel, and no frequency - the
-    // second column is whether the net reaches anyone (netState's reachable).
-    if (!isNil QEFUNC(voice,activeNet)) then {
-        private _net = [] call EFUNC(voice,activeNet);
-        if (_net isEqualType "" && _net isNotEqualTo "") then {
-            private _state = if (isNil QEFUNC(voice,netState)) then {[]} else {[] call EFUNC(voice,netState)};
-            private _i = _state findIf {(_x param [0, ""]) isEqualTo _net};
-            private _row = if (_i < 0) then {[]} else {_state select _i};
-            _chanText = _row param [1, _net];
-            _freqText = ["NO LINK", "LINK"] select (_row param [6, false]);
-        };
+if (!isNil QEFUNC(voice,activeNet)) then {
+    private _net = [] call EFUNC(voice,activeNet);
+    if (_net isEqualType "" && _net isNotEqualTo "") then {
+        private _state = if (isNil QEFUNC(voice,netState)) then {[]} else {[] call EFUNC(voice,netState)};
+        private _i = _state findIf {(_x param [0, ""]) isEqualTo _net};
+        private _row = if (_i < 0) then {[]} else {_state select _i};
+        _chanText = _row param [1, _net];
+        _freqText = ["NO LINK", "LINK"] select (_row param [6, false]);
     };
 };
 

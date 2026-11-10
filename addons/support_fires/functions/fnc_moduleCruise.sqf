@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one JMSB - Cruise Missiles module: a launcher at the module's position
  * (a ship, a ground site, or off the map edge) with a stock of missiles.
  *

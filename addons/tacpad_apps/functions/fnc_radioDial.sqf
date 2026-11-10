@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Rings people: into the player's live (or dialling) call when he has one -
  * + ADD, a group add, the recent list, the walking view's quick add - or as a
  * new call when he has none (CALL). One place, so the tablet and the small

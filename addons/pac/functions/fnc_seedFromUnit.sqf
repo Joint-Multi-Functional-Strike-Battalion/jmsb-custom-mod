@@ -36,6 +36,10 @@ Author:
 params [["_unit", objNull, [objNull]], ["_armaRank", "", [""]], ["_slot", "", [""]], ["_groupName", "", [""]]];
 
 if (!isServer || isNull _unit || GVAR(readOnly)) exitWith {false};
+// The sender seeds only himself, and with the rank the server sees on him, not
+// the one he names (review S5).
+if !([_unit] call EFUNC(common,senderIs)) exitWith {false};
+_armaRank = rank _unit;
 
 private _uid = [_unit] call FUNC(uid);
 if (_uid isEqualTo "") exitWith {false};

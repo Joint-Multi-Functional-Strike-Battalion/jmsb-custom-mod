@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One measured leg: the line, and its distance and bearing at the midpoint.
  * The ruler, every route leg and every rubber band are this - one look for a
  * measurement wherever it lands.
@@ -18,7 +18,7 @@
  * Example:
  * [_map, _from, _to, _accent, 0.045] call jmfsb_maptools_fnc_drawLeg
  *
- * Public: No
+ * Public: Yes
  */
 
 params ["_map", "_from", "_to", "_color", "_size"];

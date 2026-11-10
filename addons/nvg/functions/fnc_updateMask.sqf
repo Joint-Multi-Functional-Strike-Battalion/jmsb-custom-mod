@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the tube mask up or takes it down. Run on events only - the vision mode,
  * loadout, weapon, unit, vehicle, view or feature camera changing, the player
  * view changing, and the "NVG full screen" setting changing - never per frame.

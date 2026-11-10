@@ -1,0 +1,4 @@
+# The compiler the extension is built with, the same as jmsb_voice's.
+[toolchain]
+channel = "1.99.1"
+profile = "minimal"

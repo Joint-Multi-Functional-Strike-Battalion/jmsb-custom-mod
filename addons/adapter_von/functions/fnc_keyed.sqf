@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "keyed", client: a remote speaker pushed his own key-down or
  * key-up on a net (jmfsb_voice_keyed). setPlayerVoNVolume is the listener's
  * own, so his volume here is set at once from the quality the voice core

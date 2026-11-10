@@ -1,0 +1,504 @@
+{
+  "title": "Watch HUD + device overlays",
+  "version": "0.1-plan",
+  "status": "built 2026-11-07, untested in game - jmfsb_watch (core, self_aid, recon, engineer, team_lead, jfo, tablet panel, side 2, settings section, HUD toggles, key hint icons, own charges, alerts), jmfsb_medic (medical: triage suggest + set, MIST thread per patient, alerts), jmfsb_c2 (measures, HUD toggle with LOA / NFA locked on). Gaps: MIST reply carries the full card (not changes only); no squad-lead tag / FLASH on T1 (composer takes no tags); squad view is tap only (no hold); jamming not counted in NO SIGNAL; clacker holder not shown; server locks are CBA's own force, no lock icon beyond the settings app's",
+  "suite": "jmsb-custom-mod (jmfsb_ prefix) - hud, devices, messaging",
+  "terms": {
+    "phone": "means phone, side and side 2 devices unless stated",
+    "hud": "AiTR world-space panels/boxes drawn on targets",
+    "overlay": "watch panel drawn on the devices",
+    "profile": "a class/skill set: fields, gate, report template, actions",
+    "slot": "one watched target; 4 per profile"
+  },
+  "core": {
+    "default_state": "off",
+    "slots_per_profile": 4,
+    "add_remove": "look at target + action key (numpad 9); again on same target removes",
+    "add_from_list": "settings app can add a squad member without looking",
+    "slot_list_shared": "hud and overlay both read the same slot list",
+    "auto_clear": [
+      "target dead",
+      "target lost past timeout",
+      "handed off (optional)"
+    ],
+    "pin": "pinned slot ignores auto_clear",
+    "all_off": "clears hud + overlays + key hints",
+    "multi_profile": "units with more than one profile cycle with the cycle key; side 2 can show a second profile",
+    "notifications": "all alerts go through the existing framework notification row - no new popups"
+  },
+  "hud": {
+    "anchor": "world-space, attached to target, moves with it",
+    "clear_zone": "nothing screen-fixed in center; world panels only cover view when target is there",
+    "full_panel_range_m": 5,
+    "shrink_to_tag_beyond_m": 15,
+    "shrink_setting": "on by default, can be turned off",
+    "tag": "slot number + state colour + 1 value",
+    "toggle": "own on/off per profile in settings"
+  },
+  "overlay": {
+    "devices": {
+      "side": "primary watch surface, portrait, left or right edge",
+      "side_2": "optional second profile, opposite edge",
+      "phone": "fallback only if no side device: top strip temporarily replaces part of phone screen, reverts when slots empty",
+      "phone_position": "bottom center",
+      "vehicle_tablet": "OPEN - not decided"
+    },
+    "walking_mode": "compact rows, never in clear zone, map/BFT stays visible",
+    "raised_mode": "same 4 slots as 4 columns with full field set + actions",
+    "template": {
+      "header": [
+        "profile icon",
+        "profile name",
+        "slots used / 4"
+      ],
+      "row_line_1": [
+        "slot number",
+        "name",
+        "state"
+      ],
+      "row_line_2": [
+        "two key values (profile-defined)"
+      ],
+      "row_line_3": [
+        "last report age or one extra value"
+      ],
+      "action_bar": "fixed order, profile hides unused actions"
+    },
+    "actions_order": [
+      "report",
+      "pin",
+      "map",
+      "share",
+      "clear"
+    ],
+    "actions": {
+      "report": "opens profile report template prefilled; first send starts a thread, later sends reply with changes only",
+      "pin": "exempt from auto_clear",
+      "map": "permanent map marker",
+      "share": "every friendly player within share_range_m sees it for share_seconds, even without LOS",
+      "clear": "remove slot"
+    },
+    "share_range_m": 2000,
+    "share_seconds": {
+      "default": 20,
+      "cba_setting": true
+    }
+  },
+  "visual_rules": {
+    "fill_colour": {
+      "red": "threat / urgent / T1",
+      "amber": "warning / own item / T2",
+      "green": "ok / T3",
+      "grey": "dead / gone"
+    },
+    "border": {
+      "solid": "line of sight or live data",
+      "dashed": "no line of sight or stale",
+      "dashed_grey": "empty slot"
+    },
+    "triage_colours_note": "must match unit ACM docs; change if docs use a different scheme (e.g. T4 expectant)"
+  },
+  "keys": {
+    "numpad_layout": {
+      "1-4": "radio chip (net) select",
+      "5": "device F1",
+      "6": "device F2",
+      "7": "device F3",
+      "8": "device F4",
+      "9": "ACTION key - context action on what you look at (e.g. medic looks at player -> opens med hud panel / adds slot; again on same target removes)",
+      "0": "< (unchanged)",
+      ".": "> (unchanged)"
+    },
+    "change_note": "replaces old map (device buttons were numpad 6/7/8/9 accept/ear/mute/decline). UPDATE DOCS AND SIGNAGE: wiki key pages, smart cards, device art/labels, in-game key hints",
+    "f1_f4_functions": "keep current device functions unless reassigned; key hints show what each is set to",
+    "action_key_9": "replaces the separate add_remove key in all profiles",
+    "other_hud_bindings": [
+      "report",
+      "cycle_profile",
+      "all_off",
+      "squad_view_hold"
+    ],
+    "other_hud_bindings_open": "OPEN - which keys these use now that 1-9/0/. are taken (CBA keybinds, or assign to F1-F4 while a profile is on)",
+    "key_hints": {
+      "what": "small icon + key label next to each key on the active device edge (or by phone if no side device)",
+      "icon_follows_profile": "e.g. report key = med kit in medic, binoculars in recon",
+      "unused_key": "dimmed icon",
+      "rebind": "icon follows rebinding",
+      "visible": "only while a profile is on"
+    }
+  },
+  "prompt_mode": {
+    "setting": "settings app + CBA default",
+    "default": "full",
+    "full": [
+      "key hints: icon + key + short label",
+      "context prompt when looking at a valid target, e.g. '9: open med panel', shown on the device next to the 9 hint (never in clear zone)",
+      "action bar labels in text",
+      "first-use tips per profile"
+    ],
+    "reduced": [
+      "key hints: icon only",
+      "no context prompt text; 9 hint icon lights up when a valid target is looked at",
+      "action bar icons only",
+      "no tips"
+    ],
+    "both_modes": "alerts and notifications unchanged"
+  },
+  "settings_app": {
+    "location": "phone app, also controls side devices",
+    "rows": [
+      "profile on/off (only profiles the unit is gated for)",
+      "hud on/off per profile",
+      "walking strip compact/off",
+      "auto-clear on/off",
+      "shrink at distance on/off",
+      "alerts per profile",
+      "slot list: pin / clear / add from squad list",
+      "squad view popup seconds",
+      "prompt mode full/reduced",
+      "key bindings"
+    ],
+    "hud_settings_page": {
+      "sections": [
+        "medical",
+        "self_aid",
+        "recon",
+        "engineer",
+        "team_lead",
+        "squad_view",
+        "c2_measures",
+        "key_hints"
+      ],
+      "per_section": "type on/off, then on/off per data field (e.g. vitals, meds, MIST age, range/bearing, dashed contacts)",
+      "effect": "hides for this player only; data still syncs, others unaffected",
+      "reset": "reset to default button",
+      "server_locks": "mission maker can lock any row ON via CBA server setting; locked rows show a lock icon",
+      "locked_by_default": [
+        "c2 loa",
+        "c2 no_fire_area"
+      ]
+    }
+  },
+  "sync": {
+    "owner": "data lives on the machine that owns the target",
+    "send_to": "only units watching that target",
+    "rate_hz": 1,
+    "stop": "when slot clears",
+    "watchers_list": "each target keeps a list of watchers so several players can watch it",
+    "los_checks": "server, ~1 Hz, only for tracked recon/eng contacts"
+  },
+  "profiles": [
+    {
+      "id": "self_aid",
+      "gate": "everyone",
+      "slots": 1,
+      "target": "self only",
+      "hud": false,
+      "fields": [
+        "bleeding",
+        "pain",
+        "conscious",
+        "tq_timer"
+      ]
+    },
+    {
+      "id": "medical",
+      "icon": "first-aid-kit",
+      "gate": "CLS or Medic skill (OPEN: exact ACM/ACE variable)",
+      "tiers": {
+        "cls": [
+          "triage",
+          "bleeding",
+          "tq_limb_time",
+          "hr",
+          "distance"
+        ],
+        "medic": [
+          "triage",
+          "hr",
+          "bp",
+          "spo2",
+          "rr",
+          "bleeding",
+          "pain",
+          "tq_limb_time",
+          "meds_given",
+          "distance"
+        ]
+      },
+      "hud": {
+        "open": "look at player within 5 m + action key (numpad 9): full panel over patient",
+        "persist": "panel stays over patient when medic looks away, follows carry/load",
+        "border": "triage colour",
+        "shows_mist_age": true
+      },
+      "row_line_2": [
+        "hr",
+        "tq_timer"
+      ],
+      "row_line_3": "mist age",
+      "triage": "auto-suggested from vitals using doc thresholds; medic override sticks until changed",
+      "report": {
+        "template": "existing MIST template",
+        "channel": "MEDICAL.mist",
+        "thread": "one per patient",
+        "prefill": {
+          "M": "mechanism from damage source",
+          "I": "wounds by body part",
+          "S": "vitals at send time",
+          "T": "ACE treatment log: TQs with times, meds, fluids"
+        },
+        "updates": "reply in same thread, changes only",
+        "tags": [
+          "patient's squad lead always",
+          "FLASH if T1 (pulls medevac)"
+        ],
+        "send": "manual only",
+        "stale_warning": "triage changed since last send OR older than 5 min"
+      },
+      "alerts": [
+        "patient goes T1",
+        "TQ over 10 min",
+        "SpO2 under 90",
+        "MIST stale"
+      ],
+      "actions": [
+        "report",
+        "pin",
+        "clear",
+        "set_triage",
+        "open_thread"
+      ]
+    },
+    {
+      "id": "recon",
+      "icon": "binoculars",
+      "gate": "OPEN",
+      "target": "enemy unit / vehicle / spot",
+      "hud": "box on contact + map track",
+      "visibility": {
+        "los": "any friendly player has LOS -> solid box, all friendly players within 2 km see box + map track",
+        "no_los": "dashed box at last known position, spotter's group only, shows time lost",
+        "regain": "back to solid when anyone has LOS",
+        "drop_after_min": {
+          "default": 5,
+          "setting": true
+        }
+      },
+      "row_line_2": [
+        "range",
+        "bearing"
+      ],
+      "row_line_3": "spotrep age",
+      "report": {
+        "template": "SPOTREP",
+        "thread": "one per contact"
+      },
+      "actions": [
+        "report",
+        "pin",
+        "map",
+        "share",
+        "clear"
+      ],
+      "open": "share now overlaps 2 km LOS rule - proposed: share pushes a no-LOS contact to everyone in 2 km for share_seconds"
+    },
+    {
+      "id": "jfo",
+      "gate": "isJFO",
+      "hud": "impact areas only for now",
+      "note": "JFO must receive support asset questions (BDA, clearance etc.) on phone/side device via messaging threads",
+      "overlay": "none for now"
+    },
+    {
+      "id": "team_lead",
+      "gate": "TL and ATL (OPEN: exact role var; isJFO is false for ATL)",
+      "hud": {
+        "open": "look at player",
+        "fields": [
+          "name",
+          "role",
+          "team",
+          "health/triage",
+          "mags",
+          "AT",
+          "nets"
+        ],
+        "toggle": "own on/off",
+        "scope_open": "own squad only or any friendly - OPEN"
+      },
+      "squad_view": {
+        "where": "phone/side device popup",
+        "open": "while key held, or tap = show for squad_view_seconds",
+        "squad_view_seconds": {
+          "default": 30,
+          "setting": true
+        },
+        "rows": [
+          "role",
+          "name",
+          "status colour",
+          "mags"
+        ],
+        "no_signal": "shown when member's device is jammed or off"
+      }
+    },
+    {
+      "id": "isr",
+      "gate": "isISR",
+      "note": "use vanilla in-game side windows (custom info panels); no custom drone hud"
+    },
+    {
+      "id": "engineer",
+      "icon": "bomb",
+      "gate": "ACE engineer or EOD trait",
+      "threats": {
+        "detect": "engineer sees enemy IEDs/mines/explosives within range, no detector needed",
+        "detect_range_m": {
+          "default": 15,
+          "cba_setting": true
+        },
+        "fields": [
+          "type",
+          "trigger (pressure/tripwire/remote) where ACE exposes it",
+          "distance"
+        ],
+        "visibility": "same as recon: LOS -> friendly within 2 km + map track; no LOS -> finder's group, dashed"
+      },
+      "own_charges": [
+        "armed/safe",
+        "trigger type",
+        "timer",
+        "clacker holder"
+      ],
+      "vehicle_look": [
+        "ACE repair per part",
+        "fuel",
+        "ammo",
+        "cargo space",
+        "can repair with what you carry"
+      ],
+      "row_line_2": [
+        "state",
+        "timer or distance"
+      ],
+      "report": "OPEN - engineer report template",
+      "actions": [
+        "report",
+        "pin",
+        "map",
+        "share",
+        "clear"
+      ]
+    }
+  ],
+  "c2_app": {
+    "device": "tablet (large/vehicle)",
+    "create_edit_delete": "TL and ATL (creator, TL or ATL can edit/delete)",
+    "flow": "pick type -> draw on map -> name (required) -> save",
+    "visible_to": "whole side on map/BFT (default; OPEN: limit to squad/platoon)",
+    "measures": {
+      "lines": [
+        "phase_line",
+        "loa",
+        "boundary",
+        "route"
+      ],
+      "areas": [
+        "objective",
+        "no_fire_area"
+      ],
+      "points": [
+        "lz",
+        "rally_point",
+        "checkpoint"
+      ]
+    },
+    "hud": {
+      "lines_and_areas": {
+        "range_m": 1000,
+        "setting": true,
+        "draw": "on ground with name + distance"
+      },
+      "points": {
+        "dot_beyond_m": 250,
+        "setting": true,
+        "beyond": "plain dot only",
+        "within": "icon + name + distance"
+      },
+      "objective_area": "keeps outline to 1 km, no dot"
+    },
+    "per_type": {
+      "phase_line": "line + name; crossing prompt",
+      "loa": "red line, warn when close, do not cross",
+      "boundary": "thin line, own vs adjacent unit, warn when crossing",
+      "route": "arrow line, named",
+      "objective": "outline + name; 'on OBJ' report",
+      "no_fire_area": "red hatched; support requests from inside it are blocked (links JFO)",
+      "lz": "point; links CASEVAC later",
+      "rally_point": "point",
+      "checkpoint": "numbered point; passing report"
+    },
+    "reports": {
+      "key": "numpad 9 (action key) near the measure",
+      "examples": [
+        "crossed PL BLUE",
+        "on OBJ",
+        "at RP",
+        "passed CP 3"
+      ],
+      "channel": "C2.reports",
+      "tags": "creator TL"
+    }
+  },
+  "later": [
+    {
+      "id": "casevac_lz",
+      "note": "LZ marker panel: inbound ETA, wind, patients tagged from MIST threads"
+    },
+    {
+      "id": "crew_convoy",
+      "note": "vehicle damage/fuel/ammo/crew; reuse convoy health"
+    },
+    {
+      "id": "ew",
+      "note": "emitters: type, strength, bearing; after EW zones"
+    }
+  ],
+  "skip": [
+    "pilot (aircraft have own hud)",
+    "HALO/dive (already instrument apps)"
+  ],
+  "open_questions": [
+    "exact engineer trigger fields ACE exposes",
+    "rows locked by default beyond c2 loa / no_fire_area"
+  ],
+  "docs_todo": [
+    "update key docs and signage for new numpad map (wiki, smart cards, device labels, key hints)",
+    "document prompt mode setting",
+    "document C2 app measures and HUD ranges",
+    "document HUD settings page and server locks"
+  ],
+  "build_order": [
+    "core slot list + settings app + key hints",
+    "medical",
+    "recon + engineer (shared LOS/visibility system)",
+    "team lead + squad view",
+    "c2 app (phase line, loa, objective, rally point first)",
+    "jfo impact areas"
+  ],
+  "decisions_2026_11_07": {
+    "numpad": "adopt the remap: 1-4 nets, 5-8 device F1-F4, 9 action key, 0/. arrows; net 5 unbound; saved binds migrated",
+    "hud_keys": "while a profile is on, F1-F4 (numpad 5-8) are report / cycle profile / all off / squad view (hold); key hints show it",
+    "medical_gate": "anyone in AiTR goggles (ECOTI drawing); CLS and others see the cls tier, medics the medic tier",
+    "medical_target": "any player looked at within 5 m",
+    "handoff": "both keep it - several watchers per patient",
+    "tl_scope": "own squad only",
+    "recon_share": "push a no-LOS contact to every friendly within 2 km for share_seconds",
+    "vehicle_tablet": "shows the overlay too",
+    "recon_gate": "everyone",
+    "engineer_report": "UXO/IED 9-line",
+    "c2_visible": "whole side",
+    "phone": "inside the phone display as an overlay when active (no side device)"
+  }
+}

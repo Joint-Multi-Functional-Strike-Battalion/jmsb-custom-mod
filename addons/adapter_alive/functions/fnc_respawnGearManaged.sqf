@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether ALiVE's multispawn is restoring gear on respawn, in which case
  * jmfsb's own respawn path must leave the loadout alone.
  *

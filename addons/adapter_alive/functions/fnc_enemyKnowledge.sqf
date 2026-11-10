@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the enemy commanders currently know about a side's forces.
  *
  * Every OPCOM keeps "knownentities" - the spot reports its troops file -

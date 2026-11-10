@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One static-line jumper's descent, every CHUTE_TICK seconds: open his canopy
  * when the line pulls it, and let him go on the ground.
  *
@@ -19,7 +19,7 @@
  * Example:
  * [FUNC(chuteTick), 0.1, [_unit, objNull, CBA_missionTime + 1]] call CBA_fnc_addPerFrameHandler
  *
- * Public: No
+ * Public: Yes
  */
 
 // Horizontal speed kept from the aircraft when the canopy opens.

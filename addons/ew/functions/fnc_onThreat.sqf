@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: a threat warning from the server (FUNC(warn)) on the notification
  * rail - kind as the title, the detail and what to do as the line. The
  * OVERVIEW tab keeps the recent ones from the slice.
@@ -22,6 +22,10 @@
 params [["_kind", "", [""]], ["_detail", "", [""]], ["_advice", "", [""]]];
 
 if (!hasInterface) exitWith {};
+// Only from the server (FUNC(warn), review R1).
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("onThreat: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
 
 private _text = [_detail, format ["%1 - %2", _detail, _advice]] select (_advice isNotEqualTo "");
 [format ["EW: %1", _kind], _text, THREAT_COLOUR] call EFUNC(notify,notify);

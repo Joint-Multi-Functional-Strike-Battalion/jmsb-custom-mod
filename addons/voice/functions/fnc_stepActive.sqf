@@ -1,9 +1,8 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Steps the active net left or right through the local player's nets (the
  * device arrows, numpad 0 / .), skipping a net the adapter cannot select.
- * Under TFAR / ACRE the nets are that radio's (fnc_externalTick).
  *
  * Arguments:
  * 0: Direction, +1 or -1 <NUMBER>

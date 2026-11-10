@@ -53,7 +53,6 @@
 #define AS_LAUNCH_MIN       300     // m inland of the radar a launcher stands, at least
 #define AS_LAUNCH_MAX       1500    // m inland of the radar a launcher stands, at most
 #define AS_LAUNCH_SPREAD    80      // m between the launchers of one battery
-#define AS_ALIVE_WAIT       300     // s to wait for the ALiVE adapter before using the module's own area
 #define AS_SITE_SLOPE       0.15    // gradient a radar or launcher may stand on
 #define AS_RADAR_FOOT       8       // m half-size a radar needs clear and dry
 #define AS_LAUNCH_FOOT      10      // m half-size a launcher needs clear and dry

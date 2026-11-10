@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets up the player-facing "Establish Patrol Base" action: ACE self-interaction
  * when ACE is present, otherwise a scroll action. Shows for any player on foot
  * with enough kits down, when the system is enabled.

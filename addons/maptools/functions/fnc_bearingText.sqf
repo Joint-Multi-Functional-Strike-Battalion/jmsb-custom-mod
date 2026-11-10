@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A bearing as the player asked to read it (QGVAR(angleUnit)): degrees as
  * three digits, NATO mils as four, or both.
  *
@@ -13,7 +13,7 @@
  * Example:
  * [45] call jmfsb_maptools_fnc_bearingText
  *
- * Public: No
+ * Public: Yes
  */
 
 params [["_bearing", 0, [0]]];

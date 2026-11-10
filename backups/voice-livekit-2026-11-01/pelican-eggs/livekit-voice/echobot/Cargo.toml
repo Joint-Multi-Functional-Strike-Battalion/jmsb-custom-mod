@@ -1,0 +1,15 @@
+[package]
+name = "echobot"
+version = "0.1.0"
+edition = "2021"
+description = "Echo test for the JMSB voice server: answers each player's echo room, records what he says and plays it back"
+license = "APL-SA"
+publish = false
+
+# The LiveKit crates are pinned to the set the mod's extension uses
+# (jmsb-custom-mod extensions/jmsb_voice): Cargo.lock is a copy of its lock.
+[dependencies]
+livekit = { version = "=0.9.5", default-features = false, features = ["native", "rustls-tls-native-roots"] }
+livekit-api = { version = "=0.9.0", default-features = false, features = ["access-token", "services", "rustls-tls-native-roots"] }
+tokio = { version = "1.51", features = ["rt-multi-thread", "macros", "sync", "time", "signal"] }
+futures-util = "0.3"

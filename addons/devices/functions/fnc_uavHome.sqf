@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where RTB flies a drone, and what to call it:
  *
  *   LAUNCH POINT  what the drone records, its public jmfsb_devices_uavHome -

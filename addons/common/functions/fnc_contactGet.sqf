@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads a side's threat board - the public way, and the only way.
  *
  * Same discipline the EW zone registry set: consumers never touch the store,

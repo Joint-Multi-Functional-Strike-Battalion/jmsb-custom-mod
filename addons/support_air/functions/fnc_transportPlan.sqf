@@ -1,10 +1,16 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Turns a transport order into a flight: height, speed, what the door guns
- * may do, the lights, and the legs to where it is going - the VIA points in
- * order, then the final approach point when a bearing was picked, then the
- * point itself. What happens when it gets there is FUNC(transportArrive)'s.
+ * Author: YonV
+ * Turns a transport order into a flight: speed, what the door guns may do,
+ * and the legs to where it is going - the VIA points in order, then the final
+ * approach point when a bearing was picked, then the point itself. What
+ * happens when it gets there is FUNC(transportArrive)'s.
+ *
+ * TACTICAL (user, 2026-11-01). Every leg is flown nap of the earth - higher
+ * with a load on the hook - (EFUNC(support,flyAt)), and the lights are the
+ * support core's: on only over its airfield. A PARADROP climbs to its jump
+ * height on the final leg (FUNC(transportTick)); landings, hovers and the
+ * set-down take their own heights at the point.
  *
  * THE DOOR GUNS ARE THE REQUESTER'S CALL (the DOOR GUNS stepper). Return fire
  * and fire at will put the crew AWARE so the gunners engage; hold fire keeps
@@ -19,7 +25,7 @@
  * 0: The module logic <OBJECT>
  * 1: The helicopter <OBJECT>
  * 2: The watch's state <HASHMAP>
- * 3: The order [task, pos, requester, height, speed index, ROE index, wait, options] <ARRAY>
+ * 3: The order [task, pos, requester, task's own height, speed index, ROE index, wait, options] <ARRAY>
  *
  * Return Value:
  * None
@@ -36,7 +42,7 @@ _order params [
     ["_task", TASK_MOVE, [""]],
     ["_pos", [], [[]]],
     ["_requester", objNull, [objNull]],
-    ["_height", HOME_HEIGHT, [0]],
+    ["_height", TASK_HEIGHT_NONE, [0]],
     ["_speed", 0, [0]],
     ["_roe", 0, [0]],
     ["_wait", 0, [0]],
@@ -48,13 +54,9 @@ private _combat = ROE_COMBAT param [_roe, "GREEN"];
 _grp setCombatMode _combat;
 _grp setBehaviour (["AWARE", "CARELESS"] select (_combat isEqualTo "BLUE"));
 
-private _lights = _opts getOrDefault ["lights", true];
-_veh setPilotLight _lights;
-_veh setCollisionLight _lights;
-
 _veh engineOn true;
 _veh land "NONE";
-_veh flyInHeight _height;
+[_veh, FLY_TRANSIT] call EFUNC(support,flyAt);
 
 // THE LEGS. A final approach is a point APPROACH_LEG out on the picked
 // bearing, flown last before the point - it is how the helicopter comes in.
@@ -77,6 +79,9 @@ _st set ["lz", _opts getOrDefault ["lz", []]];
 _st set ["signal", _opts getOrDefault ["signal", SIGNAL_NONE]];
 _st set ["radius", _opts getOrDefault ["radius", RADIUS_MIN]];
 _st set ["opts", _opts];
+// The men a lift by message waits for are found at each touchdown
+// (FUNC(transportStep), step 7).
+_st deleteAt "pax";
 _st set ["signalLooked", false];
 _st set ["phase", "transit"];
 
@@ -98,3 +103,6 @@ private _word = switch (_task) do {
     default {"to LZ"};
 };
 _logic setVariable [QGVAR(status), _word, true];
+// The plan in the RPT (2026-11-05: RAVEN hovered and the RPT could not say
+// what it had been told).
+INFO_6("transportPlan: %1 %2 to %3, %4 m - %5 leg(s) before it, %6",_logic getVariable [ARR_2(QGVAR(callsign),"AIR")],_task,mapGridPosition _pos,round (_veh distance2D _pos),count _legs,_speedWord);

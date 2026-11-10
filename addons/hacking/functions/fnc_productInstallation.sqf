@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE INSTALLATION: the asymmetric commander's physical network - the
  * factory, the HQ, the depot, the roadblocks (new.md section 5).
  *
@@ -25,13 +25,13 @@
 
 params [["_pos", [], [[]]], ["_side", sideUnknown, [sideUnknown]]];
 
-if (isNil "jmfsb_adapter_alive_fnc_installations") exitWith {false};
+if (isNil QEFUNC(adapter_alive,installations)) exitWith {false};
 
 // The adapter answers [id, pos, size, type]; the ladder wants [id, pos, side].
 // An installation belongs to whichever asymmetric commander owns the ground,
 // and the asking side is by definition not that one - a player only reaches
 // this product by hacking inside asymmetric ground.
-private _pool = ([] call jmfsb_adapter_alive_fnc_installations) apply {
+private _pool = ([] call EFUNC(adapter_alive,installations)) apply {
     _x params ["_id", "_at", "", "_type"];
     [format ["%1_%2", _type, _id], _at, sideUnknown]
 };

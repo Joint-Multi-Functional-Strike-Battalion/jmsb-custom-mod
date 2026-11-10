@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every air module this viewer's side owns, as TAC//SUPPORT rows - the
  * "assets" code of provider "air" (addons/support/README.md). Called on the
  * viewer's machine every two seconds while the page is open, so it only reads
@@ -21,7 +21,11 @@
 private _side = side group player;
 
 ((missionNamespace getVariable [QGVAR(entities), []]) select {
-    !isNull _x && {(_x getVariable [QGVAR(side), sideUnknown]) isEqualTo _side}
+    !isNull _x
+        && {(_x getVariable [QGVAR(side), sideUnknown]) isEqualTo _side}
+        // NO AIRFRAME LEFT, OFF THE LIST (user, 2026-11-02: "make sure there
+        // is a respawn count for each support, default no respawns").
+        && {!(_x getVariable [QGVAR(dead), false])}
 }) apply {
     [_x] call FUNC(entityRow)
 } select {

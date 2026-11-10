@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_unregister: takes a node out of the registry. Its links vanish on the
  * next tick, and every slice that named it changes then.
  *
@@ -18,8 +18,10 @@
 
 params [["_id", "", [""]]];
 
+// A client's call goes to the server by remoteExec, which takes it only for a
+// node the client holds (FUNC(srvRequest), review R1).
 if (!isServer) exitWith {
-    [QGVAR(unregister), [_id]] call CBA_fnc_serverEvent;
+    ["unregister", [_id]] remoteExecCall [QFUNC(srvRequest), SERVER_OWNER];
 };
 
 GVAR(nodes) deleteAt _id;

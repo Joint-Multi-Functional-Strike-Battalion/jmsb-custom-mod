@@ -40,6 +40,8 @@
 #define IDC_QUICKCONNECT_LEFT 657010
 #define IDC_QUICKCONNECT_CENTRE 657011
 #define IDC_QUICKCONNECT_RIGHT 657012
+// the crest above the buttons (RscDisplayMain.hpp), swapped for a holiday's
+#define IDC_MAINMENU_LOGO 657013
 
 #define IDC_SERVERSTATUS_TITLE 1000
 #define IDC_SERVERSTATUS_DESCRIPTION 1001

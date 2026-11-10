@@ -6,6 +6,12 @@ params [
     ["_isRespawn",false,[true]]
 ];
 
+// A client seats only himself (review R1); the server's own calls (PAC's
+// auto-slot) are not remote executed and pass.
+if (!isServer || {!([_unit] call EFUNC(common,senderIs))}) exitWith {
+    WARNING_2("Groups","assignPlayer: machine %1 tried to seat %2 - refused",remoteExecutedOwner,name _unit);
+};
+
 _selectionPath params [["_groupIndex",-1,[0]],["_unitIndex",-1,[0]]];
 private _groupToUpdate = YMF_dynamicGroups param [_groupIndex, []];
 if (_groupToUpdate isEqualTo []) exitWith {};
@@ -25,19 +31,11 @@ private _gate = if (_isRespawn) then {[true, "", ""]} else {[_unit, _slotRole] c
 if !(_gate # 0) exitWith {
     private _why = _gate # 1;
     WARNING_3("Groups","assignPlayer: %1 refused %2 - %3",name _unit,_slotRole,_why);
-    [
-        QJMFSBGVAR(notify,post),
-        ["Role Access", _gate # 1, NOTE_BAD, sideUnknown],
-        _unit
-    ] call CBA_fnc_targetEvent;
+    ["Role Access", _gate # 1, NOTE_BAD, _unit] call JMFSBFUNC(notify,broadcast);
 };
 
 if (!isNull _desiredUnit && {!_isRespawn}) exitWith {
-    [
-        QJMFSBGVAR(notify,post),
-        ["Group Menu", "Role already taken.", NOTE_BAD, sideUnknown],
-        _unit
-    ] call CBA_fnc_targetEvent;
+    ["Group Menu", "Role already taken.", NOTE_BAD, _unit] call JMFSBFUNC(notify,broadcast);
 };
 
 private _oldSelectionPath = if (_isRespawn) then {[]} else {[_unit] call jmfsb_groups_fnc_removeFromGroup};
@@ -62,5 +60,6 @@ _unitsInGroup set [_unitIndex,_unit];
 
 [YMF_dynamicGroups,_oldSelectionPath,_selectionPath,_unit] remoteExecCall ["jmfsb_groups_fnc_updateGroups",-2,"YMF_DG_JIP"];
 
-player setVariable ["YMF_oldgroup",_selectedGroup,true];
-player setVariable ["YMF_oldrole",_desiredRole,true];
+// On the unit, not player: this runs on the server, where player is null.
+_unit setVariable ["YMF_oldgroup",_selectedGroup,true];
+_unit setVariable ["YMF_oldrole",_desiredRole,true];

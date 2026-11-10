@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets off a cruise missile or a loitering munition.
  *
  * A PROJECTILE WITH NO WARHEAD NAMED goes off on its own charge (triggerAmmo).

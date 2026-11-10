@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A unit's net of the PAC plan by kind - short range (his TEAM net), long
  * range (his C2-kind net) or air-to-ground - for the squad named by his
  * group's callsign - and, under the VON comm plan, his role and skills

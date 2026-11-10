@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether one player reaches another on DATA - any node of his has a
  * path to any node of the other's (rf_reach). A call needs it.
  *

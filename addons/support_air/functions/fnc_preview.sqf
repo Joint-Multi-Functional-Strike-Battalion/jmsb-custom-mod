@@ -1,21 +1,22 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The verdict before CONFIRM - the "preview" code of provider "air" (support
  * core README), the line Simplex shows beside its confirm. Asked on every
  * redraw of the board with exactly the parameters CONFIRM would send, so it
  * reads only what the server published on the module, changes nothing and
  * walks nothing bigger than the route.
  *
- *   CAS        "ETA 3 MIN - ON STATION 10 MIN - 2 SORTIES LEFT"
+ *   CAS        "ETA 3 MIN - ON STATION 10 MIN - 2 SPARE AIRFRAMES"
  *              on station, a SAD or LOITER: "REPOSITION - ETA 40 S"
  *   TRANSPORT  "ETA 2 MIN 40 S TO PICKUP" - from where it is when it is out
- *   LOGISTICS  "ETA 4 MIN - LAST DROP"
- *   QRF        "ETA 5 MIN - 3 SQUADS LEFT"
+ *   QRF       "ETA 5 MIN - LAST AIRFRAME"
+ * (the respawn count, user 2026-11-02)
  *
- * THE ETA IS AN ESTIMATE: the response delay when it has to launch (none for
- * a synced aircraft on its stand, as the order functions do it), then the
- * route the order will fly - the CAS ingress, the VIA legs and the final
+ * THE ETA IS AN ESTIMATE: no delay - a class airframe is made over the module
+ * when it is tasked (user, 2026-11-02: virtual until tasked), a synced one
+ * takes off at once - then the route the order will fly from the module, the
+ * stand or where it is - the CAS ingress, the VIA legs and the final
  * approach - at the SPEED asked (FUNC(flightTime)).
  *
  * FALSE ONLY FOR WHAT THE ORDER WOULD BE REFUSED FOR (FUNC(task) on this
@@ -23,7 +24,8 @@
  * launching, turning round, replacing its aircraft or spent
  * (FUNC(available)); a task this asset does not fly; no grid where "on me"
  * does not apply; PICKUP > LZ or SLINGLOAD without its second point; a
- * HELOCAST over land; an ATTACK RUN on an aircraft already on station. A
+ * HELOCAST over land; an ATTACK RUN on an aircraft out on a task and not on
+ * station. A
  * SLINGLOAD with nothing liftable round the load is flown and then held
  * there, not refused, so it is a true verdict that says so.
  *
@@ -77,47 +79,41 @@ if (_task isEqualTo TASK_HELOCAST && !surfaceIsWater _pos) exitWith {
 };
 
 // WHERE IT FLIES FROM. Out on a sortie, it goes from where it is, now;
-// otherwise from its base, after the response delay unless it is a synced
-// aircraft already on its stand.
+// otherwise from its base, at once (user, 2026-11-02: virtual until tasked - a
+// class airframe is made over the module when it is tasked).
 private _home = _logic getVariable [QGVAR(home), getPosATL _logic];
 private _veh = _logic getVariable [QGVAR(vehicle), objNull];
-private _synced = _logic getVariable [QGVAR(synced), objNull];
 private _out = _status isNotEqualTo STATUS_IDLE && alive _veh;
 private _from = [_home, getPosATL _veh] select _out;
-private _delay = [_logic getVariable [QGVAR(spawnDelay), 60], 0] select (_out || alive _synced);
 
-// " - 2 SORTIES LEFT", " - LAST DROP", "" for unlimited.
+// " - 2 SPARE AIRFRAMES", " - LAST AIRFRAME" - the respawn count (user,
+// 2026-11-02: "make sure there is a respawn count for each support, default
+// no respawns").
 private _fnc_left = {
-    params ["_one", "_many"];
-    private _left = _logic getVariable [QGVAR(left), -1];
-    if (_left < 0) exitWith {""};
-    [format [" - %1 %2 LEFT", _left, _many], format [" - LAST %1", _one]] select (_left isEqualTo 1)
+    private _left = _logic getVariable [QGVAR(respawnsLeft), 0];
+    [format [" - %1 SPARE AIRFRAMES", _left], " - 1 SPARE AIRFRAME", " - LAST AIRFRAME"] select (2 - (_left min 2))
 };
 private _fnc_eta = {
     params ["_route", "_speed"];
-    [_delay + ([_cls, _route, _speed] call FUNC(flightTime))] call EFUNC(cas,fmtEta)
+    [[_cls, _route, _speed] call FUNC(flightTime)] call EFUNC(cas,fmtEta)
 };
 
 switch (_kind) do {
     case KIND_CAS: {
-        // ON STATION only a SAD or a LOITER moves it (FUNC(casOrder)).
-        if (_out && _task isEqualTo TASK_RUN) exitWith {[false, "ON STATION - ONLY A SAD OR LOITER MOVES IT"]};
+        // ON STATION a SAD or a LOITER moves it, and an ATTACK RUN is flown
+        // from there (FUNC(casOrder), user 2026-11-02); out on anything else it
+        // takes no run.
+        if (_out && _status isNotEqualTo STATUS_ON_STATION && _task isEqualTo TASK_RUN) exitWith {[false, "ON A TASK - RTB FIRST FOR A RUN"]};
 
         private _speed = [SPEED_NORMAL, SPEED_FULL] select (_task isEqualTo TASK_RUN);
         private _route = [_from, _pos];
         if (!_out) then {
-            // FUNC(casLaunch): a synced aircraft flies from its stand - to the
-            // run-in point first, at full speed, when an INGRESS is set; a
-            // class aircraft appears its ingress distance out on the bearing.
+            // FUNC(casLaunch): from its stand or over the module, to the
+            // run-in point first, at full speed, when an INGRESS is set.
             private _ingress = [_prm, SLOT_INGRESS] call FUNC(readPoint);
-            private _inDir = _pos getDir ([_ingress, _home] select (_ingress isEqualTo []));
-            if (alive _synced) then {
-                if (_ingress isEqualTo []) exitWith {};
-                _route = [_home, _pos getPos [_logic getVariable [QGVAR(runIn), 3000], _inDir], _pos];
-                _speed = SPEED_FULL;
-            } else {
-                _route = [_pos getPos [(_logic getVariable [QGVAR(ingressDistance), 6000]) max INGRESS_FLOOR, _inDir], _pos];
-            };
+            if (_ingress isEqualTo []) exitWith {};
+            _route = [_home, _pos getPos [_logic getVariable [QGVAR(runIn), 3000], _pos getDir _ingress], _pos];
+            _speed = SPEED_FULL;
         };
 
         private _line = format [["ETA %1", "REPOSITION - ETA %1"] select _out, [_route, _speed] call _fnc_eta];
@@ -129,7 +125,7 @@ switch (_kind) do {
         if (_task in [TASK_RUN, TASK_SAD] && (_logic getVariable [QGVAR(friendlyRange), 0]) > 0 && {([_prm, SLOT_DANGER, 0, 1] call FUNC(readParam)) isEqualTo 1}) then {
             _line = _line + " - DANGER CLOSE";
         };
-        if (!_out) then {_line = _line + (["SORTIE", "SORTIES"] call _fnc_left)};
+        _line = _line + (call _fnc_left);
         [true, _line]
     };
     case KIND_TRANSPORT: {
@@ -159,11 +155,8 @@ switch (_kind) do {
         };
         [true, _line]
     };
-    case KIND_LOGISTICS: {
-        [true, format ["ETA %1%2", [[_from, _pos], SPEED_NORMAL] call _fnc_eta, ["DROP", "DROPS"] call _fnc_left]]
-    };
     case KIND_QRF: {
-        [true, format ["ETA %1%2", [[_from, _pos], SPEED_NORMAL] call _fnc_eta, ["SQUAD", "SQUADS"] call _fnc_left]]
+        [true, format ["ETA %1%2", [[_from, _pos], SPEED_NORMAL] call _fnc_eta, call _fnc_left]]
     };
     default {[false, "UNKNOWN ASSET TYPE"]};
 }

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Turns a slot off, or back on to whatever it was last showing.
  *
  * IT REMEMBERS, WHICH IS THE WHOLE DIFFERENCE FROM CYCLING. Off is on the cycle

@@ -1,8 +1,8 @@
 #include "script_component.hpp"
 
-// THE RADIO FAMILY. The MPU5 and TW-950 handhelds, and the MPU5 manpack for
-// TFAR / ACRE only (no man packs under game voice, user 2026-10-21);
-// the vehicle set and relay node follow on the same pattern
+// THE RADIO FAMILY. The MPU5 and TW-950 handhelds, and the MPU5 manpack (a
+// bag only: no man packs under game voice, user 2026-10-21; TFAR / ACRE
+// removed, DEC1); the vehicle set and relay node follow on the same pattern
 // (docs/SPEC_TACNET.json, radios).
 //
 // PLAIN ITEMS, NO RADIO MOD. Voice is Arma 3's own VON (docs/DESIGN_VOICE.md,
@@ -15,11 +15,13 @@ class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;
         units[] = {"Item_jmfsb_mpu5", "Item_jmfsb_tw950", "jmfsb_mpu5_lr"};
-        weapons[] = {"jmfsb_mpu5", "jmfsb_tw950"};
+        weapons[] = {"jmfsb_mpu5", "jmfsb_tw950", "jmfsb_mpu5_battery"};
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
-            "jmfsb_backpack"
+            "jmfsb_backpack",
+            // CBA_MiscItem, the spare battery's base
+            "cba_common"
         };
         author = QAUTHOR;
         authors[] = {"JMSB"};

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The A2G-kind net of a unit, carried on the A2G channel (VON Custom 2), ""
  * when he is on none. As with C2, one VON channel can carry several such
  * nets: the mesh volume is worked out on the speaker's own net.

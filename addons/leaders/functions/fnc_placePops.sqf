@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Internet pops: rugged-server props in the asymmetric TAOR's settlements.
  *
  * Extra places to plug in that the comms towers do not cover, so a player
@@ -46,8 +46,10 @@ if (_inCls isEqualTo "" && _outCls isEqualTo "") exitWith {
     INFO("no pop prop in this mod set - no internet pops");
 };
 
-([GVAR(asymSide)] call jmfsb_adapter_alive_fnc_taorFor) params ["_taor", "_black"];
-private _clusters = ["settlement"] call jmfsb_adapter_alive_fnc_clusterCandidates;
+// ALiVE's TAOR and settlement clusters - or, without ALiVE, the jmfsb_taor
+// markers and the map's own towns (user, 2026-11-02).
+([GVAR(asymSide)] call EFUNC(common,groundFor)) params ["_taor", "_black"];
+private _clusters = call EFUNC(common,settlements);
 
 private _at = [];
 {

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How many patrols a side actually has up, pruning the entries that have died
  * since the last look.
  *

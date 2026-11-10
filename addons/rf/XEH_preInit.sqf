@@ -11,12 +11,14 @@ PREP_RECOMPILE_END;
 GVAR(nodes) = createHashMap;        // node id -> Node
 GVAR(nets) = createHashMap;         // net id -> Net
 GVAR(links) = createHashMap;        // net id -> source id -> peer id -> [quality, hops, lastHop]
-GVAR(edgeCache) = createHashMap;    // "a|b|band" -> [posA, posB, time, loss dB]
+GVAR(edgeCache) = createHashMap;    // "a|b|band" -> [posA, posB, time, loss dB, life s]
+GVAR(meshMemo) = createHashMap;     // "ids|band|net" -> [edges, relays, limits, mesh] - FUNC(mesh)
 GVAR(sent) = createHashMap;         // client id -> the slice it was last sent
 GVAR(prevLinks) = createHashMap;    // "node|net" -> links last announced
 GVAR(debugEdges) = [];
 GVAR(sky) = createHashMap;          // node id -> [antenna ASL, time, open sky] (SAT nodes)
 GVAR(satFade) = 0;                  // this tick's SAT rain fade, dB
+GVAR(lastTick) = -1;                // CBA_missionTime of the last tick: the batteries' seconds
 
 // THE HOOKS. EW (and anything else) registers here; RF never knows what EW is.
 GVAR(noiseSources) = [];            // code: [posASL, band, net] -> [[dBm, spreadApplies], ...]

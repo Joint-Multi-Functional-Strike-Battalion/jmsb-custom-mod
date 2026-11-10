@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the fill a launcher's own RF nodes hold - every [net, key] of every
  * node whose holder he is (his radios, as the radio adapters register them),
  * without the nodes of this addon. Read through jmfsb_rf_fnc_nodesFor.

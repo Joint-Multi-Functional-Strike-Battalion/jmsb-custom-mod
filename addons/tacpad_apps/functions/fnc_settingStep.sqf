@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Steps a numeric CBA setting by one press - the settings app's minus / plus
  * pair, and anything else that nudges a slider - clamped to the slider's range
  * and rounded to the places it stores, so stepping down and back up lands on

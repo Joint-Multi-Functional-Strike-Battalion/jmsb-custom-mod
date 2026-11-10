@@ -10,3 +10,9 @@
 // against, plus the notification colours and the logistics shorthand. Included
 // AFTER jmfsb's macros so the #undef in there lands on the right definitions.
 #include "\z\jmfsb\addons\diag\roomba_macros.hpp"
+
+// Heal All (FUNC(srvHealAll)): who is healed round the object, and how near
+// the caller must be for the server to take it (review R1).
+#define HEALALL_RADIUS          8
+#define HEALALL_CALLER_RANGE    15
+#define SERVER_OWNER            2

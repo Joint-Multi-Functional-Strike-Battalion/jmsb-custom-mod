@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The inserted template's card, drawn into the compose pane the way the card is
  * printed: numbered lines, two columns, a control per field of the type that
  * field actually is.
@@ -49,6 +49,12 @@ if (isNull _root) exitWith {};
 private _template = [GVAR(composeTemplate)] call EFUNC(messaging,template);
 private _lines = _template getOrDefault ["lines", []];
 
+// THE AUTOFILLS FIRST (report-card review, user 2026-11-02, decision 5): the
+// vehicle, its damage and fuel, the wind, the squad's ACE letters and the
+// thread's point - into the answers, before they are drawn. Places stay out of
+// it: no location here is the sender's own, only the thread's.
+[GVAR(composeTemplate), GVAR(composeValues), GVAR(composeGridText), GVAR(composeThread)] call FUNC(composeAutoFill);
+
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent", "_line"];
 
 private _pad = PAD * HOST_W;
@@ -62,7 +68,7 @@ private _accentText = ["accentText"] call FUNC(theme);
 private _surface = ["surface"] call FUNC(theme);
 
 private _bodyW = _dw - 2 * _pad;
-private _body = _display ctrlCreate [QGVAR(body), -1, _root];
+private _body = _display ctrlCreate [QGVAR(body), IDC_RD_CARD_BODY, _root];
 _body ctrlSetPosition [_dx + _pad, _top, _bodyW, _availH];
 _body ctrlSetBackgroundColor [0, 0, 0, 0];
 _body ctrlCommit 0;
@@ -112,8 +118,12 @@ private _fnc_edit = {
 
     // A REQUIRED FIELD SEND FOUND EMPTY - see FUNC(composeSend) - is framed
     // 2px in the accent until something is put in it. The handoff's SEND
-    // validation: the box that stopped the send is the box that says so.
-    private _missing = _key in GVAR(composeMissing) && {([_key, _field] call _fnc_shown) isEqualTo ""};
+    // validation: the box that stopped the send is the box that says so. A
+    // field only a map marker answers (markerOnly, 2026-11-02) stays framed
+    // while it holds typing.
+    private _markerOnly = (_field getOrDefault ["markerOnly", false]) isEqualTo true;
+    private _typed = _markerOnly && (GVAR(composeValues) getOrDefault [_key, []]) isEqualType "";
+    private _missing = _key in GVAR(composeMissing) && {_typed || {([_key, _field] call _fnc_shown) isEqualTo ""}};
     if (_missing) then {
         [_body, [_x, _y, _w, _h], _accent, RULE_THICK] call FUNC(drawFrame);
     } else {
@@ -135,7 +145,7 @@ private _fnc_edit = {
         _tokens pushBack format ["%1-%2", _min, _max];
     };
     if ((_field getOrDefault ["autoFill", "none"]) isNotEqualTo "none") then {_tokens pushBack "AUTO"};
-    if ((_field getOrDefault ["source", "manual"]) isEqualTo "marker") then {_tokens pushBack "MARKER"};
+    if (_markerOnly || (_field getOrDefault ["source", "manual"]) isEqualTo "marker") then {_tokens pushBack CARD_META_MARKER};
 
     private _req = "REQ" in _tokens;
     private _rest = _tokens - ["REQ"];
@@ -180,12 +190,15 @@ private _fnc_edit = {
     // in.
     _edit ctrlAddEventHandler ["KeyUp", {
         [] call FUNC(composeHarvest);
+        // A support card's verdict beside SEND and its footprint, asked again
+        // only when a value changed (FUNC(composeFire), 2026-11-02).
+        [true] call FUNC(composeFire);
 
         private _pv = uiNamespace getVariable [QGVAR(previewCtrl), controlNull];
         if (isNull _pv) exitWith {false};
 
         ([] call FUNC(theme)) params ["", "_ink"];
-        private _pvText = [([GVAR(composeTemplate), GVAR(composeValues) toArray false, false] call EFUNC(messaging,render))] call FUNC(xmlSafe);
+        private _pvText = [[] call FUNC(composePreviewText)] call FUNC(xmlSafe);
         _pv ctrlSetStructuredText parseText format [
             "<t font='RobotoCondensed' size='0.7' color='%1'>%2</t>",
             _ink call BIS_fnc_colorRGBAtoHTML,
@@ -236,6 +249,7 @@ private _fnc_markerDrop = {
             // The POSITION is what is stored - the thread anchors on it and PIN
             // TO MAP has something to pin. The grid is what is shown.
             GVAR(composeValues) set [_k, _at];
+            GVAR(composeValues) deleteAt (_k + MARKER_NAME_SUFFIX);
             GVAR(composeGridText) set [_k, mapGridPosition _at];
             GVAR(composeMarker) = "";
 
@@ -288,11 +302,15 @@ private _fnc_markerDrop = {
 
             if (_ctrl getVariable [QGVAR(markerMode), "pos"] isEqualTo "name") then {
                 GVAR(composeValues) set [_k, _ctrl getVariable [QGVAR(markerName), ""]];
+                GVAR(composeValues) deleteAt (_k + MARKER_NAME_SUFFIX);
                 GVAR(composeGridText) deleteAt _k;
             } else {
                 private _at = _ctrl getVariable [QGVAR(markerPos), []];
                 if (_at isEqualTo []) exitWith {};
                 GVAR(composeValues) set [_k, _at];
+                // The marker's name goes with the grid into the message
+                // (user, 2026-11-05), under the field's key + the suffix.
+                GVAR(composeValues) set [_k + MARKER_NAME_SUFFIX, _ctrl getVariable [QGVAR(markerName), ""]];
                 GVAR(composeGridText) set [_k, mapGridPosition _at];
             };
 
@@ -376,8 +394,21 @@ private _stripH = [_body, _template, _bodyW - _scrollW] call FUNC(composeCardHea
 private _colY = [_stripH, _stripH];
 private _half = count _lines;
 
+// THE SHORT FORM (2026-11-09): with SHORT on, only the card's shortKeys are
+// drawn, a line with none of them not at all. What was typed in a hidden
+// field stays in the answers and is sent.
+private _shortKeys = _template getOrDefault ["shortKeys", []];
+private _shortOn = GVAR(composeShortOn) && _shortKeys isNotEqualTo [];
+// A FRAGO (2026-11-09): the order's values it was opened with, to mark the
+// lines that changed (FUNC(composeFrago)).
+private _fragoWas = createHashMap;
+if (GVAR(composeFrago) isNotEqualTo []) then {_fragoWas = GVAR(composeFrago) param [1, createHashMap]};
+private _fragoOn = GVAR(composeFrago) isNotEqualTo [];
+
 {
     _x params ["", "_lineTitle", "_lineLabel", "_fields", ""];
+    if (_shortOn) then {_fields = _fields select {(_x getOrDefault ["key", ""]) in _shortKeys}};
+    if (_fields isEqualTo []) then {continue};
 
     private _col = parseNumber (_forEachIndex >= _half);
     private _cx = _col * (_colW + _pad * 2);
@@ -393,6 +424,49 @@ private _half = count _lines;
     [_body, [_cx, _cy + (_rowH - _keyH) * 0.5, _keyW, _keyH], _ink, RULE_THICK] call FUNC(drawFrame);
     [_body, [_cx, _cy + (_rowH - _keyH) * 0.5, _keyW, _keyH], _lineTitle, _ink, CARD_TAG_SIZE, true, "center"] call FUNC(drawText);
     [_body, [_cx + _keyW + _pad, _cy, _colW - _keyW - _pad, _rowH], _lineLabel, _ink, TEXT_BODY, true, "left", true] call FUNC(drawText);
+
+    // A REQUIRED EXCLUSIVE TICK GROUP IS "TICK ONE" (user, 2026-11-02:
+    // EFUNC(messaging,validate) asks one tick of it, not each): one REQ - TICK
+    // ONE for the line, on its head, and one accent frame round the group's
+    // ticks while SEND found none ticked - never a mark on every tick.
+    private _groupKeys = (_fields select {
+        (_x getOrDefault ["type", ""]) isEqualTo "bool"
+        && (_x getOrDefault ["exclusive", ""]) isNotEqualTo ""
+        && (_x getOrDefault ["required", false]) isEqualTo true
+    }) apply {_x getOrDefault ["key", ""]};
+    private _groupNone = (_groupKeys findIf {(GVAR(composeValues) getOrDefault [_x, false]) isEqualTo true}) < 0;
+    private _groupMissing = _groupNone && (_groupKeys findIf {_x in GVAR(composeMissing)}) >= 0;
+    private _groupTop = -1;
+    private _groupBottom = -1;
+    // THE LINE HEAD'S MARKS (2026-11-09), flush right: REQ on any line holding
+    // a required field - in every view, whatever kind of field it is (a grid,
+    // a choice row, a lone tick), REQ - TICK ONE on a required tick group -
+    // in the accent while SEND found it empty; in the REAL WORLD view, SIMPLE
+    // on the lines the SIMPLE form keeps (the design's marked lines); on a
+    // FRAGO, CHANGED. No asterisks.
+    private _reqKeys = (_fields select {(_x getOrDefault ["required", false]) isEqualTo true}) apply {_x getOrDefault ["key", ""]};
+    private _reqText = "";
+    if (_reqKeys isNotEqualTo []) then {_reqText = CARD_REQ_WORD};
+    if (_groupKeys isNotEqualTo []) then {_reqText = GROUP_REQ_TEXT};
+    private _reqMissing = _groupMissing || {(_reqKeys findIf {
+        _x in GVAR(composeMissing) && {(GVAR(composeValues) getOrDefault [_x, ""]) in ["", false, []]}
+    }) >= 0};
+    private _marks = [];
+    if (_fragoOn && {(_fields findIf {
+        private _k = _x getOrDefault ["key", ""];
+        !([_x, GVAR(composeValues) getOrDefault [_k, ""], _fragoWas getOrDefault [_k, ""]] call FUNC(fragoSame))
+    }) >= 0}) then {_marks pushBack FRAGO_CHANGED};
+    if (!_shortOn && _shortKeys isNotEqualTo [] && {(_fields findIf {(_x getOrDefault ["key", ""]) in _shortKeys}) >= 0}) then {
+        _marks pushBack SHORT_WORD;
+    };
+    private _headGlyph = ([CARD_META_SIZE] call FUNC(textH)) / 1.25 * CARD_GLYPH_W * pixelW / pixelH;
+    private _reqW = [0, (count _reqText + 1) * _headGlyph] select (_reqText isNotEqualTo "");
+    if (_reqText isNotEqualTo "") then {
+        [_body, [_cx, _cy, _colW - _pad, _rowH], _reqText, [_accentText, _accent] select _reqMissing, CARD_META_SIZE, true, "right"] call FUNC(drawText);
+    };
+    if (_marks isNotEqualTo []) then {
+        [_body, [_cx, _cy, _colW - _pad - _reqW, _rowH], _marks joinString " - ", [_mute, _accent] select (FRAGO_CHANGED in _marks), CARD_META_SIZE, true, "right"] call FUNC(drawText);
+    };
     _cy = _cy + _rowH;
 
     // ----------------------------------------------------------- the fields ---
@@ -458,6 +532,28 @@ private _half = count _lines;
         private _key = _field getOrDefault ["key", ""];
         private _type = _field getOrDefault ["type", "text"];
         private _choices = _field getOrDefault ["choices", []];
+
+        // ------------------------------------------------- choice, at runtime --
+        // A CHOICE THE COMPOSER FILLS (choicesFrom, user 2026-11-02: "we have
+        // pre made crates so the requested items should be a drop down of
+        // them"): its picks asked of its source (FUNC(composeChoices)), drawn
+        // as a drop-down (FUNC(composeDrop)). No picks - no such asset, its
+        // addon not loaded - and it is the typed box it was.
+        private _picks = [];
+        if (_type isEqualTo "choice") then {_picks = [_field] call FUNC(composeChoices)};
+        if (_picks isNotEqualTo []) then {
+            call _fnc_flushRun;
+            if (count _fields > 1) then {
+                private _cap = _field getOrDefault ["prefix", ""];
+                if (_cap isEqualTo "") then {_cap = _field getOrDefault ["hint", ""]};
+                if (_cap isNotEqualTo "") then {
+                    [_body, [_cx, _cy, _colW, _rowH * 0.65], _cap, _mute, TEXT_LABEL, true, "left", true] call FUNC(drawText);
+                    _cy = _cy + _rowH * 0.65;
+                };
+            };
+            _cy = [_body, _field, [_cx, _cy, _colW], _picks] call FUNC(composeDrop);
+            continue;
+        };
 
         // ------------------------------------------------------------ choice --
         if (_type isEqualTo "choice" && {_choices isNotEqualTo []}) then {
@@ -564,7 +660,10 @@ private _half = count _lines;
             };
             _hit setVariable [QGVAR(exclusiveKeys), _sibs];
 
+            // Where the required group runs, for its one frame (below).
+            if (_key in _groupKeys && _groupTop < 0) then {_groupTop = _cy};
             _cy = _cy + _rowB + _padY * 0.4;
+            if (_key in _groupKeys) then {_groupBottom = _cy};
             continue;
         };
 
@@ -574,9 +673,12 @@ private _half = count _lines;
 
             // CUR LOC is offered unless the field says not to (noCur) or the
             // line is an ingress or an egress by its title or label - the
-            // handoff's rule, kept even for a deck that forgot the flag.
+            // handoff's rule, kept even for a deck that forgot the flag. A
+            // field only a map marker answers (markerOnly, 2026-11-02) has the
+            // MARKER cell alone.
             private _named = toUpper (_lineTitle + " " + _lineLabel);
             private _cur = !(_field getOrDefault ["noCur", false])
+                && !(_field getOrDefault ["markerOnly", false])
                 && {(CARD_NO_CUR_WORDS findIf {_x in _named}) < 0};
 
             [_key, _cx, _cy, _colW - _cellW * ([1, 2] select _cur), _btnH, _field, false] call _fnc_edit;
@@ -608,10 +710,27 @@ private _half = count _lines;
 
     call _fnc_flushRun;
 
+    // The required tick group SEND found with none ticked: one frame.
+    if (_groupMissing && _groupTop >= 0) then {
+        [_body, [_cx - _pad * 0.5, _groupTop, _colW, _groupBottom - _groupTop], _accent, RULE_THICK] call FUNC(drawFrame);
+    };
+
     _cy = _cy + _padY * 0.5;
     [_body, [_cx, _cy, _colW, RULE_THIN * pixelH], _line] call FUNC(drawFill);
     _colY set [_col, _cy + _padY * 1.5];
 } forEach _lines;
+
+// ------------------------------------------------------- a FRAGO's reason ---
+// One added line (2026-11-09): REASON, optional, under the order's lines.
+if (_fragoOn) then {
+    private _cx = 0;
+    private _cy = _colY # 0;
+    [_body, [_cx, _cy, _colW, _rowH], FRAGO_REASON_LABEL, _ink, TEXT_BODY, true, "left", true] call FUNC(drawText);
+    _cy = _cy + _rowH;
+    private _reason = createHashMapFromArray [["key", FRAGO_REASON_KEY], ["type", "text"], ["hint", FRAGO_REASON_HINT], ["prefix", ""]];
+    [FRAGO_REASON_KEY, _cx, _cy, _colW, _btnH, _reason, false] call _fnc_edit;
+    _colY set [0, _cy + _btnH + _padY * 2];
+};
 
 // ------------------------------------------------------------ the preview ---
 // THE MESSAGE AS IT WILL READ, rendered off the same values the form holds,
@@ -631,7 +750,7 @@ _pv ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale)
 _pv ctrlCommit 0;
 uiNamespace setVariable [QGVAR(previewCtrl), _pv];
 
-private _pvText = [([GVAR(composeTemplate), GVAR(composeValues) toArray false, false] call EFUNC(messaging,render))] call FUNC(xmlSafe);
+private _pvText = [[] call FUNC(composePreviewText)] call FUNC(xmlSafe);
 _pv ctrlSetStructuredText parseText format [
     "<t font='RobotoCondensed' size='0.7' color='%1'>%2</t>",
     _ink call BIS_fnc_colorRGBAtoHTML,
@@ -653,4 +772,16 @@ if (_subject isNotEqualTo "") then {
         _body, [_pad + _bodyW * 0.1, _fy, _bodyW - _scrollW - _bodyW * 0.1 - 2 * _pad, _rowH * 0.8],
         _subject, _ink, TEXT_LABEL, true
     ] call FUNC(drawText);
+};
+
+// THE SCROLL PUT BACK (user, 2026-11-05): the same card, the place it was at
+// before the redraw (FUNC(readerDraw)); a different card opens at the top. Set
+// now and once more next frame, when the group knows its content's height.
+GVAR(composeScroll) params [["_scrollCard", ""], ["_scrollThread", ""], ["_scrollAt", 0]];
+if (_scrollCard isEqualTo GVAR(composeTemplate) && _scrollThread isEqualTo GVAR(composeThread) && _scrollAt > 0) then {
+    _body ctrlSetScrollValues [_scrollAt, -1];
+    [{
+        params ["_body", "_at"];
+        if (!isNull _body) then {_body ctrlSetScrollValues [_at, -1]};
+    }, [_body, _scrollAt]] call CBA_fnc_execNextFrame;
 };

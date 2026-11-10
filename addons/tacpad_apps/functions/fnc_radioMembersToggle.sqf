@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A tick on MANAGE's MEMBERS panel for an RTO net (FUNC(radioMembersPanel)):
  * puts a squad or a player into the draft, or takes it out, and redraws.
  *

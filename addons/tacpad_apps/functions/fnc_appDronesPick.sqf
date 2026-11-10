@@ -1,10 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * GO TO's point, picked on the host's own map - the vanilla map or the
  * tablet's screen (IDC_HOST_MAP on both). The board steps aside for it: the
  * app closes so the map is there to click, and the board CLAIMS the map
- * (EGVAR(tacpad,appMapClaim)) the way TAC//SUPPORT does, so the press is a
+ * (EGVAR(tacpad,appMapClaim)), so the press is a
  * pick and not "close the app" (EFUNC(tacpad,appExits)) and the map tools
  * stand down (jmfsb_maptools_fnc_hasInput).
  *

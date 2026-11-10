@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which nets a man's ROLE lets him onto, read off the role itself - the
  * unit's database copy when TAC//PAC holds the roles there, the mission's
  * own class otherwise (jmfsb_groups_fnc_role). Access lives with the role,

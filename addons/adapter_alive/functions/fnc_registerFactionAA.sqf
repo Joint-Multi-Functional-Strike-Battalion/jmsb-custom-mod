@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Tells ALiVE what air defence THIS mod's factions field.
  *
  * WHY THIS EXISTS. mil_placement spawns AA from two sources: the mission

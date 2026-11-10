@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Should this app's refresh loop keep running?
  *
  * An app group existing is not the same as THIS app being open - opening a

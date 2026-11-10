@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What VEHICLE STATUS says, as three columns of lines for FUNC(vehicleColumn)
  * to draw: DAMAGE and FUEL; AMMUNITION and COUNTERMEASURES; APS, the VOICE NETS
  * and the CREW. Kept apart from the drawing so the page is measured before it
@@ -55,7 +55,7 @@ private _fnc_pct = {
 private _fnc_rounds = {
     params ["_rounds", "_mags"];
     format ["%1  %2 MAG%3",
-        [format ["%1 RDS", _rounds], WORD_EMPTY] select (_rounds <= 0),
+        [format ["%1 %2", _rounds, ["RDS", "RD"] select (_rounds isEqualTo 1)], WORD_EMPTY] select (_rounds <= 0),
         _mags, ["S", ""] select (_mags == 1)
     ]
 };
@@ -74,7 +74,7 @@ private _sorted = [];
 _sorted sort true;
 _damage = _sorted apply {_x select 2};
 
-_left pushBack ["head", "DAMAGE", ["ALL GREEN", format ["%1 PARTS HIT", _hitParts]] select (_hitParts > 0)];
+_left pushBack ["head", "DAMAGE", ["ALL GREEN", format ["%1 PART%2 HIT", _hitParts, ["S", ""] select (_hitParts isEqualTo 1)]] select (_hitParts > 0)];
 if (_damage isEqualTo []) then {
     _left pushBack ["row", "NO PART DATA", "", "dim", "dim", false, 0];
 };
@@ -189,7 +189,8 @@ if (isNil QEFUNC(aps,charges)) then {
 // VOICE: the nets the player is on aboard, VEH (the intercom) among them.
 ([_vehicle] call FUNC(vehicleRf)) params ["_rfState", "_nets"];
 _right pushBack ["gap"];
-_right pushBack ["head", "VOICE NETS", ["", format ["%1 NETS", count _nets]] select (_rfState isEqualTo "on")];
+// Plural only when the count is not one (review 2026-11-01, item 2.7).
+_right pushBack ["head", "VOICE NETS", ["", format ["%1 NET%2", count _nets, ["S", ""] select (count _nets isEqualTo 1)]] select (_rfState isEqualTo "on")];
 switch (_rfState) do {
     case "off": {_right pushBack ["row", "NO VOICE ADDON", "", "dim", "dim", false, 0]};
     case "none": {_right pushBack ["row", "NOT ABOARD", "", "dim", "dim", false, 0]};

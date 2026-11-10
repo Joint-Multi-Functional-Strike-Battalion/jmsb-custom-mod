@@ -12,7 +12,7 @@
 [
     QGVAR(showFullScreen), "CHECKBOX",
     ["NVG full screen", "On: JMSB goggles fill the whole screen in NVG mode. Off: the view is seen through the tubes - ACE's mask for the goggle the JMSB one was made from."],
-    ["1st Joint Multi-Functional Strike Battalion", "NVG"],
+    ["JMSB - Gear & Vision", "NVG"],
     true,
     false,
     {[] call FUNC(updateMask)}

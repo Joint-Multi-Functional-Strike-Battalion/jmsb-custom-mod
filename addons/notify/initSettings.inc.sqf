@@ -5,7 +5,7 @@
 [
     QGVAR(enabled), "CHECKBOX",
     ["Enable stacked notifications", "Off falls back to the plain hint the caller would otherwise have used."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     true,
     false   // per-client
 ] call CBA_fnc_addSetting;
@@ -16,7 +16,7 @@
 [
     QGVAR(hidden), "CHECKBOX",
     ["Hide notifications", "Shows no popup and no hint. Notifications are still kept in the tacpad reader's LOG view."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     false,
     false
 ] call CBA_fnc_addSetting;
@@ -24,7 +24,7 @@
 [
     QGVAR(corner), "LIST",
     ["Corner", "Which corner the stack grows from."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     [[0, 1, 2, 3], ["Top left", "Top right", "Bottom left", "Bottom right"], 1],
     false
 ] call CBA_fnc_addSetting;
@@ -32,7 +32,7 @@
 [
     QGVAR(maxVisible), "SLIDER",
     ["Max on screen", "Notifications shown at once; the rest queue until a slot frees."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     [1, SLOT_COUNT, 4, 0, true],
     false
 ] call CBA_fnc_addSetting;
@@ -40,7 +40,7 @@
 [
     QGVAR(duration), "SLIDER",
     ["Duration (sec)", "How long a notification stays before it fades out."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     [2, 30, 8, 0, true],
     false
 ] call CBA_fnc_addSetting;
@@ -48,7 +48,7 @@
 [
     QGVAR(width), "SLIDER",
     ["Width", "Width of the stack as a fraction of the safe zone."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     [0.1, 0.5, 0.22, 2, true],
     false
 ] call CBA_fnc_addSetting;
@@ -58,7 +58,7 @@
 [
     QGVAR(fontSize), "SLIDER",
     ["Text size", "Scales the notification text. The panel grows with it, so a larger size means taller notifications rather than cramped ones."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     [0.5, 3, 1, 2, true],
     false
 ] call CBA_fnc_addSetting;
@@ -66,7 +66,7 @@
 [
     QGVAR(font), "LIST",
     ["Font", "Typeface for notifications. The monospace and console faces suit a technical readout; the Purista faces are what Arma's own UI uses."],
-    ["1st Joint Multi-Functional Strike Battalion", "Notifications"],
+    ["JMSB - Tablet & Map", "Notifications"],
     [
         ["RobotoCondensed", "RobotoCondensedBold", "PuristaMedium", "PuristaBold", "EtelkaNarrowMediumPro", "EtelkaMonospacePro", "LucidaConsoleB", "TahomaB"],
         ["Roboto Condensed", "Roboto Condensed Bold", "Purista Medium", "Purista Bold", "Etelka Narrow", "Etelka Monospace", "Lucida Console", "Tahoma Bold"],

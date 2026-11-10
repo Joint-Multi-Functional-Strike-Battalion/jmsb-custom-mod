@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Forwards a reportable message to ALiVE's C2ISTAR - a CONTACTREP as a spotrep,
  * a SITREP as a sitrep, each with a companion map marker. Carried over from
  * ctab_groups, which did the same job by naming ALiVE symbols directly.
@@ -39,8 +39,10 @@ if (!isServer || {!GVAR(aliveReports)} || {isNull _unit}) exitWith {};
 private _kind = _template get "reportable";
 if !(_kind in ["spotrep", "sitrep"]) exitWith {};
 
+// Without ALiVE there is no C2ISTAR to file with. Said once, not once a report
+// (user, 2026-11-02); the message itself went out as normal.
 if (isNil QEFUNC(adapter_alive,postReport)) exitWith {
-    INFO_1("'%1' is reportable but the ALiVE adapter is not loaded - not posted",_template get "id");
+    ["Report forwarding", "reportable cards are not posted anywhere"] call EFUNC(common,aliveLoaded);
 };
 
 private _values = createHashMapFromArray _payload;
@@ -56,7 +58,13 @@ private _fnc_val = {
         case (_raw isEqualType ""): {trim _raw};
         case (_raw isEqualType 0): {str _raw};
         case (_raw isEqualType false): {["", "yes"] select _raw};
-        case (_raw isEqualType [] && {count _raw >= 2}): {mapGridPosition _raw};
+        case (_raw isEqualType [] && {count _raw >= 2}): {
+            // A marker's name beside its grid (user, 2026-11-05).
+            private _marker = _values getOrDefault [format ["%1.%2%3", _line, _letter, MARKER_NAME_SUFFIX], ""];
+            private _grid = mapGridPosition _raw;
+            if (_marker isEqualType "" && _marker != "") then {_grid = format ["%1 (%2)", _grid, _marker]};
+            _grid
+        };
         default {""};
     };
 
@@ -78,7 +86,10 @@ private _fields = if (_kind == "spotrep") then {
     ]
 } else {
     [
-        ["callsign", ["Callsign", "A", ""] call _fnc_val],
+        // The SITREP's CALL SIGN line is gone from the deck (report-card
+        // review, 2026-11-02, D10: the sender is on every message): the
+        // sender's group id, unless an older deck still carries the line.
+        ["callsign", ["Callsign", "A", groupId (group _unit)] call _fnc_val],
         ["loc", ["Location", "A", _grid] call _fnc_val],
         ["en", ["Enemy", "A", "NONE"] call _fnc_val],
         ["ekia", ["Enemy", "B", "0"] call _fnc_val],

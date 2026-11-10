@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The reader's left rail (handoff 1a, pane 1): the brand block, the nets with
  * their unread counts, the ON NET roster and the self block pinned to the foot.
  *
@@ -9,6 +9,12 @@
  * retargets an open message, and the roster still folds per squad - only the
  * look moved to the design: the rail on the surface tone, the selected net a
  * solid accent row, the roster's online state a 7 px square.
+ *
+ * ONE REDRAW PER FRAME (code review R8). A net press and a squad fold ask for
+ * the reader's redraw through FUNC(nextFrameOnce), so any number of them in
+ * one frame draw the reader once, next frame. The rail itself
+ * is drawn whole with the reader (FUNC(readerDraw) throws its content group
+ * away), so it has no controls to keep between draws.
  *
  * Arguments:
  * 0: Content group <CONTROL>
@@ -46,10 +52,13 @@ private _ruleH = RULE_THICK * pixelH;
 private _rowY = READER_INSET * _padY;
 [_root, [_side, _rowY, _innerW, _rowH * 1.2], "TAC//MSG", _ink, READER_BRAND_SIZE, true] call FUNC(drawText);
 _rowY = _rowY + _rowH * 1.3;
+// THE GROUP'S CALL SIGN ONLY, untracked (tablet review 2026-11-01, 2.1 / 2.3):
+// it was "<call sign> - <briefingName>", and the mission's briefing name is an
+// internal value (TASK_FOR...), not something a player reads.
 [
     _root, [_side, _rowY, _innerW, _rowH * 0.8],
-    format ["%1 - %2", groupId (group player), briefingName],
-    _muted, READER_K_SIZE, true, "left", true
+    toUpper groupId (group player),
+    _muted, READER_K_SIZE, true
 ] call FUNC(drawText);
 _rowY = _rowY + _rowH + _padY;
 
@@ -80,10 +89,42 @@ private _nets = +([player] call EFUNC(messaging,railNets));
 _nets pushBack "ALL";
 
 private _netH = _rowH * 1.25;
-private _codeW = _railW * 0.2;
 
+// SUB-NETS UNDER THEIR PARENT (tablet review 2026-11-01, 3.1): FIRES, then
+// cas, arty and trans indented beneath it, by the name the sub-net carries
+// after the parent's. A sub-net whose parent is not on this rail keeps its
+// full name in its own place. The design's three-letter code column (C2.,
+// FIR, MED) is gone - it repeated the name it stood beside.
+// A SUPPORT ASSET'S BOX IS NAMED BY ITS CALL SIGN (2026-11-01, design D1): the
+// net SUPPORT:cas:0 a thread to HOG lives in reads HOG (EFUNC(support,boxName)).
+private _supportNames = !isNil QEFUNC(support,boxName);
+private _rows = [];
 {
     private _net = _x;
+    private _dot = _net find READER_SUBNET_SEP;
+    private _asset = "";
+    if (_supportNames) then {_asset = [_net] call EFUNC(support,boxName)};
+    if (_asset isNotEqualTo "") then {
+        _rows pushBack [_net, _asset, false];
+        continue;
+    };
+    if (_dot < 0) then {
+        _rows pushBack [_net, _net, false];
+        private _head = _net + READER_SUBNET_SEP;
+        {
+            if ((_x find _head) isEqualTo 0) then {
+                _rows pushBack [_x, _x select [count _head], true];
+            };
+        } forEach _nets;
+    } else {
+        if !((_net select [0, _dot]) in _nets) then {
+            _rows pushBack [_net, _net, false];
+        };
+    };
+} forEach _nets;
+
+{
+    _x params ["_net", "_label", "_sub"];
     private _on = _net == GVAR(readerNet);
     private _ny = _rowY + _forEachIndex * _netH;
 
@@ -102,13 +143,8 @@ private _codeW = _railW * 0.2;
         [_root, [0, _ny, _railW, _netH], _accent] call FUNC(drawFill);
     };
 
-    // The design's three-letter net code, then the name. A net whose name is
-    // already three letters or fewer prints once - "HQ HQ" read as a fault.
-    private _code = toUpper (_net select [0, 3]);
-    if (_code isNotEqualTo toUpper _net) then {
-        [_root, [_side, _ny, _codeW, _netH], _code, [_muted, _ground] select _on, READER_K_SIZE, true, "left", true] call FUNC(drawText);
-    };
-    [_root, [_side + _codeW, _ny, _railW * 0.55, _netH], _net, [_ink, _ground] select _on, READER_NET_SIZE, _on] call FUNC(drawText);
+    private _nameX = _side + ([0, READER_SUBNET_INDENT * _pad] select _sub);
+    [_root, [_nameX, _ny, _railW * 0.78 - _nameX, _netH], _label, [_ink, _ground] select _on, READER_NET_SIZE, _on] call FUNC(drawText);
 
     if (_unread > 0) then {
         [_root, [_railW * 0.78, _ny, _railW * 0.22 - _side, _netH], str _unread, [_accent, _ground] select _on, READER_K_SIZE, true, "right"] call FUNC(drawText);
@@ -132,12 +168,12 @@ private _codeW = _railW * 0.2;
         };
 
         GVAR(readerNet) = _pressed;
-        {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+        [QGVAR(readerDraw), {[] call FUNC(readerDraw)}] call FUNC(nextFrameOnce);
     }] call FUNC(drawHit);
     _hit setVariable [QGVAR(net), _net];
-} forEach _nets;
+} forEach _rows;
 
-_rowY = _rowY + (count _nets) * _netH + _padY * 2;
+_rowY = _rowY + (count _rows) * _netH + _padY * 2;
 [_root, [0, _rowY, _railW, _ruleH], _dim] call FUNC(drawFill);
 _rowY = _rowY + _ruleH + READER_INSET * _padY;
 
@@ -163,7 +199,7 @@ private _nameW = _railW - _nameX - _side;
 ] call FUNC(drawText);
 [
     _root, [_nameX, _tileY + _tileH * 0.55, _nameW, _tileH * 0.45],
-    format ["%1 - %2", [player] call FUNC(roleShort), groupId (group player)], _muted, READER_K_SIZE, true, "left", true
+    toUpper format ["%1 - %2", [player] call FUNC(roleShort), groupId (group player)], _muted, READER_K_SIZE, true
 ] call FUNC(drawText);
 
 // --------------------------------------------------------------- on net ---
@@ -200,19 +236,32 @@ private _markH = READER_MARK_PX * pixelH;
     private _up = {alive _x} count _men;
 
     [_root, [_side, _rowY, _railW * 0.1, _lineH], ["+", "-"] select _open, _muted, READER_K_SIZE, true] call FUNC(drawText);
+    // A squad's call sign and its count are a name and a value: untracked
+    // (tablet review 2026-11-01, 2.3).
     [
         _root, [_side + _railW * 0.1, _rowY, _railW * 0.55, _lineH], toUpper _sq,
-        [_muted, _ink] select (_sq isEqualTo _mySquad), READER_K_SIZE, true, "left", true
+        [_muted, _ink] select (_sq isEqualTo _mySquad), READER_K_SIZE, true
     ] call FUNC(drawText);
-    [_root, [_railW * 0.7, _rowY, _railW * 0.3 - _side, _lineH], format ["%1/%2", _up, count _men], _muted, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+    [_root, [_railW * 0.55, _rowY, _railW * 0.22, _lineH], format ["%1/%2", _up, count _men], _muted, READER_K_SIZE, true, "right"] call FUNC(drawText);
 
-    private _hit = [_root, [0, _rowY, _railW, _lineH], {
+    // MSG on the squad's row writes to the whole squad - its G: box (user,
+    // 2026-10-24: "or the group/squad"); the name and the count still fold it.
+    [_root, [_railW * 0.78, _rowY, _railW * 0.22 - _side, _lineH], "MSG", _accent, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+    private _msgHit = [_root, [_railW * 0.78, _rowY, _railW * 0.22, _lineH], {
+        params ["_ctrl"];
+        private _sq = _ctrl getVariable [QGVAR(squad), ""];
+        if (_sq isEqualTo "") exitWith {};
+        ["", "", false, format ["G:%1", _sq]] call FUNC(composeOpen);
+    }] call FUNC(drawHit);
+    _msgHit setVariable [QGVAR(squad), _sq];
+
+    private _hit = [_root, [0, _rowY, _railW * 0.78, _lineH], {
         params ["_ctrl"];
         private _sq = _ctrl getVariable [QGVAR(squad), ""];
         private _fold = uiNamespace getVariable [QGVAR(readerNetFold), []];
         if (_sq in _fold) then {_fold = _fold - [_sq]} else {_fold pushBack _sq};
         uiNamespace setVariable [QGVAR(readerNetFold), _fold];
-        {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+        [QGVAR(readerDraw), {[] call FUNC(readerDraw)}] call FUNC(nextFrameOnce);
     }] call FUNC(drawHit);
     _hit setVariable [QGVAR(squad), _sq];
     _rowY = _rowY + _lineH;
@@ -231,6 +280,17 @@ private _markH = READER_MARK_PX * pixelH;
             };
             [_root, [_side + _markW + _pad * 2, _rowY, _railW * 0.55, _lineH], name _x, [_dim, _ink] select _alive, READER_ROSTER_SIZE] call FUNC(drawText);
             [_root, [_railW * 0.65, _rowY, _railW * 0.35 - _side, _lineH], [_x] call FUNC(roleShort), _muted, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+            // A MAN IS A NET OF ONE: pressing him opens a message to him
+            // (user, 2026-10-24: "click on a player to send them a message").
+            if (_x isNotEqualTo player) then {
+                private _manHit = [_root, [0, _rowY, _railW, _lineH], {
+                    params ["_ctrl"];
+                    private _uid = _ctrl getVariable [QGVAR(uid), ""];
+                    if (_uid isEqualTo "") exitWith {};
+                    ["", "", false, format ["P:%1", _uid]] call FUNC(composeOpen);
+                }] call FUNC(drawHit);
+                _manHit setVariable [QGVAR(uid), getPlayerUID _x];
+            };
             _rowY = _rowY + _lineH;
         } forEach _men;
     };

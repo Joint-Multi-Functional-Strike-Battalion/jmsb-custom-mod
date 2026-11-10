@@ -16,6 +16,7 @@ class CfgPatches {
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_rf",
             "cba_xeh",
             "gx_drones_uav_drone40"

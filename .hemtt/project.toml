@@ -11,11 +11,20 @@ include = [
     "newlogo.png",
     "logo_256_g.paa",
     "logo_256.paa",
-    # TAC//PAC's database extension (DIVINER tools/pacdb, v0.5.0 - the database
-    # name comes from the connection string). Server-side only; clients never load it.
+    # TAC//PAC's database extension (extensions/ghostd_pacdb, Rust since
+    # 2026-11-01; was DIVINER tools/pacdb's C#). Server-side only; clients never load it.
+    # BOTH SHIP AGAIN (user, 2026-11-01: a hosted game on Windows ran without
+    # the PAC - "ghostd_pacdb could not be found"). Left out on 2026-10-31
+    # because the C# .dll was flagged by two of seventy antivirus engines; the
+    # Rust one replaced it. The .dll is a Windows server's or host's, the .so
+    # the Linux server's.
     "ghostd_pacdb_x64.dll",
     "ghostd_pacdb_x64.so",
-    "2035_modern_equipment_replacment_helmet.png",
+    # Voice over LiveKit (extensions/jmsb_voice, docs/DESIGN_VOICE_LIVEKIT.md).
+    # The .dll is the player's (audio, and tokens for a Windows server); the .so
+    # is the Linux server's, tokens only.
+    "jmsb_voice_x64.dll",
+    "jmsb_voice_x64.so",
     "2023-11-18_12-57-37.png"
 ]
 

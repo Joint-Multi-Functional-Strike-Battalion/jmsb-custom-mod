@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The support page's parameter array read into the options an order of this
  * asset carries - the one reading the order (FUNC(task)) and the verdict
  * before CONFIRM (FUNC(preview)) share, so the preview describes exactly the
@@ -10,7 +10,8 @@
  * The ordnance index becomes the round kind it points at now, so a list that
  * changes before the server reads it cannot turn HE into smoke.
  *
- *   artillery [kind, rounds per gun, sheaf, guns, name, sheaf type, delay, interval, repeat, coordinate]
+ *   artillery [kind, rounds per gun, sheaf, guns, name, sheaf type, delay, interval, repeat, coordinate,
+ *              adjust call (ADJ_*, FUNC(adjustFor))]
  *   cruise    [missiles, delay]
  *   loiter    [munitions, search radius]
  *
@@ -49,14 +50,15 @@ switch (_logic getVariable [QGVAR(type), ""]) do {
         private _opts = [
             _key,
             [SLOT_ROUNDS, 1, _logic getVariable [QGVAR(maxRounds), 1]] call _slot,
-            [SLOT_SHEAF, 0, SHEAF_MAX] call _slot,
+            [SLOT_SHEAF, 0, _logic getVariable [QGVAR(sheafMax), SHEAF_MAX]] call _slot,
             [SLOT_GUNS, 0, _logic getVariable [QGVAR(gunCount), 0]] call _slot,
             _name,
             _sheafType,
             [SLOT_DELAY, 0, _logic getVariable [QGVAR(maxDelay), 0]] call _slot,
             [SLOT_INTERVAL, 0, _logic getVariable [QGVAR(maxInterval), 0]] call _slot,
             [SLOT_REPEAT, 0, _logic getVariable [QGVAR(maxRepeat), 0]] call _slot,
-            [SLOT_COORD, 0, 1] call _slot
+            [SLOT_COORD, 0, 1] call _slot,
+            [SLOT_ADJUST, ADJ_NONE, ADJ_END] call _slot
         ];
         // Nothing left to fire is no order at all.
         [[], _opts] select (_key isNotEqualTo "")

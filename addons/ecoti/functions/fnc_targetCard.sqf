@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The net card under a friendly player's box - only for a man ON THE NET, a
  * player of your faction or side whose radio is published (user, 2026-10-17:
  * "if they are on net give player health call sign radio freq and ace ... and

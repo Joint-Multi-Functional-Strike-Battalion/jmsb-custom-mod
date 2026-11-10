@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TRACE NETWORK: a circle on a live leader's SAFE HOUSE - never on the man.
  *
  * If he has a rotation queued the circle points at where he is GOING, so
@@ -52,10 +52,13 @@ private _throw = _radius * LEADERS_OFFSET;
 private _centre = (getPosATL _house) vectorAdd
     [sin _bearing * _throw, cos _bearing * _throw, 0];
 
-[QEGVAR(hacking,product), ["circle",
+// By remoteExec from the server, not a CBA event any client could raise
+// (review S7). Hacking is optional here: it is the only caller, but check.
+if (isNil "jmfsb_hacking_fnc_sendProduct") exitWith {false};
+["circle",
     format [QGVAR(trace_%1_%2), _idx, _tier],
     _centre, _radius, "ColorOrange", "", format ["SAFE HOUSE T%1", _tier + 1], _side
-]] call CBA_fnc_globalEvent;
+] call jmfsb_hacking_fnc_sendProduct;
 
 INFO_3("TRACE NETWORK: leader %1 tier %2, %3 m",_idx + 1,_tier + 1,round _radius);
 true

@@ -1,15 +1,14 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Asks the provider that owns an asset what a request WOULD do, before it is
  * sent - an ETA, a time of flight, "OUT OF RANGE" - the verdict Simplex shows
  * beside its confirm button. The provider's optional "preview" code, called
- * on the requesting machine every time TAC//SUPPORT redraws a request that
- * has its unit, task and point; it must be cheap and must not change
- * anything. A provider without one answers [] and the board shows no line.
+ * on the asking machine (the TAC//SUPPORT app asked it on every redraw until
+ * it was removed, 2026-11-01); it must be cheap and must not change anything.
+ * A provider without one answers [].
  *
- * ok false is a verdict against the request: the board shows the line as
- * missing and holds CONFIRM until it changes.
+ * ok false is a verdict against the request.
  *
  * Arguments:
  * 0: Asset id <STRING>

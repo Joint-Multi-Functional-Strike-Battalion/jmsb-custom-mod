@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws one column of VEHICLE STATUS from its lines (FUNC(vehicleLines)):
  * section heads with their right label and the ink rule under them (the app
  * rule of docs/DESIGN_TABLET_APPS.md), bar rows for damage and fuel, and plain

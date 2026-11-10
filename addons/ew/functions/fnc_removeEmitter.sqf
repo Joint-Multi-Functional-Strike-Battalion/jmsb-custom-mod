@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: forgets an emitter FUNC(addEmitter) registered.
  *
  * Arguments:

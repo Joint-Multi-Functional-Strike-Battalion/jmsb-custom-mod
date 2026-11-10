@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one JMSB - Transport module and puts the helicopter it describes on
  * TAC//SUPPORT, with the tasks the module allows.
  *
@@ -58,12 +58,13 @@ if (_asked isEqualTo []) exitWith {
 
 _logic setVariable [QGVAR(jumpHeight), 100 max (_logic getVariable ["jumpHeight", 250]), true];
 _logic setVariable [QGVAR(seats), 0 max round (_logic getVariable ["seats", 0]), true];
-_logic setVariable [QGVAR(airframes), 0 max round (_logic getVariable ["airframes", 2]), true];
-_logic setVariable [QGVAR(height), 20 max (_logic getVariable ["height", 80]), true];
+// AIRFRAMES AVAILABLE IS RETIRED (user, 2026-11-02: "make sure there is a
+// respawn count for each support, default no respawns"): Respawns
+// (FUNC(register)).
 _logic setVariable [QGVAR(waitTime), 0 max (_logic getVariable ["waitTime", 300]), true];
-_logic setVariable [QGVAR(left), -1, true];
 
-if !([_logic, KIND_TRANSPORT, "RAVEN", "Helicopter", true] call FUNC(register)) exitWith {};
+// A helicopter or a VTOL (user, 2026-11-08: "vtol are not in the transport list").
+if !([_logic, KIND_TRANSPORT, "RAVEN", TRANSPORT_KINDS, true] call FUNC(register)) exitWith {};
 
 // WHAT THE AIRFRAME CAN DO. A sling task without a hook, or ropes without
 // FRIES or ACE fast-roping, is a row that could only ever be refused.
@@ -83,3 +84,6 @@ _logic setVariable [QGVAR(allowed), _allowed, true];
 // A synced helicopter that may fast-rope carries ACE's rope item from the
 // start (FUNC(stockRopes)); a class one gets it at launch.
 [_logic, _logic getVariable [QGVAR(synced), objNull]] call FUNC(stockRopes);
+// VIRTUAL UNTIL TASKED (user, 2026-11-02): a class helicopter is made over the
+// module when it is tasked (FUNC(transportLaunch)); a synced one waits on its
+// stand.

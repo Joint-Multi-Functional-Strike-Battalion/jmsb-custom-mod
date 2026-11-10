@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Chooses which machine the code box will run on, and says so.
  *
  * REMOTE names the man it means. "Remote" on its own is how code ends up on the

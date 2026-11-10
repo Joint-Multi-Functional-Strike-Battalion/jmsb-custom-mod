@@ -1,14 +1,15 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tools' Draw handler, every frame on every map they are attached to.
  * Everything is drawn from world positions, so a ruler laid on the tablet is
  * the same ruler on the paper map.
  *
- * Bottom up: the viewshed's cells, the route, the ruler, the protractor, and
- * the cursor's own readout (GRID's ten digits, MARK's preview) on top, and
- * under GRID's a line with your own GPS grid (jmfsb_ew_fnc_gpsState when EW
- * is loaded): the false grid when spoofed, SUSPECT, or NO FIX.
+ * Bottom up: the viewshed's cells, the range rings, the route, the ruler, the
+ * LOS line, the protractor, and the cursor's own readout (GRID's ten digits,
+ * MARK's preview) on top, and under GRID's a line with your own GPS grid
+ * (jmfsb_ew_fnc_gpsState when EW is loaded): the false grid when spoofed,
+ * SUSPECT, or NO FIX.
  *
  * IN THE SCHEME'S COLOURS, from EFUNC(tacpad,theme) and nothing else: lines and
  * labels in the accent, and the viewshed in accent (seen) over ink (not seen).
@@ -37,6 +38,18 @@ private _cursor = GVAR(cursor);
 private _tool = GVAR(tool);
 
 [_map, _ink, _accent, _size] call FUNC(drawViewshed);
+
+// RINGS: the setting's count about the centre, a step apart, each read at
+// its north.
+if (GVAR(rings) isNotEqualTo []) then {
+    private _centre = GVAR(rings);
+    _map drawIcon [GVAR(dotIcon), _accent, _centre, ICON_SIZE_DOT, ICON_SIZE_DOT, 0];
+    for "_i" from 1 to GVAR(ringCount) do {
+        private _r = _i * GVAR(ringStep);
+        _map drawEllipse [_centre, _r, _r, 0, _accent, ""];
+        [_map, _centre vectorAdd [0, _r, 0], "  " + ([_r] call FUNC(distanceText)), _accent, _size] call FUNC(label);
+    };
+};
 
 // ROUTE: every leg with its own distance and bearing, the total at the last
 // waypoint, and - while ROUTE is running - the leg to the cursor that the next
@@ -76,7 +89,42 @@ if (GVAR(anchor) isNotEqualTo []) then {
     };
 };
 
+// LOS: the measured pair, in the accent when clear and in ink when not, with
+// a dot where the ground or a building stops it; or the rubber band from a
+// first point waiting for its second.
+if (GVAR(los) isNotEqualTo []) then {
+    GVAR(los) params ["_from", "_to", "_clear", "_where"];
+    private _colour = [_ink, _accent] select _clear;
+    [_map, _from, _to, _colour, _size] call FUNC(drawLeg);
+    _map drawIcon [GVAR(dotIcon), _colour, _from, ICON_SIZE_DOT, ICON_SIZE_DOT, 0];
+    _map drawIcon [GVAR(dotIcon), _colour, _to, ICON_SIZE_DOT, ICON_SIZE_DOT, 0];
+    private _text = if (_clear) then {LOS_CLEAR} else {format [LOS_BLOCKED, [_from distance2D _where] call FUNC(distanceText)]};
+    if (!_clear) then {
+        _map drawIcon [GVAR(dotIcon), _accent, _where, ICON_SIZE_DOT, ICON_SIZE_DOT, 0];
+    };
+    [_map, _to, _text, _colour, _size, "left"] call FUNC(label);
+};
+if (GVAR(losFrom) isNotEqualTo []) then {
+    _map drawIcon [GVAR(dotIcon), _accent, GVAR(losFrom), ICON_SIZE_DOT, ICON_SIZE_DOT, 0];
+    if (_cursor isNotEqualTo []) then {
+        [_map, GVAR(losFrom), _cursor, _accent, _size] call FUNC(drawLeg);
+    };
+};
+
 [_map, _accent, _size] call FUNC(drawProtractor);
+
+// THE MARKER CARD'S POINT: the picked icon in the picked colour, size and
+// direction (2026-11-02), as the game's dialog shows its marker while it is
+// open. Dropped when the card has gone without closing itself - its display
+// went first.
+if (GVAR(cardPreview) isNotEqualTo []) then {
+    if (isNull (uiNamespace getVariable [QGVAR(card), controlNull])) then {
+        GVAR(cardPreview) = [];
+    } else {
+        GVAR(cardPreview) params ["_at", "_icon", "_colour", ["_scale", CARD_SIZE_NORMAL], ["_dir", 0]];
+        _map drawIcon [_icon, _colour, _at, CARD_PREVIEW_PX * _scale, CARD_PREVIEW_PX * _scale, _dir];
+    };
+};
 
 // The cursor's own readout. GRID is the ten digits under it; MARK previews the
 // grid its marker will carry.

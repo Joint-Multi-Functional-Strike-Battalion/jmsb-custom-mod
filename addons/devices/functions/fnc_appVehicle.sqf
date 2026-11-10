@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * VEHICLE STATUS: the vehicle tablet's own app (user, 2026-10-19: "there
  * should be a vehicle status app only on the vehicle term"). One page for the
  * vehicle the tablet was opened from:

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The ONE tag to put on a man's notification, out of every tag that named him.
  *
  * A MAN IS CALLED OUT ONCE (user, 2026-09-03: "do not double notify"). The

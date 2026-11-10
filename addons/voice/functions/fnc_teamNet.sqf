@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The TEAM net of a unit, carried on VON's Group channel: his squad's short
  * range net of the PAC plan (jmfsb_voice_fnc_planNet), else one of his own
  * per Arma group, "TEAM <side> <group callsign>" (the side is in the id

@@ -1,13 +1,15 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - CALLS, the right column: LIVE CALL over CALLBACKS.
  *
  * LIVE CALL. An incoming call rings here with ACCEPT and DECLINE - the walking
  * view's F1 / F4. The player's own call shows its slot, its clock, who is on
  * it, its priority and size, the RECENT contacts not on it (each a + button
  * that rings him in - FUNC(radioQuick)), HANG UP and MUTE CALL (mutes the call
- * net for the player). The last thing that happened to a call - a failure
+ * net for the player), and while it is live SEND VIEW / SEND FACE: what the
+ * player's own camera sends (FUNC(callCamFlip)). The other man's picture
+ * floats over the tablet (jmfsb_devices_fnc_callWindow). The last thing that happened to a call - a failure
  * reason, the priority warning, its end - is a line under it, off the voice
  * API's jmfsb_voice_callState (FUNC(radioCalls) keeps it in GVAR(radioLast)).
  * MAKE FLASH on a call already up is not built and has no button: the voice
@@ -144,6 +146,16 @@ if (_mine isEqualTo []) then {
             {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
         }, [_netId, !_muteOn]] call FUNC(appPageButton);
     };
+
+    // SEND VIEW / SEND FACE: what his own camera sends on the call. The
+    // picture itself floats over the tablet (jmfsb_devices_fnc_callWindow).
+    if (_state isEqualTo CALL_LIVE) then {
+        private _sendsView = (_me getVariable [QGVAR(callCam), CALL_CAM_FACE]) isEqualTo CALL_CAM_VIEW;
+        [_body, [_left + _pad * 3 + _w * 0.6, _y, _w * 0.3, _btnH], ["SEND VIEW", "SEND FACE"] select _sendsView, "line", {
+            [] call FUNC(callCamFlip);
+            {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+        }] call FUNC(appPageButton);
+    };
     _y = _y + _btnH + _padY;
 };
 
@@ -179,6 +191,6 @@ private _fits = floor ((_ch - _rowH * 3.5) / _step) max 1;
 
 [
     _body, [_cl + _pad, _ct + _rowH * 1.2 + ((count _callbacks) min _fits) * _step + _rowH * 0.3, _cw - 2 * _pad, _rowH * 2],
-    "Rings both phones when there is a route and a free slot. Expires after 15 min. Cancelling one is not built.",
+    "Rings both phones when there is a route and a free slot. Expires after 15 min.",
     _muted, TEXT_LABEL
 ] call EFUNC(tacpad,drawText);

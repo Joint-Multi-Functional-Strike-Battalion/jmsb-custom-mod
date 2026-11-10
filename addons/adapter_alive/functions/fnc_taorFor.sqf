@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A side's ground, as its own placements declared it (new.md section 4): the
  * union of the "taor" marker lists, and separately the "blacklist" lists, of
  * every placement module that BELONGS TO THAT SIDE.

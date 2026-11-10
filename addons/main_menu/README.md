@@ -4,12 +4,20 @@
 
 Handle initialization of server status panel.
 
+**Holiday crest** (user, 2026-10-31). The crest above the quick connect
+buttons is the holiday's when the mission loading screen's holiday table
+says so (`jmfsb_loading_fnc_holiday`: 7 days before the day through the day;
+New Year's Dec 26 to Jan 2), the unit's otherwise - `XEH_mainDisplay` swaps
+the picture when the menu draws. One table for the main menu, the mission
+loading screen and the TAC//PAC boot screen.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
 
 - `jmfsb_main`
 - `jmfsb_common`
+- `jmfsb_loading`
 
 ## Ships
 

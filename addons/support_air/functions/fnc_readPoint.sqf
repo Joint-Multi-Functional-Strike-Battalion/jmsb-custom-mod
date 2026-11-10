@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A map point out of TAC//SUPPORT's parameter array, written there by a
  * point row this provider declared (task declaration field 7, support core
  * README) - INGRESS, EGRESS, VIA, LZ, SET DOWN. Anything that is not a

@@ -3,11 +3,12 @@
 class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;
-        units[] = {};
+        units[] = {QGVAR(moduleMark)};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "cba_main",
             "cba_xeh"
         };
@@ -20,3 +21,4 @@ class CfgPatches {
 
 #include "CfgEventHandlers.hpp"
 #include "gui.hpp"
+#include "CfgVehicles.hpp"

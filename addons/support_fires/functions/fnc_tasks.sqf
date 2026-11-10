@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The "tasks" code of provider "fires": the picked asset's own task, with its
  * steppers sized for it - its ordnance by name and rounds left, its gun count,
  * the missiles or munitions it can still send.

@@ -16,9 +16,12 @@ Description:
     kept in memory and go out with the next save something else asks for -
     a connect, a disconnect, an admin's edit, a window stopped, the mission
     ending. A server that dies between two of those loses the minutes since
-    the last one on its open sessions, and that is the trade.
+    the last one on its open sessions, and that is the trade. (The same
+    loop in XEH_postInit then writes a save the debounce held back - an
+    edit, not the tick.)
 
-    Runs from a plain spawn loop in XEH_postInit; vanilla plumbing.
+    Runs from a plain spawn loop in XEH_postInit; vanilla plumbing. Does
+    nothing until the boot has loaded the store (GVAR(storeReady)).
 
 Parameters:
     None
@@ -31,27 +34,35 @@ Author:
 ---------------------------------------------------------------------------- */
 
 if (!isServer) exitWith {0};
+// Before the store is loaded the sessions are preInit's empty list; the boot
+// replays who connected meanwhile.
+if !(GVAR(storeReady)) exitWith {0};
 
 private _now = [] call FUNC(stamp);
 private _touched = 0;
-private _open = [];
-
+// open rows by uid, one pass - not a walk of every session per player
+// (this server's rows only - another server's are ticked by that server)
+private _open = createHashMap;
+private _server = GVAR(settings) getOrDefault ["serverId", PAC_SERVER_DEV];
 {
-    if ((_x # 4) isEqualTo "") then {_open pushBack (_x # 0)};
+    if ((_x # 4) isEqualTo "" && {(_x param [PAC_ROW_SERVER, _server]) isEqualTo _server}) then {
+        private _rows = _open getOrDefault [_x # 0, []];
+        _rows pushBack _x;
+        _open set [_x # 0, _rows];
+    };
 } forEach GVAR(sessions);
 
+// The store's one id function, FUNC(uid), as every other caller (review L1);
+// headless clients are in allPlayers and are not players.
 {
-    private _uid = getPlayerUID _x;
-    if (_uid isEqualTo "") then {continue};
+    private _uid = [_x] call FUNC(uid);
 
     if (_uid in _open) then {
-        {
-            if ((_x # 0) isEqualTo _uid && {(_x # 4) isEqualTo ""}) then {_x set [3, _now]};
-        } forEach GVAR(sessions);
+        {_x set [3, _now]} forEach (_open get _uid);
     } else {
         [_uid, name _x] call FUNC(sessionStart);
     };
     _touched = _touched + 1;
-} forEach (allPlayers select {isPlayer _x});
+} forEach ((allPlayers - entities "HeadlessClient_F") select {isPlayer _x});
 
 _touched

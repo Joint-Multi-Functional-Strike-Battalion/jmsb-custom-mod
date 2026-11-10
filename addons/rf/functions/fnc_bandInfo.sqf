@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A band's row of the band table, read-only: [path-loss exponent, loss at
  * 1 m dB, noise floor dBm], as the settings have it now. The floor is what
  * jmfsb_rf_fnc_noise returns with no noise source registered, so a consumer

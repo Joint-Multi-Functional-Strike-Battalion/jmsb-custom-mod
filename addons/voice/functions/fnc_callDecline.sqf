@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Declines a call ringing for the local player (F4). The caller is told.
  *
  * Arguments:
@@ -19,4 +19,4 @@ params [["_callId", "", [""]]];
 
 if (!GVAR(active)) exitWith {};
 if (_callId isEqualTo "" || isNull player) exitWith {};
-[QGVAR(srvAnswer), [_callId, player, false]] call CBA_fnc_serverEvent;
+[_callId, player, false] remoteExecCall [QFUNC(srvAnswer), SERVER_OWNER];

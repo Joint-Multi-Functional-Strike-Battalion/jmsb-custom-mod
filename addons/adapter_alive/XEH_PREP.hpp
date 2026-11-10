@@ -1,4 +1,9 @@
 PREP(ready);
+// Training: ALiVE paused, whenReady held, until an admin starts it.
+PREP(hold);
+// Server hooks in place of the ready / capture CBA events (review R1).
+PREP(whenReady);
+PREP(onCapture);
 PREP(commanders);
 PREP(taorFor);
 PREP(objectivesFor);
@@ -18,7 +23,6 @@ PREP(eventListener);
 PREP(reportIntel);
 PREP(registerSite);
 PREP(requestSupply);
-PREP(requestCAS);
 // Client-safe reads off ALiVE's public COP broadcasts and civilian model.
 PREP(virtualFriendlies);
 PREP(enemyKnowledge);
@@ -29,11 +33,11 @@ PREP(profileGroup);
 PREP(profileWaypoint);
 PREP(profileIdOf);
 PREP(profileAlive);
+// An AI commander's guns, for QRF and reaction - not player support.
 PREP(requestFire);
-PREP(supportAssets);
-PREP(supportSitrep);
-PREP(supportTask);
-PREP(supportTypes);
+// NO SUPPORT PROVIDER HERE (user, 2026-11-02: "we should not be relying on
+// alive support"). ALiVE's NEO combat support and ATO are no longer support
+// assets; the mod's own providers are the support system, with or without ALiVE.
 PREP(probe);
 PREP(clusterCandidates);
 PREP(bumpHostility);
@@ -47,3 +51,7 @@ PREP(profileIgnore);
 
 // ALiVE's hints into jmfsb_notify - CfgFunctions.hpp points ALIVE_fnc_sendHint here.
 PREP(sendHint);
+
+// ALiVE's Advanced Markers for jmfsb_maptools' marker system (user, 2026-11-01).
+PREP(markerOpen);
+PREP(markerRemove);

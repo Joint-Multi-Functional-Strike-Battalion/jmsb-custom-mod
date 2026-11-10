@@ -1,9 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Server: an RTO (or admin) sets who is on one of the RTO nets (the
- * jmfsb_voice_srvNetMembers event from FUNC(netMembers)) - both lists are
- * replaced. The right is FUNC(canFlash)'s, checked here; a net nobody knows
+ * Author: YonV
+ * Server: an RTO (or admin) sets who is on one of the RTO nets (by remoteExec
+ * from FUNC(netMembers); the caller must be the sender,
+ * jmfsb_common_fnc_senderIs) - both lists are replaced. The right is FUNC(canFlash)'s, checked here; a net nobody knows
  * is refused back to the caller. The publication carries the change; the
  * roster joins and leaves people on its next tick.
  *
@@ -17,20 +17,21 @@
  * None
  *
  * Example:
- * [player, "RECON 2", ["GHOST 1"], []] call jmfsb_voice_fnc_srvNetMembers
+ * [player, "RECON 2", ["GHOST 1"], []] remoteExecCall ["jmfsb_voice_fnc_srvNetMembers", 2]
  *
  * Public: No
  */
 
 params [["_caller", objNull, [objNull]], ["_id", "", [""]], ["_squads", [], [[]]], ["_uids", [], [[]]]];
 
-if (!isServer || isNull _caller) exitWith {};
+if (!isServer || {!([_caller] call EFUNC(common,senderIs))}) exitWith {};
+if (isNull _caller) exitWith {};
 
 if !([_caller] call FUNC(canFlash)) exitWith {
-    [QGVAR(netFailed), [REASON_NOT_RTO, _id], _caller] call CBA_fnc_targetEvent;
+    [REASON_NOT_RTO, _id] remoteExecCall [QFUNC(netFailed), _caller];
 };
 if !(_id in GVAR(customNets)) exitWith {
-    [QGVAR(netFailed), [REASON_UNKNOWN, _id], _caller] call CBA_fnc_targetEvent;
+    [REASON_UNKNOWN, _id] remoteExecCall [QFUNC(netFailed), _caller];
 };
 
 private _net = GVAR(customNets) get _id;

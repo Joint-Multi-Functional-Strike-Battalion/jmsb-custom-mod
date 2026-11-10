@@ -63,6 +63,19 @@ RADIOS = {
         # on a 1024 square with the white cut to transparent.
         "dialog": {"image": "tfar screen.jpg", "paint_out": (536, 140, 868, 372)},
     },
+    "rdc": {
+        "src": "Radio_MPU5_v01",
+        "obj": os.path.join("Mesh", "MPU5.obj"),
+        # The Rugged Display Controller, the MPU5's chest screen (the rdc
+        # device, jmfsb_devices): the tablet alone, off its mount - the
+        # mount (Tablet_Base_Mesh) stays on the vest.
+        "parts": ("Tablet_Mesh",),
+        "mass": 0.45,
+        # The same atlas as the MPU5: the model names mpu5's textures and
+        # material and no second copy is written. No icon either - its
+        # arsenal picture is tools/gen_device_icons.py's, the lit screen.
+        "textures": "mpu5",
+    },
     "tw950": {
         "src": "Radio_TrellisWare_v01",
         "obj": os.path.join("Mesh", "TrellisWare_TW-950.obj"),
@@ -171,7 +184,9 @@ def lod_bytes(points, normals, faces, taggs, resolution):
     return b"".join(out)
 
 
-def build_p3d(rid, verts, uvs, norms, faces, mass_kg):
+def build_p3d(rid, verts, uvs, norms, faces, mass_kg, tex_id=None):
+    """tex_id: whose textures and material the model names (its own by default)."""
+    tex_id = tex_id or rid
     used_v = sorted({v for tri in faces for v, _, _ in tri})
     used_n = sorted({n for tri in faces for _, _, n in tri if n >= 0})
     vmap = {v: i for i, v in enumerate(used_v)}
@@ -188,8 +203,8 @@ def build_p3d(rid, verts, uvs, norms, faces, mass_kg):
     if NEGATE_NORMALS:
         nrm = -nrm
 
-    texture = "%s\\%s_co.paa" % (PREFIX, rid)
-    material = "%s\\%s.rvmat" % (PREFIX, rid)
+    texture = "%s\\%s_co.paa" % (PREFIX, tex_id)
+    material = "%s\\%s.rvmat" % (PREFIX, tex_id)
     vis_faces = []
     for tri in faces:
         if FLIP_WINDING:
@@ -408,12 +423,15 @@ def one(rid, spec):
         return False
     os.makedirs(OUT, exist_ok=True)
     verts, uvs, norms, faces = read_obj(obj, spec["parts"])
-    p3d, pts, vis_faces, bounds = build_p3d(rid, verts, uvs, norms, faces, spec["mass"])
+    p3d, pts, vis_faces, bounds = build_p3d(rid, verts, uvs, norms, faces, spec["mass"], spec.get("textures"))
     with open(os.path.join(OUT, rid + ".p3d"), "wb") as f:
         f.write(p3d)
     lo, hi = bounds
     print("%s.p3d: %d points, %d faces, size %.3f x %.3f x %.3f m (w x h x l)" % (
         rid, len(pts), len(vis_faces), hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]))
+    if "textures" in spec:
+        print("  wears %s's textures" % spec["textures"])
+        return True
     tmp = tempfile.mkdtemp()
     try:
         base = textures(rid, src, spec["tex"], tmp)

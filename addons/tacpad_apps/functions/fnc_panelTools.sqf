@@ -1,22 +1,27 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The MAP TOOLS strip: the front end for jmfsb_maptools, on the vanilla map and
  * on the tablet's screen alike. A four-across grid of outlined cells.
  *
- * THE TOOLS ARE OURS. Ruler, protractor, mark, grid, viewshed and route are
- * jmfsb_maptools' (see its README); this panel only starts and stops them, and
- * hangs them on the host's map (EFUNC(maptools,attach)) so they draw and take
- * clicks on whichever map the suite is on. There is no other mod behind it,
- * so there is no dimmed state: the panel exists when the addon does - see the
- * registration in XEH_preInit.
+ * THE TOOLS ARE OURS. Ruler, protractor, mark, grid, viewshed, route, rings
+ * and LOS are jmfsb_maptools' (see its README); this panel only starts and
+ * stops them, and hangs them on the host's map (EFUNC(maptools,attach)) so
+ * they draw and take clicks on whichever map the suite is on. There is no
+ * other mod behind it, so there is no dimmed state: the panel exists when
+ * the addon does - see the registration in XEH_preInit.
  *
- * Six cells are TOGGLES - press to start, press again to stop, and the running
- * one inverts to an ink fill so the strip says what is on. Two are momentary:
- * CENTRE puts the map back on the player and leaves the running tool alone,
- * and CLEAR, the one accent-outlined cell, wipes what the tools drew. CANCEL on
- * the title bar stops the running tool without the player having to know which
- * one it was.
+ * Eight cells are TOGGLES - press to start, press again to stop, and the
+ * running one inverts to an ink fill so the strip says what is on. Two are
+ * momentary: CENTRE puts the map back on the player and leaves the running
+ * tool alone, and CLEAR, the one accent-outlined cell, wipes what the tools
+ * drew. GO TO GRID (user, 2026-10-30) is a grid box and a GO cell in the
+ * cells the last row leaves free. CANCEL on the title bar stops the running
+ * tool without the player having to know which one it was.
+ *
+ * THE FULL GRID, ALWAYS (user, 2026-11-01: "like the old buttons better").
+ * The review's R5 folded the strip to one row of short marks (CTR RUL PRO ...)
+ * until a tool was opened; seen in game, the user reversed it.
  *
  * CENTRE IS FIRST because it is the one pressed most. A man looking at his own
  * map has usually panned away from himself.
@@ -34,6 +39,8 @@
 // The two momentary cells' ids. Everything else is a jmfsb_maptools tool id.
 #define TOOLS_CENTRE "centre"
 #define TOOLS_CLEAR "clear"
+// What the empty grid box says until something is typed in it.
+#define TOOLS_GRID_HINT "GRID REF"
 
 params [["_body", controlNull, [controlNull]], ["_id", "", [""]]];
 
@@ -50,7 +57,7 @@ private _w = (ctrlPosition _body) # 2;
 private _pad = PAD * HOST_W;
 private _padY = PAD * HOST_H;
 
-// [label, id]. Two rows of four.
+// [label, id]. Rows of four; the last row's free cells take GO TO GRID.
 private _tools = [
     ["CENTRE", TOOLS_CENTRE],
     ["RULER", "ruler"],
@@ -59,12 +66,17 @@ private _tools = [
     ["MARK", "mark"],
     ["GRID", "grid"],
     ["VIEWSHED", "viewshed"],
+    ["RINGS", "rings"],
+    ["LOS", "los"],
     ["CLEAR", TOOLS_CLEAR]
 ];
 
+private _runningTool = missionNamespace getVariable [QEGVAR(maptools,tool), ""];
+
 // CANCEL LIVES ON THE TITLE BAR - the user's ask: it had a grid row to itself
 // once. Drawn into the GROUP's header, over the meta slot the strip never uses
-// for a readout.
+// for a readout - so the header's live word (notes, 2026-10-30) is the running
+// tool's name on the CANCEL cell: CANCEL RULER.
 private _entry = (missionNamespace getVariable [QEGVAR(tacpad,open), createHashMap]) getOrDefault [_id, []];
 _entry params [["_group", controlNull]];
 if (!isNull _group) then {
@@ -75,7 +87,7 @@ if (!isNull _group) then {
     private _offRect = [_offX, RULE_THICK * pixelH + _padY * 0.3, _offW, _headerH - _padY * 0.6];
 
     [_group, _offRect, _accent, RULE_THICK] call EFUNC(tacpad,drawFrame);
-    [_group, _offRect, "CANCEL", _accent, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
+    [_group, _offRect, format ["CANCEL%1", ["", " " + toUpper _runningTool] select (_runningTool isNotEqualTo "")], _accent, TEXT_BODY, true, "center", false, FONT_MONO] call EFUNC(tacpad,drawText);
     [_group, _offRect, {
         [] call EFUNC(maptools,stop);
         {["tools"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
@@ -92,8 +104,6 @@ private _cellW = (_w - 2 * _pad) / _cols;
 // of the word. The box is the line plus a pad, so it fits at any scale.
 private _labelSize = TEXT_BODY;
 private _cellH = ([_labelSize] call EFUNC(tacpad,textH)) + 2 * _padY;
-
-private _runningTool = missionNamespace getVariable [QEGVAR(maptools,tool), ""];
 
 {
     _x params ["_label", "_tool"];
@@ -141,5 +151,55 @@ private _runningTool = missionNamespace getVariable [QEGVAR(maptools,tool), ""];
     }] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(tool), _tool];
 } forEach _tools;
+
+// GO TO GRID (user, 2026-10-30): a grid box and a GO cell in the two cells
+// the last row leaves free - a row of their own when it leaves fewer. The
+// typed text lives in uiNamespace: the strip is rebuilt on every press.
+private _free = _cols - ((count _tools) mod _cols);
+if (_free isEqualTo _cols) then {_free = 0};
+private _goRow = _rows - 1;
+private _goCol = _cols - _free;
+if (_free < 2) then {
+    _goRow = _rows;
+    _goCol = 0;
+    _rows = _rows + 1;
+};
+private _gx = _pad + _goCol * _cellW;
+private _gy = _padY + _goRow * (_cellH + _padY);
+private _goW = _cellW - _pad;
+// NO EMPTY CELL (review 2026-11-01, item 3.2: "the MAP TOOLS grid has an
+// empty cell"). The grid box was an edit with a faint outline and nothing in
+// it - a hole in the grid. It is outlined in the ink like its neighbours and
+// says what goes in it until something is typed; the hint sits under the box,
+// so the box keeps the click and the focus.
+[_body, [_gx, _gy, _goW, _cellH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
+private _typed = uiNamespace getVariable [QGVAR(toolsGrid), ""];
+private _hint = [_body, [_gx + _pad, _gy, _goW - 2 * _pad, _cellH], TOOLS_GRID_HINT, ["dim"] call EFUNC(tacpad,theme), _labelSize, true] call EFUNC(tacpad,drawText);
+_hint ctrlShow (_typed isEqualTo "");
+private _box = (ctrlParent _body) ctrlCreate ["RscEdit", -1, _body];
+_box ctrlSetPosition [_gx + _pad, _gy, _goW - 2 * _pad, _cellH];
+_box ctrlSetBackgroundColor [0, 0, 0, 0];
+_box ctrlSetTextColor _ink;
+_box ctrlSetFontHeight (_cellH * 0.72);
+_box ctrlSetText _typed;
+_box ctrlSetTooltip "A grid - 6, 8 or 10 figures - then GO: the map goes there.";
+_box ctrlCommit 0;
+_box setVariable [QGVAR(toolsHint), _hint];
+_box ctrlAddEventHandler ["KeyUp", {
+    params ["_ctrl"];
+    uiNamespace setVariable [QGVAR(toolsGrid), ctrlText _ctrl];
+    (_ctrl getVariable [QGVAR(toolsHint), controlNull]) ctrlShow ((ctrlText _ctrl) isEqualTo "");
+    false
+}];
+private _gox = _gx + _cellW;
+[_body, [_gox, _gy, _goW, _cellH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
+[_body, [_gox + _pad, _gy, _goW - 2 * _pad, _cellH], "GO TO GRID", _ink, _labelSize, true] call EFUNC(tacpad,drawText);
+[_body, [_gox, _gy, _goW, _cellH], {
+    params ["_ctrl"];
+    private _map = (ctrlParent _ctrl) displayCtrl IDC_HOST_MAP;
+    if !([_map, uiNamespace getVariable [QGVAR(toolsGrid), ""]] call EFUNC(maptools,goTo)) then {
+        ["MAP TOOLS", "That is not a grid on this map.", "high"] call EFUNC(messaging,notify);
+    };
+}] call EFUNC(tacpad,drawHit);
 
 [_id, 0, (_rows * (_cellH + _padY) + 2 * _padY) / HOST_H] call EFUNC(tacpad,fit);

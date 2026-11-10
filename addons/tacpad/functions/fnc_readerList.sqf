@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The reader's thread list (handoff 1a, pane 2): the filter box and NEW, the
  * ALL / OPEN / MINE / ACK tabs, and one row per thread, newest first.
  *
@@ -115,14 +115,19 @@ private _rows = _index select {
 
 // THE FILTER: subject, report type and mailbox, which between them carry the
 // type, the grid and the call sign the hint promises.
+// A support asset's box is found by its call sign too (2026-11-01).
 if (GVAR(readerFilter) isNotEqualTo "") then {
     private _needle = toLower GVAR(readerFilter);
+    private _supportNames = !isNil QEFUNC(support,boxName);
     _rows = _rows select {
         private _t = [_x getOrDefault ["templateId", ""]] call EFUNC(messaging,template);
+        private _box = _x getOrDefault ["boxId", ""];
+        private _asset = "";
+        if (_supportNames) then {_asset = [_box] call EFUNC(support,boxName)};
         private _hay = toLower format [
-            "%1 %2 %3 %4",
+            "%1 %2 %3 %4 %5",
             _x getOrDefault ["subject", ""], _t getOrDefault ["short", ""],
-            _t getOrDefault ["title", ""], _x getOrDefault ["boxId", ""]
+            _t getOrDefault ["title", ""], _box, _asset
         ];
         (_hay find _needle) >= 0
     };
@@ -192,8 +197,16 @@ private _keyed = [];
 _keyed sort false;
 _tabbed = _keyed apply {_tabbed # (_x # 1)};
 
+// ONE EMPTY STATE, HERE, NAMING THE NET (tablet review 2026-11-01, 3.1): the
+// thread pane beside it draws nothing until a thread is picked, so the list
+// says it once - "No traffic on C2" - rather than two panes each saying so.
 if (_tabbed isEqualTo []) exitWith {
-    [_root, [_lx + _side, _y + _padY * 2, _listW - 2 * _side, _rowH], ["NO TRAFFIC", "NOTHING MATCHES"] select (GVAR(readerFilter) isNotEqualTo ""), _dim, READER_K_SIZE, true, "left", true] call FUNC(drawText);
+    private _empty = switch (true) do {
+        case (GVAR(readerFilter) isNotEqualTo ""): {"Nothing matches the filter"};
+        case (GVAR(readerNet) == "ALL"): {"No traffic on any net"};
+        default {format ["No traffic on %1", GVAR(readerNet)]};
+    };
+    [_root, [_lx + _side, _y + _padY * 2, _listW - 2 * _side, _rowH], _empty, _dim, READER_BODY_SIZE] call FUNC(drawText);
 };
 
 private _entryH = _rowH * 3.5 + _padY * (2 * READER_INSET + 2);

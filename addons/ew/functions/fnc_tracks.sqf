@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_tracks (DESIGN_RF "Public API"): the tracks a side holds. On the server,
  * for any side, as copies of the track records; on a client, his own side's
  * from his slice, in the slice's layout (FUNC(publish)).

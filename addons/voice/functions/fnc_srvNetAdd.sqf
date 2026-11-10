@@ -1,9 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Server: an RTO (or admin) makes a net (the jmfsb_voice_srvNetAdd event from
- * FUNC(netAdd)). The right is checked here, not trusted from the client -
- * FUNC(canFlash), the same test a FLASH call passes. The name is checked
+ * Author: YonV
+ * Server: an RTO (or admin) makes a net (by remoteExec from FUNC(netAdd); the
+ * caller must be the sender, jmfsb_common_fnc_senderIs). The right is
+ * checked here, not trusted from the client - FUNC(canFlash), the same test
+ * a FLASH call passes. The name is checked
  * (FUNC(customValid)), the count against the setting, then the net is made in
  * RF like a TEAM net, published, and given its own VON custom channel through
  * the adapter's "reserve" hook; with no channel left it is taken back and
@@ -23,18 +24,19 @@
  * None
  *
  * Example:
- * [player, "RECON 2", ["GHOST 1"], ["7656..."]] call jmfsb_voice_fnc_srvNetAdd
+ * [player, "RECON 2", ["GHOST 1"], ["7656..."]] remoteExecCall ["jmfsb_voice_fnc_srvNetAdd", 2]
  *
  * Public: No
  */
 
 params [["_caller", objNull, [objNull]], ["_name", "", [""]], ["_squads", [], [[]]], ["_uids", [], [[]]]];
 
-if (!isServer || isNull _caller) exitWith {};
+if (!isServer || {!([_caller] call EFUNC(common,senderIs))}) exitWith {};
+if (isNull _caller) exitWith {};
 
 private _fnc_refuse = {
     params ["_reason"];
-    [QGVAR(netFailed), [_reason, _name], _caller] call CBA_fnc_targetEvent;
+    [_reason, _name] remoteExecCall [QFUNC(netFailed), _caller];
 };
 
 if !([_caller] call FUNC(canFlash)) exitWith {[REASON_NOT_RTO] call _fnc_refuse};
@@ -44,6 +46,10 @@ if (count GVAR(customNets) >= GVAR(customNetsMax)) exitWith {[REASON_FULL] call 
 
 _squads = (_squads select {_x isEqualType ""}) apply {toUpper trim _x};
 _uids = _uids select {_x isEqualType "" && _x isNotEqualTo ""};
+// The maker is on his own net from the start, whether or not he ticked his
+// squad - a net made and then invisible on the maker's own device read as
+// "did not work" (user, 2026-10-24).
+_uids pushBackUnique (getPlayerUID _caller);
 GVAR(customNets) set [_id, [_id, _squads arrayIntersect _squads, _uids arrayIntersect _uids, getPlayerUID _caller, name _caller]];
 [_id, [["name", _id], ["band", NET_BAND_TEAM], ["source", NET_SOURCE]]] call EFUNC(rf,netSet);
 [] call FUNC(srvNetPublish);

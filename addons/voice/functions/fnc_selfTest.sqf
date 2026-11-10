@@ -1,10 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * In-game diagnostic: logs to the RPT which system carries the voice
- * (jmfsb_voice_system; under TFAR / ACRE only that radio's nets, active net
- * and talkers are logged, then its adapter's "selfTest") and the voice state of
- * the local player (adapter, nets, nodes, active net, cut-off level, roster,
+ * (jmfsb_voice_system; under "none" only that, voice unavailable) and the
+ * voice state of the local player (adapter, nets, nodes, active net, cut-off level, roster,
  * calls), then hands over to the adapter's "selfTest" hook - for VON, the five "Tests to run first" of
  * docs/DESIGN_VOICE.md, each logged as it runs: setPlayerVoNVolume per
  * speaker, enableChannel voice-off still hears, getPlayerChannel speed,
@@ -23,18 +22,12 @@
  * Public: Yes
  */
 
-private _other = OTHER_VOICE_MODS select {isClass (configFile >> "CfgPatches" >> _x)};
-INFO_3("selfTest: voice system %1, VON active %2 (radio mods loaded: %3)",GVAR(system),GVAR(active),_other);
+INFO_4("selfTest: voice system %1, game voice active %2 (setting %3; loaded %4)",GVAR(system),GVAR(active),GVAR(defaultSystem),GVAR(loaded));
 if (!hasInterface || isNull player) exitWith {
     WARNING("selfTest needs a player");
 };
 if (!GVAR(active)) exitWith {
-    INFO_2("selfTest: external adapter %1, active net %2",GVAR(adapterId),GVAR(activeNetId));
-    {
-        INFO_1("selfTest: net %1",_x);
-    } forEach ([] call FUNC(netState));
-    INFO_1("selfTest: talking %1",GVAR(talkers));
-    [] call HOOK("selfTest");
+    WARNING_1("selfTest: no game-voice system here (%1): voice unavailable",GVAR(system));
 };
 
 INFO_2("selfTest: adapter %1, %2 players",GVAR(adapterId),count allPlayers);

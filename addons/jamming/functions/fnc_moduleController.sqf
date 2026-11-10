@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the module and arms jamming. PLACING THE MODULE IS THE ENABLE - with no
  * module this system does nothing at all.
  *
@@ -67,12 +67,11 @@ GVAR(siteObjectives) = [_logic getVariable ["siteObjectives", false]] call _bool
 // Burn-through. These overwrite the preInit defaults, which are the values
 // FUNC(jamFactor) falls back to on a machine the module has not reached.
 //
-// BROADCAST, because this file exits on !isServer and FUNC(jammerLoop) reads
-// jamBurnthrough on every CLIENT to decide whether to ask ACRE for the set's
-// power. Server-local, a dedicated server's players would never burn through
-// anything however big their radio - the same trap jmfsb_reaction documents on
-// its watts threshold. burnRef needs no broadcast: it is stamped into each
-// zone's model at spawn and travels with the registry.
+// BROADCAST, because this file exits on !isServer and FUNC(zoneModel) stamps
+// jamBurnthrough into each zone's model wherever a zone is built - the same
+// trap jmfsb_reaction documents on its watts threshold. burnRef needs no
+// broadcast: it is stamped into each zone's model at spawn and travels with
+// the registry.
 GVAR(jamBurnRef) = _logic getVariable ["burnRef", 500];
 
 // The zones' noise in the RF link budget. Server only: FUNC(rfNoise) runs
@@ -92,14 +91,19 @@ missionNamespace setVariable [
 // objectives, so they wait for the adapter. Both paths are covered: a module is
 // normally placed long before ALiVE finishes initialising, but one armed
 // afterwards would otherwise wait forever on an event that has already fired.
-if (!isNil QEFUNC(adapter_alive,objectivesFor)) then {
-    if (EGVAR(adapter_alive,ready)) then {
-        private _n = [] call FUNC(spawnObjectiveJammers);
-        INFO_1("%1 objective jammer site(s) queued",_n);
-    } else {
-        [QEGVAR(adapter_alive,ready), {
-            private _n = [] call FUNC(spawnObjectiveJammers);
-            INFO_1("%1 objective jammer site(s) queued",_n);
-        }] call CBA_fnc_addEventHandler;
-    };
+// Without ALiVE (user, 2026-11-02: "works with or without") only that half is
+// off: Jammer Site modules jam exactly as they do with it.
+// The same when ALiVE is loaded with no commanders (user, 2026-11-02: "same as
+// not loaded"): the adapter's fallback, once it gives up.
+private _without = {
+    ["Objective jammers", "off - Jammer Site modules only"] call EFUNC(common,aliveLoaded);
 };
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    call _without;
+};
+// Now when the adapter is ready already, and once only - not the ready CBA
+// event any client could raise again (review R1).
+[{
+    private _n = [] call FUNC(spawnObjectiveJammers);
+    INFO_1("%1 objective jammer site(s) queued",_n);
+}, [], _without] call EFUNC(adapter_alive,whenReady);

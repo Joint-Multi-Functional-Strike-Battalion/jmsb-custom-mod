@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens or closes the RADIO app full screen on the carried phone or side device
  * (docs/DESIGN_VOICE.md, "Phone and side RADIO app"; numpad 6 by default).
  *

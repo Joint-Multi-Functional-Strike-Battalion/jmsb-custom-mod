@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One traffic entry, drawn the way the design draws it:
  *
  *     [FLASH] 9-LINE                                            04:12
@@ -17,17 +17,27 @@
  * the design spends its one loud colour on the thing that has to be answered now
  * and a list where three precedences all shout has no precedence at all.
  *
+ * ON THE PANEL'S OWN ROW RHYTHM (user, 2026-11-01: the docked reader was "kind
+ * of squished"). The entry measured its rows off ROW_H while the panel counts
+ * in ROW_H_SCREEN, so entries started above the rule under the net chips and
+ * three lines were packed into rows shorter than their type. One row is
+ * ROW_H_SCREEN here too, with a pad of air above and below the three lines;
+ * the time and the reply meta are values, untracked, at the body size (R1).
+ *
  * Arguments:
  * 0: Body <CONTROL>
- * 1: Row index, in ROW units <NUMBER>
+ * 1: Row index, in ROW_H_SCREEN units <NUMBER>
  * 2: Index entry <HASHMAP>
  * 3: Called with [control] when clicked <CODE>
  *
  * Return Value:
- * Rows consumed <NUMBER>
+ * Rows consumed, in ROW_H_SCREEN units <NUMBER>
  *
  * Public: No
  */
+
+// The entry's lines: meta, subject, reply meta.
+#define ENTRY_LINES 3
 
 params [
     ["_body", controlNull, [controlNull]],
@@ -40,14 +50,15 @@ if (isNull _body) exitWith {0};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
-private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * HOST_H;
+private _rowH = ROW_H_SCREEN;
 private _w = (ctrlPosition _body) # 2;
 private _pad = PAD * HOST_W;
-private _y = _index * _rowH;
+private _padY = PAD * HOST_H;
+private _top = _index * _rowH;
+// The first line starts a pad down; the entry ends a pad under the last.
+private _y = _top + _padY;
 
-private _rows = 3;
-private _h = _rows * _rowH;
+private _h = ENTRY_LINES * _rowH + 2 * _padY;
 
 private _priority = _entry get "priority";
 private _flash = _priority == "high";
@@ -72,51 +83,38 @@ private _bodyInk = [_ink, [_ink # 0, _ink # 1, _ink # 2, 0.55]] select _closed;
 // gives its selected row. Both, not one: the wash finds the row and the border
 // says which edge of the list it belongs to.
 if (_flash) then {
-    [_body, [0, _y, _w, _h], [_accent # 0, _accent # 1, _accent # 2, 0.12]] call EFUNC(tacpad,drawFill);
-    [_body, [0, _y, 4 * pixelW, _h], _accent] call EFUNC(tacpad,drawFill);
+    [_body, [0, _top, _w, _h], [_accent # 0, _accent # 1, _accent # 2, 0.12]] call EFUNC(tacpad,drawFill);
+    [_body, [0, _top, 4 * pixelW, _h], _accent] call EFUNC(tacpad,drawFill);
 };
 
-private _left = _pad + ([0, 4 * pixelW] select _flash);
+private _left = _pad * 2 + ([0, 4 * pixelW] select _flash);
 
-// The chip, measured rather than guessed. The label is tracked, so it is drawn
-// as 2n-1 glyphs, and RobotoCondensedBold advances about 0.46 of its height per
-// glyph - converted through the pixel scales because the height is in Y units
-// and the width it has to become is in X units.
-private _chipSize = TEXT_LABEL;
-private _chipFontH = TEXT_BASE * pixelH * pixelGrid * HOST_K * _scale * _chipSize;
-private _chipTextW = (2 * count (toArray _badge) - 1) * 0.46 * _chipFontH * pixelW / pixelH;
-private _chipPad = 3 * pixelW;
-private _chipW = _chipTextW + 4 * _chipPad;
-private _chipH = _rowH * 0.62;
+// The chip is the chip primitive's (FUNC(drawChip)), measured off its own
+// word: a precedence is a short label, so it stays tracked.
+private _chipH = _rowH * CHIP_H_K;
 private _chipY = _y + (_rowH - _chipH) * 0.5;
-
-if (_flash) then {
-    [_body, [_left, _chipY, _chipW, _chipH], _accent] call EFUNC(tacpad,drawFill);
-} else {
-    [_body, [_left, _chipY, _chipW, _chipH], _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
-};
-
-[_body, [_left + 2 * _chipPad, _chipY, _chipW, _chipH], _badge, ([_mute, _ground] select _flash), _chipSize, true, "left", true] call EFUNC(tacpad,drawText);
+private _chipW = [_body, [_left, _chipY], _chipH, _badge, [CHIP_OUTLINE, CHIP_ACCENT_FILL] select _flash] call EFUNC(tacpad,drawChip);
 
 // The template's short name sits after the chip, and the time hard right.
 private _type = ([_entry getOrDefault ["templateId", ""]] call EFUNC(messaging,template)) getOrDefault ["short", ""];
 [
     _body,
-    [_left + _chipW + 2 * _chipPad, _y, _w * 0.45, _rowH],
+    [_left + _chipW + _pad * 2, _y, _w * 0.45, _rowH],
     _type,
     ([_mute, _accent] select _flash),
-    _chipSize, true, "left", true
+    TEXT_LABEL, true, "left", true
 ] call EFUNC(tacpad,drawText);
 
+// The time is a value: untracked, at the body size (review 2026-11-01, R1).
 [
     _body,
-    [_w * 0.5, _y, _w * 0.5 - _pad, _rowH],
+    [_w * 0.5, _y, _w * 0.5 - _pad * 2, _rowH],
     [_entry get "lastActivity"] call EFUNC(tacpad,clock),
-    _mute, _chipSize, true, "right"
+    _mute, TEXT_BODY, true, "right", false, FONT_MONO
 ] call EFUNC(tacpad,drawText);
 
 // The subject carries the weight - it is what the reader is actually for.
-[_body, [_left, _y + _rowH * 0.9, _w - _left - _pad, _rowH], _entry get "subject", _bodyInk, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
+[_body, [_left, _y + _rowH, _w - _left - _pad * 2, _rowH], _entry get "subject", _bodyInk, TEXT_TITLE, true] call EFUNC(tacpad,drawText);
 
 // The reply meta. The index carries no preview text, so this is the design's
 // "6 REPLIES - 3 UNREAD" line rather than an invented first line of the report.
@@ -124,24 +122,26 @@ private _unread = _entry get "unread";
 private _claimed = _entry get "claimedBy";
 private _replies = _entry getOrDefault ["replies", 0];
 private _meta = [];
-if (_replies > 0) then {_meta pushBack format ["%1 REPLIES", _replies]};
+// Plural only when the count is not one (review 2026-11-01, item 2.7).
+if (_replies > 0) then {_meta pushBack format ["%1 %2", _replies, ["REPLIES", "REPLY"] select (_replies isEqualTo 1)]};
 if (_unread > 0) then {_meta pushBack format ["%1 UNREAD", _unread]};
 if (_claimed != "") then {_meta pushBack "CLAIMED"};
 if (_closed) then {_meta pushBack "CLOSED"};
 
+// Counts are values: untracked, at the body size (review 2026-11-01, R1).
 [
     _body,
-    [_left, _y + 2 * _rowH * 0.95, _w - _left - _pad, _rowH],
+    [_left, _y + 2 * _rowH, _w - _left - _pad * 2, _rowH],
     _meta joinString " - ",
     ([_mute, _accent] select (_unread > 0)),
-    TEXT_LABEL, true, "left", true
+    TEXT_BODY, true
 ] call EFUNC(tacpad,drawText);
 
 // 1px between entries. A row boundary, not a region boundary - the design
 // spends 2px only where one part of the screen ends and another begins.
-[_body, [0, _y + _h - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
+[_body, [0, _top + _h - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
-private _hit = [_body, [0, _y, _w, _h], _onClick] call EFUNC(tacpad,drawHit);
+private _hit = [_body, [0, _top, _w, _h], _onClick] call EFUNC(tacpad,drawHit);
 _hit setVariable [QGVAR(threadId), _entry get "threadId"];
 
-_rows
+_h / _rowH

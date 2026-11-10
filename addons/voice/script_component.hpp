@@ -19,37 +19,58 @@
 // (adapter_von by default) carries the audio. This addon never names a VON
 // command: everything engine-specific goes through the adapter's hooks.
 
-// --- Which system carries the voice (user, 2026-10-20) ---------------------------
-// Our game VoIP (VON) runs only when no radio mod is loaded. With TFAR or ACRE
-// in CfgPatches jmfsb_voice_system is "tfar" / "acre" on that machine,
-// jmfsb_voice_active ("VON is running") is false, and neither this addon nor
-// adapter_von sets up anything of VON. The core then runs in EXTERNAL-RADIO
-// mode: nets, net state, the active net, ear / mute, quality and talking come
-// from that radio's adapter (adapter_tfar / adapter_acre); calls, callbacks,
-// contacts and our sounds are VON-only and answer empty.
+// --- Which system carries the voice (user, 2026-10-20; a setting, 2026-10-30) ---
+// The CBA setting jmfsb_voice_defaultSystem (JMSB - Voice > System,
+// server-forced) is Automatic, Mumble, LiveKit or game VON; a system chosen
+// but not loaded falls back to Automatic. Decided by FUNC(selectSystem): the
+// automatic answer in preInit, the setting's at CBA_settingsInitialized,
+// before anything of any system starts. jmfsb_voice_system is then
+// "livekit" / "von" (or "none", below) on every machine, and
+// jmfsb_voice_active true for the first two.
+// TFAR AND ACRE ARE GONE (DEC1, 2026-10-31): no radio-mod choice, no
+// external-radio mode. A stored "tfar" / "acre" choice is not a choice any
+// more and is read as Automatic (FUNC(selectSystem)).
 #define SYSTEM_VON          "von"
-#define SYSTEM_TFAR         "tfar"
-#define SYSTEM_ACRE         "acre"
-#define TFAR_PATCHES        ["task_force_radio", "tfar_core"]
-#define ACRE_PATCHES        ["acre_main"]
-#define OTHER_VOICE_MODS    (TFAR_PATCHES + ACRE_PATCHES)
+#define SYSTEM_AUTO         "auto"
+// LIVEKIT IS THE VOICE (user, 2026-10-31: "livekit was to be the VON", "no
+// in-game VON"): our voice server through jmsb_voice_x64.dll,
+// jmfsb_adapter_livekit - the automatic answer wherever the extension is
+// loaded; the game's own VON (jmfsb_adapter_von) only where it is not, or by
+// choice. Both are game-voice systems: the core runs its full logic (nets,
+// calls, callbacks, cut-offs) under either. adapter_livekit announces
+// itself in GVAR(loaded) from its preInit, as the radios' CfgPatches do.
+#define SYSTEM_LIVEKIT      "livekit"
+// ONE SETTING PICKS THE VOICE (user, 2026-11-01: "have more than one cba
+// setting to pic the voice system" - adapter_livekit's Voice server type went
+// into this list). Mumble is a choice, not a system: the same adapter and
+// extension carry it (system "livekit"); adapter_livekit's server reads the
+// choice to hand out a Mumble or a LiveKit address. Automatic is Mumble when
+// its address is set, else LiveKit, else game VON (2026-11-05), the default.
+#define SYSTEM_MUMBLE       "mumble"
+// THE SERVER PICKS FOR EVERYONE (2026-10-31, PLAN_VOICE_EW_PLAY V1): the
+// server's system is published (GVAR(serverSystem)) and every client follows
+// it (FUNC(followServer)). A client that cannot run it - the voice server
+// chosen and its extension not loaded here - is "none": VOICE UNAVAILABLE,
+// told once; no voice of any system, text messages still work. A client waits
+// up to SERVER_SYSTEM_WAIT_S for the server's answer, then keeps its own.
+#define SYSTEM_NONE         "none"
+#define SERVER_SYSTEM_WAIT_S 60
+#define UNAVAILABLE_TITLE   "VOICE UNAVAILABLE"
+#define LIVEKIT_NAME        "the voice server (LiveKit)"
+#define UNAVAILABLE_TEXT    "The server runs the voice over %1, which cannot run here (the voice extension did not load: Linux, or BattlEye without the whitelist). Nobody hears you and you hear nobody. Text messages still work."
+#define SYSTEM_GAME_IDS     [SYSTEM_LIVEKIT, SYSTEM_VON]
+// The setting's choices, in the order the list shows them.
+#define SYSTEM_CHOICES      [SYSTEM_AUTO, SYSTEM_MUMBLE, SYSTEM_LIVEKIT, SYSTEM_VON]
+#define SYSTEM_CHOICE_NAMES ["Automatic: Mumble, else LiveKit, else game VON", "Mumble", "LiveKit", "Game VON (fallback)"]
+#define DEFAULT_SYSTEM_CHOICE 0
+// The CBA pages: the choice on its own page, the game voice's settings on
+// the Built-in page.
+#define CATEGORY_VOICE      "JMSB - Voice"
+#define CATEGORY_VON        "JMSB - Voice (Built-in)"
 
 // --- Adapter hooks ----------------------------------------------------------
 #define DEFAULT_ADAPTER     SYSTEM_VON
 #define HOOKS_REQUIRED      ["join", "leave", "quality", "talking"]
-// An external radio's adapter (id "tfar" / "acre", taken only while that
-// system is the one loaded) has no join / leave: the radio's own channels are
-// its membership. Required: "nets" [] -> [[net, name, kind, -1], ...] (the
-// local player's), "netState" [] -> [[net, name, kind, active, muted, ear,
-// reachable], ...], "talking" [] -> [[unit, net], ...] (others). Optional:
-// "current", "setActive", "ptt", "setEar" [net, ear] -> bool, "setMute"
-// [net, muted] -> bool, "linkQuality" [speaker, net] -> 0..1, "selfTest".
-#define HOOKS_REQUIRED_EXTERNAL ["nets", "netState", "talking"]
-// External-radio mode: talking is read this often, the nets every CLIENT_TICK_S.
-#define EXTERNAL_TICK_S     0.1
-#define QUALITY_FULL        1
-// An external "netState" row is netState's own row less its talkers column.
-#define EXTERNAL_STATE_COLS 7
 // Optional hooks: "channel" [net] -> voice channel number (-1 none),
 // "setActive" [net] -> bool, "current" [] -> net id, "block" [level],
 // "ptt" [] -> [down, net] (the local player's own key, every frame),
@@ -141,6 +162,14 @@
 #define EAR_RIGHT           "R"
 #define EARS                [EAR_LEFT, EAR_BOTH, EAR_RIGHT]
 
+// THE PTT KEYS (user, 2026-10-30: "we want more than one ppt 4 avaible cba
+// keybinds kapslock is the defauult"), like the MPU5's Dual PTT. PTT 1 is the
+// active net; PTT 2-4 each talk on a net set in the RADIO app (FUNC(pttKey)),
+// by default the net in that place of his list (net 2, 3, 4).
+#define PTT_KEYS            4
+#define PTT_ACTIVE          1
+#define PTT_OFF             "off"
+
 // --- Sets the player carries -> RF nodes -------------------------------------
 // Node id per player per set, stable across respawn: voice_<uid>_<kind>.
 #define NODE_FORMAT         "voice_%1_%2"
@@ -148,6 +177,13 @@
 #define NODE_LR             "lr"
 #define NODE_VEH            "veh"
 #define NODE_KINDS          [NODE_SR, NODE_LR, NODE_VEH]
+
+// --- Batteries (user, 2026-10-30) --------------------------------------------
+// The handheld's node carries the battery the RADIO app shows and swaps; the
+// warnings, as shares of full, each said once on the way down (0 = flat).
+#define BATTERY_KIND        NODE_SR
+#define BATTERY_WARN_LEVELS [0.2, 0.05, 0]
+#define PERCENT             100
 #define OWNER_TAG           QUOTE(ADDON)
 // The sets on a man are RF's to recognise (jmfsb_rf_fnc_carriedSets); a crew
 // seat in a vehicle is the vehicle's set.
@@ -160,6 +196,13 @@
 #define SEAT_EVENTS         ["GetInMan", "GetOutMan", "SeatSwitchedMan"]
 #define ROLE_CARGO          "cargo"
 
+// --- Requests to the server (review S5/S7, R1) -------------------------------
+// A call, callback or RTO-net request names a unit, so it goes by remoteExec
+// to the srv* function, which checks the sender (jmfsb_common_fnc_senderIs);
+// the server's answers come back by remoteExec, taken only from the server
+// (jmfsb_common_fnc_fromServer). CBA events carry no sender.
+#define SERVER_OWNER        2
+
 // --- Ticks ------------------------------------------------------------------
 #define CLIENT_TICK_S       1
 #define SERVER_TICK_S       1
@@ -168,7 +211,12 @@
 #define EMCON_SILENT        3
 
 // --- Calls ------------------------------------------------------------------
-// VON: one custom channel per call; ten custom channels, two are C2 / A2G.
+// VON: one custom channel per call; ten custom channels, two are C2 / A2G -
+// so eight call slots. NO LIMIT TO THE NUMBER OF CALLS ON THE VOICE SERVER
+// (user, 2026-11-01): an adapter that counts no channels gets a slot more
+// whenever these are all taken (FUNC(srvSlot)). The people in a call are a
+// design rule (DESIGN_VOICE.md "Calls", SPEC_TACNET calls.size_max), not a
+// channel count: eight under every system.
 #define CALL_SLOTS          8
 #define CALL_MAX_MEMBERS    8
 // A call is live from two members, and ends when one is left.

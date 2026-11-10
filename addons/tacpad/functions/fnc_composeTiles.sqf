@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The one-tap reply tiles at the head of the reply picker - the handoff's 1b:
  * ROGER, WILCO and ON TASK, a reply with no fields, sent on the one press.
  *
@@ -91,6 +91,7 @@ private _glyph = ([CARD_TAG_SIZE] call FUNC(textH)) / 1.25 * CARD_GLYPH_W * pixe
     private _hit = [_body, [_tx, _ty, _tileW, _tileH], {
         params ["_ctrl"];
         GVAR(composeTemplate) = _ctrl getVariable [QGVAR(pick), ""];
+        GVAR(composeFrago) = [];
         GVAR(composePick) = false;
         GVAR(composeMarker) = "";
         [] call FUNC(composeSend);

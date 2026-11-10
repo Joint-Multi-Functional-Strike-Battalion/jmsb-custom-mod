@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts a map tool, or stops it if it is the one running - a toggle, which is
  * what the TOOLS panel's cells are. One tool at a time: starting one stops
  * whatever was taking clicks before it. Stopping never wipes a drawing; that
@@ -10,7 +10,7 @@
  * strung onto the end of the first is not a thing anybody wants.
  *
  * Arguments:
- * 0: Tool id: "ruler", "protractor", "mark", "grid", "viewshed" or "route" <STRING>
+ * 0: Tool id: "ruler", "protractor", "mark", "grid", "viewshed", "route", "rings" or "los" <STRING>
  *
  * Return Value:
  * The tool now running, "" for none <STRING>

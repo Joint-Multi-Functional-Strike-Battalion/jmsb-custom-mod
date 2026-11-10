@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Stands in for ALiVE's own ALIVE_fnc_sendHint (CfgFunctions.hpp points ALiVE's
  * class at this file), so every message an ALiVE module shows a player - C2ISTAR's
  * AIR PICTURE, logistics, support - comes up in jmfsb_notify like everything

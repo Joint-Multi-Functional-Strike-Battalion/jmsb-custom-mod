@@ -5,7 +5,7 @@
 [
     QGVAR(stagingSatUplink), "CHECKBOX",
     ["Staging zone satellite uplink", "Every staging zone carries a radio base station at its centre: it relays the players' nets round the zone and links by satellite to the patrol bases and SAT-capable vehicles under open sky, at any distance."],
-    ["1st Joint Multi-Functional Strike Battalion", "Staging"],
+    ["JMSB - Mission & Admin", "Staging"],
     true,
     1
 ] call CBA_fnc_addSetting;

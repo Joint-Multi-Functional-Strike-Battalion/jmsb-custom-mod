@@ -1,8 +1,11 @@
 #include "script_component.hpp"
 
-[QGVAR(handleConnected), {_this call FUNC(handleConnected)}] call CBA_fnc_addEventHandler;
-[QGVAR(handleTeleport), {_this call FUNC(handleTeleport)}] call CBA_fnc_addEventHandler;
-[QGVAR(teleportPlayer), {_this call FUNC(teleportPlayer)}] call CBA_fnc_addEventHandler;
+// No CBA events here any more (review S7): any client could raise them - one
+// teleported every player at once. A joining client asks the server by
+// remoteExec (FUNC(handleConnected), which checks the unit is the sender's),
+// the server offers the teleport by remoteExec (FUNC(handleTeleport), taken
+// only from the server), and the confirm button calls FUNC(teleportPlayer)
+// on the player's own machine.
 
 if (isServer) then {
     addMissionEventHandler ["HandleDisconnect", {
@@ -17,6 +20,6 @@ if (isServer) then {
 if (hasInterface) then {
     [{
         if !GVAR(enableAddon) exitWith {};
-        [QGVAR(handleConnected), [player, getPlayerUID player]] call CBA_fnc_serverEvent;
+        [player, getPlayerUID player] call FUNC(handleConnected);
     }] call EFUNC(common,runAfterSettingsInit);
 };

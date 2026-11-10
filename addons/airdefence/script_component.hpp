@@ -26,6 +26,14 @@
 // battery and a battery is not something players can quietly walk past.
 #define AD_CONVENTIONAL ["invasion", "occupation"]
 
+// WITHOUT ALiVE (user, 2026-11-02: "works with or without"): every side with
+// ground of its own is answered as a conventional commander - batteries over
+// the towns on that ground. A side with no ground drawn anywhere is the
+// mission's enemy over the whole map, and then no battery goes in a town
+// within this of a player-side man at the start (their own base).
+#define AD_FALLBACK_CTYPE   "occupation"
+#define AD_FALLBACK_CLEAR   3000
+
 // Launchers stand off the radar the way a real battery does: far enough that
 // killing the radar is a separate job from killing the launchers, near enough
 // that they read as one site.

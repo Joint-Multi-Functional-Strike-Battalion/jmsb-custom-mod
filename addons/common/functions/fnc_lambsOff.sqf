@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes one aircraft (and its crew's group) out of LAMBS Danger's hands.
  *
  * LAMBS is written for infantry in contact - take cover, suppress, flank,

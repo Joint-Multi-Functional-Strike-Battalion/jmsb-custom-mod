@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes back every patrol nobody is near any more.
  *
  * THE OTHER HALF OF THE PROXIMITY RULE. FUNC(topUp) will not put a drone up

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who is talking now, for the squad list's TX / VOX flags, the ON BOARD rail
  * and the talking chip: everyone the voice API says the player hears
  * (jmfsb_voice_fnc_talking), and the player himself while he transmits (the

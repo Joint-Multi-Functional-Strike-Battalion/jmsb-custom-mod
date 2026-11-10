@@ -6,7 +6,6 @@ class CfgPatches {
         units[] = {
             QGVAR(moduleCAS),
             QGVAR(moduleTransport),
-            QGVAR(moduleLogistics),
             QGVAR(moduleQRF)
         };
         weapons[] = {};

@@ -18,7 +18,7 @@
 [
     QGVAR(interval), "SLIDER",
     ["Seconds between launches", "How long a battery waits between shots. The clock resets whether or not it found a hull, so a battery does not fire the instant a ship appears - that is a trap, not a coastal battery."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     [60, 3600, AS_INTERVAL_DEF, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -26,7 +26,7 @@
 [
     QGVAR(searchRange), "SLIDER",
     ["Search range (m)", "How far a battery looks for a hull. With a radar on the net it sees what the radar sees; with none it looks for itself, which is what this bounds."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     [1000, 30000, AS_SEARCH_DEF, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -34,7 +34,7 @@
 [
     QGVAR(targetClasses), "EDITBOX",
     ["Target classes", "Comma-separated. What counts as a hull worth a missile."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     AS_TARGETS_DEF,
     true
 ] call CBA_fnc_addSetting;
@@ -44,7 +44,7 @@
 [
     QGVAR(missileSpeed), "SLIDER",
     ["Missile speed (m/s)", "Cruise speed on the run in. Fast enough that it has to be met head-on rather than chased, which is the whole shape of defending against one."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     [200, 1500, AS_SPEED_DEF, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -52,7 +52,7 @@
 [
     QGVAR(cruiseAlt), "SLIDER",
     ["Cruise altitude (m)", "Height above the sea on the run in. Low is what makes it hard to see coming and hard to engage."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     [5, 500, AS_CRUISE_ALT_DEF, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -60,7 +60,7 @@
 [
     QGVAR(terminalRange), "SLIDER",
     ["Terminal range (m)", "Distance from the hull where it stops cruising and dives."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     [100, 5000, AS_TERMINAL_DEF, 0],
     true
 ] call CBA_fnc_addSetting;
@@ -72,7 +72,7 @@
 [
     QGVAR(interceptable), "CHECKBOX",
     ["Interceptable", "The missile carries a decoy the defending side's AA and CIWS can engage. Off: nothing can lock it and it always arrives."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     true,
     true
 ] call CBA_fnc_addSetting;
@@ -80,7 +80,7 @@
 [
     QGVAR(debug), "CHECKBOX",
     ["Debug", "Log every cycle to the RPT: what a battery looked for, what it found, what it fired and where the missile went."],
-    ["1st Joint Multi-Functional Strike Battalion", "Anti-Ship"],
+    ["JMSB - Vehicles & Defence", "Anti-Ship"],
     false,
     true
 ] call CBA_fnc_addSetting;

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RUN - fires the code box at whichever target was last chosen.
  *
  * THE THREE TARGET BUTTONS ARE NOW A CHOICE, NOT THREE TRIGGERS. SERVER, LOCAL

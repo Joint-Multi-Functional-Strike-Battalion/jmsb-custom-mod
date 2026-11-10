@@ -1,12 +1,12 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The EW map layer, on a map control's Draw event - the vanilla map and the
- * device host's map both (FUNC(mapHook)). From this man's slice only:
+ * device host's map both (FUNC(mapHook)), and the phone's walking-view map
+ * (jmfsb_devices_fnc_overlayOpen). From this man's slice only:
  *
- *   DF lines   every fresh cut of his side, from the sensor along the
- *              bearing, with its error wedge
  *   fixes      a circle of the fix error and the track's id, class and band
+ *              (no DF bearing lines since 2026-11-01, user)
  *   jammers    his side's own jammers, so nobody DFs a friend
  *
  * Off when the OVERVIEW tab's MAP LAYER is off.
@@ -30,17 +30,10 @@ if (!GVAR(mapLayer) || {GVAR(mine) isEqualTo []}) exitWith {};
 private _isr = (GVAR(mine) param [4, []]) param [3, false];
 
 {
-    _x params ["_id", "_band", "", "", "", "_fix", "_fixErr", "", "", "_cuts"];
-    {
-        _x params ["_at", "_brg", "_err"];
-        private _from = _at + [0];
-        private _to = _from vectorAdd [DF_LINE_M * sin _brg, DF_LINE_M * cos _brg, 0];
-        _map drawLine [_from, _to, COLOUR_CUT];
-        {
-            _map drawLine [_from, _from vectorAdd [DF_LINE_M * sin _x, DF_LINE_M * cos _x, 0], COLOUR_CUT_EDGE];
-        } forEach [_brg - _err, _brg + _err];
-    } forEach _cuts;
-
+    _x params ["_id", "_band", "", "", "", "_fix", "_fixErr"];
+    // NO DF BEARING LINES (user, 2026-11-01: "still some faded yellow lines
+    // coming from the group to places on the map" - "remove them"). A track
+    // shows on the map only once it is fixed; its cuts stay in the EW app.
     if (_fix isNotEqualTo []) then {
         _map drawEllipse [_fix, _fixErr max SLICE_GRID_M, _fixErr max SLICE_GRID_M, 0, COLOUR_FIX, ""];
         _map drawIcon [

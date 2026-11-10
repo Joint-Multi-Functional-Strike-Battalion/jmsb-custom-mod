@@ -1,11 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How much of the engine's custom channels game voice is using - for the
  * devices' gauge (user, 2026-10-21). Game voice has ten custom channels in
  * all: C2, A2G and every live CALL take one each, and so does any the mission
- * made itself. Under TFAR / ACRE (no "channelUse" hook) there is nothing to
- * count.
+ * made itself. With no game voice running, or an adapter with no
+ * "channelUse" hook, there is nothing to count.
  *
  * Arguments:
  * None

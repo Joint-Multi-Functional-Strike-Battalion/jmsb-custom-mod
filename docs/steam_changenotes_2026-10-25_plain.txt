@@ -1,0 +1,46 @@
+25 October 2026
+
+NEW NUMPAD KEYS
+Changed keys before? Check ESC > Options > Controls > Configure Addons > 1st JMSB.
+- 1-6 pick net 1-6. Ctrl + 1-6 mute or unmute it.
+- Alt + 1-4 device keys F1-F4.
+- 0 / . previous / next net. On the tablet they scroll the open screen first.
+- 7 voice activation on/off. 8 tablet. 9 Troops In Contact.
+- * answer / hang up. / talk local (hold). - / + voice volume.
+- Enter is not used. Talk on your net with Push To Talk.
+- Arma's Push To Talk (Direct) also talks local. Set it in Options > Controls > Multiplayer.
+
+VOICE
+- Voice volume: setting, RADIO app, numpad - / +.
+- Voice activation, with a setting for calls.
+- LOCAL is a key, not a net. The arrows no longer land on it.
+- Incoming calls pop up with the keys to answer.
+- RTO nets: making a net works, and the maker is on it.
+
+ARTILLERY
+- Counter-battery is back. The enemy fires back at player-crewed guns. TAC//SUPPORT virtual artillery is exempt. Values on the Enemy Reaction module.
+- CB radar. Every enemy shell sends your artillery team a TAC//MSG from CB RADAR, pinned on the map. Set the team in the PAC ORBAT: squad kind art or mortar.
+- ARTY app and tile. Fire solutions from ACE's own tables. Target by typed grid, map marker or radar fix. MRSI up to 3 rounds.
+- Artillery carriers. M-ATV GMG and HMG, DAGOR armed and AT, AMV-7 Marshall. All four US camos. Each as Mortar Carrier and Rocket Artillery.
+- Driver's ACE menu: Pre-deploy puts a baseplate 2.5 m behind the vehicle. Deploy sets up the gun in 60 s. Pack takes it down.
+- Rocket Artillery needs Western Sahara, else it uses the mortar. The baseplate needs ACE CSW.
+
+TABLET AND APPS
+- New MSG and ARTY live tiles. SETTINGS > LIVE TILES sets each tile to Auto, position 1-10 or Off.
+- TAC//MSG: click a player or a squad to message them.
+- Notices log is back, and notification time is a setting. SETTINGS > NETS & ALERTS.
+- Larger text in all apps, settings, support and the PAC tile.
+- Medic app shows BP, resp rate and SpO2.
+- The admin console opens inside the tablet frame.
+- Vehicle tablet: cropped to the screen and 30% wider.
+- BFT goes dark while GPS is jammed.
+
+EW, DRONES, AITR
+- Jammers: ACE actions to disable (engineer, EOD or ISR) or hack.
+- Patrol drones no longer wobble in a hover.
+- AiTR ranges: AI 100 m, players 250 m, vehicles 250 m, 750 m through the Vector. All CBA settings.
+
+ALSO
+- Addon Options split into seven JMSB pages. Saved settings carry over.
+- Field Manual pages show their text again. Pause menu > Field Manual > 1st JMSB.
+- New numpad signs for the devices and the tablet.

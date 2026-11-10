@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TERMINAL GUIDANCE: what the drone is actually going to hit, as opposed to
  * the grid it was sent to.
  *

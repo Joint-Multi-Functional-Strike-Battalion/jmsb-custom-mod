@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: whether the local player is flying an aircraft, kept on his unit as
  * jmfsb_voice_air (public, set only when it changes) for FUNC(a2gNet) on
  * every machine. A2G IS PILOTS (user, 2026-10-20): the driver of an Air

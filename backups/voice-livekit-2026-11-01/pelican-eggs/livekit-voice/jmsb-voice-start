@@ -1,0 +1,55 @@
+#!/bin/bash
+# The egg's startup. Builds the LiveKit config from the egg's variables (env)
+# here, not in the egg's startup line: the yolk entrypoint turns every "}}"
+# into "}", which breaks a config written inline, and prints the line - key
+# and secret with it. Starts the LiveKit server, and the echo test bot beside
+# it when ECHO_TEST is true. ^C stops them.
+#
+# TLS=true: Caddy serves wss on the signalling port with the certificate in
+# CERT_DIR (fullchain.pem, privkey.pem: the node's own, copied there by the
+# host), and LiveKit moves to a port on the container's loopback only. Caddy
+# reloads when the host renews the certificate.
+CERT_DIR=/mnt/voice-cert
+INTERNAL_PORT=7800
+CERT_CHECK_S=3600
+
+port=${SERVER_PORT}
+bind=0.0.0.0
+proxy=
+if [ "${TLS}" = "true" ]; then
+    for f in fullchain.pem privkey.pem; do
+        if [ ! -r "${CERT_DIR}/${f}" ]; then
+            echo "TLS is on but ${CERT_DIR}/${f} is missing or unreadable: mount the certificate folder (egg description)"
+            exit 1
+        fi
+    done
+    port=${INTERNAL_PORT}
+    bind=127.0.0.1
+    export CERT_DIR INTERNAL_PORT
+    caddy run --adapter caddyfile --config /etc/jmsb-voice/Caddyfile &
+    proxy=$!
+    (
+        sum=$(cat "${CERT_DIR}"/*.pem | md5sum)
+        while sleep ${CERT_CHECK_S}; do
+            now=$(cat "${CERT_DIR}"/*.pem | md5sum)
+            if [ "${now}" != "${sum}" ]; then
+                echo "certificate renewed: reloading"
+                caddy reload --force --adapter caddyfile --config /etc/jmsb-voice/Caddyfile && sum=${now}
+            fi
+        done
+    ) &
+    watch=$!
+fi
+
+config="{port: ${port}, rtc: {tcp_port: ${LIVEKIT_TCP_PORT}, udp_port: ${LIVEKIT_UDP_PORT}, use_external_ip: ${LIVEKIT_USE_EXTERNAL_IP}}, logging: {level: ${LIVEKIT_LOG_LEVEL}}}"
+livekit-server --bind ${bind} --keys "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}" --config-body "${config}" &
+server=$!
+bot=
+if [ "${ECHO_TEST}" = "true" ]; then
+    ECHO_URL="ws://127.0.0.1:${port}" echobot &
+    bot=$!
+fi
+trap 'kill -INT $server $bot $proxy 2>/dev/null' INT TERM
+wait $server
+kill -INT $bot $proxy $watch 2>/dev/null
+wait

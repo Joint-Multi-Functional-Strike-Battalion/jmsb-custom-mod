@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * JAMMING, full size: how much of the spectrum is being sat on. NOTHING ELSE.
  * Drones and jamming are two different things and their pages must not look
  * alike - the user's rule, in those words. Drones have their own page
@@ -124,7 +124,7 @@ private _rowY = _padY + _rowH * 2.1;
     [
         _body, [_pad, _top, (_w - 2 * _pad) * 0.42, _rowH],
         format ["%1 %2", _name, ["OK", "DEGRADED", "NONET"] select _s],
-        _c, TEXT_TITLE, true, "left", true
+        _c, TEXT_TITLE, true
     ] call EFUNC(tacpad,drawText);
 
     private _barX = _pad + (_w - 2 * _pad) * 0.46;
@@ -144,7 +144,7 @@ private _barY = _rowY + _rowH * 1.15 * 3;
 private _y = _barY + _rowH * 1.8;
 [_body, [_pad, _y, _w - 2 * _pad, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 _y = _y + _padY;
-[_body, [_pad, _y, _w - 2 * _pad, _rowH], "RECENT ALERTS", _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
+[_body, [_pad, _y, _w - 2 * _pad, _rowH], "RECENT ALERTS", _mute, TEXT_BODY, true] call EFUNC(tacpad,drawText);
 _y = _y + _rowH;
 
 private _alerts = (missionNamespace getVariable [QEGVAR(common,alerts), []]) select {(_x param [4, 0]) > CBA_missionTime};
@@ -164,7 +164,7 @@ if (_alerts isEqualTo []) then {
         _x params ["_src", "_txt", "_grid", ["_sev", 0]];
         private _ay = _y + _forEachIndex * _rowH;
 
-        [_body, [_pad, _ay, _w * 0.22, _rowH], toUpper _src, ([_mute, _amber, _accent] select (_sev min 2)), TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
+        [_body, [_pad, _ay, _w * 0.22, _rowH], toUpper _src, ([_mute, _amber, _accent] select (_sev min 2)), TEXT_LABEL, true] call EFUNC(tacpad,drawText);
         [
             _body, [_w * 0.24, _ay, _w * 0.76 - _pad, _rowH],
             [_txt, format ["%1 - %2", _txt, _grid]] select (_grid isNotEqualTo ""),

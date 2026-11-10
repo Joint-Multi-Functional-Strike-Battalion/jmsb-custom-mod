@@ -58,7 +58,7 @@ class CfgVehicles {
     class ACE_O_T_SpottingScope;
     class O_T_Soldier_F;
     class O_Heli_Attack_02_F;
-    class O_Quadbike_ALIVE;
+    class O_Quadbike_01_F;
     class O_T_APC_Tracked_02_AA_ghex_F;
     class O_T_APC_Tracked_02_cannon_ghex_F;
     class O_T_Boat_Armed_01_hmg_F;
@@ -285,7 +285,7 @@ class CfgVehicles {
         faction = QUOTE(ADDON);
         crew = QGVAR(O_T_Helipilot_F);
     };
-    class GVAR(O_Quadbike_ALIVE): O_Quadbike_ALIVE {
+    class GVAR(O_Quadbike_ALIVE): O_Quadbike_01_F {
         scope = 2;
         scopeCurator = 2;
         author = QAUTHOR;

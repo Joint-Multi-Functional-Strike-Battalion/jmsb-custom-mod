@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Mutes or un-mutes one air defence vehicle's alarm (FUNC(alarm)), public, so
  * the server hears it. Loudspeakers nearby still sound.
  *

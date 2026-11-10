@@ -7,6 +7,10 @@ params [
     ["_enable",true,[false]]
 ];
 
+// The setting's script runs on every machine; a server or headless client has
+// no player to hang handlers on (review L3).
+if (!hasInterface) exitWith {};
+
 if (_enable) then {
     private _firstTimeSetup = isNil {profileNamespace getVariable "DT_footViewDistance"};
     DT_viewDistance_getInMan = player addEventHandler ["GetInMan",DT_fnc_getInMan];

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One line of text, in one of the system's type roles.
  *
  * Every panel used to build its own <t> tag with format, which is how five
@@ -27,7 +27,10 @@
  * 4: Size, as a multiple of the body size <NUMBER> (optional, default 1)
  * 5: Bold <BOOL> (optional, default false)
  * 6: Alignment - "left", "right" or "center" <STRING> (optional, default "left")
- * 7: Track the letters, and uppercase them <BOOL> (optional, default false)
+ * 7: Track the letters, and uppercase them <BOOL> (optional, default false) -
+ *    a line longer than TRACK_MAX_CHARS is uppercased and not spaced (FUNC(retext))
+ * 8: Font - "" for the label role (the condensed sans), FONT_MONO for a value
+ *    (numbers, grids, times, callsigns), or a font name <STRING> (optional, default "")
  *
  * Return Value:
  * The control <CONTROL>
@@ -46,21 +49,11 @@ params [
     ["_size", 1, [0]],
     ["_bold", false, [false]],
     ["_align", "left", [""]],
-    ["_tracked", false, [false]]
+    ["_tracked", false, [false]],
+    ["_font", "", [""]]
 ];
 
 if (isNull _parent) exitWith {controlNull};
-
-// The apps' label and body text, one pixel up (FUNC(textSize)).
-_size = [_size] call FUNC(textSize);
-
-if (_tracked) then {
-    _text = (toUpper _text) splitString "" joinString " ";
-};
-
-// After the tracking, so the spacing is applied to the glyphs the caller wrote
-// rather than to the innards of an escape sequence.
-_text = [_text] call FUNC(xmlSafe);
 
 _pos params ["_x", "_y", "_w", "_h"];
 
@@ -70,7 +63,9 @@ private _fontH = TEXT_BASE * pixelH * pixelGrid * HOST_K * GVAR(textScale) * GVA
 // that and dropped to the middle of what the caller asked for, which is what
 // puts the text in the centre rather than against the top edge. FUNC(textH)
 // returns the same number, so a caller can size a cell to fit its own label.
-private _lineH = [_size] call FUNC(textH);
+// The apps' label and body text, one pixel up (FUNC(textSize)) - the same
+// size FUNC(retext) sets the words at.
+private _lineH = [[_size] call FUNC(textSize)] call FUNC(textH);
 
 // THE BOX IS THE LINE. It was `_lineH max _h` while the top was still dropped
 // by half the difference - so whenever the line was SHORTER than the caller's
@@ -91,14 +86,9 @@ _ctrl ctrlSetPosition [_x, _y + ((_h - _lineH) max 0) * 0.5, _w, _lineH];
 // The control's own font height is the body size; the tag scales off it. Set
 // before the text, because structured text is laid out when it is assigned.
 _ctrl ctrlSetFontHeight _fontH;
-_ctrl ctrlSetStructuredText parseText format [
-    "<t font='%1' size='%2' align='%3' color='%4'>%5</t>",
-    ["RobotoCondensed", "RobotoCondensedBold"] select _bold,
-    _size,
-    _align,
-    _color call BIS_fnc_colorRGBAtoHTML,
-    _text
-];
+// The words, the face, the tracking and the escaping are FUNC(retext)'s, so a
+// live screen that updates this line on a tick writes it the same way.
+[_ctrl, _text, _color, _size, _bold, _align, _tracked, _font] call FUNC(retext);
 _ctrl ctrlCommit 0;
 
 // REGISTERED FOR THE HIT THAT MAY COVER IT. A structured text control takes the

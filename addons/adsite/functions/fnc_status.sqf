@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * `#jmfsb adsite`: what the intercept system holds and what it costs - units
  * by weapon, alarm areas, threats in the air, whether the engagement PFH is
  * running, the last and worst pass in ms, and the running totals. To the RPT

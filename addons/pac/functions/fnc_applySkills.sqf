@@ -22,11 +22,13 @@ Description:
 
     - and this is the one place that knows what those shapes mean.
 
-    CLEARED FIRST, THEN APPLIED. Every variable this function has ever set on
-    the unit is set back to nil before the new set goes on, so a skill taken
-    away actually goes away. The list of what it set is kept on the unit for
-    that purpose - the same trick FUNC(setupPlayer) plays with
-    YMF_myCustomVariables, and for the same reason.
+    WORKED OUT, THEN ONLY THE DIFFERENCE SET. The full set the unit should
+    carry is built first; a variable this function set last time and does
+    not want now goes back to nil, so a skill taken away actually goes away,
+    and a variable or trait is set only when its value differs - the
+    variables are broadcast, and this runs on every roster publish. The list
+    of what it set is kept on the unit for that purpose - the same trick
+    FUNC(setupPlayer) plays with YMF_myCustomVariables.
 
     NO SKILLS IS NO SKILLS. A player nobody has
     assigned anything to arrives with the ACE classes at 0 and no traits, and
@@ -84,20 +86,24 @@ private _sessionEffects = [];
 } forEach (((missionNamespace getVariable [QGVAR(session), createHashMap]) getOrDefault [getPlayerUID _unit, []])
     + (_unit getVariable [QGVAR(tempEffects), []]));
 
-// ---- clear what we set last time -------------------------------------------
+// ---- what the unit should carry ---------------------------------------------
+// Worked out here and set at the end only where it differs: every variable is
+// broadcast, and this runs on every roster publish. The start is "nothing":
+// ACE classes at 0, the three ACE traits off, last time's traits off.
+// Both keyed lower-case -> [name as written, value].
+private _vars = createHashMapFromArray [
+    ["ace_medical_medicclass", ["ace_medical_medicClass", 0]],
+    ["ace_isengineer", ["ACE_IsEngineer", 0]],
+    ["ace_iseod", ["ACE_isEOD", false]]
+];
+private _traits = createHashMapFromArray [
+    ["medic", ["Medic", false]],
+    ["engineer", ["Engineer", false]],
+    ["explosivespecialist", ["ExplosiveSpecialist", false]]
+];
 {
-    _unit setVariable [_x, nil, true];
-} forEach (_unit getVariable [QGVAR(setVars), []]);
-{
-    _unit setUnitTrait [_x, false];
+    _traits set [toLower _x, [_x, false]];
 } forEach (_unit getVariable [QGVAR(setTraits), []]);
-
-_unit setVariable ["ace_medical_medicClass", 0, true];
-_unit setVariable ["ACE_IsEngineer", 0, true];
-_unit setVariable ["ACE_isEOD", false, true];
-_unit setUnitTrait ["Medic", false];
-_unit setUnitTrait ["Engineer", false];
-_unit setUnitTrait ["ExplosiveSpecialist", false];
 
 private _setVars = [];
 private _setTraits = [];
@@ -116,19 +122,19 @@ private _fnc_effect = {
     private _val = trim ((_parts select [1]) joinString ":");
     switch (_kind) do {
         case "medic": {
-            private _n = ((parseNumber _val) max 0 min 2) max (_unit getVariable ["ace_medical_medicClass", 0]);
-            _unit setVariable ["ace_medical_medicClass", _n, true];
-            _unit setUnitTrait ["Medic", _n > 0];
+            private _n = ((parseNumber _val) max 0 min 2) max ((_vars get "ace_medical_medicclass") # 1);
+            _vars set ["ace_medical_medicclass", ["ace_medical_medicClass", _n]];
+            _traits set ["medic", ["Medic", _n > 0]];
         };
         case "engineer": {
-            private _n = ((parseNumber _val) max 0 min 2) max (_unit getVariable ["ACE_IsEngineer", 0]);
-            _unit setVariable ["ACE_IsEngineer", _n, true];
-            _unit setUnitTrait ["Engineer", _n > 0];
+            private _n = ((parseNumber _val) max 0 min 2) max ((_vars get "ace_isengineer") # 1);
+            _vars set ["ace_isengineer", ["ACE_IsEngineer", _n]];
+            _traits set ["engineer", ["Engineer", _n > 0]];
         };
         case "eod": {
-            private _on = (parseNumber _val) > 0 || {_unit getVariable ["ACE_isEOD", false]};
-            _unit setVariable ["ACE_isEOD", _on, true];
-            _unit setUnitTrait ["ExplosiveSpecialist", _on];
+            private _on = (parseNumber _val) > 0 || {(_vars get "ace_iseod") # 1};
+            _vars set ["ace_iseod", ["ACE_isEOD", _on]];
+            _traits set ["explosivespecialist", ["ExplosiveSpecialist", _on]];
         };
         // AN ENGINE TRAIT IS A TRAIT, NOT A VARIABLE. "trait:UAVHacker" (the UAV
         // operator skill) used to land as a variable named UAVHacker, which the
@@ -138,10 +144,10 @@ private _fnc_effect = {
         // the mission flag it always was.
         case "trait": {
             if ((toLower _val) in ENGINE_TRAITS) then {
-                _unit setUnitTrait [_val, true];
+                _traits set [toLower _val, [_val, true]];
                 _setTraits pushBackUnique _val;
             } else {
-                _unit setVariable [_val, true, true];
+                _vars set [toLower _val, [_val, true]];
                 _setVars pushBackUnique _val;
             };
         };
@@ -162,7 +168,7 @@ private _fnc_effect = {
                 case (_raw isEqualTo str (parseNumber _raw)): {parseNumber _raw};
                 default {_raw};
             };
-            _unit setVariable [_name, _value, true];
+            _vars set [toLower _name, [_name, _value]];
             _setVars pushBackUnique _name;
         };
         default {
@@ -189,6 +195,27 @@ private _fnc_effect = {
 {
     if ([_x] call _fnc_effect) then {_applied = _applied + 1};
 } forEach _sessionEffects;
+
+// ---- set only what differs ----------------------------------------------------
+// last time's variables no longer wanted go back to nil
+{
+    if !((toLower _x) in _vars) then {_unit setVariable [_x, nil, true]};
+} forEach (_unit getVariable [QGVAR(setVars), []]);
+{
+    _y params ["_name", "_value"];
+    // a nil _has is never compared (an error): unset counts as different
+    private _has = _unit getVariable _name;
+    private _differs = isNil "_has";
+    if (!_differs) then {_differs = _has isNotEqualTo _value};
+    if (_differs) then {_unit setVariable [_name, _value, true]};
+} forEach _vars;
+{
+    _y params ["_name", "_value"];
+    private _has = _unit getUnitTrait _name;
+    private _differs = isNil "_has";
+    if (!_differs) then {_differs = _has isNotEqualTo _value};
+    if (_differs) then {_unit setUnitTrait [_name, _value]};
+} forEach _traits;
 
 _unit setVariable [QGVAR(setVars), _setVars];
 _unit setVariable [QGVAR(setTraits), _setTraits];

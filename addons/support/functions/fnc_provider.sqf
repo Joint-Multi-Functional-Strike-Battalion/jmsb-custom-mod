@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The provider that owns an asset id - the id's prefix up to the first ":".
  *
  * Arguments:

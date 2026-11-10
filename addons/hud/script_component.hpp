@@ -50,3 +50,19 @@
 // out within five seconds of the mission stopping.
 #define HUD_LAYER_LIFE 5
 #define HUD_LAYER_RENEW 2
+
+// BUILT ONCE, UPDATED IN PLACE (review P5 / R8). A readout no longer draws:
+// it pushes draw ops onto a list, and FUNC(paint) turns the list into
+// controls. Each op is [kind, args], where args are exactly the tacpad
+// helper's arguments without the parent - so a rebuild is that helper,
+// called as it always was, and the pixels cannot move.
+#define HUD_OP_FILL "fill"
+#define HUD_OP_FRAME "frame"
+#define HUD_OP_TEXT "text"
+#define HUD_OP_ICON "icon"
+
+// The scanner sweep is read at most this often (seconds) by the HUD, unless
+// its inputs - the player unit and whether he carries the set - change first.
+// EFUNC(hacking,scannerRead) has its own two-second cache; this stops the HUD
+// asking every second on top of it.
+#define HUD_SWEEP_TTL 3

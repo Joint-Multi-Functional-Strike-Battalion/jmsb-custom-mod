@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The EW tile, a provider for jmfsb_tacpad_apps' band (registered in
  * XEH_preInit, like the MEDIC tile): the side's tracks, how many are fixed,
  * and the newest threat. Alert for a DF ON YOU in the last minute, warn for

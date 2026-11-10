@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The nets on which two nodes hold the same key (server) - the nets on which
  * B decodes A. EW asks it to decide whether an intercept is NAMED (the key is
  * held: the track shows the net) or only energy. The keys themselves never

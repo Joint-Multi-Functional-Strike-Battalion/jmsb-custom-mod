@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet dialog has closed - ESC, FUNC(close), or anything else that closes
  * a dialog. Takes the suite down and gives the shell its native host back, so
  * nothing in it points at a display that has gone.

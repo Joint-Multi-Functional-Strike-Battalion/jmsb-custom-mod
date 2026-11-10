@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tag chips worth offering one man, in the order they are drawn.
  *
  * THE ROW WAS THE WHOLE ROSTER (user, 2026-09-03: "you cleaned up the nets but

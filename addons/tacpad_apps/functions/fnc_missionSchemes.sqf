@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The mission's own colour presets, read out of its config.
  *
  * THE SIX SHIPPED SCHEMES ARE THE MOD'S AND STAY THE MOD'S. A unit that wants

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Accepts a call ringing for the local player (F1). It becomes his active net
  * when it goes live.
  *
@@ -20,4 +20,4 @@ params [["_callId", "", [""]]];
 
 if (!GVAR(active)) exitWith {};
 if (_callId isEqualTo "" || isNull player) exitWith {};
-[QGVAR(srvAnswer), [_callId, player, true]] call CBA_fnc_serverEvent;
+[_callId, player, true] remoteExecCall [QFUNC(srvAnswer), SERVER_OWNER];

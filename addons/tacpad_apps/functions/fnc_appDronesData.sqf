@@ -1,12 +1,17 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The DRONES board's fleet: every live UAV on the players' side, with what the
  * board shows of it. Read from the engine and from RF, never computed:
  *
  * SIDE. The players' side, derived (D59): the player's own side when it is one
  * of the sides players hold (jmfsb_common_fnc_playerSides), else the first of
  * them - the same derivation the CAS controller uses.
+ *
+ * EVERY UAV-CREWED VEHICLE OF THE SIDE (user, 2026-11-01): the drones placed
+ * in the mission AND the air-defence turrets - NASAMS, Skynex, the Sentinel.
+ * The review's R6 filtered the fleet to aircraft outside jmfsb_adsite; seen
+ * in game, the user reversed it.
  *
  * LINK. A drone is flown over the DATA net (DESIGN_TABLET_APPS.md, DRONES:
  * "Control needs the DATA link"), so the link is RF's DATA quality for the

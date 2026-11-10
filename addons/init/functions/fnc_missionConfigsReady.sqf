@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE MISSION HAS HANDED ITS CONFIGS OVER - build the databases from them.
  *
  * THIS EXISTS BECAUSE OF THE ORDER CBA RUNS THINGS IN. Extended_PreInit

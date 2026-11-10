@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: THE COMMS GATE for one report (DESIGN_EW "Comms gate the AI"):
  * whether a fix reported from where the AI sensor stood reaches a group, and
  * how late. Inside AI_VOICE_M it is shouted - always, at once. Beyond, it

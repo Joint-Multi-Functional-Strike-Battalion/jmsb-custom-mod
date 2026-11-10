@@ -18,26 +18,52 @@
     format ["%1 uid(s): %2", count _ids, _ids joinString ", "]
 }] call EFUNC(common,addDebugCommand);
 
-["admin.reload", "re-read the mission's admin list", {
-    admp_authorisedIDs = [] call FUNC(adminList);
-    {admp_authorisedIDs pushBackUnique _x} forEach ["_SP_AI_", "_SP_PLAYER_"];
-    format ["%1 uid(s) loaded", count admp_authorisedIDs]
+["admin.reload", "re-read the mod's admin list", {
+    private _ids = [] call FUNC(adminList);
+    [ADMIN_SOURCE_MOD, _ids] call EFUNC(common,adminSource);
+    format ["%1 uid(s) loaded", count _ids]
 }] call EFUNC(common,addDebugCommand);
 
 ["admin.me", "whether this machine's player is an admin, and why", {
     params ["", "_caller"];
 
-    private _listed = (getPlayerUID _caller) in (missionNamespace getVariable ["admp_authorisedIDs", []]);
-    private _flag = _caller getVariable [QEGVAR(common,isAdmin), false];
+    private _uid = getPlayerUID _caller;
+    private _listed = _uid in (localNamespace getVariable [QEGVAR(common,adminUids), createHashMap]);
+    private _logged = (admin owner _caller) isEqualTo ADMIN_LOGGED;
 
     format [
-        "uid %1 - on the mission list: %2, jmfsb admin flag: %3",
-        getPlayerUID _caller, _listed, _flag
+        "uid %1 - server says admin: %2 (on the server's list: %3, #login: %4), flag: %5",
+        _uid, [owner _caller, _uid] call EFUNC(common,adminCheck), _listed, _logged,
+        _caller getVariable [QEGVAR(common,isAdmin), false]
     ]
 }] call EFUNC(common,addDebugCommand);
 
-// --- Time / weather ---------------------------------------------------------
-// Raised by FUNC(envApply) from the TIME / WEATHER dialog. Every machine listens
-// for weather (overcast is set everywhere); only the server acts on time.
-[QGVAR(envTime), {_this call FUNC(envTime)}] call CBA_fnc_addEventHandler;
-[QGVAR(envWeather), {_this call FUNC(envWeather)}] call CBA_fnc_addEventHandler;
+// SECRETS (review R4): opens on the typer's machine; the server checks the
+// logged-in admin on every read and write (jmfsb_common_fnc_secretSet/Status).
+["secrets", "set the voice server's key and secret and the database string, kept on the server", {
+    [{[QGVAR(secrets)] call FUNC(openDisplay)}] call CBA_fnc_execNextFrame;
+    nil
+}, true] call EFUNC(common,addDebugCommand);
+
+// --- Who is an admin: the server's list (review S1/S2, 2026-10-31) ------------
+// The server owns the list (jmfsb_common_fnc_adminSource, in localNamespace);
+// this addon gives it the mod's list and the grants made here, and keeps the
+// panel's own copy - admp_authorisedIDs, which only screens read - in step.
+// The testing switch is read once, as the server loaded it: a client that
+// publishes the variable later changes nothing.
+if (isServer) then {
+    [QEGVAR(common,adminsChanged), {
+        admp_authorisedIDs = +(missionNamespace getVariable [QEGVAR(common,adminList), []]);
+        {admp_authorisedIDs pushBackUnique _x} forEach ADMIN_SP_IDS;
+        publicVariable "admp_authorisedIDs";
+    }] call CBA_fnc_addEventHandler;
+
+    [{
+        localNamespace setVariable [QEGVAR(common,everyoneAdmin), GVAR(everyoneAdmin)];
+        [ADMIN_SOURCE_MOD, [] call FUNC(adminList)] call EFUNC(common,adminSource);
+    }] call EFUNC(common,runAfterSettingsInit);
+};
+
+// Time / weather and STABILIZE go to the server by remoteExec, which checks the
+// sender is an admin (FUNC(envTime), FUNC(envWeather), FUNC(stabilizeLocal));
+// they were CBA events, which any client could raise.

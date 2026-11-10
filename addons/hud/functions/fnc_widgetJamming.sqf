@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * JAMMING: which of the three services is down, and how hard.
  *
  * ONE ROW PER DOMAIN - RADIO, DATA, GPS (user, 2026-08-31). This was one big
@@ -14,7 +14,7 @@
  * with the tacpad JAM app or with what the radios are actually doing.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -22,12 +22,13 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetJamming
+ *
  * Public: No
  */
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
@@ -50,7 +51,7 @@ private _amber = [0.85, 0.65, 0.15, 1];
 
 private _sweep = [] call FUNC(sweep);
 if (_sweep isEqualTo []) exitWith {
-    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], "NO SET", _dim, (0.9 * _k), true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y, _w - 2 * _pad, _rowH], "NO SET", _dim, (0.9 * _k), true]];
 };
 
 _sweep params ["", "", "", ["_jam", 0], "", "", "", "",
@@ -78,11 +79,11 @@ private _rows = [["RADIO", _jamRadio], ["DATA", _jamData], ["GPS", _jamGps]];
 
     // Name and figure on the left in a fixed column, so the three bars line up
     // under each other and the block reads as one instrument.
-    [
-        _ctrl, [_pad, _top, _w * 0.46, _rowH],
+    _ops pushBack [HUD_OP_TEXT, [
+        [_pad, _top, _w * 0.46, _rowH],
         format ["%1 %2%3", _name, _pct, "%"],
         _colour, (0.78 * _k), true, "left", true
-    ] call EFUNC(tacpad,drawText);
+    ]];
 
     // A BAR, because a percentage is a number and a bar is a glance. The one
     // thing this readout is for is knowing whether to bother transmitting.
@@ -90,8 +91,8 @@ private _rows = [["RADIO", _jamRadio], ["DATA", _jamData], ["GPS", _jamGps]];
     private _barW = (_w - _barX - _pad) max 0;
     private _barY = _top + _rowH * 0.34;
     private _barH = _rowH * 0.32;
-    [_ctrl, [_barX, _barY, _barW, _barH], _line] call EFUNC(tacpad,drawFill);
+    _ops pushBack [HUD_OP_FILL, [[_barX, _barY, _barW, _barH], _line]];
     if (_pct > 0) then {
-        [_ctrl, [_barX, _barY, _barW * (_pct / 100), _barH], _colour] call EFUNC(tacpad,drawFill);
+        _ops pushBack [HUD_OP_FILL, [[_barX, _barY, _barW * (_pct / 100), _barH], _colour]];
     };
 } forEach _rows;

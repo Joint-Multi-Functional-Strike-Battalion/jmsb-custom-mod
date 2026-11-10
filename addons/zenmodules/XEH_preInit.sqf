@@ -16,4 +16,19 @@ ADDON = false;
 // these were the exception because they were written from scratch in one go.
 #include "XEH_PREP.hpp"
 
+// Call Endex: the Zeus asks the server, which sends every machine its share
+// by remoteExec (FUNC(endexRequest), FUNC(endexLocal)) - no CBA event, which
+// any client could raise (review S7).
+GVAR(endexFiredAdded) = false;
+
+// THE ENDEX FLAG IS THE SERVER'S (review S7). FUNC(endexRequest) keeps it in
+// localNamespace and publishes a copy for the hold-fire handlers; a client
+// that publishes over the copy gets the server's value back at once.
+if (isServer) then {
+    QEGVAR(Mission,Endex) addPublicVariableEventHandler {
+        WARNING("ENDEX","flag overwritten by a client - publishing the server's own");
+        missionNamespace setVariable [QEGVAR(Mission,Endex), localNamespace getVariable [QEGVAR(Mission,Endex), false], true];
+    };
+};
+
 ADDON = true;

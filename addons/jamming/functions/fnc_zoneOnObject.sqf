@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: lays a zone on an object that already exists - a carried jammer, a
  * vehicle - rather than creating an emitter prop the way FUNC(spawnZoneAt)
  * does. The zone moves with the object (FUNC(jamFactor) reads the object's

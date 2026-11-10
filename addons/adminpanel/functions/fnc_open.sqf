@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens the console, or says why it will not.
  *
  * THE GATE IS SAID OUT LOUD. The panel used to open for anybody and then close

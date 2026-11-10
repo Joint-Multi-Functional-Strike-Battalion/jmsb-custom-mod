@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What a vehicle carries: its hard-kill fit, whether it has the RF emitter,
  * and what the crew calls the fit. THE TIER TABLE (user, 2026-08-28):
  *

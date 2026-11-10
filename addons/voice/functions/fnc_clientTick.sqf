@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every CLIENT_TICK_S: the PAC plan re-read, the player's sets into
  * RF, his nets, the active net kept valid, the mesh onto the voice (fnc_updateQuality) and
  * radio silence under EMCON 3 (one of the cut-offs of fnc_applyBlock).
@@ -36,3 +36,6 @@ private _emcon = (GVAR(rosterIndex) getOrDefault [getPlayerUID player, [objNull,
 // radio silence: one of the cut-offs, applied with the others (fnc_applyBlock)
 GVAR(blocked) = _emcon >= EMCON_SILENT;
 [] call FUNC(applyBlock);
+
+// the battery warnings, once each on the way down
+[] call FUNC(batteryTick);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Lets a CAS crew off the leash for a SAD (COMBAT, RED, targeting on) or
  * holds it on one for a run or a loiter (CARELESS, BLUE, targeting off) -
  * see FUNC(casLaunch). Every switch is set either way: a synced aircraft

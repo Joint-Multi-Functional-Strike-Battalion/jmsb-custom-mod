@@ -47,6 +47,7 @@ GVAR(availableMarkerColors) = [
 GVAR(markers) = [];
 
 GVAR(settingsAdded) = false;
+GVAR(buddyAdded) = false;
 
 // Whether the group-change watcher is up. One per client - see FUNC(init).
 GVAR(groupWatch) = false;

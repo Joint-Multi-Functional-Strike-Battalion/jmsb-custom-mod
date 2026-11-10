@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - NETS, the MY NETS panel (docs/DESIGN_VOICE.md, "Tablet RADIO app"):
  * one row per net the player is on - only those (VEH inside a vehicle, CALL
  * while a call is live or ringing; a captured key's net is not built) - with
@@ -33,9 +33,7 @@ private _rowH = _ctx get "rowH";
 private _netsOn = (_ctx get "netState") select {(_x param [2, ""]) isNotEqualTo VOICE_KIND_DIRECT};
 private _channels = _ctx get "nets";
 
-private _external = _ctx getOrDefault ["external", false];
-private _system = _ctx getOrDefault ["system", ""];
-([_body, _rect, "MY NETS", ["GAME VOICE (VON)", _system] select _external] call FUNC(appPagePanel)) params ["_left", "_top", "_w", "_h"];
+([_body, _rect, "MY NETS", "GAME VOICE (VON)"] call FUNC(appPagePanel)) params ["_left", "_top", "_w", "_h"];
 
 private _ink = ["ink"] call EFUNC(tacpad,theme);
 private _accent = ["accent"] call EFUNC(tacpad,theme);
@@ -46,13 +44,37 @@ private _tint = ["accentTint"] call EFUNC(tacpad,theme);
 
 private _pad = PAD * HOST_W;
 
+// ON NO NET: WHY, AND WHAT TO DO (tablet review 2026-11-01, 3.8). The voice
+// addon's own reasons, in the order they decide it - no voice addon at all,
+// and no game voice on this machine, are said by FUNC(appRadio) before any
+// tab: no set carried - jmfsb_voice_fnc_radios, what RF recognises on him
+// plus a crew seat's set, is what his nets ride on; no net of the plan for
+// him - his TEAM, C2-kind and A2G-kind nets and the RTO nets that name him;
+// else his sets are still being filled by the server.
 if (_netsOn isEqualTo []) exitWith {
-    [_body, [_left + _pad, _top + _rowH * 0.5, _w - 2 * _pad, _rowH], "You are on no voice net.", _dim, TEXT_TITLE] call EFUNC(tacpad,drawText);
+    private _me = call CBA_fnc_currentUnit;
+    private _why = call {
+        if (([_me] call EFUNC(voice,radios)) isEqualTo []) exitWith {[
+            "You carry no radio set.",
+            "Put a radio in your radio slot or wear a radio pack, or take a crew seat in a vehicle with a set."
+        ]};
+        private _plan = ([[_me] call EFUNC(voice,teamNet), [_me] call EFUNC(voice,c2Net), [_me] call EFUNC(voice,a2gNet)] select {_x isNotEqualTo ""}) + ([_me] call EFUNC(voice,customNets));
+        if (_plan isEqualTo []) exitWith {[
+            "You are on no net of the signal plan.",
+            "Ask your RTO or an admin to put your squad or you on a net."
+        ]};
+        [
+            "Your set is joining its nets.",
+            "It takes a few seconds after you spawn, change squad or pick up a set."
+        ]
+    };
+    [_body, [_left + _pad, _top + _rowH * 0.5, _w - 2 * _pad, _rowH], _why select 0, _ink, TEXT_TITLE] call EFUNC(tacpad,drawText);
+    [_body, [_left + _pad, _top + _rowH * 1.7, _w - 2 * _pad, _rowH], _why select 1, _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
 };
 
 // Column starts as shares of the panel.
-private _cols = [0, 0.05, 0.19, 0.31, 0.47, 0.62, 0.72, 0.84];
-private _heads = ["#", "NET", ["VON", ""] select _external, "LINK", "EAR", "MUTE", "STATE", "TALKING"];
+private _cols = [0, 0.05, 0.19, 0.31, 0.45, 0.59, 0.67, 0.75, 0.86];
+private _heads = ["#", "NET", "VON", "LINK", "EAR", "MUTE", "PTT", "STATE", "TALKING"];
 private _cx = _cols apply {_left + _pad + _x * (_w - 2 * _pad)};
 private _cw = [];
 {
@@ -87,9 +109,7 @@ private _rowStep = _rowH * 1.4;
     }] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(pageData), _netId];
 
-    if (!_external) then {
-        [_body, [_cx select 2, _cy, _cw select 2, _rowH], [_netId, _channels] call FUNC(radioVon), _ink, TEXT_BODY] call EFUNC(tacpad,drawText);
-    };
+    [_body, [_cx select 2, _cy, _cw select 2, _rowH], [_netId, _channels] call FUNC(radioVon), _ink, TEXT_BODY] call EFUNC(tacpad,drawText);
 
     // LINK: RF's word on the net, else the talkers', else reach alone.
     private _q = [_netId] call FUNC(radioRfQuality);
@@ -121,6 +141,19 @@ private _rowStep = _rowH * 1.4;
         {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
     }, [_netId, !_mute]] call FUNC(appPageButton);
 
+    // PTT (user, 2026-10-30): PTT 1 is always the active net; a press steps
+    // the net through PTT 2, 3, 4 and none (jmfsb_voice_fnc_pttKey).
+    if (_active) then {
+        [_body, [_cx select 6, _cy, _cw select 6, _rowH], "PTT 1", _dim, TEXT_BODY, true] call EFUNC(tacpad,drawText);
+    } else {
+        private _ptt = [_netId] call EFUNC(voice,pttKey);
+        [_body, [_cx select 6, _cy, (_cw select 6) - _pad * 0.5, _rowH], ["PTT", format ["PTT %1", _ptt]] select (_ptt > 0), ["line", "fill"] select (_ptt > 0), {
+            params ["_ctrl"];
+            [_ctrl getVariable [QGVAR(pageData), ""], true] call EFUNC(voice,pttKey);
+            {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+        }, _netId] call FUNC(appPageButton);
+    };
+
     private _state = switch (true) do {
         case (!_reach): {"NO ROUTE"};
         case (_kind isEqualTo VOICE_KIND_CALL): {"LIVE"};
@@ -128,27 +161,36 @@ private _rowStep = _rowH * 1.4;
         case (_mute): {"MUTED"};
         default {"MON"};
     };
-    [_body, [_cx select 6, _cy, _cw select 6, _rowH], _state, ([_ink, _accent] select (_active || !_reach)), TEXT_BODY, true] call EFUNC(tacpad,drawText);
+    [_body, [_cx select 7, _cy, _cw select 7, _rowH], _state, ([_ink, _accent] select (_active || !_reach)), TEXT_BODY, true] call EFUNC(tacpad,drawText);
 
     private _who = (_talkers apply {_x param [0, objNull]}) select {!isNull _x} apply {toUpper name _x};
     if (_who isNotEqualTo []) then {
-        [_body, [_cx select 7, _cy, _cw select 7, _rowH], _who joinString ", ", _accent, TEXT_BODY, true] call EFUNC(tacpad,drawText);
+        [_body, [_cx select 8, _cy, _cw select 8, _rowH], _who joinString ", ", _accent, TEXT_BODY, true] call EFUNC(tacpad,drawText);
     };
 
     [_body, [_left, _ry + _rowStep - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 } forEach _netsOn;
 
 private _footY = _y + (count _netsOn) * _rowStep + _rowH * 0.5;
+
+// THE BATTERY (user, 2026-10-30): the handheld's charge, and SWAP BATTERY,
+// which spends a spare from the kit (jmfsb_voice_fnc_batterySwap).
+private _level = [] call EFUNC(voice,batteryLevel);
+if (_level >= 0) then {
+    private _spares = count ([] call EFUNC(voice,batterySpares));
+    private _low = _level <= RADIO_BATTERY_LOW;
+    [_body, [_left + _pad, _footY, (_cx select 4) - _left - _pad, _rowH], format ["BATTERY %1%2%3", round (_level * PERCENT), "%", ["", " - LOW"] select _low], [_ink, _accent] select _low, TEXT_BODY, true] call EFUNC(tacpad,drawText);
+    [_body, [_cx select 4, _footY, (_cx select 7) - (_cx select 4) - _pad * 0.5, _rowH], format ["SWAP BATTERY (%1 %2)", _spares, ["SPARES", "SPARE"] select (_spares isEqualTo 1)], ["line", "alarm"] select _low, {
+        [] call EFUNC(voice,batterySwap);
+        {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
+    }, ""] call FUNC(appPageButton);
+    _footY = _footY + _rowStep;
+};
+
 {
     [_body, [_left + _pad, _footY + _forEachIndex * _rowH, _w - 2 * _pad, _rowH], _x, _muted, TEXT_LABEL] call EFUNC(tacpad,drawText);
-} forEach ([
-    [
-        "Only nets you are on are shown. Press a net's name, or numpad 0 / . anywhere, to pick the active net.",
-        "VEH appears in a vehicle, CALL while a call is live or ringing. The ear pans the beeps and static, not the voice (VON).",
-        "Beep volume per net is not built: the voice API has one beep volume (SOUNDS)."
-    ], [
-        format ["The nets your %1 radios hear now. Press a net's name, or numpad 0 / . anywhere, to put its set in hand.", _system],
-        format ["The ear is the radio's own stereo side; MUTE sets that radio's volume to 0 (%1).", _system],
-        format ["Who is heard and how well is %1's business; calls are game voice only.", _system]
-    ]
-] select _external);
+} forEach [
+    "Only nets you are on are shown. Press a net's name, or its net key (Configure Addons), to pick the active net.",
+    "VEH appears in a vehicle, CALL while a call is live or ringing. The ear pans the beeps and static, not the voice (VON).",
+    "PTT 1 (Caps Lock) is the active net. PTT 2-4 talk on the net you give them here; bind each key in Configure Addons and under Arma's Push To Talk too."
+];

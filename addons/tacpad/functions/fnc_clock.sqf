@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A mission time as HHMM, for the right-hand column of a traffic entry.
  *
  * The design puts a time on every row and it is the second thing the eye uses

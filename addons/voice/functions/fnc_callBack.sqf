@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * CALL BACK: asks the server to hold a callback between the local player and
  * a unit. When both reach each other on DATA and a call slot is free, both
  * phones ring. Expires after the callback expiry time; one per pair, a few
@@ -23,4 +23,4 @@ params [["_unit", objNull, [objNull]]];
 
 if (!GVAR(active)) exitWith {};
 if (isNull _unit || isNull player) exitWith {};
-[QGVAR(srvCallback), [player, _unit]] call CBA_fnc_serverEvent;
+[player, _unit] remoteExecCall [QFUNC(srvCallback), SERVER_OWNER];

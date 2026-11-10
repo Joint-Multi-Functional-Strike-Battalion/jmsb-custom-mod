@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reports one relevant round to the server, from the machine that fired it,
  * and keeps the round so the server can ask for it to be killed (FUNC(kill)).
  *
@@ -40,4 +40,12 @@ if (count GVAR(owned) >= ADS_OWNED_CAP) then {
 };
 GVAR(owned) set [_id, _proj];
 
-[QGVAR(threat), [_id, _owner, getPosASL _proj, velocity _proj, _info, _target, side group _owner]] call CBA_fnc_serverEvent;
+// By remoteExec from a client, so the server knows whose round it is (review
+// R1: it was a CBA event any client could raise with fake rounds); the
+// server's own rounds are a plain call.
+private _args = [_id, _owner, getPosASL _proj, velocity _proj, _info, _target, side group _owner];
+if (isServer) then {
+    _args call FUNC(threat);
+} else {
+    _args remoteExecCall [QFUNC(threat), SERVER_OWNER];
+};

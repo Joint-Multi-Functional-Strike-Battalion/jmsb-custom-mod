@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the tube mask up on the mission display, or changes its picture if it is
  * up already. Placed the way ACE places its own border at the default view.
  *

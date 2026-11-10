@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * MANAGE's MEMBERS panel for one of the RTO nets (user, 2026-10-22: "allow
  * rtos to add custom channels"): its squads as tick chips, then every contact
  * as a tick row - a man on it through his squad is ticked dim, by the squad's
@@ -53,7 +53,12 @@ private _ry = _top;
 [_body, [_left + _pad, _ry, _w, _rowH], "SQUADS ON IT", _muted, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
 _ry = _ry + _rowH * 1.1;
 private _all = [_ctx getOrDefault ["contacts", []]] call FUNC(radioSquads);
+// As wide as the widest call sign, untracked (tablet review 2026-11-01, 2.3) -
+// the ADD NET form's rule (FUNC(radioCustomPanel)).
 private _chipW = _w * CUSTOM_CHIP_K;
+if (_all isNotEqualTo []) then {
+    _chipW = ((selectMax (_all apply {[_x, TEXT_LABEL, false] call EFUNC(tacpad,chipWidth)})) + _pad) min _w;
+};
 private _perRow = floor (_w / (_chipW + _pad)) max 1;
 private _rows = (ceil ((count _all) / _perRow)) min CUSTOM_CHIP_ROWS_MAX;
 {

@@ -47,6 +47,13 @@ if (missionNamespace getVariable [QGVAR(ready), false]) exitWith {};
 private _layer = QGVAR(bootScreen) call BIS_fnc_rscLayer;
 _layer cutRsc [QGVAR(bootScreen), "PLAIN", 0, false];
 
+// THE MARK is a holiday's crest in its window - the mission loading screen's
+// table (jmfsb_loading's Holidays; user, 2026-10-31: "put the holiday logos
+// on the pac loading screen also") - and the unit's, the config's own
+// picture, otherwise. Set once the display is up.
+private _holiday = [] call EFUNC(loading,holiday);
+private _logoSet = isNull _holiday;
+
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent"];
 private _inkHex = [_ink # 0, _ink # 1, _ink # 2, 1] call BIS_fnc_colorRGBAtoHTML;
 private _muteHex = [_ink # 0, _ink # 1, _ink # 2, 0.6] call BIS_fnc_colorRGBAtoHTML;
@@ -83,6 +90,10 @@ private _fnc_esc = {
 while {!(missionNamespace getVariable [QGVAR(ready), false])} do {
     private _disp = uiNamespace getVariable [QGVAR(bootDisp), displayNull];
     if (!isNull _disp) then {
+        if (!_logoSet) then {
+            (_disp displayCtrl PAC_IDC_BS_LOGO) ctrlSetText getText (_holiday >> "logo");
+            _logoSet = true;
+        };
         private _elapsed = round (diag_tickTime - _t0);
         private _clock = format ["%1:%2", floor (_elapsed / 60), [str (_elapsed mod 60), "0" + str (_elapsed mod 60)] select ((_elapsed mod 60) < 10)];
         (_disp displayCtrl PAC_IDC_BS_TITLE) ctrlSetStructuredText parseText format [

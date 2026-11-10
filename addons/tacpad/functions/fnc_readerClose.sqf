@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Closes the TAC//MSG reader wherever it is: the reader dialog on the vanilla
  * map, or the reader drawn inside the tablet (FUNC(openReader)), which is the
  * open app there and closes as every app does - FUNC(appClose) - leaving the

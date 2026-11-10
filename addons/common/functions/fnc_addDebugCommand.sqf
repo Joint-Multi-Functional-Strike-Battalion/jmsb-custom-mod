@@ -40,13 +40,18 @@ params [["_name", "", [""]], ["_help", "", [""]], ["_code", {}, [{}]], ["_local"
 
 if (_name isEqualTo "") exitWith { false };
 
-if (isNil QGVAR(debugCommands)) then { GVAR(debugCommands) = createHashMap };
+// THE TABLE IS NOT NETWORKED (localNamespace, 2026-11-01): in missionNamespace
+// any client could publicVariable it and swap a command's code, which the server
+// then ran for the next admin who typed that command. Each machine registers its
+// own commands at init, so nothing needs to cross the wire.
+private _commands = localNamespace getVariable [QGVAR(debugCommands), createHashMap];
+localNamespace setVariable [QGVAR(debugCommands), _commands];
 
 private _key = toLower _name;
-if (_key in GVAR(debugCommands)) exitWith {
+if (_key in _commands) exitWith {
     diag_log text format ["[jmfsb] debug command '%1' already registered - ignored", _name];
     false
 };
 
-GVAR(debugCommands) set [_key, [_name, _help, _code, _local]];
+_commands set [_key, [_name, _help, _code, _local]];
 true

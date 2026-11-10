@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE NOISE-SOURCE HOOK. EW registers its jammers here; RF never knows what
  * they are. The code is called on the server for every receiver the budget
  * prices, with [position ASL, band, net id], and returns the interference it

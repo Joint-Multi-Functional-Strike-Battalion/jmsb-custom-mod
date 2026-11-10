@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: keeps the active net one of the local player's nets. When it is
  * gone (a call ended, he left a vehicle or his group) it goes back to the
  * net that was active before the call, else his TEAM net, else his first
@@ -24,7 +24,9 @@
  * Public: No
  */
 
-private _ids = GVAR(myNets) apply {_x select 0};
+// LOCAL is left out: it is a held key, never the active net (FUNC(setActive)) -
+// so holding it is not taken for a net switch, and it is no fallback.
+private _ids = (GVAR(myNets) select {(_x param [2, ""]) isNotEqualTo KIND_DIRECT}) apply {_x select 0};
 if (_ids isEqualTo []) exitWith {};
 
 // a net waiting to become active (a call that went live before the voice
@@ -48,6 +50,9 @@ if (CBA_missionTime < GVAR(wantTeamUntil)) then {
 
 private _current = [] call HOOK("current");
 if (GVAR(activeNetId) isNotEqualTo "" && GVAR(level) isEqualTo BLOCK_NONE && _current in _ids && _current isNotEqualTo GVAR(activeNetId)) exitWith {
+    // The adapter is told too: a call that ended left its own active channel
+    // on the dead call channel, and every key edge after put the mic there.
+    [_current] call HOOK("setActive");
     GVAR(activeNetId) = _current;
     ["netSwitch", _current] call FUNC(playCue);
     [QGVAR(netsChanged), []] call CBA_fnc_localEvent;

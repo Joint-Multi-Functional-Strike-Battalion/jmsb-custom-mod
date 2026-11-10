@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the small devices' RADIO app shows on its open tab, and what its soft
  * keys say (docs/DESIGN_VOICE.md, "Phone and side RADIO app"). Pure read of
  * the voice API: FUNC(radioDraw) draws it and FUNC(radioKey) acts on it, so
@@ -11,6 +11,9 @@
  *   CALLS   the live call over the contacts (on the call, in reach, the rest)
  *           and the group chips. F1 ADD - F2 CALL - F3 GROUP + - F4 HANG UP
  *           (BACK with no call). GROUP + moves the cursor onto the chips.
+ *           In a call F2 is SEND VIEW / SEND FACE: what his camera sends.
+ *           ECHO TEST is the first row while the voice extension is loaded
+ *           (jmfsb_adapter_livekit): F2 calls it, F4 hangs up.
  *   MANAGE  leaders, RTO and admin only: the nets. Its ADD / REMOVE / REKEY
  *           are not built (the voice API has no call for them), so F1-F3 are
  *           left blank rather than drawn as keys that do nothing; F4 BACK.
@@ -62,6 +65,23 @@ switch (GVAR(radioTab)) do {
             ];
         };
         _heads = [["CONTACT", 0], ["REACH", 0.62], ["", 0.8]];
+        // The echo test first, while the voice extension is loaded.
+        private _echo = "";
+        if (!isNil QEFUNC(adapter_livekit,echoState)) then {_echo = [] call EFUNC(adapter_livekit,echoState)};
+        if (_echo isNotEqualTo "") then {
+            private _state = switch (_echo) do {
+                case ECHO_JOINING: {["CALLING", "alert"]};
+                case ECHO_LIVE: {["LIVE", "ok"]};
+                default {["READY", "ink"]};
+            };
+            _rows pushBack [
+                "ECHO TEST",
+                "VOICE SERVER",
+                [[_state select 0, _state select 1, 0.62], [["CALL", "HANG UP"] select (_echo isNotEqualTo ECHO_IDLE), ["ink", "alert"] select (_echo isNotEqualTo ECHO_IDLE), 0.8]],
+                RADIO_ROW_ECHO
+            ];
+            if (_echo isNotEqualTo ECHO_IDLE && _live isEqualTo []) then {_header = format ["ECHO TEST %1 %2", MIDDOT, _state select 0]};
+        };
         private _list = (([] call EFUNC(voice,contacts)) select {!isNull (_x param [0, objNull]) && {(_x select 0) isNotEqualTo _me}}) apply {
             _x params ["_unit", "_name", "", "", ["_reach", false, [false]]];
             [[2, [1, 0] select _reach] select !(_unit in _members), toUpper _name, _x]
@@ -85,14 +105,22 @@ switch (GVAR(radioTab)) do {
             ];
         } forEach _list;
         _chips = RADIO_CHIPS apply {_x select 1};
-        _keys = [["ADD", _canAdd], ["CALL", _canAdd], ["GROUP +", _canAdd], [["BACK", "HANG UP"] select (_liveId isNotEqualTo ""), true]];
+        _keys = [["ADD", _canAdd], ["CALL", _canAdd], ["GROUP +", _canAdd], [["BACK", "HANG UP"] select (_liveId isNotEqualTo "" || {_echo in [ECHO_JOINING, ECHO_LIVE]}), true]];
+        // In a call CALL is refused (one call at a time), so F2 flips what his
+        // camera sends (jmfsb_tacpad_apps_fnc_callCamFlip).
+        if (_liveId isNotEqualTo "") then {
+            private _sendsView = (_me getVariable [QEGVAR(tacpad_apps,callCam), CALL_CAM_FACE]) isEqualTo CALL_CAM_VIEW;
+            _keys set [1, [["SEND VIEW", "SEND FACE"] select _sendsView, true]];
+        };
     };
     case "manage": {
         if !(([] call EFUNC(tacpad_apps,radioRole)) in MANAGE_ROLES) exitWith {
             _header = "LEADERS, RTO AND ADMIN ONLY";
             _keys = [["", false], ["", false], ["", false], ["BACK", true]];
         };
-        _header = "NOT BUILT: ADD / REMOVE / REKEY";
+        // No header: what MANAGE cannot do here is the README's to say, not
+        // the screen's (tablet review 2026-11-01, 2.1).
+        _header = "";
         _heads = [["NET", 0], ["KIND", 0.45], ["STATE", 0.7]];
         {
             _x params [["_netId", "", [""]], ["_name", "", [""]], ["_kind", "", [""]], "", "", "", ["_reach", false, [false]]];
@@ -102,10 +130,18 @@ switch (GVAR(radioTab)) do {
         _keys = [["", false], ["", false], ["", false], ["BACK", true]];
     };
     default {
-        _heads = [["NET", 0], ["EAR", 0.2], ["LINK", 0.32], ["STATE", 0.47], ["TALKING", 0.72]];
+        _heads = [["NET", 0], ["EAR", 0.2], ["PTT", 0.26], ["LINK", 0.32], ["STATE", 0.47], ["TALKING", 0.72]];
+        // PTT is game voice's (jmfsb_voice_fnc_pttKey; set on the tablet's
+        // RADIO app): 1 the active net, 2-4 the key the net is on, else nothing.
+        private _von = missionNamespace getVariable [QEGVAR(voice,active), false];
         {
             _x params [["_netId", "", [""]], ["_name", "", [""]], ["_kind", "", [""]], ["_active", false, [false]], ["_muted", false, [false]], ["_ear", "B", [""]], ["_reach", false, [false]], ["_talkers", [], [[]]]];
             if (_kind isEqualTo VOICE_KIND_DIRECT) then {continue};
+            private _ptt = "";
+            if (_von) then {
+                private _key = [1, [_netId] call EFUNC(voice,pttKey)] select !_active;
+                if (_key > 0) then {_ptt = str _key};
+            };
             private _state = switch (true) do {
                 case (!_reach): {["NO ROUTE", "alert"]};
                 case (_kind isEqualTo VOICE_KIND_CALL): {[format ["LIVE %1 %2", MIDDOT, count _members], "ok"]};
@@ -118,6 +154,7 @@ switch (GVAR(radioTab)) do {
                 ["", "MUTE"] select _muted,
                 [
                     [_ear, "ink", 0.2],
+                    [_ptt, "ink", 0.26],
                     [["NO ROUTE", "OK"] select _reach, ["alert", "ok"] select _reach, 0.32],
                     [_state select 0, _state select 1, 0.47],
                     [[_talkers apply {_x param [0, objNull]}] call _fnc_names, "alert", 0.72]

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a CBA setting is out of the player's hands - forced by the server or
  * the mission, so a value he writes would not take effect. The settings app
  * draws such a row read-only and FUNC(setSetting) refuses it, rather than

@@ -37,3 +37,16 @@ PREP(envPreset);
 PREP(envApply);
 PREP(envTime);
 PREP(envWeather);
+
+// GRANT ADMIN's server side (review S2)
+PREP(adminGrant);
+
+// SECRETS - the dialog `#jmfsb secrets` opens (review R4)
+PREP(secretsLoad);
+PREP(secretsSet);
+PREP(secretsShow);
+
+// STABILIZE - the medical block's third button, and the patient's side of it
+PREP(stabilize);
+PREP(stabilizeLocal);
+PREP(stabilizeDone);

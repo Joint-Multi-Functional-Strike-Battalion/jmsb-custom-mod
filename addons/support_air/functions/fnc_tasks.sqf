@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tasks ONE asset offers - the provider's "tasks" code. The types
  * declaration (SUPPORT_TYPES) is the shape for the type; this narrows and
  * fills it for the picked airframe:
@@ -8,11 +8,11 @@
  *   CAS        ATTACK RUN and SAD get an ORDNANCE stepper listing THIS
  *              aircraft's stores, the row's field 5, AUTO first; DANGER
  *              CLOSE is offered only while the module's Friendly Range is
- *              above 0, and its map ring is that range
+ *              above 0, and its map ring is that range. A fixed-wing's SAD
+ *              and LOITER say it holds off the map, and its LOITER has no
+ *              RADIUS - its orbit is the off-map hold's (2026-11-01)
  *   TRANSPORT  only the tasks the module allows and the airframe can fly
- *   LOGISTICS  parachute or sling, as the module resolved it, and CONTENTS
- *              when the module names more than one load
- *   QRF        only the insertions the module allows and the aircraft can fly
+ *   QRF       only the insertions the module allows and the aircraft can fly
  *
  * Arguments:
  * 0: Asset id <STRING>
@@ -42,9 +42,16 @@ switch (_logic getVariable [QGVAR(kind), ""]) do {
         private _ord = _row param [5, []];
         if !(_ord isEqualType []) then {_ord = []};
         private _range = _logic getVariable [QGVAR(friendlyRange), 0];
+        private _fw = !((_logic getVariable [QGVAR(cls), ""]) isKindOf "Helicopter");
         [DECL_SAD, DECL_LOITER, DECL_RUN] apply {
             private _decl = +_x;
-            private _steps = (_decl select 4) select {_range > 0 || (_x select 1) isNotEqualTo SLOT_DANGER};
+            private _token = _decl select 0;
+            if (_fw && _token isEqualTo TASK_SAD) then {_decl set [3, GUIDE_SAD_FW]};
+            if (_fw && _token isEqualTo TASK_LOITER) then {_decl set [3, GUIDE_LOITER_FW]};
+            private _steps = (_decl select 4) select {
+                (_range > 0 || (_x select 1) isNotEqualTo SLOT_DANGER)
+                    && {!_fw || _token isNotEqualTo TASK_LOITER || (_x select 1) isNotEqualTo SLOT_RADIUS}
+            };
             _steps = _steps apply {
                 if ((_x select 1) isEqualTo SLOT_DANGER) then {
                     private _s = +_x;
@@ -61,18 +68,6 @@ switch (_logic getVariable [QGVAR(kind), ""]) do {
     };
     case KIND_TRANSPORT: {
         [DECL_PICKUP, DECL_LAND, DECL_LAND_OFF, DECL_MOVE, DECL_EXTRACT, DECL_LIFT, DECL_ORBIT, DECL_FASTROPE, DECL_HELOCAST, DECL_PARADROP, DECL_SLING] select {(_x select 0) in _allowed}
-    };
-    case KIND_LOGISTICS: {
-        private _decl = +([DECL_DROP_CHUTE, DECL_DROP_SLING] select (_logic getVariable [QGVAR(sling), false]));
-        // CONTENTS: one of the module's loads per drop, when it has more than
-        // one ("magazines; itemsMedical").
-        private _loads = _logic getVariable [QGVAR(loads), []];
-        if (count _loads > 1) then {
-            private _steps = +(_decl select 4);
-            _steps pushBack ["CONTENTS", SLOT_CONTENTS, 1, 0, count _loads - 1, _loads apply {toUpper _x}, [], false];
-            _decl set [4, _steps];
-        };
-        [_decl]
     };
     case KIND_QRF: {
         [DECL_STATIC, DECL_ASSAULT] select {(_x select 0) in _allowed}

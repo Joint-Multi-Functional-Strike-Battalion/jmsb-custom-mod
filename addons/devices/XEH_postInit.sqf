@@ -2,9 +2,24 @@
 
 if (!hasInterface) exitWith {};
 
-// THE KEY. Numpad 5 by default (docs/SPEC_TACNET.json D16: the numpad is the
-// device's key block) - it was Ctrl+Home, cTab's chord, until the numpad
-// replaced it (user, 2026-10-20). Configure Addons > 1st Joint
+// The profile's old defaults moved to today's in XEH_preInit (the key layout,
+// KEYBIND_MIGRATIONS), before any addon registered a keybind.
+
+// THE F-ROW LAYOUT'S BACKSTOP (user, 2026-11-08: no AI, all players): the
+// command bar hidden and the AI's radio sentences off - F1-F10 are the
+// device's, and the keybinds answer true so the engine never selects a man.
+if ([] call FUNC(keyOwned)) then {
+    private _hud = shownHUD;
+    _hud set [HUD_GROUP_BAR, false];
+    showHUD _hud;
+    enableSentences false;
+};
+
+// THE KEY. No default (user, 2026-11-01: "numpad enter can not be a tablet
+// button or any button we use"; it was Numpad Enter from 2026-10-30, 8 from
+// the 2026-10-25 standard, 5 before that, and Ctrl+Home, cTab's chord, until
+// 2026-10-20). Each player binds his own; a stored Numpad Enter is cleared by
+// the migration (KEYBIND_MIGRATIONS). Configure Addons > 1st Joint
 // Multi-Functional Strike Battalion. While the tablet is open the dialog has
 // the keyboard, so FUNC(keyDown) closes it on the same binding. In a drone's
 // seat (FUNC(uavControl)) the same key gives the seat back first - the tablet
@@ -12,7 +27,7 @@ if (!hasInterface) exitWith {};
 [
     JMFSB_CATEGORY,
     QGVAR(tabletKey),
-    ["Open Tablet", "Opens the tablet, in TABLET display mode; closes it when it is open. In a drone's seat it releases the drone instead. Also at the top of the ACE self-interaction menu. Numpad 5 by default."],
+    ["Open Tablet", "Opens the tablet, in TABLET display mode; closes it when it is open. In a drone's seat it releases the drone instead. Also at the top of the ACE self-interaction menu. No default key - bind your own."],
     {
         if (GVAR(uavActive)) exitWith {
             ["release"] call FUNC(uavControl);
@@ -80,6 +95,16 @@ addMissionEventHandler ["Ended", {[] call FUNC(overlayClose)}];
 // has finished indexing that slice, so only a flag is set here and the tick
 // reads RF afterwards (FUNC(overlayRf)).
 [QEGVAR(rf,linkChanged), {GVAR(overlayRfDirty) = true}] call CBA_fnc_addEventHandler;
+// And when jmfsb_ew's slice brings a new EMCON level (the EP tab's press), so
+// the summary's receive-only flags follow it (FUNC(emconLevel)). EW is not
+// required: without it this event never fires.
+[QEGVAR(ew,sliceChanged), {
+    private _level = [] call FUNC(emconLevel);
+    if (_level isNotEqualTo GVAR(emconSeen)) then {
+        GVAR(emconSeen) = _level;
+        GVAR(overlayRfDirty) = true;
+    };
+}] call CBA_fnc_addEventHandler;
 
 // THE PLAYER'S OWN TRANSMISSION, for the squad list's TX and the talking box:
 // the voice API's talking list is who he HEARS, so his own comes off its talk
@@ -106,6 +131,10 @@ addMissionEventHandler ["Ended", {[] call FUNC(overlayClose)}];
     if (_unit isEqualTo (call CBA_fnc_currentUnit)) then {[] call FUNC(overlayTick)};
 }] call CBA_fnc_addEventHandler;
 
+// A QUESTION ARRIVING, ANSWERED OR PAGED redraws the quick-answer strip at
+// once (user, 2026-11-06), not on the next tick.
+[QEGVAR(tacpad,askChanged), {[] call FUNC(overlayTick)}] call CBA_fnc_addEventHandler;
+
 // RAISING A SIGHT takes the walking view down at once, not on the next tick
 // (FUNC(overlayHidden)); lowering it puts it back the same way.
 ["cameraView", {[] call FUNC(overlayTick)}] call CBA_fnc_addPlayerEventHandler;
@@ -115,6 +144,28 @@ addMissionEventHandler ["Ended", {[] call FUNC(overlayClose)}];
 {
     [_x, {[] call FUNC(overlayTick)}] call CBA_fnc_addEventHandler;
 } forEach [QEGVAR(voice,callRing), QEGVAR(voice,callState), QEGVAR(voice,netsChanged)];
+
+// A RING IS SAID ON THE SCREEN, not only on the call strip (user, 2026-10-24:
+// "a pop up on the phone that says press something maybe 9 on the key pad to
+// answer"): a notification names the caller and the keys as he has them
+// bound - the TIC key answers while a call rings (FUNC(voiceAnswer)), the
+// device F4 key declines.
+[QEGVAR(voice,callRing), {
+    params ["", ["_from", objNull, [objNull]]];
+    if (isNil QEFUNC(notify,notify)) exitWith {};
+    [
+        "CALL",
+        format [
+            "Incoming from %1 - %2 to answer%3.",
+            [name _from, "?"] select (isNull _from),
+            [QGVAR(answerKey)] call FUNC(keyLabel),
+            [
+                format [", %1 to decline", [QGVAR(declineKey)] call FUNC(keyLabel)], ""
+            ] select (([QGVAR(declineKey)] call FUNC(keyLabel)) in [KEY_LABEL_UNBOUND, KEY_LABEL_NONE])
+        ],
+        RING_NOTIFY_COLOUR
+    ] call EFUNC(notify,notify);
+}] call CBA_fnc_addEventHandler;
 
 [
     JMFSB_CATEGORY,
@@ -128,11 +179,9 @@ addMissionEventHandler ["Ended", {[] call FUNC(overlayClose)}];
     [DIK_END, [false, true, false]]
 ] call CBA_fnc_addKeybind;
 
-// THE SIX BUTTONS PRINTED ON THE DEVICE FRAMES - F1-F4, LEFT, RIGHT - on the
-// numpad by default: Ctrl + 1-4 and 0 / . (docs/SPEC_TACNET.json D16; user,
-// 2026-10-20: "we are not using keyboard F1-F4, we are using numpad";
-// 2026-10-21: "make the f keys on the devices be numpad + ctrl" - plain 1-4
-// are SELECT NET 1-4 now). The
+// THE SIX BUTTONS PRINTED ON THE DEVICE FRAMES - F1-F4, LEFT, RIGHT. The
+// arrows are numpad 0 / .; F1-F4 are numpad 5 6 7 8 (2026-11-07), with
+// 1-4 the nets and 9 the action key - each is rebindable. The
 // walking view is a title layer and takes no mouse, so each is a keybind,
 // named for its printed label. On the walking view each does the player's
 // setting (jmfsb_devices_buttonF1 ..; the voice keys by default) or, while the
@@ -143,33 +192,47 @@ addMissionEventHandler ["Ended", {[] call FUNC(overlayClose)}];
         JMFSB_CATEGORY,
         format ["%1_%2", QGVAR(button), _x],
         [format ["Device button %1", _x], "Presses this key on the device frame. Walking view: what Addon Options or the tablet's SETTINGS > DEVICE KEYS set it to (the voice keys by default), or the RADIO app's soft keys and cursor while it is open. Tablet: the frame's own key."],
-        compile format ["[%1] call %2", _forEachIndex, QFUNC(overlayButton)],
+        compile format ["([%1] call %2) || {[] call %3}", _forEachIndex, QFUNC(overlayButton), QFUNC(keyOwned)],
         {false},
-        [BUTTON_KEYS select _forEachIndex, [BUTTON_MODS_ARROW, BUTTON_MODS_F] select (_forEachIndex < BUTTON_F_COUNT)]
+        [format ["%1_%2", QGVAR(button), _x], [BUTTON_KEYS select _forEachIndex, [BUTTON_MODS_ARROW, BUTTON_MODS_F] select (_forEachIndex < BUTTON_F_COUNT)]] call FUNC(keyDefault)
     ] call CBA_fnc_addKeybind;
 } forEach BUTTON_LABELS;
+// The arrow keys are the device's: other addons' default binds on them come
+// off once every addon has registered (FUNC(keybindFree)).
+[FUNC(keybindFree), [], KEYBIND_FREE_DELAY] call CBA_fnc_waitAndExecute;
 
 // SELECT NET 1-9: the number on a net chip is its key (user, 2026-10-21).
-// Numpad 1-4 for the first four; 5-9 start unbound, because numpad 5-9 are
-// the tablet, RADIO, its tabs and TIC - bind them in Configure Addons.
+// Numpad 1-4 for the first four (2026-11-07); 5-9 start unbound,
+// because numpad 5-8 are the device keys and 9 the action key. Ctrl + the same key mutes or
+// unmutes that net (MUTE NET 1-9 below).
 for "_i" from 1 to NET_SELECT_KEYS do {
     [
         JMFSB_CATEGORY,
         format ["%1_%2", QGVAR(netSelect), _i],
-        [format ["Select net %1", _i], format ["Makes net %1 - the chip numbered %1 on the phone, side device or tablet - your active net.", _i]],
-        compile format ["[%1] call %2", _i, QFUNC(netSelect)],
+        [format ["Select net %1", _i], format ["Makes the chip numbered %1 on the net page the phone, side device or tablet shows your active net. Keys 5-9 pick net buttons 5-9 across the pages.", _i]],
+        compile format ["([%1] call %2) || {[] call %3}", _i, QFUNC(netSelect), QFUNC(keyOwned)],
         {false},
-        [NET_SELECT_DEFAULTS param [_i - 1, -1], [false, false, false]]
+        [format ["%1_%2", QGVAR(netSelect), _i], [NET_SELECT_DEFAULTS param [_i - 1, KEY_NONE], NET_SELECT_MODS]] call FUNC(keyDefault)
+    ] call CBA_fnc_addKeybind;
+    // MUTE NET 1-9: Ctrl + the same key (user, 2026-10-25: "Ctrl and press
+    // 1-6 make a toggle mute").
+    [
+        JMFSB_CATEGORY,
+        format ["%1_%2", QGVAR(netMute), _i],
+        [format ["Mute net %1", _i], format ["Mutes or unmutes the chip numbered %1 on the net page shown (5-9: net buttons 5-9). Your active net does not change.", _i]],
+        compile format ["([%1] call %2) || {[] call %3}", _i, QFUNC(netMute), QFUNC(keyOwned)],
+        {false},
+        [format ["%1_%2", QGVAR(netMute), _i], [NET_SELECT_DEFAULTS param [_i - 1, KEY_NONE], NET_MUTE_MODS]] call FUNC(keyDefault)
     ] call CBA_fnc_addKeybind;
 };
 
-// THE REST OF THE NUMPAD BLOCK. 6 opens and closes the RADIO app full screen
-// on the carried phone or side device; 7 / 8 step its tabs. On the tablet
+// THE RADIO APP on the carried phone or side device, and its tabs - no
+// default keys since the numpad standard (user, 2026-10-25). On the tablet
 // FUNC(keyDown) answers the same bindings for the tablet's RADIO app.
 [
     JMFSB_CATEGORY,
     QGVAR(radioAppKey),
-    ["Device RADIO app", "Opens or closes the RADIO app on the phone or side device in the GPS slot (on the tablet while it is open: its RADIO app). Numpad 6 by default."],
+    ["Device RADIO app", "Opens or closes the RADIO app on the phone or side device in the GPS slot (on the tablet while it is open: its RADIO app). No default key - bind one in Configure Addons."],
     {
         if (isNull (uiNamespace getVariable [QGVAR(overlayDisplay), displayNull])) exitWith {false};
         [] call FUNC(radioApp);
@@ -187,12 +250,72 @@ for "_i" from 1 to NET_SELECT_KEYS do {
         [_title, "Steps the RADIO app's tabs - NETS, CALLS, MANAGE - on the phone or side device while it is open, and on the tablet."],
         compile format ["[%1] call %2", _code, QFUNC(radioKey)],
         {false},
-        [_key, [false, false, false]]
+        [_key, TAB_MODS]
     ] call CBA_fnc_addKeybind;
 } forEach [
     [QGVAR(tabPrev), "Device previous tab", RADIO_TAB_PREV, KEY_TAB_PREV],
     [QGVAR(tabNext), "Device next tab", RADIO_TAB_NEXT, KEY_TAB_NEXT]
 ];
+
+// ANSWER / HANG UP, numpad * (the numpad standard, user 2026-10-25): answers
+// the call that is ringing, else hangs up the one he is in.
+[
+    JMFSB_CATEGORY,
+    QGVAR(answerKey),
+    ["Answer / hang up call", "Answers the call ringing you; with none ringing, hangs up the call you are in. F7 by default (numpad layout: Numpad *)."],
+    {([] call FUNC(voiceAnswerKey)) || {[] call FUNC(keyOwned)}},
+    {false},
+    [QGVAR(answerKey), [KEY_ANSWER, KEYBIND_NO_MODS]] call FUNC(keyDefault)
+] call CBA_fnc_addKeybind;
+
+// DECLINE, numpad / (user, 2026-10-30: "/ = no, do not answer"): declines the
+// call ringing you; closes the quick-add list when it is open.
+[
+    JMFSB_CATEGORY,
+    QGVAR(declineKey),
+    ["Decline call", "Declines the call ringing you; closes the quick-add list when it is open. F8 by default (numpad layout: Numpad /)."],
+    {([] call FUNC(voiceDeclineKey)) || {[] call FUNC(keyOwned)}},
+    {false},
+    [QGVAR(declineKey), [KEY_DECLINE, KEYBIND_NO_MODS]] call FUNC(keyDefault)
+] call CBA_fnc_addKeybind;
+
+// VOICE ACTIVATION ON / OFF, numpad + (2026-10-30; it was 7): flips the
+// player's own setting (jmfsb_adapter_von_vad) - tick it only with Arma's VON
+// on voice activation.
+[
+    JMFSB_CATEGORY,
+    QGVAR(vadKey),
+    ["Voice activation on / off", "Turns the mod's voice activation mode on or off (Addon Options > JMSB - Voice (Built-in)). Use it with Arma's VON set to voice activation. F11 by default (numpad layout: Numpad +)."],
+    {([] call FUNC(voiceVadToggle)) || {[] call FUNC(keyOwned)}},
+    {false},
+    [QGVAR(vadKey), [KEY_VAD, KEYBIND_NO_MODS]] call FUNC(keyDefault)
+] call CBA_fnc_addKeybind;
+
+// CALL CAMERA FACE / VIEW (user, 2026-10-28: "the flip needs a key bind"):
+// what his camera sends on a live call. No default key.
+[
+    JMFSB_CATEGORY,
+    QGVAR(callCamKey),
+    ["Call camera: face / view", "On a live call, flips what your camera sends: your face, or what you see. The same as SEND VIEW / SEND FACE on the RADIO app. No default key."],
+    {[] call FUNC(voiceCamKey)},
+    {false},
+    [KEY_CALL_CAM, [false, false, false]]
+] call CBA_fnc_addKeybind;
+
+// THE CALL'S WINDOW STAYS ON TOP of the tablet: an app draws its controls over
+// whatever is there, so the window is drawn again after every app draw.
+[QEGVAR(tacpad,appOpened), {
+    [uiNamespace getVariable [QGVAR(display), displayNull]] call FUNC(tabletCall);
+}] call CBA_fnc_addEventHandler;
+
+// The echo test's row on the RADIO app and the tablet's RADIO page follows
+// its state (jmfsb_adapter_livekit_fnc_echo raises it).
+[QEGVAR(adapter_livekit,echo), {
+    if (GVAR(radioOpen)) then {[] call FUNC(overlayTick)};
+    if ((uiNamespace getVariable [QEGVAR(tacpad,appCurrent), ""]) isEqualTo "radio") then {
+        ["radio"] call EFUNC(tacpad,openApp);
+    };
+}] call CBA_fnc_addEventHandler;
 
 // A size change relays the device out. The map and the frame are placed by
 // FUNC(layout) at open and nothing already on screen can grow by being

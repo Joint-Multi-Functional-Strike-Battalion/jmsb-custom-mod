@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One pressable cell of the EW app, in the suite's grammar: an outlined cell
  * with its label, or - when it is the selected one - the inverted accent
  * block. A disabled cell is drawn dim and takes no press. The data is hung on

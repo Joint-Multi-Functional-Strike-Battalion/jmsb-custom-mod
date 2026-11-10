@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Wave 1: shells, scaled to the ground taken.
  *
  * A conventional commander is ASKED - an ARTY_REQUEST to its own guns, which
@@ -46,10 +46,17 @@ if (_ctype isEqualTo "asymmetric") exitWith {
 // the battery's own business. A roadblock backs one contact, a base four. A
 // rounds figure used to be computed here and passed to nothing - the log
 // promised shells this function had no way to order.
+// WITHOUT ALiVE THERE ARE NO GUNS TO ASK (user, 2026-11-02): the commander's
+// battery is ALiVE's, and the rule above holds - nothing is conjured. The same
+// with ALiVE loaded but no commanders, once the adapter has given up ("same as
+// not loaded"). Asked first, so the line is said in both cases.
+if (!(["QRF artillery", "no commander's guns to ask - no shells"] call EFUNC(common,aliveLoaded))
+    || {isNil QEFUNC(adapter_alive,requestFire)}) exitWith {};
+
 private _scale = ((_radius / QRF_SIZE_FULL) min 1) max 0;
 private _contacts = 1 max round (4 * _scale);
 
-private _asked = [_side, _pos, _contacts] call jmfsb_adapter_alive_fnc_requestFire;
+private _asked = [_side, _pos, _contacts] call EFUNC(adapter_alive,requestFire);
 INFO_2("QRF arty: asked %1's guns, %2 contact(s) backing the request",_side,_contacts);
 
 if (!_asked) then {

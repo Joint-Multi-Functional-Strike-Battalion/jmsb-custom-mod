@@ -3,7 +3,8 @@
 Function: jmfsb_hacking_fnc_alarmRing
 
 Description:
-    An alarm has gone off. This runs on every machine - the whole point of the
+    An alarm has gone off. The server sends this by remoteExec, and it runs only
+    when it came from the server (review S7). It runs on every machine - the whole point of the
     thing is that one person sets it and the entire server's phones go - but a
     phone only rings if you are carrying one, so a player carrying no scanner
     hears nothing, exactly as if their pocket were empty.
@@ -12,8 +13,8 @@ Description:
     the terminal on purpose - an alarm you can set on a device but never hear
     from it is a clock with no bell.
 
-    The ring is a beep on a slow loop plus the blinking row the screen paints
-    from GVAR(alarmRingUntil), and it gives up on its own after SCN_ALARM_RING
+    The ring is a beep on a slow loop until GVAR(alarmRingUntil) (the tacpad
+    TIMER reads it too), and it gives up on its own after SCN_ALARM_RING
     seconds because an alarm nobody dismisses has still done its job. A second
     alarm landing mid-ring just pushes the deadline back; there is one beeper,
     not one per alarm.
@@ -26,7 +27,9 @@ Author:
 ---------------------------------------------------------------------------- */
 params [["_name", "someone", [""]]];
 
-if (!hasInterface) exitWith {};
+// Sent by the server alone (FUNC(alarmAdd)), by remoteExec: a client cannot
+// ring every scanner on the net (review S7).
+if (!hasInterface || {!([] call EFUNC(common,fromServer))}) exitWith {};
 
 if !([player] call FUNC(hasScanner)) exitWith {};
 

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads a jmfsb value from ALiVE's persistence store.
  *
  * The third-party surface is getData/setData - there is no generic

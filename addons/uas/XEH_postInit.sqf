@@ -1,5 +1,43 @@
 #include "script_component.hpp"
 
+// THE REPORT, admins only, answered to the caller alone (review R1: it was a
+// CBA event any player could raise to print the enemy's drone picture in
+// everyone's chat). On the #jmfsb surface: registered on every machine,
+// because the typer's machine looks it up, and run on the server. #jmfsbuas is
+// a shortcut to `#jmfsb uas`.
+["uas", "drone patrols against their ceiling, and outages", {
+    // Built with an explicit loop rather than `apply` over the hashmaps:
+    // apply is an ARRAY command, and running it on a HashMap threw before
+    // this could print anything at all - which is why the command looked
+    // like it did nothing.
+    private _fleet = [];
+    {
+        private _side = _x;
+        private _want = 0;
+        {
+            _want = _want + ([_side, _x # 5] call FUNC(ceilingFor));
+        } forEach ([_side] call FUNC(zonesFor));
+
+        _fleet pushBack format ["%1=%2/%3", _side, [_side] call FUNC(livePatrols), _want];
+    } forEach [west, east, independent];
+
+    private _out = [];
+    {
+        _out pushBack format ["%1 for %2s", _x, round (_y - CBA_missionTime)];
+    } forEach GVAR(outages);
+
+    private _txt = format ["patrols/ceiling %1 | outages %2",
+        _fleet, ["none", str _out] select (_out isNotEqualTo [])];
+    diag_log text format ["[jmfsb_uas] %1", _txt];
+    format ["UAS: %1", _txt]
+}] call EFUNC(common,addDebugCommand);
+
+if (hasInterface) then {
+    ["jmfsbuas", {
+        ["#jmfsb uas", player] call EFUNC(common,debugCommand);
+    }, "all"] call CBA_fnc_registerChatCommand;
+};
+
 if (!isServer) exitWith {};
 
 // side text -> time the outage ends. Read by FUNC(ceilingFor).
@@ -28,44 +66,27 @@ GVAR(friendlySaid) = [];
 // late commander adds only what is new.
 GVAR(aliveZoneIds) = [];
 
-if (!isNil QEFUNC(adapter_alive,commanders)) then {
-    if (EGVAR(adapter_alive,ready)) then {
-        [] call FUNC(zonesFromAlive);
-    } else {
-        [QEGVAR(adapter_alive,ready), { [] call FUNC(zonesFromAlive) }] call CBA_fnc_addEventHandler;
-    };
+// The adapter's whenReady runs it now when ready already, and once only - not
+// the ready CBA event any client could raise again (review R1).
+//
+// Without ALiVE there are no objectives to patrol (user, 2026-11-02): said
+// once when the opt-in is on, and Drone Patrol Zone modules fly as they do
+// with it. The same branch when ALiVE is loaded with no commanders ("same as
+// not loaded"): the adapter's fallback, once it gives up.
+private _without = {
+    [{
+        if (GVAR(aliveZones)) then {
+            ["UAS objective zones", "off - Drone Patrol Zone modules only"] call EFUNC(common,aliveLoaded);
+        };
+    }] call EFUNC(common,runAfterSettingsInit);
+};
+if (!isNil QEFUNC(adapter_alive,whenReady)) then {
+    [{ [] call FUNC(zonesFromAlive) }, [], _without] call EFUNC(adapter_alive,whenReady);
+} else {
+    call _without;
 };
 
-["jmfsbuas", {
-    [QGVAR(report), []] call CBA_fnc_serverEvent;
-}, "all"] call CBA_fnc_registerChatCommand;
-
-[QGVAR(report), {
-    // Built with an explicit loop rather than `apply` over the hashmaps:
-    // apply is an ARRAY command, and running it on a HashMap threw before
-    // this could print anything at all - which is why the command looked
-    // like it did nothing.
-    private _fleet = [];
-    {
-        private _side = _x;
-        private _want = 0;
-        {
-            _want = _want + ([_side, _x # 5] call FUNC(ceilingFor));
-        } forEach ([_side] call FUNC(zonesFor));
-
-        _fleet pushBack format ["%1=%2/%3", _side, [_side] call FUNC(livePatrols), _want];
-    } forEach [west, east, independent];
-
-    private _out = [];
-    {
-        _out pushBack format ["%1 for %2s", _x, round (_y - CBA_missionTime)];
-    } forEach GVAR(outages);
-
-    private _txt = format ["patrols/ceiling %1 | outages %2",
-        _fleet, ["none", str _out] select (_out isNotEqualTo [])];
-    diag_log text format ["[jmfsb_uas] %1", _txt];
-    [format ["UAS: %1", _txt]] remoteExec ["systemChat", 0];
-}] call CBA_fnc_addEventHandler;
+// The report is the #jmfsb uas admin command (top of this file).
 
 // THE IED PELICAN IS DDT'S TO FLY. Drongo's Drone Tweaks gives the AI drones
 // from its own class lists; ours is not on them, so it goes on once DDT has

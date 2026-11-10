@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A side as ALiVE spells it: "WEST", "EAST", "GUER", "CIV".
  *
  * This conversion was written nine times across the mod, and the copies had

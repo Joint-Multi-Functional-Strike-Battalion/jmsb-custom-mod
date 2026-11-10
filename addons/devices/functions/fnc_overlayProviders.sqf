@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The default status-row providers: a hashmap of icon -> code, each
  * answering [icon word, short value, state] for its cell. Stored as
  * GVAR(overlayProviders) at preInit, so another addon can `set` its own over
@@ -12,15 +12,15 @@
  * - NET: how much of game voice's ten custom channels is still FREE, as a
  *   percent (jmfsb_voice_fnc_channelUse; user: "reverse the % to available so
  *   it should read 70%") - amber at CHANNEL_WARN_PCT or less, red at none;
- *   dim under TFAR / ACRE, which use none.
+ *   dim when nothing is counted (voice unavailable).
  * - MESH: hops to the nearest relay on RF's data net ("2H"), "DIR" when only
  *   direct peers are in reach, red "--" with no path at all. From the RF
  *   client slice via FUNC(overlayRf), cached in GVAR(overlayRf).
  * - JAM: the jamming addon's shared calculator, any domain, as a percent.
  * - GPS: the grid you are in (FUNC(overlayGrid): 8 or 10 figures by Device
  *   grid digits) - red NO FIX when denied, amber when SUSPECT.
- * - DRONES: mine (the drone the player links, jmfsb_devices_fnc_uavControl) +
- *   hostiles the scanner counts, "2+1", red while any hostile is counted.
+ * - DRONES: the hostile-drone scanner's state as the DRONES tile words it -
+ *   CLR / WARN / ALERT (user, 2026-11-01; it was "mine+level", read as a count).
  * - MSG: unread messages in the messaging index, red above none.
  * FIRES and BATT are gone (2026-10-21): placeholders that only said --.
  *
@@ -83,18 +83,27 @@ createHashMapFromArray [
     }],
 
     ["DRONES", {
-        // The drone he links (FUNC(uavControl)) - there is no terminal to ask.
-        private _linked = ["linked"] call FUNC(uavControl);
-        private _mine = [[], [_linked]] select (alive _linked);
+        // THE HOSTILE-DRONE STATE, AS A WORD (user, 2026-11-01): the scanner
+        // answers a level - 0 clear, 1 warn, 2 alert - not a count, and
+        // "0+2" read as two drones. The cell now reads as the DRONES tile.
         private _sweep = if (isNil QEFUNC(hud,sweep)) then {[]} else {[] call EFUNC(hud,sweep)};
-        private _others = _sweep param [0, 0];
-        if !(_others isEqualType 0) then {_others = 0};
-        if (_mine isEqualTo [] && _others <= 0) exitWith {["DRONES", "0", STATE_OFF]};
-        [
-            "DRONES",
-            [str count _mine, format ["%1+%2", count _mine, _others]] select (_others > 0),
-            [STATE_OK, STATE_ALERT] select (_others > 0)
-        ]
+        private _level = _sweep param [0, 0];
+        if !(_level isEqualType 0) then {_level = 0};
+        _level = (round _level) max 0 min (count DRONE_STATE_WORDS - 1);
+        ["DRONES", DRONE_STATE_WORDS select _level, [STATE_OK, STATE_WARN, STATE_ALERT] select _level]
+    }],
+
+    ["BATT", {
+        // The player's own sets, as RF's server last told him; the lowest.
+        private _sets = ((call CBA_fnc_currentUnit) getVariable [QEGVAR(rf,batteries), []]) select {(_x param [1, -1]) >= 0};
+        if (_sets isEqualTo []) exitWith {[BATT_ICON, "--", STATE_OFF]};
+        private _low = selectMin (_sets apply {_x select 1});
+        private _state = switch (true) do {
+            case (_low <= BATT_ALERT_K): {STATE_ALERT};
+            case (_low <= BATT_WARN_K): {STATE_WARN};
+            default {STATE_OK};
+        };
+        [BATT_ICON, format ["%1%2", round (_low * PERCENT), "%"], _state]
     }],
 
     ["MSG", {

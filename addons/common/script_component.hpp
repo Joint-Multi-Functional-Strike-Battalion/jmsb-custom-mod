@@ -44,6 +44,21 @@
 // Admin chat-command prefix. Seven characters - fnc_debugCommand slices on it.
 #define DEBUG_PREFIX "#jmfsb "
 
+// Who sent a request (FUNC(sender), FUNC(senderIsAdmin), FUNC(adminCheck)):
+// the server is always machine 2; `admin` answers 2 for a #login'd admin.
+#define SERVER_OWNER     2
+#define ADMIN_LOGGED_IN  2
+// How long a client waits for #login / #logout to take before asking again.
+#define ADMIN_LOGIN_WAIT 5
+// The tick timings are written to the RPT this often, seconds (FUNC(perfReport)).
+#define PERF_REPORT_S    60
+// Secrets an admin enters in game (FUNC(secretSet), review R4): the names, the
+// server-profile prefix, and how many trailing characters the dialog may show
+// (none at all for a value this short or shorter).
+#define SECRET_NAMES     ["livekitKey", "livekitSecret", "pacdbUrl", "pacdbKey"]
+#define SECRET_PREFIX    "jmfsb_secret_"
+#define SECRET_SHOWN     4
+
 // Intel markers fade in this many scheduled steps - never a per-frame handler.
 #define INTEL_FADE_STEPS 5
 
@@ -79,3 +94,34 @@
 // The class picker hides classes from addons whose CfgPatches name holds one of
 // these (lower case) - Aegis and Atlas are not run by the unit (FUNC(listClasses)).
 #define LIST_HIDE_SOURCES ["aegis", "atlas"]
+
+// An artillery team is a squad whose ORBAT kind (its map icon, on the group as
+// jmfsb_bft_type) is one of these (fnc_artyGroups; user, 2026-10-25).
+#define ARTY_KIND_VAR "jmfsb_bft_type"
+#define ARTY_KINDS ["art", "mortar"]
+
+// RUNNING WITHOUT ALiVE (user, 2026-11-02: "works with or without" - "if alive
+// is present we integrate"). The adapter's PBO loads only with ALiVE, so its
+// CfgPatches class is the test (fnc_aliveLoaded). Without it, a side's own
+// ground is the area markers named for it (fnc_groundFor):
+// jmfsb_taor_west, jmfsb_taor_east_2, jmfsb_black_guer ... and a settlement is
+// a map location of these types (fnc_settlements).
+#define ADAPTER_PATCH        QUOTE(DOUBLES(PREFIX,adapter_alive))
+// ALiVE IS ITS OWN MAIN PBOS (user, 2026-11-02: "use the alive main pbo
+// names"). ALiVE is loaded when every one of these CfgPatches classes is - the
+// ones the adapter requires (adapter_alive/config.cpp requiredAddons, which
+// must stay in step with this list). fnc_aliveLoaded tests them AND
+// ADAPTER_PATCH, so a yes always means the adapter's functions exist.
+#define PATCHES_ALIVE        ["ALiVE_main", "ALiVE_x_lib"]
+#define GROUND_TAOR_PREFIX   "jmfsb_taor_"
+#define GROUND_BLACK_PREFIX  "jmfsb_black_"
+#define SETTLEMENT_TYPES     ["NameCityCapital", "NameCity", "NameVillage"]
+// A located town's footprint: a map location's own size, never below this.
+#define SETTLEMENT_MIN_SIZE  150
+// Below this a side is hostile to another (getFriend) - who answers a capture
+// or a compromise (fnc_hostileCommander).
+#define COMMANDER_HOSTILE_BELOW 0.6
+
+// The Eden class picker's title names at most this many picked classes, then
+// "+n" (FUNC(edenClassPickLoad)).
+#define PICK_TITLE_MAX       3

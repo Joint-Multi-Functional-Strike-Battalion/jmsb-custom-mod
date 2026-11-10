@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: sets who is on one of the RTO nets - both lists replaced
  * (FUNC(srvNetMembers) on the server). Refused here only for what a client
  * can tell; the server answers the rest through FUNC(netFailed) or the
@@ -28,5 +28,5 @@ if !([player] call FUNC(canManageNets)) exitWith {
     false
 };
 
-[QGVAR(srvNetMembers), [player, _id, _squads apply {toUpper trim _x}, _uids]] call CBA_fnc_serverEvent;
+[player, _id, _squads apply {toUpper trim _x}, _uids] remoteExecCall [QFUNC(srvNetMembers), SERVER_OWNER];
 true

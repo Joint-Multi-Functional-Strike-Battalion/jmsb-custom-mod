@@ -1,17 +1,15 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes one order from TAC//SUPPORT and either sends it to the server or
  * says why not - the "task" code of provider "air".
  *
  * RUNS ON THE REQUESTER'S MACHINE (the core calls it there). Everything that
- * can be refused is refused here, with the reason on his screen; what is
- * accepted is flown on the server, which owns every aircraft this addon
- * creates, through QGVAR(order).
- *
- * NO GRID IS ALLOWED ONLY WHERE "ON ME" MAKES SENSE. A PICKUP or an EXTRACT
- * without a point comes to the requester; everything else is aimed at a
- * place and the screen already holds CONFIRM until one is set.
+ * can be refused is refused here (FUNC(check)), with the reason on his
+ * screen; what is accepted is flown on the server, which owns every aircraft
+ * this addon creates. It goes there by remoteExec to FUNC(order), which runs
+ * the same check again with the sender's own unit (review S6) - a CBA event
+ * would not tell the server who sent it.
  *
  * THE COOLDOWN IS THIS ADDON'S, NOT THE CORE'S. An air asset is turned round
  * when the aircraft is home, not when the order is given, so the module
@@ -43,52 +41,15 @@ if (isNull _logic) exitWith {
     [false, "that asset is gone", 0]
 };
 
-private _callsign = _logic getVariable [QGVAR(callsign), "AIR"];
-private _kind = _logic getVariable [QGVAR(kind), ""];
+([_logic, _task, _pos, _prm, player] call FUNC(check)) params ["_ok", "_why", "_at"];
+if (!_ok) exitWith {[false, _why, 0]};
 
-// RECALL IS PASSED THROUGH WHENEVER SOMETHING IS OUT - an asset you want home
-// is busy.
+[_logic, _task, _at, +_prm] remoteExecCall [QFUNC(order), SERVER_OWNER];
+
 if (_task isEqualTo TASK_RTB) exitWith {
-    // Idle covers turning round and spent too - nothing is out to recall.
-    if ((_logic getVariable [QGVAR(status), STATUS_IDLE]) isEqualTo STATUS_IDLE) exitWith {
-        [false, format ["%1 is at base - nothing to recall", _callsign], 0]
-    };
-    [QGVAR(order), [_logic, TASK_RTB, [], _prm, player]] call CBA_fnc_serverEvent;
+    private _callsign = _logic getVariable [QGVAR(callsign), "AIR"];
     INFO_1("%1 recalled",_callsign);
     [true, format ["%1 returning to base", _callsign], 0]
 };
-
-([_logic] call FUNC(available)) params ["_ok", "", "_why"];
-if (!_ok) exitWith {[false, _why, 0]};
-
-// The token must be one THIS asset offers - the screen only shows those, but
-// a request can come from anywhere.
-private _offered = ([_assetId, [_logic] call FUNC(entityRow)] call FUNC(tasks)) apply {_x select 0};
-if !(_task in _offered) exitWith {
-    INFO_3("task refused for %1 - '%2' is not one of %3",_callsign,_task,_offered);
-    [false, format ["%1 does not fly %2", _callsign, _task], 0]
-};
-
-if (_pos isEqualTo []) then {
-    if (_task in [TASK_PICKUP, TASK_EXTRACT, TASK_LIFT]) then {_pos = getPosATL player};
-};
-if (_pos isEqualTo []) exitWith {[false, "no target grid", 0]};
-_pos = [_pos select 0, _pos select 1, 0];
-
-// What the screen should already have made sure of - a request can come from
-// anywhere.
-if (_task in [TASK_LIFT, TASK_SLING] && {([_prm, SLOT_LZ] call FUNC(readPoint)) isEqualTo []}) exitWith {
-    [false, format ["%1 needs %2", _task, ["an LZ", "a set-down point"] select (_task isEqualTo TASK_SLING)], 0]
-};
-if (_task isEqualTo TASK_HELOCAST && {!surfaceIsWater _pos}) exitWith {
-    [false, format ["%1 casts over water only - %2 is land", _callsign, mapGridPosition _pos], 0]
-};
-
-// The QRF squad must exist before the aircraft is sent for it.
-if (_kind isEqualTo KIND_QRF && {([_logic] call FUNC(qrfSquad)) isEqualTo []}) exitWith {
-    [false, format ["%1 has no squad to send", _callsign], 0]
-};
-
-[QGVAR(order), [_logic, _task, _pos, +_prm, player]] call CBA_fnc_serverEvent;
 
 [true, "", 0]

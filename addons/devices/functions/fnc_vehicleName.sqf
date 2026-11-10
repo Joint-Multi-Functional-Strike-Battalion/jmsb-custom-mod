@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the vehicle tablet calls its vehicle (docs/DESIGN_TABLET.md: "Device
  * bar says VEHICLE . <vehicle callsign>"): this vehicle, not its model.
  *

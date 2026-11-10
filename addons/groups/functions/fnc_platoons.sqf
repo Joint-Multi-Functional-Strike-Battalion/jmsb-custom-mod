@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
-    Author: JMSB
+    Author: YonV
 
     Description:
         THE PLATOON TABS, read from the mission. A tab is a view onto the same

@@ -61,6 +61,8 @@ private _payload = [
 
 if (_sent) then {
     INFO_1("OPORD %1 posted to C2",_id);
+    // The server marks it posted only now (review L1).
+    [player, true] remoteExecCall [QFUNC(opordAsk), 2];
 } else {
     WARNING_2("OPORD %1 not posted: %2",_id,_why);
 };

@@ -576,7 +576,7 @@ class CfgVehicles {
     // RADIO BAGS ARE BAGS. No man packs (user, 2026-10-21): none of these is a
     // radio set any more - no jmfsb_rf_profile, and jmfsb_rf_fnc_carriedSets
     // reads nothing off the back. The class names are kept - TFAR_rt1523g_kitbag
-    // too - because old loadouts and missions name them.
+    // too, though TFAR is gone (DEC1) - because old loadouts and missions name them.
     class GVAR(TFAR_rt1523g_kitbag): B_Kitbag_Base {
         author = "NemesisRE";
         model = "\A3\weapons_f\Ammoboxes\bags\Backpack_Fast";
@@ -660,9 +660,6 @@ class CfgVehicles {
         class TransportMagazines {};
         class TransportWeapons {};
         isBackpack = 1;
-        // class TransportItems {
-        //     MACRO_ADDITEM(ACRE_PRC117F,1);
-        // };
     };
     class GVAR(B_RadioBag_01_Multicam): GVAR(RadioBag_01_Base) {
         author = QAUTHOR;

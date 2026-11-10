@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet's who-is-talking chip (docs/DESIGN_TABLET.md, "Map area": top,
  * right of the rail): TX or VOX, the member's number and name - the same chip
  * the walking view draws, from the same function (FUNC(overlayTalker)).

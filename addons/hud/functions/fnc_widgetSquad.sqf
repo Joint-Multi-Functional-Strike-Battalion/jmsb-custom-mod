@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SQUAD: one line when the section is whole, and the casualty list the moment it
  * is not.
  *
@@ -14,7 +14,7 @@
  * honest reading of a mission not running it.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -22,12 +22,13 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetSquad
+ *
  * Public: No
  */
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
@@ -71,12 +72,12 @@ private _hurt = [];
 } forEach (units group player);
 
 if (_hurt isEqualTo []) exitWith {
-    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], "ALL OK", _ink, (1 * _k), true] call EFUNC(tacpad,drawText);
-    [
-        _ctrl, [_pad, _y + _rowH, _w - 2 * _pad, _rowH],
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y, _w - 2 * _pad, _rowH], "ALL OK", _ink, (1 * _k), true]];
+    _ops pushBack [HUD_OP_TEXT, [
+        [_pad, _y + _rowH, _w - 2 * _pad, _rowH],
         format ["%1 EFFECTIVE", count (units group player)],
         _mute, (0.65 * _k), false, "left", true
-    ] call EFUNC(tacpad,drawText);
+    ]];
 };
 
 // WORST FIRST. A list ordered by who happens to be earliest in the group array
@@ -100,15 +101,15 @@ private _shown = 0;
         default {_ink};
     };
 
-    [_ctrl, [_pad, _y + _shown * _rowH, _w * 0.5, _rowH], [name _unit, format ["%1 (%2)", name _unit, ((_unit getVariable ["jmfsb_pac_skillTags", []]) select [0, 2]) joinString "/"]] select ((_unit getVariable ["jmfsb_pac_skillTags", []]) isNotEqualTo []), _colour, (0.8 * _k), true] call EFUNC(tacpad,drawText);
-    [_ctrl, [_w * 0.5, _y + _shown * _rowH, _w * 0.5 - _pad, _rowH], _state, _colour, (0.68 * _k), true, "right", true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y + _shown * _rowH, _w * 0.5, _rowH], [name _unit, format ["%1 (%2)", name _unit, ((_unit getVariable ["jmfsb_pac_skillTags", []]) select [0, 2]) joinString "/"]] select ((_unit getVariable ["jmfsb_pac_skillTags", []]) isNotEqualTo []), _colour, (0.8 * _k), true]];
+    _ops pushBack [HUD_OP_TEXT, [[_w * 0.5, _y + _shown * _rowH, _w * 0.5 - _pad, _rowH], _state, _colour, (0.68 * _k), true, "right", true]];
     _shown = _shown + 1;
 } forEach _keyed;
 
 if (count _keyed > _shown) then {
-    [
-        _ctrl, [_pad, _y + _shown * _rowH, _w - 2 * _pad, _rowH],
+    _ops pushBack [HUD_OP_TEXT, [
+        [_pad, _y + _shown * _rowH, _w - 2 * _pad, _rowH],
         format ["+%1 MORE", count _keyed - _shown],
         _mute, (0.65 * _k), true, "left", true
-    ] call EFUNC(tacpad,drawText);
+    ]];
 };

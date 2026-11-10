@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Maybe watches a safe house: the first player through the door draws 3-4
  * mortar rounds.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What this asset is doing, as one token - the ONLY place that question is
  * answered. The row's status, the core's "available" ask and FUNC(task)'s
  * refusal all read it, so a row that reads IDLE is never an order refused.

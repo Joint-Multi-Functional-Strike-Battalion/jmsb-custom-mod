@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is anybody near enough for a patrol over this position to be worth flying?
  *
  * THE ONE PLACE THAT ANSWERS IT, because three ask: the planner filtering its

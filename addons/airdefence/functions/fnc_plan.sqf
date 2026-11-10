@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Decides what every commander gets and where, then builds it.
  *
  * WHERE IS NEVER ASKED FOR. Each commander's own TAOR and its own objectives
@@ -11,6 +11,15 @@
  *   invasion / occupation - a radar cueing launchers set back from it
  *   asymmetric            - men with MANPADS, spread over its objectives
  *
+ * WITHOUT ALiVE (user, 2026-11-02: "works with or without") the mission
+ * answers the same questions: every side with ground of its own - the
+ * module's TAOR field for it, or its jmfsb_taor_<side> markers
+ * (EFUNC(common,groundFor)) - is a conventional commander, its faction is the
+ * one its men on the map wear (EFUNC(common,sideFaction)) and its objectives
+ * are the towns on that ground (EFUNC(common,settlements)). No ground drawn
+ * for anyone: the mission's enemy over the whole map, clear of the players'
+ * start (AD_FALLBACK_CLEAR).
+ *
  * Arguments: None
  *
  * Return Value: None
@@ -20,9 +29,38 @@
  */
 
 if (!isServer) exitWith {};
-if (isNil "jmfsb_adapter_alive_fnc_commanders") exitWith {};
 
-private _cmds = call jmfsb_adapter_alive_fnc_commanders;
+// A side's ground: the module's own TAOR field when the mission set one, its
+// ALiVE commander placements (or, without ALiVE, its jmfsb_taor markers)
+// otherwise.
+private _fnc_ground = {
+    params ["_s"];
+    private _set = if (isNil QGVAR(taors)) then {[]} else {
+        GVAR(taors) getOrDefault [str _s, []]
+    };
+    if (_set isNotEqualTo []) exitWith {[+_set, []]};
+    [_s] call EFUNC(common,groundFor)
+};
+
+// ALiVE loaded with no commanders is not loaded (user, 2026-11-02).
+private _withAlive = !isNil QEFUNC(adapter_alive,commanders) && {[] call EFUNC(common,aliveLoaded)};
+private _cmds = [];
+private _wholeMap = false;
+if (_withAlive) then {
+    _cmds = call EFUNC(adapter_alive,commanders);
+} else {
+    {
+        if ((([_x] call _fnc_ground) select 0) isNotEqualTo []) then {
+            _cmds pushBack [_x, AD_FALLBACK_CTYPE, [_x] call EFUNC(common,sideFaction)];
+        };
+    } forEach [west, east, independent];
+    if (_cmds isEqualTo []) then {
+        private _enemy = call EFUNC(common,enemySide);
+        _cmds pushBack [_enemy, AD_FALLBACK_CTYPE, [_enemy] call EFUNC(common,sideFaction)];
+        _wholeMap = true;
+    };
+    INFO_2("no ALiVE - air defence for %1 from the mission's own ground (whole map: %2)",_cmds apply {_x select 0},_wholeMap);
+};
 if (_cmds isEqualTo []) exitWith {
     INFO("no ALiVE commanders - nothing to defend");
 };
@@ -50,17 +88,6 @@ private _mine = call EFUNC(common,playerSides);
         continue;
     };
 
-    // A side's ground: the module's own TAOR field when the mission set one,
-    // its ALiVE commander placements otherwise.
-    private _fnc_ground = {
-        params ["_s"];
-        private _set = if (isNil QGVAR(taors)) then {[]} else {
-            GVAR(taors) getOrDefault [str _s, []]
-        };
-        if (_set isNotEqualTo []) exitWith {[+_set, []]};
-        [_s] call jmfsb_adapter_alive_fnc_taorFor
-    };
-
     ([_side] call _fnc_ground) params ["_taor", "_black"];
 
     // OTHER SIDES' GROUND IS OFF LIMITS - TO A SIDE THAT DECLARED NONE OF ITS
@@ -85,7 +112,21 @@ private _mine = call EFUNC(common,playerSides);
         } forEach _foreign;
     };
 
-    private _objs = [_side] call jmfsb_adapter_alive_fnc_objectivesFor;
+    private _objs = [];
+    if (_withAlive) then {
+        _objs = [_side] call EFUNC(adapter_alive,objectivesFor);
+    } else {
+        // The towns on this side's ground, as objectives: [id, pos, size, type].
+        // On the whole map, none near a player-side man - that is their base.
+        private _playerMen = (allPlayers + playableUnits) select {(side group _x) in _mine};
+        {
+            _x params ["_cpos", "_csize"];
+            if (_taor isNotEqualTo [] && {(_taor findIf {_cpos inArea _x}) < 0}) then {continue};
+            if ((_black findIf {_cpos inArea _x}) > -1) then {continue};
+            if (_wholeMap && {(_playerMen findIf {(_x distance2D _cpos) < AD_FALLBACK_CLEAR}) > -1}) then {continue};
+            _objs pushBack [format ["town_%1", mapGridPosition _cpos], _cpos, _csize, "settlement"];
+        } forEach (call EFUNC(common,settlements));
+    };
     if (_objs isEqualTo []) then {
         INFO_1("side %1 holds no objectives - no air defence",_side);
         continue;

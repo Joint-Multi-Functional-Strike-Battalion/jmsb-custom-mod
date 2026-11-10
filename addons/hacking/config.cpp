@@ -27,4 +27,3 @@ class CfgPatches {
 #include "CfgFactionClasses.hpp"
 #include "CfgWeapons.hpp"
 #include "CfgVehicles.hpp"
-#include "CfgUIGrids.hpp"

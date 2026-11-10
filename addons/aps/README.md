@@ -12,7 +12,10 @@ submunitions thirty metres short of the hull; the enhanced fit kills tank rounds
 on sight. Charges per side, a front-half-only BASIC fit at the bottom, rearmed
 when the vehicle reloads its guns or parks by a supply. Top-attack dives above
 the max angle and rounds above the size limit get through - that is the
-counter.
+counter. The launchers watch only while the vehicle is crewed with the engine
+on; quiet, they look four times a second a little past their range, and once
+anything is in the air near them, twenty times a second for three seconds
+(code review P3, 2026-10-31).
 
 **RF burst.** An omnidirectional high-power microwave pulse, automatic, with a
 cooldown as its only resource. Guided munitions in the sphere lose their
@@ -38,9 +41,10 @@ tier table (`faction:tier`) or name a class's fit outright (`class:FIT+RF`).
 **APS arms itself from its settings; the module is an override.** A JMSB - APS
 module bends the switches and the tier / fit tables, and it is applied whether
 it runs before or after the settings armed the system - one that arrives second
-refits every vehicle to its tables. The jam rides the same ACRE lever as
-`jmfsb_jamming` - a reference-counted registry per client, so a burst inside a
-jamming zone never un-jams the zone.
+refits every vehicle to its tables. The jam is a reference-counted registry
+per client with a cue at each edge. The ACRE signal lever it drove (shared
+with `jmfsb_jamming`) was removed on 2026-10-31 (DEC1); under game voice the
+burst is the cue only.
 
 **The map panel** (user, 2026-08-29: "a live panel to control APS on the map").
 Registered with the tacpad shell when it is loaded, refreshed every two
@@ -71,7 +75,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-1 unit class, 24 functions.
+1 unit class, 25 functions.
 
 ## Eden modules
 
@@ -120,7 +124,7 @@ Placing this module turns on the APS, the active protection. Without it, the sys
 
 ## Functions
 
-<details><summary>24</summary>
+<details><summary>25</summary>
 
 - `jmfsb_aps_fnc_arm`
 - `jmfsb_aps_fnc_blackout`
@@ -134,6 +138,7 @@ Placing this module turns on the APS, the active protection. Without it, the sys
 - `jmfsb_aps_fnc_isGuided`
 - `jmfsb_aps_fnc_jamRegister`
 - `jmfsb_aps_fnc_jamTick`
+- `jmfsb_aps_fnc_kill`
 - `jmfsb_aps_fnc_moduleAPS`
 - `jmfsb_aps_fnc_panelAps`
 - `jmfsb_aps_fnc_panelList`

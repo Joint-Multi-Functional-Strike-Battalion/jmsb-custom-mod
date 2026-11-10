@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The status row's cells, left to right: each icon of GVAR(overlayOrder)
  * asked of its provider (GVAR(overlayProviders), FUNC(overlayProviders)). An
  * icon with no provider, or a provider that answers nothing usable, is a dim

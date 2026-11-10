@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * EA: sets a man's jammer (DESIGN_EW "EA"). One jammer per operator,
  * radiating from what FUNC(kit) says he jams from - the vehicle carrying a
  * jammer module. On a client this forwards to the server, which
@@ -42,10 +42,16 @@
 params [["_unit", objNull, [objNull]], ["_changes", [], [[], createHashMap]]];
 
 if (!isServer) exitWith {
-    [QGVAR(jamSet), [_unit, _changes]] call CBA_fnc_serverEvent;
+    [_unit, _changes] remoteExecCall [QFUNC(jamSet), SERVER_OWNER];
     true
 };
 if (isNull _unit) exitWith {false};
+// By remoteExec, for the sender's own unit only (review R1: it was a CBA
+// event, so any client could set another operator's jammer).
+if !([_unit] call EFUNC(common,senderIs)) exitWith {
+    WARNING_2("jamSet: refused - machine %1 named %2",remoteExecutedOwner,_unit);
+    false
+};
 if (_changes isEqualType []) then {_changes = createHashMapFromArray _changes};
 
 private _kit = [_unit] call FUNC(kit);

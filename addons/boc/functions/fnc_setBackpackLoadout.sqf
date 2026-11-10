@@ -19,7 +19,9 @@
 params ["_backpack", "_loadout"];
 if (isNull _backpack) exitWith {false};
 
-[QGVAR(clearAllCargo), [_backpack]] call CBA_fnc_globalEvent;
+// Global commands from this machine, not a CBA event any client could raise
+// on any container (review R1).
+[_backpack] call FUNC(clearAllCargo);
 
 //add items
 private _cfgMagazines = configFile >> "CfgMagazines";
@@ -54,7 +56,7 @@ private _cfgVehicles = configFile >> "CfgVehicles";
             if (isClass _cfgCargoBackpack) then {
                 _backpack addBackpackCargoGlobal [_cargoClass, 1];
                 //
-                [QGVAR(clearCargoBackpacks), [_backpack]] call CBA_fnc_globalEvent;
+                [_backpack] call FUNC(clearCargoBackpacks);
             } else {
                 _backpack addItemCargoGlobal _x;
             }

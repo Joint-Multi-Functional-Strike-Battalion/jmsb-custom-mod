@@ -20,6 +20,15 @@ broken.
      ask for a side five times between them, and every one of those fields was a
      chance to say something different by accident. A new module attribute
      asking for a side is a regression, not a feature.
+
+  3. EVERY CARD THE MOD NAMES IS BUILT IN (user, 2026-11-02: "the mod's own
+     card always wins"). The mod carries its cards (messaging, support and PAC
+     register them - fnc_builtin*.sqf, pac fnc_registerTemplates.sqf) and the
+     TAC//PAC deck only adds the ids the mod does not have. A card id the
+     support providers, the prompts' quick replies or the card reader name
+     (a CARD / CARDS / ANSWERS / REPLIES macro in the addons that file or read
+     cards) that is not built in is a flow that works only where a deck
+     happens to carry it.
 """
 import io
 import os
@@ -62,6 +71,65 @@ SIDE_ATTRS_ALLOWED = {
 }
 SIDE_ATTR = re.compile(r"^\s*(?:AEDIT|ABOOL|APICK)\((\w*[Ss]ide\w*)\s*,", re.M)
 SIDE_CLASS = re.compile(r"^\s*class (\w*[Ss]ide\w*)\s*:\s*(?:Combo|Edit)\b", re.M)
+
+# --- 3. every card the mod names is built in -----------------------------------
+# Where the mod's cards are: one `_cards pushBack ["id", ...]` per card.
+CARD_FILES = [
+    os.path.join(ADDONS, "messaging", "functions", "fnc_builtinCards.sqf"),
+    os.path.join(ADDONS, "support", "functions", "fnc_builtinCards.sqf"),
+    os.path.join(ADDONS, "support", "functions", "fnc_builtinFires.sqf"),
+    os.path.join(ADDONS, "support", "functions", "fnc_builtinReplies.sqf"),
+    os.path.join(ADDONS, "pac", "functions", "fnc_registerTemplates.sqf"),
+]
+CARD_SQF = re.compile(r"_cards pushBack \[\"(\w+)\"")
+# The addons that file, offer or read cards by id; their script_component.hpp.
+CARD_ADDONS = ["messaging", "support", "support_air", "support_fires", "support_logistics", "cas", "jumpmaster",
+               "tacpad", "pac"]
+# A macro naming card ids: CARD / CARDS (one id, a list, a list of [id, keys]),
+# ANSWERS (a prompt's quick replies, "a,b,c") and REPLIES (a card's answers).
+CARD_MACRO = re.compile(r"^#define\s+(\w*(?:CARD|ANSWERS|REPLIES)\w*)\s+(.*)$")
+# Macros with CARD in the name that hold no card id, and the retired ids
+# (never built in - the deck's copies are skipped).
+CARD_MACRO_NOT_IDS = {"CARD_KIND_REPLY", "CARD_KIND_ROOT", "CARD_PRIORITY_HIGH", "THREAD_CARD_TAKE", "CARDS_RETIRED"}
+# A card id: lowercase letters and digits. Field keys (Text.A), words (TOF %1)
+# and line stems (Line6) are not.
+CARD_ID = re.compile(r"^[a-z][a-z0-9]*$")
+STRING = re.compile(r"\"([^\"]*)\"")
+
+
+def macros(path):
+    """(name, value) for every #define, continuation lines joined."""
+    out, held = [], ""
+    for line in read(path).splitlines():
+        line = held + line.strip() if held else line.strip()
+        if line.endswith("\\"):
+            held = line[:-1] + " "
+            continue
+        held = ""
+        m = CARD_MACRO.match(line)
+        if m:
+            out.append((m.group(1), m.group(2)))
+    return out
+
+
+def card_gaps():
+    """Card ids the mod names and does not carry, as lines; [] when none."""
+    built = set()
+    for path in CARD_FILES:
+        built |= set(CARD_SQF.findall(read(path)))
+    if not built:
+        return ["no built-in cards read from %s" % ", ".join(os.path.relpath(p, ROOT) for p in CARD_FILES)]
+    out = []
+    for addon in CARD_ADDONS:
+        path = os.path.join(ADDONS, addon, "script_component.hpp")
+        for name, value in macros(path):
+            if name in CARD_MACRO_NOT_IDS:
+                continue
+            for text in STRING.findall(value):
+                for cid in (t.strip() for t in text.split(",")):
+                    if CARD_ID.match(cid) and cid not in built:
+                        out.append("%s/script_component.hpp %s: '%s' is not a built-in card" % (addon, name, cid))
+    return out
 
 
 def read(p):
@@ -130,11 +198,21 @@ def main():
             print("    " + s)
         print("")
 
+    gaps = card_gaps()
+    if gaps:
+        ok = False
+        print("CARD NOT BUILT IN - %d card id(s)" % len(gaps))
+        print("  The mod carries every card it names (messaging and support")
+        print("  fnc_builtin*.sqf, pac fnc_registerTemplates.sqf). Build it in.")
+        for s in gaps:
+            print("    " + s)
+        print("")
+
     if not ok:
         print("invariant check FAILED")
         return 1
 
-    print("adapter seam intact, sides typed once")
+    print("adapter seam intact, sides typed once, every card named is built in")
     return 0
 
 

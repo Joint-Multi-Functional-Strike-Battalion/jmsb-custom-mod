@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A leader is spent - killed by a player, or delivered to a prison. FINITE
  * once a PLAYER spends him: nothing replaces him and the asymmetric pool
  * loses its share. A death no player earned goes through FUNC(replace)

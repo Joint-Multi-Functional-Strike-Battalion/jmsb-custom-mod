@@ -1,3 +1,4 @@
+PREP(enableSafety);
 PREP(grenadeBindCondition);
 PREP(grenadeBindWarn);
 PREP(lowerWeapon);

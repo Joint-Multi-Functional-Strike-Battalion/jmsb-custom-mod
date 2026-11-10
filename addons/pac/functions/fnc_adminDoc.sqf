@@ -18,7 +18,7 @@
 params [["_caller", objNull, [objNull]], ["_key", "", [""]], ["_json", "", [""]]];
 
 if (!isServer || isNull _caller || _key isEqualTo "") exitWith {};
-if !([_caller] call jmfsb_adminpanel_fnc_isAdmin) exitWith {WARNING_1("adminDoc refused: %1 is not an admin",name _caller)};
+if !([_caller] call FUNC(isAdminCaller)) exitWith {WARNING_1("adminDoc refused: %1 is not an admin",name _caller)};
 private _fnc_tell = {
     params ["_msg", "_bad"];
     ["TAC//PAC", _msg, [[0.4, 0.702, 0.4, 1], [0.831, 0.267, 0.267, 1]] select _bad] remoteExec ["jmfsb_notify_fnc_notify", owner _caller];

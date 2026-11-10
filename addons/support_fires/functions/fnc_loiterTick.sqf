@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One loitering munition's life, per frame handler on the server:
  *
  *   transit  - flying to the area; arriving puts it on station, an orbit
@@ -12,7 +12,8 @@
  *              back to the hunt
  *
  * A munition killed on the way is lost; a recall (FUNC(abort)) sets every
- * one off where it is.
+ * one off where it is, and so does its mission ending under it (a call for
+ * fire's CLOSE, 2026-11-01).
  *
  * Arguments:
  * 0: [uav, logic, centre, radius, token, enemy, rule, warhead, mode, until, nextScan, prey] <ARRAY>
@@ -44,6 +45,12 @@ if (_logic getVariable [QGVAR(abort), false]) exitWith {
     [_uav, _warhead] call FUNC(detonate);
     ["munition self-destructed"] call _end;
 };
+// Its mission ended under it - the call for fire's thread CLOSED while it was
+// out (2026-11-01): it sets itself off where it is, as on a recall.
+if ((_logic getVariable [QGVAR(token), -1]) isNotEqualTo _token) exitWith {
+    [_uav, _warhead] call FUNC(detonate);
+    ["munition self-destructed"] call _end;
+};
 
 private _now = CBA_missionTime;
 
@@ -64,7 +71,7 @@ switch (_mode) do {
             _args set [10, _now];
             if ((_logic getVariable [QGVAR(status), ""]) isNotEqualTo STATUS_STATION) then {
                 _logic setVariable [QGVAR(status), STATUS_STATION, true];
-                [QGVAR(say), [_logic, format ["on station over %1, hunting", mapGridPosition _center], "high"]] call CBA_fnc_globalEvent;
+                [_logic, format ["on station over %1, hunting", mapGridPosition _center], "high"] call FUNC(say);
             };
         } else {
             if (_now > _until) then {
@@ -88,7 +95,7 @@ switch (_mode) do {
                 _args set [11, _found];
                 _args set [8, "dive"];
                 (driver _uav) disableAI "ALL";
-                [QGVAR(say), [_logic, format ["target acquired, %1 - diving", getText (configOf _found >> "displayName")], "normal"]] call CBA_fnc_globalEvent;
+                [_logic, format ["target acquired, %1 - diving", getText (configOf _found >> "displayName")], "normal"] call FUNC(say);
             };
         };
     };

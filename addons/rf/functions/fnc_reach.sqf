@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_reach: every node a node can reach on a net, directly or through the
  * mesh. On the server any node; on a client only the client's own nodes.
  *

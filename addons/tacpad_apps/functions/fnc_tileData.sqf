@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the four tiles currently say. One function so the band has one source
  * and the tile drawing stays about drawing.
  *
@@ -28,7 +28,7 @@
  *
  * Return Value:
  * One entry per tile: [appId, kicker, qualifier, value, detail, state, icon] <ARRAY>
- * State is "rest", "alert", "warn" or "stale" <STRING>
+ * State is "rest", "ok" (green), "warn" (amber), "alert" (the inverted accent block) or "stale" <STRING>
  * Icon is a texture path, "" for none <STRING>
  *
  * Public: No
@@ -60,10 +60,11 @@ if (_scan isEqualTo []) then {
     // read draws it. No qualifier: "DETECT" ran into the kicker, and the big
     // CLR / WARN / ALERT already says it (user, 2026-10-17).
     private _state = [0, _droneState] select (_droneState isEqualType 0);
+    // The qualifier is the nearest contact's distance (notes, 2026-10-30).
     _out pushBack [
         "drones",
         "DRONES",
-        "",
+        ["", format ["%1 KM", (round (_nearest / 100)) / 10]] select (_state > 0),
         ["CLR", "WARN", "ALERT"] param [_state, "CLR"],
         if (_state > 0) then {
             format ["BRG %1 - %2 KM", round _droneDir, (round (_nearest / 100)) / 10]
@@ -74,10 +75,24 @@ if (_scan isEqualTo []) then {
     ];
 
     private _jamPct = round (_jam * 100);
+    // THE DOMAIN HIT as the qualifier (notes, 2026-10-30): the strongest of
+    // DATA / RADIO / GPS where the jamming addon can say, else the band.
+    private _domain = "RF";
+    if (!isNil QEFUNC(jamming,jamFactor)) then {
+        private _best = 0;
+        {
+            _x params ["_word", "_dom"];
+            private _f = ([getPosASL player, 0, _dom] call EFUNC(jamming,jamFactor)) param [0, 0];
+            if (_f > _best) then {
+                _best = _f;
+                _domain = _word;
+            };
+        } forEach JAM_DOMAINS;
+    };
     _out pushBack [
         "jam",
         "JAM",
-        "RF",
+        _domain,
         format ["%1%2", _jamPct, "%"],
         ["SPECTRUM CLEAR", "SPECTRUM DEGRADED", "SPECTRUM SMOTHERED"] select ((parseNumber (_jamPct > 0)) + (parseNumber (_jamPct >= 75))),
         switch (true) do {
@@ -109,7 +124,7 @@ if (isNil QEFUNC(hacking,canHack)) then {
     _out pushBack [
         "hack",
         "HACK",
-        ["LOCKED", "READY"] select _ready,
+        [["NO SET", "IN RANGE"] select (_targets > 0), "LOCKED"] select !_ready,
         [str _targets, "-"] select (!_ready),
         _detail,
         ["rest", "warn"] select (_ready && _targets > 0)
@@ -149,7 +164,7 @@ private _icon = switch (true) do {
 _out pushBack [
     "weather",
     "WEATHER",
-    ["DRY", "RAIN"] select (rain > 0.1),
+    ["DAY", "NIGHT"] select _night,
     _cover,
     format ["%1 AT %2 M/S - VIS %3 KM", round windDir, round (vectorMagnitude wind), (round (viewDistance / 100)) / 10],
     ["rest", "warn"] select (rain > 0.5),
@@ -163,9 +178,13 @@ _out pushBack [
 // time - both read off the same places the screen reads.
 private _alarmList = missionNamespace getVariable [QEGVAR(hacking,alarms), []];
 private _soonest = -1;
+private _soonestN = 0;
 {
     private _left = (_x select 1) - CBA_missionTime;
-    if (_soonest < 0 || _left < _soonest) then {_soonest = _left};
+    if (_soonest < 0 || _left < _soonest) then {
+        _soonest = _left;
+        _soonestN = _forEachIndex + 1;
+    };
 } forEach _alarmList;
 
 ([] call FUNC(timerState)) params ["_tSecs", "_tRunning", "_tDown", "_tExpired"];
@@ -184,10 +203,11 @@ private _tClock = if (_tHH > 0) then {
     format ["%1:%2", [floor (_tSecs / 60), 2] call CBA_fnc_formatNumber, [floor (_tSecs % 60), 2] call CBA_fnc_formatNumber]
 };
 
+// The qualifier is the alarm's number while one is armed (notes, 2026-10-30).
 _out pushBack [
     "timer",
     "TIMER",
-    ["UP", ["DOWN", "ALARM"] select (_soonest >= 0)] select _tDown,
+    ["UP", ["DOWN", format ["#%1", _soonestN]] select (_soonest >= 0)] select _tDown,
     _tClock,
     switch (true) do {
         case (_soonest >= 0): {format ["%1 ARMED - SOONEST", count _alarmList]};
@@ -215,7 +235,8 @@ if (isNil QEFUNC(voice,netState)) then {
     private _nets = [] call EFUNC(voice,netState);
     private _i = _nets findIf {_x param [3, false]};
     if (_i < 0) then {
-        _out pushBack ["radio", "RADIO", "NO NET", "----", format ["%1 NETS", count _nets], "warn"];
+        // Plural only when the count is not one (review 2026-11-01, item 2.7).
+        _out pushBack ["radio", "RADIO", "NO NET", "----", format ["%1 NET%2", count _nets, ["S", ""] select (count _nets isEqualTo 1)], "warn"];
     } else {
         (_nets select _i) params [["_netId", ""], ["_name", ""], ["_kind", ""], "", ["_muted", false], "", ["_reach", false], ["_talkers", []]];
         private _detail = switch (true) do {
@@ -224,7 +245,8 @@ if (isNil QEFUNC(voice,netState)) then {
             case (_talkers isNotEqualTo []): {format ["%1 TALKING", count _talkers]};
             default {"QUIET"};
         };
-        _out pushBack ["radio", "RADIO", toUpper _kind, [_name, _netId] select (_name isEqualTo ""), _detail, ["warn", "rest"] select _reach];
+        // Reachable is "ok" - the green outline (user, 2026-10-30, the mockup).
+        _out pushBack ["radio", "RADIO", toUpper _kind, [_name, _netId] select (_name isEqualTo ""), _detail, ["warn", "ok"] select _reach];
     };
 };
 
@@ -236,6 +258,97 @@ if (isNil QEFUNC(voice,netState)) then {
 {
     _out append ([] call _y);
 } forEach (missionNamespace getVariable [QGVAR(tileProviders), createHashMap]);
+
+// --- ARTY, the artillery team's own tile -----------------------------------
+// Only on an artillery team - a squad whose ORBAT kind is art or mortar
+// (jmfsb_common_fnc_artyGroups; user, 2026-10-25). The counter-battery radar's
+// last fix, hot for ARTY_FIX_HOT seconds; the gun he is at. Pressing it opens
+// the calculator.
+if (!isNil QEFUNC(common,artyGroups) && {(group player) in ([side group player] call EFUNC(common,artyGroups))}) then {
+    private _gun = [] call FUNC(artyGun);
+    private _gunWord = ["NO GUN", "GUN UP"] select (!isNull _gun);
+    if (GVAR(artyFix) isEqualTo []) then {
+        // A gun to fire is "ok" - the green outline (user, 2026-10-30, the mockup).
+        _out pushBack ["arty", "ARTY", _gunWord, "--", "NO RADAR FIX - PRESS FOR CALC", ["rest", "ok"] select (!isNull _gun)];
+    } else {
+        GVAR(artyFix) params ["_fixPos", "_fixAt"];
+        private _age = CBA_missionTime - _fixAt;
+        // The fix at the player's grid digits, as the device header draws
+        // them (jmfsb_devices_gridDigits; review 2026-11-01, item 2.7).
+        private _fixGrid = if (isNil QEFUNC(devices,overlayGrid)) then {
+            mapGridPosition _fixPos
+        } else {
+            ([_fixPos] call EFUNC(devices,overlayGrid)) select 0
+        };
+        _out pushBack [
+            "arty", "ARTY", _gunWord, _fixGrid,
+            format ["RADAR FIX %1 MIN AGO - PRESS TO PLOT", floor (_age / 60)],
+            ["rest", "alert"] select (_age < ARTY_FIX_HOT)
+        ];
+    };
+};
+
+// --- LOG, off the notices kept (user, 2026-11-09: "add back in the logs app")
+// How many notices, how many in the last LOG_RECENT_S s, and the newest one.
+// Pressing it opens the reader's LOG view (FUNC(panelTiles)).
+private _history = missionNamespace getVariable [QEGVAR(notify,history), []];
+if !(_history isEqualType []) then {_history = []};
+private _recent = {(_x param [3, -1e10]) > (time - LOG_RECENT_S)} count _history;
+private _newest = _history param [count _history - 1, []];
+_out pushBack [
+    LOG_APP,
+    "LOG",
+    ["QUIET", format ["%1 NEW", _recent]] select (_recent > 0),
+    str (count _history),
+    [LOG_NONE, toUpper format [LOG_DETAIL_FORMAT, _newest param [0, ""], _newest param [1, ""]]] select (_newest isNotEqualTo []),
+    ["rest", "ok"] select (_recent > 0)
+];
+
+// --- MSG, off the player's own message index -------------------------------
+// Unread across every box he can read, FLASH or IMMEDIATE unread making it an
+// alert, and the newest thread's subject as the detail (user, 2026-10-24:
+// "need a msg live tile"). Pressing it opens the reader (FUNC(panelTiles)).
+if (isNil QEGVAR(messaging,index)) then {
+    _out pushBack ["msg", "MSG", "NO SRC", "-", "MESSAGING NOT LOADED", "stale"];
+} else {
+    private _unread = 0;
+    private _urgent = false;
+    private _raised = false;
+    private _latest = createHashMap;
+    private _seen = [];
+    {
+        if !(_x isEqualType createHashMap) then {continue};
+        private _tid = _x getOrDefault ["threadId", ""];
+        if (_tid in _seen) then {continue};
+        _seen pushBack _tid;
+        private _n = _x getOrDefault ["unread", 0];
+        _unread = _unread + _n;
+        private _pri = toUpper (_x getOrDefault ["priority", ""]);
+        if (_n > 0 && {_pri in MSG_URGENT_PRIORITIES}) then {_urgent = true};
+        if (_n > 0 && {_pri in MSG_RAISED_PRIORITIES}) then {_raised = true};
+        if ((_x getOrDefault ["lastActivity", 0]) > (_latest getOrDefault ["lastActivity", -1])) then {_latest = _x};
+    } forEach EGVAR(messaging,index);
+    private _subject = toUpper (_latest getOrDefault ["subject", ""]);
+    if (_subject isEqualTo "") then {_subject = "NO TRAFFIC"};
+    // The qualifier is the highest unread precedence (notes, 2026-10-30).
+    _out pushBack [
+        "msg",
+        "MSG",
+        switch (true) do {
+            case _urgent: {"FLASH"};
+            case _raised: {"PRI"};
+            case (_unread > 0): {"UNREAD"};
+            default {"QUIET"};
+        },
+        str _unread,
+        _subject,
+        switch (true) do {
+            case _urgent: {"alert"};
+            case (_unread > 0): {"warn"};
+            default {"rest"};
+        }
+    ];
+};
 
 // --- the role gate -----------------------------------------------------------
 // THE ONLY PLACE TILES COME FROM, so it is the only place access has to be
@@ -258,9 +371,9 @@ if (_gated) then {
 // reading when it is there, nothing at all when a suite is not loaded - so the
 // order they happen to be pushed in is not a decision anybody made. This is.
 //
-// THE TWO THAT ACT RATHER THAN REPORT SIT ON THE RIGHT: SUPPORT calls something
-// in and HACK does something to something, while the other five only tell you
-// what is true. Reading tiles stay left where the eye starts.
+// THE ONE THAT ACTS RATHER THAN REPORTS SITS ON THE RIGHT: HACK does something
+// to something, while the others only tell you what is true. Reading tiles
+// stay left where the eye starts.
 //
 // A tile not named here sorts to the end rather than to the front, so adding one
 // and forgetting this list puts it in the wrong place instead of at the head of
@@ -288,26 +401,9 @@ _out pushBack [
     ["stale", "rest"] select (_intel isNotEqualTo [])
 ];
 
-// --- SUPPORT, over the support core ----------------------------------------
-// NO CORE, NO TILE. The app is not registered without it either - a live
-// tile reading NO LINK for a system that is not installed is a permanent
-// apology, and the band is only six wide.
-//
-// ONE COUNT, ANY NUMBER OF BACK ENDS. EFUNC(support,assets) merges every
-// registered provider's rows - ALiVE's ATO and NEO assets, jmfsb's CAS drones,
-// support_fires and support_air - so this does not care which of them is present.
-if (!isNil QEFUNC(support,assets)) then {
-    private _support = call EFUNC(support,assets);
-    private _idle = {(_x param [4, ""]) isEqualTo "idle"} count _support;
-    _out pushBack [
-        "support",
-        "SUPPORT",
-        ["NO LINK", "AIR"] select (_support isNotEqualTo []),
-        str count _support,
-        ["CS LINK NOT WIRED", format ["%1 IDLE - PRESS TO TASK", _idle]] select (_support isNotEqualTo []),
-        ["stale", "rest"] select (_support isNotEqualTo [])
-    ];
-};
+// NO SUPPORT TILE (user, 2026-11-01: "thought we were removing this"):
+// support is called from TAC//MSG, by a message to the asset - there is no
+// support app (docs/DESIGN_SUPPORT_MESSAGING.md step 9).
 
 // --- PAC, the unit ------------------------------------------------------------
 // Structure hash, current OPORD, players on, op window - the handoff's own list
@@ -322,23 +418,47 @@ if (!isNil "jmfsb_pac_summary") then {
     private _window = _pac getOrDefault ["window", ""];
     private _open = _window isEqualType "" && _window isNotEqualTo "";
     private _hash = _pac getOrDefault ["hash", 0];
+    // THE HASH ONLY WHEN THERE IS ONE (review 2026-11-01, item 2.7): an empty
+    // hash left the detail reading "NO OPORD -".
+    private _pacDetail = [["NO OPORD", toUpper _opord] select (_opord isNotEqualTo "")];
+    if !(_hash in [0, ""]) then {_pacDetail pushBack format ["%1", _hash]};
 
+    // An open op window is the unit at work, not a fault: green, never amber
+    // (user, 2026-10-30: "why or how would pac be yellow?").
     _out pushBack [
         "pac",
         "PAC",
         ["NO OP", "OP OPEN"] select _open,
         str (_pac getOrDefault ["players", 0]),
-        format ["%1 - %2", ["NO OPORD", toUpper _opord] select (_opord isNotEqualTo ""), _hash],
-        ["rest", "warn"] select _open
+        _pacDetail joinString " - ",
+        ["rest", "ok"] select _open
     ];
 };
 
-private _order = ["vehicle", "drones", "jam", "weather", "timer", "radio", "medic", "hack", "intel", "support", "pac"];
-
-private _ranked = _out apply {
-    private _i = _order find (_x # 0);
-    [[_i, 999] select (_i < 0), _x]
+// THE TABLET'S ROW CARRIES NO PAC TILE (TILES_NATIVE_ONLY; user, 2026-11-01:
+// "make pac a button between menu and esc closes"): the device bar's PAC
+// button opens the app. The map's band keeps it - that host has no bar.
+if (HOST_DEVICE) then {
+    _out = _out select {!((_x # 0) in TILES_NATIVE_ONLY)};
 };
-_ranked sort true;
 
-_ranked apply {_x # 1}
+// THE PLAYER'S OWN LAYOUT FIRST (user, 2026-10-24: "turn on and off live
+// tiles in settings and assign a slot"; 2026-10-25: "it needs to be slot or
+// position"): a tile he placed stands at its position, a tile he switched off
+// is dropped, and the AUTO tiles fill the rest in the default order - the
+// declared list first, then whatever the providers added, in their order.
+// One algorithm, FUNC(tileOrder), shared with SETTINGS > LIVE TILES. The PAC
+// tile's detail line reads larger (its kicker does not - FUNC(panelTiles)).
+private _byId = createHashMap;
+{
+    if ((_x # 0) isEqualTo "pac") then {
+        if (count _x < 7) then {_x pushBack ""};
+        _x set [7, TILE_TEXT_K_PAC];
+    };
+    _byId set [_x # 0, _x];
+} forEach _out;
+private _ids = TILE_CHOICES apply {_x # 0};
+{
+    _ids pushBackUnique (_x # 0);
+} forEach _out;
+([_ids] call FUNC(tileOrder)) select {_x in _byId} apply {_byId get _x}

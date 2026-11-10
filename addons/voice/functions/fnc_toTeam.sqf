@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the local player on his squad's TEAM net - when he picks a role (user,
  * 2026-10-21: "players need to be set to their squad channel on role
  * selection"), as a fresh start and a respawn already do. Off Global first;

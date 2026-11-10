@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The task declarations one asset type offers, with the steppers sized for one
  * asset - or generic ranges when no asset is given (the "types" declaration,
  * shown before a unit is picked). Shape: addons/support/README.md
@@ -65,7 +65,7 @@ switch (_type) do {
             ["ORDNANCE", SLOT_ORD, 1, 0, (count _ord - 1) max 0, [_words, "%1"] select (_words isEqualTo []), [], false],
             ["ROUNDS PER GUN", SLOT_ROUNDS, 1, 1, _logic getVariable [QGVAR(maxRounds), VA_DEF_MAX_ROUNDS], "%1", [], true],
             ["SHEAF TYPE", SLOT_SHEAF_TYPE, 1, selectMin _sheafs, selectMax _sheafs, SHEAF_WORDS, _sheafs, false],
-            ["SHEAF", SLOT_SHEAF, SHEAF_STEP, 0, SHEAF_MAX, "%1 M", [], true],
+            ["SHEAF", SLOT_SHEAF, SHEAF_STEP, 0, _logic getVariable [QGVAR(sheafMax), SHEAF_MAX], "%1 M", [], true],
             ["GUNS", SLOT_GUNS, 1, 0, _guns, [_guns, "ALL"] call _counted, [], true]
         ];
         if (_maxInterval > 0) then {

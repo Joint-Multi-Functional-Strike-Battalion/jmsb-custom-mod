@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Files one sighting on a side's threat board - what that side KNOWS, as
  * opposed to what is true.
  *

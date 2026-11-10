@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The aided-target-recognition label under a target's box (user, 2026-10-17:
  * "i'd be ok with aitr"), the way an AiTR display reads in two stages - what
  * it is, then one thing about it:

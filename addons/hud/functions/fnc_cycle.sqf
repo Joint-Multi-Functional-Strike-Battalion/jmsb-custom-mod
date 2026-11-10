@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Moves a slot on to the next readout, and remembers it.
  *
  * The ring includes OFF - see FUNC(slotState) - so pressing past the end is how

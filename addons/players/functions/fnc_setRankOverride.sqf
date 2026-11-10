@@ -28,6 +28,13 @@ params [
 
 if (!isServer) exitWith {};
 if (_uid isEqualTo "") exitWith {};
+// Only an admin by the server's records may set a rank (review S4); the admin's
+// name for the log is the sender's own, not the one he passed.
+if !([] call EFUNC(common,senderIsAdmin)) exitWith {
+    WARNING_2("Players","setRankOverride refused for %1: machine %2 is not an admin",_uid,remoteExecutedOwner);
+};
+private _sender = ([] call EFUNC(common,sender)) select 1;
+if (!isNull _sender) then {_adminName = name _sender};
 
 private _order = ["PRIVATE","CORPORAL","SERGEANT","LIEUTENANT","CAPTAIN","MAJOR","COLONEL"];
 private _idx = _order find toUpper _rank;
@@ -36,7 +43,9 @@ if (_idx isEqualTo -1) exitWith {diag_log format ["[YMF][RANK] Rejected invalid 
 // normalise to the proper-case name used in config_ranks.hpp
 private _rankProper = ["Private","Corporal","Sergeant","Lieutenant","Captain","Major","Colonel"] select _idx;
 
-// live update - getRank/canTakeRole read this map, so role access updates immediately
+// live update - getRank/canTakeRole read this map, so role access updates immediately.
+// Nothing in the mod creates the map; a mission may (review B13).
+if (isNil "YMF_playerRanks") then {YMF_playerRanks = createHashMap};
 YMF_playerRanks set [_uid, _rankProper];
 publicVariable "YMF_playerRanks";
 

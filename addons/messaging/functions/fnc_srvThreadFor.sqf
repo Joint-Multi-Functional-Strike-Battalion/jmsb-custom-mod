@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Works out which thread a submission belongs to and whether the sender is
  * allowed to put it there - opening a new thread when there is no thread id,
  * checking the reply rules when there is.
@@ -64,11 +64,16 @@ if (_threadId == "") exitWith {
         _pinned = true;
     };
 
+    // A TYPED GRID ANCHORS TOO (report-card review, 2026-11-02, rule 9). Only
+    // a position from a map click or CUR LOC did, so a grid typed by hand put
+    // the thread's anchor on the sender while the support pin, which reads the
+    // grid, was right. FUNC(fieldPos) reads a position, a marker name or a
+    // typed grid alike.
     private _anchorKey = _template get "anchor";
     if (_anchorPos isEqualTo [] && _anchorKey != "") then {
         private _raw = (createHashMapFromArray _payload) getOrDefault [_anchorKey, []];
-        if (_raw isEqualType [] && {count _raw >= 2}) then {
-            _anchorPos = [_raw # 0, _raw # 1, 0];
+        if (_raw isEqualTypeAny [[], ""]) then {
+            _anchorPos = [_raw] call FUNC(fieldPos);
         };
     };
     if (_anchorPos isEqualTo []) then {
@@ -124,6 +129,31 @@ private _visible = [_unit] call FUNC(srvBoxesFor);
 private _addressed = (_thread get "boxes") findIf {_x in _visible} >= 0;
 if !(_uid in (_thread get "participants") || _addressed) exitWith {
     [createHashMap, "that thread is not addressed to you", false]
+};
+
+// THE THREAD'S OWNER RULES FIRST (FUNC(onThreadCard), 2026-11-02): a hook
+// may take a ROOT card into a thread it owns (a support asset's re-task, its
+// NEXT LIFT) or refuse a card that is not the sender's to send (the asset's
+// WILCO or ON TASK from the man who asked for it). A player's card only - the
+// server's own filings (an asset's states, through the call sign override)
+// are not put to the hooks.
+private _own = [] call EFUNC(common,fromServer);
+private _ruling = "";
+if (!_own) then {
+    {
+        private _said = [_thread, _template, _unit] call _x;
+        if (isNil "_said") then {_said = ""};
+        if !(_said isEqualType "") then {_said = ""};
+        if (_said isNotEqualTo "") exitWith {_ruling = _said};
+    } forEach (localNamespace getVariable [QGVAR(threadCardHooks), []]);
+};
+if (_ruling isNotEqualTo "" && _ruling isNotEqualTo THREAD_CARD_TAKE) exitWith {
+    [createHashMap, _ruling, false]
+};
+// A ROOT CARD OPENS A THREAD. Until 2026-11-02 any root card went into any
+// thread a client named; now only one a hook takes, or the server's own.
+if (!_own && (_template get "kind") isEqualTo KIND_ROOT && _ruling isNotEqualTo THREAD_CARD_TAKE) exitWith {
+    [createHashMap, format ["%1 opens its own thread", _template get "short"], false]
 };
 
 private _allowed = _template get "allowedFrom";

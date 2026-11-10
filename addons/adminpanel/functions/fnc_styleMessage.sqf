@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The message box, painted from the same settings as the console.
  *
  * Separate from FUNC(style) only because it is a separate display - anyone may

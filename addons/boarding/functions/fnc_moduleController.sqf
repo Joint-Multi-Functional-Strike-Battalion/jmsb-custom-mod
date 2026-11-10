@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Wires one boarding point: the objects synchronised to this module get an
  * ACE action that loads everybody standing near the module.
  *
@@ -49,6 +49,22 @@ if (_buttons isEqualTo []) exitWith {
 _logic setVariable [QGVAR(vehicles), _vehicles, true];
 _logic setVariable [QGVAR(range), _range, true];
 
+// The server keeps its own copy of the point in localNamespace (review R1):
+// the logic's variables are public, and any client can overwrite them - a
+// range of the whole map, an enemy truck as the transport. FUNC(board) reads
+// only this.
+if (isServer) then {
+    private _points = localNamespace getVariable [QGVAR(points), createHashMap];
+    _points set [netId _logic, [
+        _range,
+        _buttons,
+        _vehicles,
+        (_logic getVariable ["sideOnly", 0]) == 0,
+        (_logic getVariable ["includePresser", 0]) == 1
+    ]];
+    localNamespace setVariable [QGVAR(points), _points];
+};
+
 // Only the clients need the action; the server has nobody to press it.
 if (!hasInterface) exitWith {};
 
@@ -61,7 +77,8 @@ if (!hasInterface) exitWith {};
         {
             params ["_target", "_player", "_args"];
             _args params ["_logic"];
-            [QGVAR(board), [_logic, _player]] call CBA_fnc_serverEvent;
+            // By remoteExec, so the server knows who pressed (review R1).
+            [_logic, _player] remoteExecCall [QFUNC(board), SERVER_OWNER];
         },
         {
             params ["_target", "_player", "_args"];

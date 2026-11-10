@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: brings the talking list up to date - every frame (fnc_frame) and
  * at once on a pushed key event (fnc_keyed). Others come from the adapter's
  * "talking" hook (VON: speakers who pushed their key, plus getPlayerChannel

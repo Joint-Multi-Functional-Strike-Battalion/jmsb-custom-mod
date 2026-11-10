@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The host opened. Builds every panel the player has switched on, then starts
  * the one refresh loop they all share.
  *
@@ -46,8 +46,9 @@ private _built = 0;
     if (!isNil "_panel") then {
         // Each panel's own on/off setting lives in the addon that registered
         // it, under a name derived from the id - the shell does not need to
-        // know what the setting is called to ask whether it is on.
-        private _wanted = missionNamespace getVariable [format ["jmfsb_tacpad_apps_show_%1", _x], true];
+        // know what the setting is called to ask whether it is on. The prefix
+        // comes from the macro, not written out (review L4).
+        private _wanted = missionNamespace getVariable [format ["%1_%2", QEGVAR(tacpad_apps,show), _x], true];
 
         // AND WHETHER IT IS THEIRS TO HAVE AT ALL, which is a different question
         // from whether they want it. The admin strip is registered by

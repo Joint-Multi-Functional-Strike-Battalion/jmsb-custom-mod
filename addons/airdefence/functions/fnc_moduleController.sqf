@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the module and arms air defence. PLACING THE MODULE IS THE ENABLE -
  * with no module this system does nothing at all.
  *
@@ -79,8 +79,22 @@ GVAR(classes) set [str independent, [
 // objective this reads comes from it. Both paths are covered - a module is
 // normally placed long before ALiVE finishes initialising, but one armed
 // afterwards would otherwise wait forever on an event that has already fired.
-if (EGVAR(adapter_alive,ready)) exitWith {
-    [] call FUNC(start);
+// The adapter's whenReady runs it now in that case, and once only - not the
+// ready CBA event any client could raise again (review R1).
+//
+// WITHOUT ALiVE IT STILL RUNS (user, 2026-11-02: "works with or without").
+// FUNC(plan) then reads the module's own TAOR fields and the mission's
+// jmfsb_taor_<side> markers for the ground, and the towns in it for the
+// objectives. Started once the mission is running: this module fires before
+// postInit, which would otherwise reset the site lists under it.
+//
+// The same branch when ALiVE is loaded with no commanders (user, 2026-11-02:
+// "same as not loaded"): the adapter's fallback, once it gives up.
+private _without = {
+    ["Air defence", "using the module's TAOR fields, jmfsb_taor markers and map towns"] call EFUNC(common,aliveLoaded);
+    [{time > 0}, { [] call FUNC(start) }] call CBA_fnc_waitUntilAndExecute;
 };
-
-[QEGVAR(adapter_alive,ready), { [] call FUNC(start) }] call CBA_fnc_addEventHandler;
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    call _without;
+};
+[{ [] call FUNC(start) }, [], _without] call EFUNC(adapter_alive,whenReady);

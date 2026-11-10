@@ -37,6 +37,18 @@ system from chat with `#jmfsb bft.*`; `#jmfsb help` lists them.
 Not jmfsb's design. This is **Jacco Douma's** BFT, ported over from Team
 Collaboration Aides - see Credits.
 
+## Buddy
+
+A man picks his buddy by ACE interaction on a man of his own group (user,
+2026-11-05): **Buddy up** pairs them, **End buddy pair** on his buddy ends it.
+A pair is both ways and a man is in one pair at most - pairing with someone
+else lets the old buddy go (`buddySet`). It lasts while both are alive and in
+the same group (`buddyOf`, public). Your buddy gets a yellow star over the
+upper left of his member icon on every map (`drawMembers`) and after his name
+in the phone and side devices' squad list (jmfsb_devices). The star is a
+texture (`data\member_buddy_ca.paa`, source `art/images/member_buddy_ca.png`),
+not a font glyph.
+
 ## Admin commands
 
 | Command | What it does |
@@ -109,7 +121,7 @@ JMSB's part is the port and the plumbing around it:
 
 ## Ships
 
-22 functions.
+26 functions.
 
 ## CBA settings
 
@@ -138,13 +150,17 @@ JMSB's part is the port and the plumbing around it:
 
 ## Functions
 
-<details><summary>22</summary>
+<details><summary>26</summary>
 
 - `jmfsb_bft_fnc_autoEnable`
+- `jmfsb_bft_fnc_buddyAdd`
+- `jmfsb_bft_fnc_buddyOf`
+- `jmfsb_bft_fnc_buddySet`
 - `jmfsb_bft_fnc_describeGroup`
 - `jmfsb_bft_fnc_draw`
 - `jmfsb_bft_fnc_drawMembers`
 - `jmfsb_bft_fnc_findGroups`
+- `jmfsb_bft_fnc_friendlies`
 - `jmfsb_bft_fnc_getGroupMarkerShape`
 - `jmfsb_bft_fnc_getGroupPosition`
 - `jmfsb_bft_fnc_init`

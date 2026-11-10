@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Fits one vehicle (server): decides what it carries, arms the launchers
  * and the emitter, and starts its watch. A vehicle that carries nothing is
  * left alone - it is still on the registered list, so it is not asked again.

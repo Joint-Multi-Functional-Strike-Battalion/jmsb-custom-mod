@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, every tick, per call:
  * - a call marked for a FLASH bump ends when its warning time is up, and the
  *   FLASH dial is made again into the freed slot;
@@ -44,7 +44,7 @@ private _now = CBA_missionTime;
         _call set ["ringing", _ringing - _late];
         private _who = (_late apply {_x select 0}) select {!isNull _x};
         if (!isNull _from && _who isNotEqualTo []) then {
-            [QGVAR(callFailed), [_id, REASON_NO_ANSWER, _who], _from] call CBA_fnc_targetEvent;
+            [_id, REASON_NO_ANSWER, _who] remoteExecCall [QFUNC(callFailed), _from];
         };
     };
 
@@ -66,7 +66,7 @@ private _now = CBA_missionTime;
             _lost set [_uid, _since];
             if ((_now - _since) > GVAR(callDrop)) then {
                 _drop pushBack _unit;
-                [QGVAR(callFailed), [_id, REASON_DROPPED, [_unit]], _unit] call CBA_fnc_targetEvent;
+                [_id, REASON_DROPPED, [_unit]] remoteExecCall [QFUNC(callFailed), _unit];
             };
         };
     } forEach _members;

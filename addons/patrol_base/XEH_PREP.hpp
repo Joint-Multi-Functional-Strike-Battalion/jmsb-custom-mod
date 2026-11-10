@@ -4,6 +4,7 @@ PREP(serverBuild);
 PREP(serverUnbuild);
 PREP(addUnbuildAction);
 PREP(spawnKits);
+PREP(dropKits);
 PREP(canPickupKit);
 PREP(kitPickup);
 PREP(promptName);

@@ -1,9 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether an emitting RF node can also listen and take a DF cut, and
  * how well (DESIGN_EW "ES: DF"). The set's own class first - handheld 15 deg,
- * manpack (TFAR / ACRE) and relay 10, vehicle 5 - then the kit of whoever runs it: an EW
+ * manpack and relay 10, vehicle 5 - then the kit of whoever runs it: an EW
  * Receiver makes it the dedicated 2 deg set that hears every band, and an ISR
  * operator (the man, or anyone in the vehicle) is one class better. Drone
  * links and legacy commercial sets cannot DF.

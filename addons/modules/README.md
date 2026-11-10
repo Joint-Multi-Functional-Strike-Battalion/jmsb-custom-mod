@@ -17,7 +17,7 @@ modules are placed directly, as they always were.
 
 ## Ships
 
-4 unit classes, 7 functions.
+5 unit classes, 8 functions.
 
 ## Eden modules
 
@@ -45,9 +45,15 @@ Group Side
 
 Group Side
 
+### JMSB - Hold ALiVE
+
+`jmfsb_modules_holdAlive`
+
+Training: ALiVE starts paused. An admin types #jmfsbalivestart in chat to start it.
+
 ## Functions
 
-<details><summary>7</summary>
+<details><summary>8</summary>
 
 - `jmfsb_modules_fnc_aiFollower`
 - `jmfsb_modules_fnc_aiHunter`
@@ -55,6 +61,7 @@ Group Side
 - `jmfsb_modules_fnc_moduleAiHunter`
 - `jmfsb_modules_fnc_moduleAiSpawner`
 - `jmfsb_modules_fnc_moduleHealArea`
+- `jmfsb_modules_fnc_moduleHoldAlive`
 - `jmfsb_modules_fnc_moduleSafeStart`
 
 </details>

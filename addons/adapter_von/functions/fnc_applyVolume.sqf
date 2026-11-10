@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: sets how loud the local player hears a speaker
  * (setPlayerVoNVolume), for the channel the speaker is talking on now. VON's
  * volume is per speaker, not per channel, so it follows his channel:
@@ -42,6 +42,12 @@ switch (true) do {
         private _q = GVAR(q) getOrDefault [(getPlayerUID _unit) + "|" + _net, 0];
         _volume = if (_q > 0) then {GVAR(volumeFloor) + (VOLUME_FULL - GVAR(volumeFloor)) * _q} else {VOLUME_MUTE};
     };
+};
+
+// The player's radio volume knob scales every radio speaker (user,
+// 2026-10-24); Direct stays at his own voice-chat volume.
+if (_ch isEqualTo CH_GROUP || _ch isEqualTo CH_VEHICLE || _ch > CH_DIRECT) then {
+    _volume = _volume * GVAR(masterVolume);
 };
 
 _unit setPlayerVoNVolume _volume;

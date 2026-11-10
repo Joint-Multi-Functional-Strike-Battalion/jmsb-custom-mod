@@ -1,5 +1,8 @@
 // Make settings name
-private _YMFsettings = "1st Joint Multi-Functional Strike Battalion";
+// The Mission & Admin page of the JMSB Addon Options (user, 2026-10-24: "break
+// all our options up a bit the big single page is hard to tell folks where to
+// find things").
+private _YMFsettings = "JMSB - Mission & Admin";
 
 [ // Mission Type
     QEGVAR(Settings,setMissionType),
@@ -32,48 +35,8 @@ private _YMFsettings = "1st Joint Multi-Functional Strike Battalion";
     true
 ] call CBA_fnc_addSetting;
 
-// Radios
-[ // Enable
-    QEGVAR(Settings,enableRadios),
-    "CHECKBOX",
-    ["Enable","Allow mission to set up and handle radio distributution"],
-    [_YMFsettings, "Radios"],
-    true,
-    true,
-    {},
-    true
-] call CBA_fnc_addSetting;
-// [ // Long Range Radio Channels
-//     QEGVAR(Settings,LRsetRadioChannelNames),
-//     "EDITBOX",
-//     ["Long Range Radio Channels (ACRE)","Array of radio channels used for ACRE the index of the array translate to channel."],
-//     [_YMFsettings, "Radios"],
-//     '["COMMAND","OUTLAW","THUNDER","PHOENIX","RHINO","TRAINING","FIRES","CAS-1","CAS-2","AIR-1","AIR-2","GROUND-TO-AIR","CONVOY","AUX-1","AUX-2","ZEUS"]',
-//     true,
-//     {},
-//     true
-// ] call CBA_fnc_addSetting;
-// [ // Platoon Radio Channels
-//     QEGVAR(Settings,MRsetRadioChannelNames),
-//     "EDITBOX",
-//     ["Mid Range Radio Channels (ACRE)","Array of radio channels used for ACRE the index of the array translate to channel."],
-//     [_YMFsettings, "Radios"],
-//     '["OUTLAW-HQ","OUTLAW-1/1","OUTLAW-1/2","OUTLAW-1/3","MED-NET","ENG-NET","WHYAREUHERE"]',
-//     true,
-//     {},
-//     true
-// ] call CBA_fnc_addSetting;
-
-[ // Squad Radio Channels
-    QEGVAR(Settings,setRadio),
-    "CHECKBOX",
-    ["Squad Radio Channels (ACRE)","Allow radio channels to be changed based on player squadname."],
-    [_YMFsettings, "Radios"],
-    true,
-    true,
-    {},
-    true
-] call CBA_fnc_addSetting;
+// No Radios page: radio distribution, squad channels and vehicle racks were
+// ACRE's and TFAR's (DEC1, 2026-10-31).
 
 [ // Documents
     QEGVAR(Settings,showDiaryRecords),
@@ -154,16 +117,6 @@ private _YMFsettings = "1st Joint Multi-Functional Strike Battalion";
     ["Inventory", "Enables scripted inventory to be applied to vehicles based on faction"],
     [_YMFsettings, "Vehicle"],
     true,
-    true,
-    {},
-    true
-] call CBA_fnc_addSetting;
-[ // Radio
-    QEGVAR(Settings,enableVehicleRadios),
-    "CHECKBOX",
-    ["Radio", "Enables vehicles radio to be enabled and set on vehicles"],
-    [_YMFsettings, "Vehicle"],
-    false,
     true,
     {},
     true

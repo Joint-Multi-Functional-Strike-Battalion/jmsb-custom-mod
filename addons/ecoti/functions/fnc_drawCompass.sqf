@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The AiTR compass (user, 2026-10-19: "a compass on the top like DUI has, the
  * direction you're facing should match the colour scheme"). A line compass
  * across the top centre of the screen: a tick every 5 degrees, a label every

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps the last state a call reached (GVAR(radioLast), [state, time]) for the
  * LIVE CALL panel's line - a failure reason, the priority warning, the end -
  * and the player's recent contacts - the people of each call that went live,

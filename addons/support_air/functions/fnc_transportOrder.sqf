@@ -1,20 +1,25 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A transport module's order, on the server.
  *
- * THE HELICOPTER STAYS OUT BETWEEN ORDERS. The first order launches it
- * (after the response delay, or at once when synced); every later one is
+ * THE HELICOPTER STAYS OUT BETWEEN ORDERS. The first order launches it at
+ * once (user, 2026-11-02: virtual until tasked - made over the module when
+ * tasked; the Response Delay is retired); every later one is
  * written onto the module as the CURRENT order and the helicopter's watch
  * (FUNC(transportTick)) re-plans on the next tick - so a PICKUP followed by a
  * HOVER is one helicopter flying two legs, and a man can redirect it in the
  * air. RTB is an order like the others: fly home.
  *
- * WHAT THE REQUESTER SET is read here, once: height (or the jump height on a
- * PARADROP), speed, door guns, lights, final approach, landing signal, wait,
- * orbit radius, and the points - VIA legs flown first, and the LZ a PICKUP >
- * LZ goes on to or a SLINGLOAD sets its load down at. It rides on the order
- * as its options (element 7), so a re-plan flies exactly what was asked.
+ * WHAT THE REQUESTER SET is read here, once: the jump height on a PARADROP,
+ * speed, door guns, final approach, landing signal, wait, orbit radius, and
+ * the points - VIA legs flown first, and the LZ a PICKUP > LZ goes on to or a
+ * SLINGLOAD sets its load down at. It rides on the order as its options
+ * (element 7), so a re-plan flies exactly what was asked. Not the height it
+ * flies at nor its lights (user, 2026-11-01: HEIGHT and LIGHTS retired): it
+ * flies nap of the earth and dark away from its airfield (the support core's
+ * tactical flight); element 3 is only the task's own height, a jump height or
+ * TASK_HEIGHT_NONE.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -42,7 +47,7 @@ if (_task isEqualTo TASK_RTB) exitWith {
     };
     if (!_out) exitWith {};
     private _home = _logic getVariable [QGVAR(home), getPosATL _logic];
-    _logic setVariable [QGVAR(order), [TASK_HOME, _home, _requester, _logic getVariable [QGVAR(height), HOME_HEIGHT], 0, 0, 0, createHashMap]];
+    _logic setVariable [QGVAR(order), [TASK_HOME, _home, _requester, TASK_HEIGHT_NONE, 0, 0, 0, createHashMap]];
     _logic setVariable [QGVAR(serial), (_logic getVariable [QGVAR(serial), 0]) + 1];
     [_logic, "returning to base", "normal", _requester] call FUNC(say);
 };
@@ -52,9 +57,7 @@ if (!_ok) exitWith {[_logic, "cannot take it - " + _why, "normal", _requester, f
 
 private _height = if (_task isEqualTo TASK_PARADROP) then {
     [_prm, SLOT_JUMP_ALT, 0, count JUMP_ALT_TABLE - 1, JUMP_ALT_TABLE, _logic getVariable [QGVAR(jumpHeight), 250]] call FUNC(readParam)
-} else {
-    [_prm, SLOT_HEIGHT, 0, count HEIGHT_TABLE - 1, HEIGHT_TABLE, _logic getVariable [QGVAR(height), 80]] call FUNC(readParam)
-};
+} else {TASK_HEIGHT_NONE};
 private _speed = [_prm, SLOT_SPEED, 0, count SPEED_WORDS - 1] call FUNC(readParam);
 private _roe = [_prm, SLOT_ROE, 0, count ROE_WORDS - 1] call FUNC(readParam);
 private _wait = [_prm, SLOT_WAIT, 0, count WAIT_TABLE - 1, WAIT_TABLE, _logic getVariable [QGVAR(waitTime), 300]] call FUNC(readParam);
@@ -73,7 +76,6 @@ private _opts = createHashMapFromArray [
     ["lz", [[], [_prm, SLOT_LZ] call FUNC(readPoint)] select ([SLOT_LZ] call _declares)],
     ["approach", [-1, (_approach - 1) * APPROACH_STEP] select (_approach > 0)],
     ["signal", [SIGNAL_NONE, [_prm, SLOT_SIGNAL, 0, count SIGNAL_WORDS - 1] call FUNC(readParam)] select ([SLOT_SIGNAL] call _declares)],
-    ["lights", ([_prm, SLOT_LIGHTS, 0, 1] call FUNC(readParam)) isEqualTo 0],
     ["radius", [_prm, SLOT_RADIUS, RADIUS_MIN, RADIUS_MAX] call FUNC(readParam)]
 ];
 
@@ -88,10 +90,11 @@ if ((_logic getVariable [QGVAR(cooldownTrigger), COOLDOWN_AT_END]) isEqualTo COO
     _logic setVariable [QGVAR(readyAt), CBA_missionTime + (_logic getVariable [QGVAR(cooldown), 0]), true];
 };
 
-private _synced = _logic getVariable [QGVAR(synced), objNull];
-private _delay = [_logic getVariable [QGVAR(spawnDelay), 60], 0] select (alive _synced);
+// VIRTUAL UNTIL TASKED (user, 2026-11-02): made now, over the module - on the
+// next frame, so the WILCO is in the thread before WHEELS UP. A synced
+// helicopter starts now too: it has to take off.
 _logic setVariable [QGVAR(status), STATUS_LAUNCHING, true];
 _logic setVariable [QGVAR(plan), [[_pos, _task]], true];
-[_logic, format ["copy %1, %2 - wheels up in %3 sec", _task, mapGridPosition _pos, round _delay], "high", _requester] call FUNC(say);
+[_logic, format ["copy %1, %2 - wheels up", _task, mapGridPosition _pos], "high", _requester] call FUNC(say);
 
-[FUNC(transportLaunch), [_logic, _requester], _delay] call CBA_fnc_waitAndExecute;
+[FUNC(transportLaunch), [_logic, _requester]] call CBA_fnc_execNextFrame;

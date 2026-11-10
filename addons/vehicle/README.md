@@ -19,11 +19,11 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-242 unit classes, 10 weapon/item classes, 31 functions.
+242 unit classes, 10 weapon/item classes, 29 functions.
 
 ## Functions
 
-<details><summary>31</summary>
+<details><summary>29</summary>
 
 - `jmfsb_vehicle_fnc_addCosmeticSelection`
 - `jmfsb_vehicle_fnc_addCosmetics`
@@ -32,7 +32,6 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_vehicle_fnc_addFunctionsGlobal`
 - `jmfsb_vehicle_fnc_addInventory`
 - `jmfsb_vehicle_fnc_addPylonSelection`
-- `jmfsb_vehicle_fnc_addRadio`
 - `jmfsb_vehicle_fnc_addRegearAction`
 - `jmfsb_vehicle_fnc_addRepairAction`
 - `jmfsb_vehicle_fnc_addStagingActions`
@@ -54,7 +53,6 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_vehicle_fnc_motorpool_squadClass`
 - `jmfsb_vehicle_fnc_motorpool_tab`
 - `jmfsb_vehicle_fnc_reset`
-- `jmfsb_vehicle_fnc_setRadio`
 - `jmfsb_vehicle_fnc_setupPylonCategories`
 
 </details>

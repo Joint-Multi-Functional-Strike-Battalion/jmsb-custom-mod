@@ -24,6 +24,10 @@
         ship to BOAT...). Named-for-this-pad beats the switches: the class
         is offered even when its whole category is switched off, so one
         pad can carry a single helicopter and no HELI list.
+    11: Motorpool <STRING> (optional, default "") - which of the unit's
+        TAC//PAC motorpools this pad shows (<unit>.motorpool.<name>, e.g.
+        "air" at the airfield, "sea" at the dock) instead of the mission's
+        current one (2026-11-07). Empty: the mission's.
 
     Example (controller init line in Eden - a land pad, no air, no boats,
     vehicles facing east, plus one pad-only transport helicopter):
@@ -36,7 +40,8 @@ params [
     ["_heli", true, [true]], ["_plane", true, [true]], ["_boat", true, [true]],
     ["_static", true, [true]],
     ["_dir", -1, [0]],
-    ["_extra", [], [[]]]
+    ["_extra", [], [[]]],
+    ["_pool", "", [""]]
 ];
 
 if (isNull _pad) then {_pad = _controller};
@@ -46,6 +51,7 @@ if (isNull _pad) then {_pad = _controller};
 _controller setVariable ["YMF_motorpool_allow", [_cars, _armor, _mech, _heli, _plane, _boat, _static]];
 _controller setVariable ["YMF_motorpool_dir", _dir];
 _controller setVariable ["YMF_motorpool_extra", _extra];
+_controller setVariable ["YMF_motorpool_pool", _pool];
 
 private _action = [
     "YMF_motorpool_open",

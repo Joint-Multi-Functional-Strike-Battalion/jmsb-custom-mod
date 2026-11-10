@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Finds ground worth putting something on - the placement service every
  * auto-sited asset goes through, so "radar in a lake" and "battery in a
  * forest" are solved once rather than once per module.

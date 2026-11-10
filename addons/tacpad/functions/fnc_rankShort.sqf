@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A rank as the three letters it is written as on a roster.
  *
  * The engine spells them out - SERGEANT, LIEUTENANT - and a rail 0.15 of the

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO: the active voice net and what is happening on it - game voice (VON)
  * through jmfsb_voice's API (docs/DESIGN_VOICE.md). Never a frequency.
  *
@@ -16,7 +16,7 @@
  * here.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -24,16 +24,19 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetRadio
+ *
  * Public: No
  */
 
 // A call's states, as jmfsb_voice_fnc_calls names them.
 #define WIDGET_CALL_RINGING "ringing"
 #define WIDGET_CALL_LIVE "live"
+// No game voice here (jmfsb_voice_system "none": the server's voice cannot run).
+#define WIDGET_VOICE_UNAVAILABLE "VOICE UNAVAILABLE"
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
@@ -95,17 +98,17 @@ if (!isNil QEFUNC(voice,netState)) then {
 };
 
 if (_channel isEqualTo "") exitWith {
-    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], (switch (true) do {case (isNil QEFUNC(voice,netState)): {"NO VOICE ADDON"}; case !(missionNamespace getVariable [QEGVAR(voice,active), true]): {format ["%1: NO NET", toUpper (missionNamespace getVariable [QEGVAR(voice,system), ""])]}; default {"NO VOICE NET"}}), _dim, (0.85 * _k), true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y, _w - 2 * _pad, _rowH], (switch (true) do {case (isNil QEFUNC(voice,netState)): {"NO VOICE ADDON"}; case !(missionNamespace getVariable [QEGVAR(voice,active), true]): {WIDGET_VOICE_UNAVAILABLE}; default {"NO VOICE NET"}}), _dim, (0.85 * _k), true]];
 };
 
 // The link reading takes the right quarter of the line; the net the rest.
 private _nameW = [_w - 2 * _pad, _w * 0.75 - _pad] select (_link isNotEqualTo "");
-[_ctrl, [_pad, _y, _nameW, _rowH * 1.4], _channel, _main, (1.3 * _k), true] call EFUNC(tacpad,drawText);
+_ops pushBack [HUD_OP_TEXT, [[_pad, _y, _nameW, _rowH * 1.4], _channel, _main, (1.3 * _k), true]];
 if (_link isNotEqualTo "") then {
-    [_ctrl, [_w * 0.75, _y, _w * 0.25 - _pad, _rowH * 1.4], _link, _linkColour, (0.8 * _k), true, "right"] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_w * 0.75, _y, _w * 0.25 - _pad, _rowH * 1.4], _link, _linkColour, (0.8 * _k), true, "right"]];
 };
 if (_alternate isNotEqualTo "") then {
-    [_ctrl, [_pad, _y + _rowH * 1.6, _w * 0.6, _rowH], _alternate, _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y + _rowH * 1.6, _w * 0.6, _rowH], _alternate, _mute, (0.62 * _k), true, "left", true]];
 };
 
 private _sweep = [] call FUNC(sweep);
@@ -122,9 +125,9 @@ private _colour = switch (true) do {
 
 // JAM sits right; on its own when there is no alternate net on the left.
 if (_alternate isEqualTo "") then {
-    [_ctrl, [_pad, _y + _rowH * 1.6, _w * 0.5, _rowH], "JAM", _mute, (0.62 * _k), true, "left", true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y + _rowH * 1.6, _w * 0.5, _rowH], "JAM", _mute, (0.62 * _k), true, "left", true]];
 };
-[
-    _ctrl, [_w * 0.5, _y + _rowH * 1.6, _w * 0.5 - _pad, _rowH],
+_ops pushBack [HUD_OP_TEXT, [
+    [_w * 0.5, _y + _rowH * 1.6, _w * 0.5 - _pad, _rowH],
     format ["%1%2%3", ["JAM ", ""] select (_alternate isEqualTo ""), _pct, "%"], _colour, (0.9 * _k), true, "right"
-] call EFUNC(tacpad,drawText);
+]];

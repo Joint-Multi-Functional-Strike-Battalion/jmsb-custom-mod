@@ -19,9 +19,17 @@ params [["_player", player]];
 
 // STOP, not start - the copy-paste from fnc_start inverted the remote
 // path's meaning: "terminate spectator for that player" STARTED it there.
-if (!(local _player)) exitWith {[QGVAR(stop), _this, _player] call CBA_fnc_targetEvent};
+// Another machine's say-so only from the server (review R1: it was a CBA
+// event any client could raise to throw everyone out of spectator).
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("stop: refused - not from the server (machine %1)",remoteExecutedOwner);
+};
+if (isNull _player) exitWith {};
+if (!(local _player)) exitWith {[_player] remoteExecCall [QFUNC(stop), _player]};
+if (!hasInterface) exitWith {};
 
 ["Terminate"] call BIS_fnc_EGSpectator;
-WARNING("Stopping spectator!");
+// the normal way out, not a fault: INFO, so the RPT's warnings stay faults
+INFO("Stopping spectator!");
 
 nil

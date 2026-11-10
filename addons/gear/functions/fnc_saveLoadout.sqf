@@ -16,8 +16,8 @@
 
 params [["_unit", objNull, [objNull]]];
 
+// No radio-ID classes to strip back to their base any more (TFAR / ACRE, DEC1).
 private _loadout = [_unit] call CBA_fnc_getLoadout;
-_loadout = [_loadout] call EFUNC(systems,filterUnitLoadout);
 
 _unit setVariable [QEGVAR(Gear,Loadout), _loadout];
 _unit setVariable [QEGVAR(Gear,SavedLoadout), true];

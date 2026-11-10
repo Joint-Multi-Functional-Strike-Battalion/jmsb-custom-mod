@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An engagement's moment has come - the interceptor's flight time to the
  * threat has run out. Roll the intercept chance (the unit's Site override,
  * else the setting). A hit asks the machine that fired the round to delete it
@@ -37,7 +37,8 @@ if (!isNull _owner) then {
     if (local _owner) then {
         [_id] call FUNC(kill);
     } else {
-        [QGVAR(kill), [_id], _owner] call CBA_fnc_targetEvent;
+        // By remoteExec, taken only from the server (review S7).
+        [_id] remoteExecCall [QFUNC(kill), _owner];
     };
 };
 GVAR(stats) set ["intercepts", (GVAR(stats) get "intercepts") + 1];

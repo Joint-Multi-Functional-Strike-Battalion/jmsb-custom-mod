@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * DRONES, the board (docs/DESIGN_TABLET_APPS.md, DRONES).
  *
  *   FLEET  FLEET (left): the players' side's drones - link, quality, battery
@@ -53,9 +53,10 @@ if ((_fleet findIf {(_x select 0) isEqualTo _pick}) < 0) then {
 private _tab = uiNamespace getVariable [QGVAR(dronesTab), "fleet"];
 if ((DRONES_TABS findIf {(_x select 0) isEqualTo _tab}) < 0) then {_tab = "fleet"};
 
+// No note beside the tabs: "CONTROL NEEDS DATA LINK" is said once, in the
+// FEED's header (review 2026-11-01, DESIGN_TABLET_REVIEW 3.3).
 [
-    _body, [_pad, _padY, _w - 2 * _pad, _rowH * 1.2], DRONES_TABS, _tab, QGVAR(dronesTab), "drones",
-    "CONTROL NEEDS THE DATA LINK"
+    _body, [_pad, _padY, _w - 2 * _pad, _rowH * 1.2], DRONES_TABS, _tab, QGVAR(dronesTab), "drones"
 ] call FUNC(appPageTabs);
 
 private _top = _padY * 3 + _rowH * 1.2;

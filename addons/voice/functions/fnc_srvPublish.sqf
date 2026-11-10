@@ -1,9 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: publishes the call table and the pending callbacks to everyone
- * (jmfsb_voice_callPub), only when they changed. Small by construction:
- * at most CALL_SLOTS calls of CALL_MAX_MEMBERS people.
+ * (jmfsb_voice_callPub), only when they changed: one row per call, of at
+ * most CALL_MAX_MEMBERS people - at most CALL_SLOTS calls under game VON,
+ * as many as are made on the voice server (FUNC(srvSlot)).
  *
  * Arguments:
  * None

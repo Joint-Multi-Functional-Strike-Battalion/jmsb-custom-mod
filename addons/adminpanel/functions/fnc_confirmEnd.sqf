@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * END MISSION, armed on the first press and fired on the second.
  *
  * THE ONE BUTTON ON THIS SCREEN THAT ENDS EVERYBODY'S EVENING. The mission panel

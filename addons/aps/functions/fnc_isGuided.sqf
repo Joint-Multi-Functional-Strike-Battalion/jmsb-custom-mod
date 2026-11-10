@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a projectile has something the RF burst can disrupt, and what
  * kind: "ir" for an IR or laser seeker (the dazzler's old customers),
  * "atgm" for any other guidance - radar, wire, datalink, an engine-guided

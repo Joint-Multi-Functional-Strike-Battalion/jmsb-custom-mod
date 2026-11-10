@@ -41,12 +41,11 @@ if (!_conditionCodeEmpty) then {
 };
 
 if (!_conditionEventsEmpty) then {
-    // Create EventHandler for all events
+    // One server-side hook per event, raised by FUNC(raise) and run once - not
+    // a CBA event any client could raise (review R1).
     {
         [_x, {
-            private _taskNamespace = _thisArgs;
-            // Remove EH so it can be triggered only once for given task.
-            [_thisType, _thisId] call CBA_fnc_removeEventHandler;
+            params ["_taskNamespace"];
             // Increase counter how many events already fired
             private _currentEventsFired = _taskNamespace getVariable ["conditionShowEventsFired", 0];
             INC(_currentEventsFired);
@@ -55,7 +54,7 @@ if (!_conditionEventsEmpty) then {
             if (_currentEventsFired < (_taskNamespace getVariable ["conditionEventsShowRequired", 1])) exitWith {};
             // Run onShow
             [_taskNamespace] call FUNC(handleOnShow);
-        }, _taskNamespace] call CBA_fnc_addEventHandlerArgs;
+        }, _taskNamespace] call FUNC(onEvent);
     } forEach _conditionEventsShow;
 };
 

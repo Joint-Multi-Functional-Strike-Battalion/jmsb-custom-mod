@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether something on screen means the walking view must not be there:
  * the player is dead, he is looking down a sight or through a scope (the
  * GUNNER view - user, 2026-10-21: "phone needs to hide when using a scope"),

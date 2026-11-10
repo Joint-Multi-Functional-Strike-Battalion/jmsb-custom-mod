@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: one DF cut - a bearing from a sensor to an emitter - laid on the
  * hearing side's track for that emitter, made if it is new. The bearing is
  * the true one plus an error that grows as the SNR falls (DESIGN_EW "DF").
@@ -83,8 +83,17 @@ if (_shared isNotEqualTo []) then {
 };
 
 private _cuts = _track get "cuts";
-_cuts pushBack [[_gpsPos select 0, _gpsPos select 1], _bearing, _err, _now];
-if (count _cuts > CUTS_KEPT) then {_cuts deleteRange [0, count _cuts - CUTS_KEPT]};
+private _newCut = [[_gpsPos select 0, _gpsPos select 1], _bearing, _err, _now];
+if ((_e get "source") isEqualTo SRC_ZONE) then {
+    // A site: a new place adds a cut, the same place refreshes its own.
+    private _same = _cuts findIf {((_x select 0) distance2D (_newCut select 0)) < STATIC_CUT_SPACING_M};
+    if (_same >= 0) then {_cuts deleteAt _same};
+    _cuts pushBack _newCut;
+    if (count _cuts > STATIC_CUTS_KEPT) then {_cuts deleteRange [0, count _cuts - STATIC_CUTS_KEPT]};
+} else {
+    _cuts pushBack _newCut;
+    if (count _cuts > CUTS_KEPT) then {_cuts deleteRange [0, count _cuts - CUTS_KEPT]};
+};
 
 // DF ON YOU, to every player the cut emitter belongs to.
 private _obj = _e get "object";

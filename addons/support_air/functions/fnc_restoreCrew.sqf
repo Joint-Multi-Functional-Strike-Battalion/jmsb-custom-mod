@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a synced aircraft's crew back as the mission maker placed it: every
  * crew seat that was manned in Eden and is empty or dead now gets a man of
  * the same class with the same loadout (FUNC(register) photographed them).

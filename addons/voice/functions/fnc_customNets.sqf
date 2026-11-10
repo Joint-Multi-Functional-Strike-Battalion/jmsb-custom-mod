@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RTO nets a man is on: every published net whose squads name his
  * group's callsign or whose players name him. Unlike the plan's C2 and A2G
  * nets, of which a man holds one each, he may be on any number of these -

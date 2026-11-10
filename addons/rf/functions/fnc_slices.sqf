@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * After the mesh: announce what changed and push the slices.
  *
  * ANNOUNCE. For every node and net whose links differ from the last tick,

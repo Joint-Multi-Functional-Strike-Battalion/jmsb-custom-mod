@@ -26,8 +26,13 @@ wells, and the vanilla `UGL_F` magazine list. A round laid on the ground has an
 ## What each does
 
 The machine that made the drone (the launcher's) tells the server who launched
-it; the server does the rest. Every `TICK_S` (5 s) it drops a drone that died
-or was picked up, and mirrors its battery: a flat drone is "off" in RF.
+it, by `remoteExecCall` to `deploy`; the server takes it only when the drone
+is local to the sender and the launcher is the sender's own unit (review R1 -
+it was the `jmfsb_drone40_deployed` CBA event, so any client could name any
+drone and any player and take his fill). The server does the rest. Every `TICK_S` (5 s) it drops a drone that died
+or was picked up, and mirrors its battery: a flat drone is "off" in RF. A relay
+or decoy whose launcher left or died keeps flying and keeps its node: the node
+is put up again with no holder, on RF's DATA net (review L3).
 
 - **Relay.** An RF node, profile `droneRelay` (VHF/UHF, 2 W, -112 dBm, 3 dBi,
   4 hops, relay, 20 dB spread, battery of its host). It holds the launcher's
@@ -58,7 +63,8 @@ or was picked up, and mirrors its battery: a flat drone is "off" in RF.
 
 `jmfsb_drone40_fnc_setMode [drone, mode]` switches any of the three between
 `relay`, `decoy`, `jammer` and `off`, whatever round it came from. It is the
-server's: called anywhere else it raises `jmfsb_drone40_setMode` to the server.
+server's: called anywhere else it goes to the server by `remoteExecCall`, which
+checks the caller is the sender and may link the drone.
 There the drone's node goes (`fnc_remove`: its RF node, or the jammer's EW
 emitter through `jmfsb_ew_fnc_removeEmitter`), the mode is set public on the
 drone (`jmfsb_drone40_mode`; a fresh drone carries its round's role), and
@@ -85,6 +91,7 @@ the EW Jammer Pack's.
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `jmfsb_rf`
 - `cba_xeh` _(external)_
 - `gx_drones_uav_drone40` _(external)_

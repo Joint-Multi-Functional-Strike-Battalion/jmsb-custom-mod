@@ -70,6 +70,7 @@ if !(_versions isEqualType []) then {_versions = []};
 _out set ["orbatVersions", _versions];
 
 GVAR(structure) = _out;
+[] call FUNC(adminsPublish);
 
 // ALL THE CONFIG MOVES, bar three: the settings in the document override the
 // mission's, except unitId, serverId and sync - those say where to look and

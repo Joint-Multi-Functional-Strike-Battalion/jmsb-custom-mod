@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the airframe is actually carrying, in the words painted on the side of
  * it - one entry per store, heaviest first.
  *

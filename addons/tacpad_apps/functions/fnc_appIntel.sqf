@@ -135,15 +135,17 @@ private _rx = _listW + RULE_THICK * pixelW + _pad * 2;
 private _rw = _w - _rx - _pad * 2;
 private _ry = 0;
 
+// Bracketed: # binds tighter than getOrDefault.
+private _files = (_byFolder getOrDefault [_openPkg, ["", []]]) # 1;
 private _open = [];
 {
     if ((_x # 2) isEqualTo _openEntry) then { _open = _x };
-} forEach (_byFolder getOrDefault [_openPkg, ["", []]] # 1);
+} forEach _files;
 
 // Nothing picked yet: the first file of the open folder, so a player who has
 // just recovered something is reading it rather than looking at a prompt.
 if (_open isEqualTo []) then {
-    _open = (_byFolder getOrDefault [_openPkg, ["", []]] # 1) param [0, []];
+    _open = _files param [0, []];
 };
 
 if (_open isEqualTo []) exitWith {};

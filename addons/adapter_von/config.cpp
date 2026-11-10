@@ -10,7 +10,9 @@ class CfgPatches {
         requiredVersion = REQUIRED_VERSION;
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_voice",
+            "jmfsb_notify",
             "cba_main",
             "cba_xeh",
             "cba_settings",

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Carrying intel to bank into this drop?
  *
  * The action lives on the deployed case, so being in range is the engine's

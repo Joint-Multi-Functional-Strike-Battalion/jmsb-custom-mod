@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One button or one segment of a segmented control on a board. Filled = the
  * picked segment or a primary button; outlined otherwise; an accent fill for
  * the one destructive button (ABORT). A dead button is drawn dim with no hit,

@@ -11,9 +11,13 @@ Description:
     mission that still ships the file.
 
     The defaults are "no plan": empty channel lists, stock power, channel
-    one everywhere. They exist so a bare read (gear's setupRadios,
-    players' getRadioChannel) never hits nil on a mission whose plan is
-    still on its way from the server.
+    one everywhere. They exist so a bare read never hits nil on a mission
+    whose plan is still on its way from the server.
+
+    TFAR AND ACRE WERE REMOVED (DEC1, 2026-10-31). Their keys stay - the
+    website edits them and a saved plan carries them - but nothing in game
+    programs a TFAR or ACRE radio from them; only the net plan (tfarNets,
+    the fallbacks, the von* rows) is read, by FUNC(netPlan).
 
 Parameters:
     None
@@ -61,9 +65,8 @@ Author:
     // THE NET PLAN (game voice, docs/DESIGN_VOICE.md). The keys keep the names
     // they had under TFAR so a saved plan still reads: tfarNets is
     // [[net, sr slot, lr slot], ...] and the two fallbacks are slots
-    // (FUNC(netPlan)). Game voice tunes nothing; with TFAR loaded
-    // jmfsb_adapter_tfar reads tfarActiveRadio (the handheld put in hand) and
-    // the two frequency lists (a slotted net's frequency) - no page here.
+    // (FUNC(netPlan)). Game voice tunes nothing; tfarActiveRadio and the two
+    // frequency lists are plan data only since DEC1 - no page here.
     ["tfarActiveRadio", ""],
     ["tfarSrFreqs", []],
     ["tfarLrFreqs", []],

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The protractor: a rose around its centre - a tick every ten degrees, a long
  * one every thirty, N E S W outside - and the arm. While the arm is free it
  * follows the cursor and reads bearing and distance to it; locked, it stands

@@ -6,6 +6,9 @@ texHeaders.bin
 *.biprivatekey
 *.dll
 !ghostd_pacdb_x64.dll
+!jmsb_voice_x64.dll
+# Code signing account details (tools/sign_dlls.py, docs/SIGNING.md).
+tools/signing.json
 Thumbs.db
 
 *.pbo
@@ -98,6 +101,3 @@ server/cba_settings.sqf
 # MPU5 radio source model (fbx/blend/obj + textures) - built into the addon, never committed raw
 Radio_MPU5_v01/
 Radio_TrellisWare_v01/
-
-# Claude Code personal settings (local permission rules)
-.claude/settings.local.json

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A man's GPS grid as a status line reads it - the getter for grid readouts
  * outside this addon (the devices' tablet bar "GRID ..."): the engine's grid
  * of his GPS position with its two halves apart ("041 116"), " SUSPECT"

@@ -4,6 +4,8 @@
 
 Ambient war: every few minutes a short artillery stonk lands on a building near a player inside the named markers. It never targets the players themselves - the distance band keeps it off their heads - and every impact area is announced on the alert bus first.
 
+The kamikaze drone's dive ends in one burst and nothing else: the airframe is deleted, crew and all, where the warhead goes or where it is shot down, so no wreck flies on at dive speed into the people below.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

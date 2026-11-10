@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The EW app's ES tab (DESIGN_EW "ES"): the SPECTRUM where he stands - per
  * band, the noise above the floor, which is what a jammer looks like from
  * inside its field - and the side's TRACKS: id, what it is (FUNC(classShown)),

@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Gives open threats to free AD units - one unit per threat; a miss reopens it
  * for another (FUNC(resolve)). Server only, from FUNC(tick).
  *
@@ -93,7 +93,8 @@ private _assigned = 0;
     if (local _gunner) then {
         _args call FUNC(fire);
     } else {
-        [QGVAR(fire), _args, _gunner] call CBA_fnc_targetEvent;
+        // By remoteExec, taken only from the server (review S7).
+        _args remoteExecCall [QFUNC(fire), _gunner];
     };
 
     _assigned = _assigned + 1;

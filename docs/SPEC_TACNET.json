@@ -93,7 +93,7 @@
     {
       "id": "D16",
       "date": "2026-10-20",
-      "decision": "Numpad: Ctrl+1-4 device F1-F4 (2026-10-21), plain 1-4 select net 1-4 by the number on the net chip (Select net 5-9 keybinds unbound by default), 0 / . device arrows (active net / cursor), 5 tablet, 6 radio app on carried device, 7/8 prev/next tab on small devices, 9 TIC. All CBA keybinds, player-rebindable.",
+      "decision": "Numpad standard (2026-10-25): 1-6 select net 1-6 by the number on the net chip, Ctrl+1-6 mute / unmute that net, 0 / . device arrows (active net / cursor), 7 voice activation on/off, 8 tablet, 9 TIC (answers a ring first), * answer / hang up, / talk local (hold), - / + radio volume, Enter not used (Push To Talk, usually Caps Lock, talks on the net). Unbound by default: device F1-F4, decline, radio app on the carried device and its tabs, talk net, open channel NET/LOCAL. All CBA keybinds, player-rebindable. Sign: numpad in tools/gen_signs.py.",
       "doc": "DESIGN_VOICE.md"
     },
     {

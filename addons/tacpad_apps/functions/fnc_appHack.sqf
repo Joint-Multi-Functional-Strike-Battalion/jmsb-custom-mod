@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * HACK, the board (docs/DESIGN_TABLET_APPS.md, HACK): NODES IN REACH down the
  * left, the ACTION on the selected one top right, and the LOG of the current
  * hack under it.

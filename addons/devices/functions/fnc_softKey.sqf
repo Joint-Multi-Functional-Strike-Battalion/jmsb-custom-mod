@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One of the six keys printed on the tablet frame was pressed - clicked with
  * the mouse (FUNC(keyButtons)) or pressed on the numpad (FUNC(keyDown)):
  *
@@ -8,9 +8,15 @@
  *   when it is already on screen. Which app is his setting
  *   (jmfsb_devices_keyF1 .. keyF4); the keyboard's own F1-F4 keep selecting
  *   units.
- * - LEFT / RIGHT (numpad 0 / .) are the device arrows: they step the active
- *   voice net left / right (docs/DESIGN_VOICE.md, "Numpad"). Without the voice addon they step through
- *   the apps instead, as they always did.
+ * - LEFT / RIGHT (numpad 0 / .) are the device arrows. While the call's window
+ *   is over the tablet they step it round the corners (FUNC(callCorner)).
+ *   Otherwise THEY TURN THE LIVE TILES' PAGE (user, 2026-10-31: "the arrows
+ *   on the tablet should move the live tiles";
+ *   jmfsb_tacpad_apps_fnc_tilePageStep) when the band has more than one, and
+ *   with one page they scroll an open screen up / down (FUNC(scrollScreen)).
+ *   They no longer step the active net: the net chips are buttons, numpad
+ *   1-4 pick the chips of the page shown, and the net row's own < > buttons
+ *   turn the net pages (FUNC(tabletNets), 2026-11-07).
  *
  * Arguments:
  * 0: Key index - 0..3 = F1..F4, 4 = LEFT, 5 = RIGHT <NUMBER>
@@ -42,20 +48,13 @@ if (_index >= 0 && _index < SOFT_KEY_COUNT) exitWith {
 if !(_index in [KEY_INDEX_LEFT, KEY_INDEX_RIGHT]) exitWith {false};
 private _step = [-1, 1] select (_index isEqualTo KEY_INDEX_RIGHT);
 
-if (!isNil QEFUNC(voice,stepActive)) exitWith {
-    [_step] call EFUNC(voice,stepActive);
-    true
-};
+// The call's window, while one is up, takes the arrows: its corner (user,
+// 2026-10-28, FUNC(callCorner)).
+if ([_step] call FUNC(callCorner)) exitWith {true};
 
-// No voice addon: round the apps. With no app open, RIGHT opens the first and
-// LEFT the last.
-private _apps = keys EGVAR(tacpad,appHandlers);
-if (_apps isEqualTo []) exitWith {true};
-private _at = _apps find _current;
-private _next = if (_at < 0) then {
-    [count _apps - 1, 0] select (_step > 0)
-} else {
-    (_at + _step + count _apps) mod count _apps
-};
-[_apps select _next, [], true] call EFUNC(tacpad,openApp);
+// The live tiles' page, when there is more than one.
+if ([_step] call EFUNC(tacpad_apps,tilePageStep)) exitWith {true};
+
+// An open screen with more than it shows scrolls (FUNC(scrollScreen)).
+[_step] call FUNC(scrollScreen);
 true

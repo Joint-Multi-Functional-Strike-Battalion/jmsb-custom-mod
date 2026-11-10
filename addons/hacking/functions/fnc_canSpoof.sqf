@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the HACK app's SPOOF can be picked for the selected target: a
  * unit's net (a handset, or a vehicle carrying a set - FUNC(scanDevices)),
  * whose GPS the hack can walk off true, and jmfsb_ew loaded - its spoof

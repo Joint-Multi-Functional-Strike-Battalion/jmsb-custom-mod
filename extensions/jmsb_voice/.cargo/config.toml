@@ -1,0 +1,8 @@
+# The static C runtime: players need no VC++ redistributable
+# (docs/DESIGN_VOICE_LIVEKIT.md). libopus is built to match
+# (opus-static-crt.cmake).
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]
+
+[env]
+CMAKE_TOOLCHAIN_FILE_x86_64-pc-windows-msvc = { value = ".cargo/opus-static-crt.cmake", relative = true }

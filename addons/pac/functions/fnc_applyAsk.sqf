@@ -20,6 +20,8 @@
 params [["_caller", objNull, [objNull]]];
 
 if (!isServer || isNull _caller) exitWith {};
+// Only the sender's own application (review S5).
+if !([_caller] call EFUNC(common,senderIs)) exitWith {};
 if ((GVAR(settings) getOrDefault ["sync", "off"]) isNotEqualTo "service") exitWith {
     [createHashMapFromArray [["status", "nodb"]]] remoteExec [QFUNC(applyRecv), owner _caller];
 };

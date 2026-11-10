@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * MANPAD teams for one asymmetric commander.
  *
  * A guerrilla does not field a battery. Two or three men with a launcher,

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_netFreq: the frequency a net - or any other stable id, an emitter's -
  * sits on in a band: a hash of the id on the band's channel raster
  * (RF_BAND_MHZ), so the same on every machine and never sent. Worked out once

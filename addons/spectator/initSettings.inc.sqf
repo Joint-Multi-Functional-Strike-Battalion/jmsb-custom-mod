@@ -2,7 +2,7 @@
     QGVAR(enabled),
     "CHECKBOX",
     ["Enable spectator", "Enables spectator for dead players"],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(toggle)}
@@ -12,7 +12,7 @@
     QGVAR(allowUnconscious),
     "CHECKBOX",
     ["Allow spectator for unconscious", "Allows spectator also for unconscious players. Requires enabling spectator."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -22,7 +22,7 @@
     QGVAR(enabledUnconscious),
     "CHECKBOX",
     ["Enable spectator (CLIENT)", "Enables spectator when unconscious if it's allowed by server setting."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     true,
     0,
     {[_this] call FUNC(restart)}
@@ -32,7 +32,7 @@
     QGVAR(unconsciousDelay),
     "SLIDER",
     ["Unconscious spectator delay", "How much time must pass before unconscious players get spectator."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     [1, 300, 30, 0],
     1
 ] call CBA_fnc_addSetting;
@@ -41,7 +41,7 @@
     QGVAR(sides),
     "LIST",
     ["Sides available for spectating", "Spectator will be able to see and track units from given sides."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     [[0, 1, 3, 4, 2], ["Friendly", "Player side", "Player group", "str_player", "str_all_voices"], 0],
     1,
     {[_this] call FUNC(restart)}
@@ -51,7 +51,7 @@
     QGVAR(sidesUnconscious),
     "LIST",
     ["Sides available for spectating", "Spectator will be able to see and track units from given sides."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     [[0, 1, 3, 4, 2], ["Friendly", "Player side", "Player group", "str_player", "str_all_voices"], 0],
     1,
     {[_this] call FUNC(restart)}
@@ -61,7 +61,7 @@
     QGVAR(civilianSide),
     "CHECKBOX",
     ["Allow civilian spectating", "Allows tracking units from civilian side."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -71,7 +71,7 @@
     QGVAR(civilianSideUnconscious),
     "CHECKBOX",
     ["Allow civilian spectating", "Allows tracking units from civilian side."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -81,7 +81,7 @@
     QGVAR(allowAI),
     "CHECKBOX",
     ["Allow AI spectating", "Allows tracking AI units from whitelisted sides."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -91,7 +91,7 @@
     QGVAR(allowAIUnconscious),
     "CHECKBOX",
     ["Allow AI spectating", "Allows tracking AI units from whitelisted sides."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -101,7 +101,7 @@
     QGVAR(freeCamera),
     "CHECKBOX",
     ["Allow free camera", "Allows spectator to move his camera freely."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -111,7 +111,7 @@
     QGVAR(freeCameraUnconscious),
     "CHECKBOX",
     ["Allow free camera", "Allows spectator to move his camera freely."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -121,7 +121,7 @@
     QGVAR(TPPCamera),
     "CHECKBOX",
     ["Allow TPP Camera", "Allows spectator to use third person camera."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}
@@ -131,7 +131,7 @@
     QGVAR(TPPCameraUnconscious),
     "CHECKBOX",
     ["Allow TPP Camera", "Allows spectator to use third person camera."],
-    ["1st Joint Multi-Functional Strike Battalion", "1st Joint Multi-Functional Strike Battalion - Spectator"],
+    ["JMSB - Mission & Admin", "Spectator"],
     false,
     1,
     {[_this] call FUNC(restart)}

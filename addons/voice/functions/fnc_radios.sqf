@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The sets a unit carries, as RF nodes to be: what RF recognises on him
  * (jmfsb_rf_fnc_carriedSets: the radio-slot set and a radio bag, profiles
  * from the items' own config), plus the vehicle set of his crew seat.

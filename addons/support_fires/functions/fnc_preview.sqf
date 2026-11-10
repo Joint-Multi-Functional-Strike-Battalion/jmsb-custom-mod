@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The verdict before CONFIRM - the "preview" code of provider "fires", the
  * way Simplex shows its ETA and a red or green verdict beside its confirm.
  * Asked on every redraw with exactly the parameters CONFIRM would send, so it
@@ -43,7 +43,8 @@ if (_pos isEqualTo []) exitWith {[false, "NO TARGET POINT"]};
 private _opts = [_logic, _prm] call FUNC(readOpts);
 if (_opts isEqualTo []) exitWith {[false, "NOTHING LEFT TO FIRE"]};
 
-private _dist = (_logic getVariable [QGVAR(origin), getPosATL _logic]) distance2D _pos;
+private _origin = _logic getVariable [QGVAR(origin), getPosATL _logic];
+private _dist = _origin distance2D _pos;
 ([_logic] call FUNC(gunRanges)) params ["_min", "_max"];
 if (_dist > _max) exitWith {[false, format ["OUT OF RANGE - %1, MAX %2", toUpper ([_dist] call FUNC(fmtDist)), toUpper ([_max] call FUNC(fmtDist))]]};
 if (_dist < _min) exitWith {[false, format ["TOO CLOSE - %1, MIN %2", toUpper ([_dist] call FUNC(fmtDist)), toUpper ([_min] call FUNC(fmtDist))]]};
@@ -58,7 +59,7 @@ private _fmtEta = {
 switch (_logic getVariable [QGVAR(type), ""]) do {
     case TYPE_ARTY: {
         _opts params ["_kind", "_rounds", "", "_want", "_name", "", "_delay", "", "_repeat", "_coord"];
-        private _ball = [_dist, _logic getVariable [QGVAR(muzzleVelocity), VA_DEF_MV], _logic getVariable [QGVAR(highAngle), true]] call FUNC(ballistics);
+        private _ball = [_dist, _logic getVariable [QGVAR(muzzleVelocity), VA_DEF_MV], _logic getVariable [QGVAR(highAngle), true], RISE(_origin,_pos)] call FUNC(ballistics);
         private _tof = (_ball param [1, 0]) max VA_DESCENT_TIME;
 
         private _stock = _logic getVariable [QGVAR(stock), []];

@@ -43,6 +43,17 @@ down the same path a failed hack takes.
 
     #jmfsbuas    ceilings, patrol counts, live outages
 
+Admins only, answered to the caller alone: it is `#jmfsb uas` on the admin
+debug surface (review R1: it was a CBA event any player could raise to print
+the enemy's drone picture in everyone's chat). A drone's sighting goes
+straight into jmfsb_reaction's roll, not through a CBA event.
+
+**A dive ends in one burst and nothing else.** The swarm's impact drones and the
+FPVs Drongo's Drone Tweaks flies are deleted, crew and all, where the warhead
+goes or where they die, and the warhead is fused by script. A Switchblade is a
+Greyhawk's weight of airframe; a wreck of one keeping its dive speed is a second
+weapon nobody fired.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -55,7 +66,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-4 unit classes, 19 functions.
+4 unit classes, 21 functions.
 
 ## Eden modules
 
@@ -108,11 +119,13 @@ A swarm, launched where you place it. Trigger it to launch on cue.<br>Airframe -
 
 ## Functions
 
-<details><summary>19</summary>
+<details><summary>21</summary>
 
 - `jmfsb_uas_fnc_cacheDown`
 - `jmfsb_uas_fnc_ceilingFor`
 - `jmfsb_uas_fnc_factionUav`
+- `jmfsb_uas_fnc_fpvWatch`
+- `jmfsb_uas_fnc_fpvWreck`
 - `jmfsb_uas_fnc_iedDrone`
 - `jmfsb_uas_fnc_livePatrols`
 - `jmfsb_uas_fnc_moduleDronePatrol`

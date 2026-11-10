@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The vehicle pops smoke as the launchers engage - on the machine that owns
  * it (BIS_fnc_fire needs locality), once every ten seconds at most, from
  * whatever smoke launcher its turrets carry.

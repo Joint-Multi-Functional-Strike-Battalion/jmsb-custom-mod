@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One fitted vehicle's watch, every APS_TICK on the server: the launchers
  * look for incoming rounds and hand each new one to fnc_intercept; the
  * emitter looks for a threat every APS_RF_TICK and fires fnc_burst; a
@@ -23,6 +23,7 @@ if (!alive _veh) exitWith {
     _veh setVariable [QGVAR(pfh), nil];
 };
 
+private _t0 = diag_tickTime;
 private _now = CBA_missionTime;
 private _crewed = (crew _veh) isNotEqualTo [];
 private _engine = isEngineOn _veh;
@@ -33,18 +34,32 @@ private _engine = isEngineOn _veh;
 private _fit = _veh getVariable [QGVAR(fit), FIT_NONE];
 if (_fit isNotEqualTo FIT_NONE && _crewed && _engine && {([_veh] call FUNC(charges)) > 0}
         && {!(_veh getVariable [QGVAR(hkHold), false])}) then {
+    // QUIET AND HOT (review P3, 2026-10-31). The scans ran every APS_TICK on
+    // every fitted vehicle with nothing in the air. Quiet, a vehicle scans every
+    // APS_TICK_QUIET out to APS_QUIET_MARGIN past its range - farther than the
+    // fastest round flies in that time - and anything there makes it hot: every
+    // APS_TICK at its own range for APS_HOT_HOLD. Only rounds within range are
+    // handed over either way.
+    private _hot = _now < (_veh getVariable [QGVAR(hotUntil), 0]);
+    if (!_hot && {_now < (_veh getVariable [QGVAR(quietNext), 0])}) exitWith {};
     (GVAR(fits) get _fit) params ["", "_range", "_families", "_shells", ""];
+    private _margin = [APS_QUIET_MARGIN, 0] select _hot;
     private _seen = _veh getVariable [QGVAR(seen), []];
     private _incoming = [];
     {
-        _incoming append (_veh nearObjects [_x, _range]);
+        _incoming append (_veh nearObjects [_x, _range + _margin]);
     } forEach _families;
     private _shellsIn = [];
     if (_shells) then {
-        _shellsIn = _veh nearObjects ["ShellCore", APS_SHELL_RANGE];
+        _shellsIn = _veh nearObjects ["ShellCore", APS_SHELL_RANGE + _margin];
         _incoming append _shellsIn;
     };
     _incoming = _incoming select { !(_x in _seen) && {!((typeOf _x) in GVAR(blacklist))} };
+    if (_incoming isNotEqualTo []) then {_veh setVariable [QGVAR(hotUntil), _now + APS_HOT_HOLD]};
+    if (!_hot) then {
+        _veh setVariable [QGVAR(quietNext), _now + APS_TICK_QUIET];
+        _incoming = _incoming select {(_x distance _veh) <= ([_range, APS_SHELL_RANGE] select (_x in _shellsIn))};
+    };
     // two per tick, as DAPS does - a volley is dealt with over a few ticks
     {
         if (_forEachIndex > 1) exitWith {};
@@ -111,3 +126,6 @@ if (_now >= (_veh getVariable [QGVAR(nextRearm), 0])) then {
         if (_reloaded) then { [_veh] call FUNC(rearm) };
     };
 };
+
+// one vehicle's watch, against its budget - once a minute in the RPT (review R9)
+["aps.watch", (diag_tickTime - _t0) * APS_MS_PER_S, APS_WATCH_BUDGET_MS] call EFUNC(common,perfAdd);

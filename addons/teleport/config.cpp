@@ -11,6 +11,7 @@ class CfgPatches {
         // the action, the menu and the Eden-placed points.
         requiredAddons[] = {
             "jmfsb_main",
+            "jmfsb_common",
             "jmfsb_notify",
             "cba_settings",
             "cba_xeh"

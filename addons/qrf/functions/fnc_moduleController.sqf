@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the module and arms qrf. PLACING THE MODULE IS THE ENABLE - with no
  * module this system does nothing at all.
  *
@@ -41,8 +41,20 @@ GVAR(cooldown) = _logic getVariable ["cooldown", 1800];
 // system uses is read from it. Both paths are covered: a module is normally
 // placed long before ALiVE finishes initialising, but one armed afterwards
 // would otherwise wait forever on an event that has already fired.
-if (EGVAR(adapter_alive,ready)) exitWith {
-    [] call FUNC(start);
+// Without ALiVE the adapter PBO is skipped and its flag never exists; the
+// jmfsb_qrf markers still work, so start on those alone - once the mission is
+// running (user, 2026-11-02: "works with or without"): this module fires
+// before postInit, which would otherwise reset the watch list under it.
+//
+// The same branch when ALiVE is loaded with no commanders (user, 2026-11-02:
+// "same as not loaded"): the adapter's fallback, once it gives up.
+private _without = {
+    ["QRF", "watching jmfsb_qrf markers, the mission's enemy answers"] call EFUNC(common,aliveLoaded);
+    [{time > 0}, { [] call FUNC(start) }] call CBA_fnc_waitUntilAndExecute;
 };
-
-[QEGVAR(adapter_alive,ready), { [] call FUNC(start) }] call CBA_fnc_addEventHandler;
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    call _without;
+};
+// Now when the adapter is ready already, and once only - not the ready CBA
+// event any client could raise again (review R1).
+[{ [] call FUNC(start) }, [], _without] call EFUNC(adapter_alive,whenReady);

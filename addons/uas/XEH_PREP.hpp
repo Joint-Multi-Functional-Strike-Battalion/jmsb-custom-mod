@@ -17,3 +17,5 @@ PREP(livePatrols);
 PREP(playerNear);
 PREP(standDown);
 PREP(iedDrone);
+PREP(fpvWatch);
+PREP(fpvWreck);

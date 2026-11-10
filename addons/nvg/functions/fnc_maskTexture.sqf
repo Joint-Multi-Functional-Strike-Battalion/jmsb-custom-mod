@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tube mask for a goggle, or none. Only a JMSB full-screen goggle
  * (jmfsb_nvg_fullScreen = 1) gets one: ACE's border of the goggle it was made
  * from - the first class up its parents with an ACE_nightvision_border - and

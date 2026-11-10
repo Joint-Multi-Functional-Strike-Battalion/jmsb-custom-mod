@@ -1,11 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The jam registry applied (client, every half second and on every new
- * source): expired sources dropped, the radio lever set while any remain,
- * and a cue at each edge - nothing here is player-triggered, so a silent
- * comms failure would read as a bug. GVAR(acreJam) is what jmfsb_radio_mesh
- * and jmfsb_jamming add to their own jam level in the ACRE signal function.
+ * source): expired sources dropped, GVAR(jammed) set while any remain, and a
+ * cue at each edge - nothing here is player-triggered, so a silent comms
+ * failure would read as a bug. The ACRE lever it also set went with ACRE
+ * (DEC1, 2026-10-31).
  *
  * Arguments: None
  *
@@ -24,7 +24,6 @@ private _now = CBA_missionTime;
 private _jammed = (count GVAR(jamSources)) > 0;
 if (_jammed isEqualTo GVAR(jammed)) exitWith {};
 GVAR(jammed) = _jammed;
-GVAR(acreJam) = [0, 1] select _jammed;
 
 if (_jammed) then {
     playSound "Beep_Target";

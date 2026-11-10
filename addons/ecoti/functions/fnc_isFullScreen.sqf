@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the player's goggle fills the whole screen, so ECOTI's thermal window
  * should too (user, 2026-10-17). The same test jmfsb_nvg puts its tube mask
  * up on: a JMSB full-screen goggle (jmfsb_nvg_fullScreen = 1 in its config)

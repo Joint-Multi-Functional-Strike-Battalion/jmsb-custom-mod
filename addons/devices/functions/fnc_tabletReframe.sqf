@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The Tablet frame setting changed (initSettings.inc.sqf): an open large or
  * UAV tablet is closed and opened again, so it wears the new frame at once -
  * flip the setting on SETTINGS > DEVICES and the frame swaps under the same
@@ -23,7 +23,7 @@
  */
 
 if (isNull (uiNamespace getVariable [QGVAR(display), displayNull])) exitWith {false};
-if !(GVAR(device) in [LARGE_DEVICE, UAV_DEVICE]) exitWith {false};
+if !(GVAR(device) in [LARGE_DEVICE, UAV_DEVICE, RDC_DEVICE]) exitWith {false};
 
 [{
     [] call FUNC(close);

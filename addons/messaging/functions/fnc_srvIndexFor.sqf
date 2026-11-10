@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds one index row - what a client is told about a thread before it opens
  * it. Deliberately small: a subject, a state and an unread count, no bodies.
  * A client that has been connected all evening still holds only this.
@@ -46,6 +46,11 @@ private _unread = 0;
 // createHashMapFromArray wants pairs, so every field on every row was lost in
 // flight - see FUNC(srvDeliver). The hardening here is still right, and it is
 // not the fix.
+//
+// THE ANCHOR RIDES ALONG TOO (2026-11-01, TAC//SUPPORT v2 step 4): the support
+// board's IN FLIGHT rail names where each mission is and files its BDA on that
+// point, from the index alone. The subject already carries the same grid, so
+// the row tells nobody anything new.
 createHashMapFromArray [
     ["threadId", _thread getOrDefault ["id", ""]],
     ["boxId", _boxId],
@@ -56,5 +61,6 @@ createHashMapFromArray [
     ["replies", (count (_thread getOrDefault ["messages", []])) - 1 max 0],
     ["claimedBy", _thread getOrDefault ["claimedBy", ""]],
     ["lastActivity", _thread getOrDefault ["lastActivity", 0]],
+    ["anchorPos", _thread getOrDefault ["anchorPos", []]],
     ["unread", _unread]
 ]

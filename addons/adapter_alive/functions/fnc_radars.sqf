@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every radar ALiVE is running as a profile, as a hunt pool.
  *
  * ALiVE has no radar registry and no radar test of its own - its SAM radars

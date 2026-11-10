@@ -22,7 +22,7 @@
 [
     QGVAR(contentsFirstAid), "EDITBOX",
     ["Boo Boo Bag contents", "class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     "ACE_fieldDressing:6, ACE_quikClot:6, ACE_tourniquet:2, ACE_EarPlugs:1, ACE_salineIV_500:1, ACE_splint:1",
     true
 ] call CBA_fnc_addSetting;
@@ -30,7 +30,7 @@
 [
     QGVAR(contentsMedicKit), "EDITBOX",
     ["Medic Bag contents", "class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     "ACE_fieldDressing:18, ACE_elasticBandage:14, ACE_packingBandage:14, ACE_quikClot:14, ACE_salineIV_500:8, ACE_tourniquet:8, ACE_splint:8, ACE_fieldDressing:6, ACE_tourniquet:4, ACE_EarPlugs:2, ACE_plasmaIV_500:4, ACE_tourniquet:4, ACE_suture:12",
     true
 ] call CBA_fnc_addSetting;
@@ -38,7 +38,7 @@
 [
     QGVAR(contentsTrauma), "EDITBOX",
     ["Trauma Kit contents", "class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     "ACE_fieldDressing:28, ACE_elasticBandage:24, ACE_packingBandage:24, ACE_quikClot:24, ACE_salineIV:12, ACE_tourniquet:12, ACE_splint:12, ACE_fieldDressing:24, ACE_tourniquet:10, ACE_EarPlugs:2, ACE_plasmaIV:8, ACE_tourniquet:12, ACE_suture:24, ACE_surgicalKit:1",
     true
 ] call CBA_fnc_addSetting;
@@ -46,7 +46,7 @@
 [
     QGVAR(contentsFluid), "EDITBOX",
     ["Fluid Kit contents", "class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     "ACE_salineIV:24, ACE_plasmaIV:12, ACE_bloodIV:8",
     true
 ] call CBA_fnc_addSetting;
@@ -54,7 +54,7 @@
 [
     QGVAR(contentsDrugKit), "EDITBOX",
     ["Drug Kit contents", "class:count, comma separated. Issued in order, top first, so the front of the list is what a man with no room left keeps."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     "ACE_morphine:16, ACE_adenosine:8, ACE_epinephrine:8",
     true
 ] call CBA_fnc_addSetting;
@@ -64,7 +64,7 @@
 [
     QGVAR(contentsMopp), "EDITBOX",
     ["MOPP Bag contents", "class:count, comma separated, issued after the bag's own CBRN suit. Respirator and the ACM CBRN self-aid autoinjectors."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     "JCA_G_AirPurifyingRespirator_03_black_clear_F:1, ACM_Autoinjector_ATNA:2, ACM_Autoinjector_Midazolam:1",
     true
 ] call CBA_fnc_addSetting;
@@ -87,7 +87,7 @@
 [
     QGVAR(fillOrder), "LIST",
     ["Fill order", "Which container an unpacked item goes in first. The rest are tried in turn as each fills up. Applies to every bag, and to bags taken off a casualty."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     [
         ["3,2,1", "1,2,3", "2,3,1", "2,1,3"],
         ["Backpack, vest, uniform", "Uniform, vest, backpack", "Vest, backpack, uniform", "Vest, uniform, backpack"],
@@ -105,7 +105,7 @@
 [
     QGVAR(fillOverflow), "CHECKBOX",
     ["Overflow to the ground", "What will not fit is dropped at the unit's feet. Off: the surplus is not issued at all. Never drops anything in a vehicle or in deep water."],
-    ["1st Joint Multi-Functional Strike Battalion", "MedBags"],
+    ["JMSB - Medical & Respawn", "MedBags"],
     true,
     true
 ] call CBA_fnc_addSetting;

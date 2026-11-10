@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes a screen that draws itself the open app on the host. FUNC(openApp) is
  * for an app with a handler that builds into FUNC(appFrame); this is for one
  * that already has its own group on the host display and only needs to BE the

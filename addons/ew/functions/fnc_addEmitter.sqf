@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: something that radiates but is not an RF node - a jammer another
  * addon prices as RF noise itself (the Drone40 Jammer), an APS burst, a
  * radar - so ES hears it, DFs it and classifies it like any emitter. Its

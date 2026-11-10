@@ -7,6 +7,10 @@ Lifesaver (ACE medic class 1) the Medic Bag, and only a Medic (class 2) the
 Trauma, Fluid and Drug kits. What each holds is a CBA setting below - ACE kit
 by default, ACM's kit when ACM is loaded (`jmfsb_acm` re-defaults them).
 
+A bag is checked and taken only when its unpack bar completes, so one bag
+issues once. Taking bags off a casualty gives you only what came off him: two
+medics taking at once do not both get them (review L3).
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Can this unit intercept this threat, and where? One feasibility test - the
  * unit of work FUNC(assign) caps per pass.
  *

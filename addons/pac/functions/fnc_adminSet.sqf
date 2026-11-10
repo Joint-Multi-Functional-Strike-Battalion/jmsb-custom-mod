@@ -57,7 +57,7 @@ params [["_caller", objNull, [objNull]], ["_uid", "", [""]], ["_field", "", [""]
 
 if (!isServer) exitWith {false};
 
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
     WARNING_2("adminSet refused: %1 is not an admin (%2)",name _caller,_field);
     false
 };

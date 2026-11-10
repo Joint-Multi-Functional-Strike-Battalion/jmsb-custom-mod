@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The colour round a net chip - the net's state (user, 2026-10-21: "put net
  * state as a color around the net chips"). One answer for the walking view's
  * net row and the tablet's, from a FUNC(overlayNets) entry:

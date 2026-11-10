@@ -89,7 +89,9 @@ GVAR(programmableAB) = ["FA_b_40mm_Mk364_PAB"];
 
 ["CAManBase", "fired", {
     params ["_unit", "_weapon", "_muzzle", "_mode", "_ammo", "_mag", "_proj"];
-    if (_ammo in GVAR(AD_params)) then {
+    // Fired runs on every machine; only the shooter's tracks the round, or
+    // the burst, its damage and the ACE frag happen once per client.
+    if (_ammo in GVAR(AD_params) && {local _proj}) then {
         [_proj, _ammo, _unit] call FUNC(trackAD);
     };
 }] call CBA_fnc_addClassEventHandler;

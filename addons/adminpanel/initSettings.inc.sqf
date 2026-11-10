@@ -8,7 +8,7 @@
 [
     QGVAR(enabled), "CHECKBOX",
     ["Enable admin console", "Registers the admin console keybinds and the #jmfsb admin commands. Off leaves the addon loaded and inert - it does not grant or revoke anybody's admin access either way."],
-    ["1st Joint Multi-Functional Strike Battalion", "Admin Console"],
+    ["JMSB - Mission & Admin", "Admin Console"],
     true,
     true
 ] call CBA_fnc_addSetting;
@@ -24,16 +24,16 @@
 // admin flag. Turn it on for testing, never for an op.
 [
     QGVAR(everyoneAdmin), "CHECKBOX",
-    ["Everyone is an admin (testing)", "Every player passes the admin check - the console, the TAC//PAC page and the server-side edits behind them. A testing switch, OFF by default (user, 2026-09-05): turn it on for a look, off for an op. Off, admin is the TAC//PAC admins list, the mission's list, and jmfsb's admin flag."],
-    ["1st Joint Multi-Functional Strike Battalion", "Admin Console"],
+    ["Everyone is an admin (testing)", "Every player passes the admin check - the console, the TAC//PAC page and the server-side edits behind them. A testing switch, OFF by default (user, 2026-09-05): turn it on for a look, off for an op. The server reads it once when the mission loads; a change needs a restart. Off, admin is the server's own list - the mod's list, TAC//PAC's admins, grants made in the console - and #login."],
+    ["JMSB - Mission & Admin", "Admin Console"],
     false,
     true
 ] call CBA_fnc_addSetting;
 
 [
     QGVAR(honourJmfsbAdmin), "CHECKBOX",
-    ["JMSB admins may open it", "Lets anyone carrying jmfsb's own admin flag open the console, as well as the uids in the mission's list. Off means the mission's list is the only way in."],
-    ["1st Joint Multi-Functional Strike Battalion", "Admin Console"],
+    ["JMSB admins may open it", "Lets anyone the server flags as an admin (#login, the host, TAC//PAC's admins) open the console, as well as the uids in the console's own list. Off means that list is the only way in. Only the console's screen: every action behind it is checked again by the server."],
+    ["JMSB - Mission & Admin", "Admin Console"],
     true,
     true
 ] call CBA_fnc_addSetting;

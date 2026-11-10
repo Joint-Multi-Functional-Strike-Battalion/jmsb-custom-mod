@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every CLIENT_TICK_S: hangs the EW layer (FUNC(mapDraw)) on the map
  * of both hosts - the vanilla map (display 12, control 51) and, in a device
  * mode, the device host's own map (the tacpad host display's IDC_HOST_MAP).

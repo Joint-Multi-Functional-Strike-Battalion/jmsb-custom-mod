@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens the teleport menu.
  *
  * A FUNCTION RATHER THAN A CLASS NAME. The mission opened this with

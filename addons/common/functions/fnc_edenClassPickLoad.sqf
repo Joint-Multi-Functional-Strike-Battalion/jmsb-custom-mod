@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Eden attributeLoad handler for the class picker (jmfsb_ClassPick_*).
  *
  * Fills the listbox (IDC 100) from FUNC(listClasses), restores the stored
@@ -41,8 +41,19 @@ if (isNull _display) exitWith {};
 private _list = _display controlsGroupCtrl 100;
 if (isNull _list) exitWith {};
 
-private _titleCtrl = _display controlsGroupCtrl 101;
-if (!isNull _titleCtrl) then { _titleCtrl ctrlSetText _title };
+// THE TITLE SAYS WHAT IS PICKED (user, 2026-11-08): "<title> <class>", or the
+// first few and how many more, or "(none)" - kept current on every click.
+_display setVariable [QGVAR(pickTitleText), _title];
+_display setVariable [QGVAR(pickTitle), {
+    params ["_disp"];
+    private _titleCtrl = _disp controlsGroupCtrl 101;
+    if (isNull _titleCtrl) exitWith {};
+    private _sel = _disp getVariable [QGVAR(pickSel), []];
+    private _shown = (_sel select [0, PICK_TITLE_MAX]) joinString ", ";
+    if (count _sel > PICK_TITLE_MAX) then {_shown = format ["%1 +%2", _shown, count _sel - PICK_TITLE_MAX]};
+    if (_sel isEqualTo []) then {_shown = "(none)"};
+    _titleCtrl ctrlSetText format ["%1 %2", _disp getVariable [QGVAR(pickTitleText), ""], _shown];
+}];
 
 // ---- the stored value ----------------------------------------------------
 private _value = "";
@@ -143,17 +154,25 @@ private _populate = {
 
     _disp setVariable [QGVAR(pickBusy), true];
     lbClear _list;
+    private _first = -1;
+    private _single = _disp getVariable [QGVAR(pickSingle), false];
     private _known = createHashMap;
     { _known set [toLower (_x select 0), true] } forEach _rows;
     {
         if !((toLower _x) in _known) then {
             private _i = _list lbAdd format ["(unrecognised) %1", _x];
             _list lbSetData [_i, _x];
-            _list lbSetSelected [_i, true];
+            if (_first < 0) then {_first = _i};
+            if (!_single) then { _list lbSetSelected [_i, true] };
         };
     } forEach _sel;
     private _selLower = createHashMap;
     { _selLower set [toLower _x, true] } forEach _sel;
+    // THE PICK SHOWS (user, 2026-11-08: "the selectors like transport do not
+    // show what is been selected"): the picked rows first, so they are in view
+    // when the list opens, and a single-select list's pick made its current
+    // row - lbSetSelected does nothing on a list without LB_MULTI.
+    private _picked = _shown select {(toLower (_x select 0)) in _selLower};
     {
         _x params ["_cn", "_dn", "_side", "_fac", "_cat", "_src"];
         private _label = if (_isAmmo) then {format ["%1 [%2] %3", _cn, _cat, _src]} else {
@@ -161,8 +180,13 @@ private _populate = {
         };
         private _i = _list lbAdd _label;
         _list lbSetData [_i, _cn];
-        if ((toLower _cn) in _selLower) then { _list lbSetSelected [_i, true] };
-    } forEach _shown;
+        if ((toLower _cn) in _selLower) then {
+            if (_first < 0) then {_first = _i};
+            if (!_single) then { _list lbSetSelected [_i, true] };
+        };
+    } forEach (_picked + (_shown - _picked));
+    if (_single && _first >= 0) then { _list lbSetCurSel _first };
+    [_disp] call (_disp getVariable QGVAR(pickTitle));
     _disp setVariable [QGVAR(pickBusy), false];
 };
 _display setVariable [QGVAR(pickPopulate), _populate];
@@ -219,4 +243,5 @@ _list ctrlAddEventHandler ["LBSelChanged", {
         };
     };
     _disp setVariable [QGVAR(pickSel), _sel];
+    [_disp] call (_disp getVariable QGVAR(pickTitle));
 }];

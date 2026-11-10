@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The walking view's one loop: decides whether the view should be up, raises
  * or cuts the layer to match, re-lays it out when something about it has
  * changed, and redraws the rows.
@@ -15,6 +15,13 @@
  *
  * Runs off a per-frame handler every OVERLAY_TICK seconds, and directly from
  * the key, the edge and the frame buttons so they land at once.
+ *
+ * ONE DRAW PER FRAME (code review R8). The first ask in a frame draws at once;
+ * every further ask in that frame - a ring, a call's state and the nets
+ * changing together, a key on top of the tick - is answered by one more
+ * tick next frame (EFUNC(tacpad,nextFrameOnce)), which reads the state as it
+ * is by then. Raising or cutting the layer, and a new placement, are never
+ * held back.
  *
  * Arguments:
  * None
@@ -58,7 +65,8 @@ if (isNull _display) exitWith {false};
 // edge; a side device has the one the player last chose.
 private _edge = ["", GVAR(overlayEdge)] select (_device isNotEqualTo "phone");
 private _key = format ["%1/%2/%3/%4/%5/%6", _device, _edge, GVAR(sideFill), GVAR(phoneFill), EGVAR(tacpad,scheme), GVAR(overlayOpacity)];
-if (_key isNotEqualTo GVAR(overlayKey)) then {
+private _placed = _key isNotEqualTo GVAR(overlayKey);
+if (_placed) then {
     GVAR(overlayKey) = _key;
     [_display, _device, _edge] call FUNC(overlayPlace);
 };
@@ -69,6 +77,21 @@ if (GVAR(overlayRfDirty)) then {
     GVAR(overlayRfDirty) = false;
     GVAR(overlayRf) = [] call FUNC(overlayRf);
 };
+
+// The drones the map marks, re-read on a timer, not per frame
+// (FUNC(overlayDrones)); the map's Draw event only reads their positions.
+if (CBA_missionTime >= GVAR(overlayDronesNext)) then {
+    GVAR(overlayDronesNext) = CBA_missionTime + DRONE_MARK_PERIOD;
+    GVAR(overlayDrones) = [] call FUNC(overlayDrones);
+};
+
+// A new placement is drawn into at once, so the rows never stand a frame in
+// the old layout.
+if (!_placed && {(missionNamespace getVariable [QGVAR(overlayDrawFrame), -1]) isEqualTo diag_frameNo}) exitWith {
+    [QGVAR(overlayTick), {[] call FUNC(overlayTick)}] call EFUNC(tacpad,nextFrameOnce);
+    true
+};
+missionNamespace setVariable [QGVAR(overlayDrawFrame), diag_frameNo];
 
 [_display] call FUNC(overlayDraw);
 

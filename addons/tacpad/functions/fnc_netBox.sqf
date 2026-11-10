@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The mailbox id a net name on the rail stands for.
  *
  * ONE RULE, ONE PLACE. This was written out by hand in the reader's stream

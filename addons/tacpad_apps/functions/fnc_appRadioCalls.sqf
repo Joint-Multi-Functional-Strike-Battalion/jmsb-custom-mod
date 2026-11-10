@@ -1,16 +1,19 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - CALLS (docs/DESIGN_VOICE.md, "Calls"): the group adds and the search
- * across the top; VON CHANNEL SLOTS and CONTACTS on the left; the LIVE CALL
- * and CALLBACKS on the right (FUNC(appRadioContacts), FUNC(appRadioLive)).
+ * across the top; CALL SLOTS (game VON) or ALL CALLS (the voice server,
+ * FUNC(appRadioCallList)) and CONTACTS on the left; the LIVE CALL and
+ * CALLBACKS on the right (FUNC(appRadioContacts), FUNC(appRadioLive)).
  *
- * A CALL IS ONE CUSTOM CHANNEL, up to CALL_SIZE_MAX people, eight calls at
- * once server-wide. A group add rings everyone of that group in reach into the
- * live call, or opens a call with them when there is none (FUNC(radioDial)),
+ * A CALL HOLDS UP TO CALL_SIZE_MAX people. Game VON gives each call a custom
+ * channel, so eight calls at once server-wide; the voice server has no limit
+ * to the number of calls (user, 2026-11-01). A group add rings everyone of
+ * that group in reach into the live call, or opens a call with them when
+ * there is none (FUNC(radioDial)),
  * and stops when the call is full. A leader with the right to (RTO, admin -
  * RADIO_RIGHTS "C2 / A2G, calls, bump") can make the next call FLASH, which may
- * bump the oldest ROUTINE call when every slot is taken.
+ * bump the oldest ROUTINE call when every slot is taken (game VON only).
  *
  * SEARCH filters CONTACTS by name or callsign. The box keeps what is typed in
  * uiNamespace; FIND (or the board's next redraw once the box loses focus)
@@ -104,36 +107,44 @@ private _leftW = (_w0 - _pad) * PAGE_SPLIT_RADIO;
 private _rightX = _x0 + _leftW + _pad;
 private _rightW = _w0 - _leftW - _pad;
 
-// VON CHANNEL SLOTS: C2 and A2G hold custom 1 and 2 for good; CALL 1-8 the
-// rest, filled while a call holds them (jmfsb_voice_fnc_callSlots).
+// THE CALL SLOTS (tablet review 2026-11-01, R8): the strip is the custom
+// channels a call can hold, CALL 1-8, each filled while a call holds it
+// (jmfsb_voice_fnc_callSlots), and the header counts those. C2 and A2G hold
+// custom 1 and 2 for good: they are not call slots, and are said apart under
+// the strip as the fixed nets they are. Game VON only: the voice server has
+// no limit to the number of calls (user, 2026-11-01), so it lists the calls
+// there are instead (FUNC(appRadioCallList)).
 private _slotsH = _rowH * 5;
-([_body, [_x0, _top, _leftW, _slotsH], "VON CHANNEL SLOTS", "SERVER-WIDE"] call FUNC(appPagePanel)) params ["_sl", "_st", "_sw"];
-private _cells = VON_FIXED_CUSTOM apply {[str (_x select 1), _x select 0, true]};
-private _used = count _cells;
-{
-    _x params [["_slot", 0, [0]], ["_callId", "", [""]]];
-    private _busy = _callId isNotEqualTo "";
-    if (_busy) then {_used = _used + 1};
-    _cells pushBack [str (_slot + count VON_FIXED_CUSTOM), [format ["CALL %1", _slot], ""] select !_busy, _busy];
-} forEach (_ctx get "slots");
-private _cellW = (_sw - 2 * _pad) / (VON_CUSTOM_COUNT max 1);
-private _ground = ["ground"] call EFUNC(tacpad,theme);
-{
-    _x params ["_n", "_label", "_busy"];
-    private _cell = [_sl + _pad + _forEachIndex * _cellW, _st + _padY, _cellW - _pad, _rowH * 1.8];
-    if (_busy) then {
-        [_body, _cell, _ink] call EFUNC(tacpad,drawFill);
-    } else {
-        [_body, _cell, _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
-    };
-    _cell params ["_cx", "_cy", "_cw"];
-    [_body, [_cx, _cy, _cw, _rowH * 0.9], _n, [_muted, _ground] select _busy, TEXT_LABEL, true, "center"] call EFUNC(tacpad,drawText);
-    [_body, [_cx, _cy + _rowH * 0.9, _cw, _rowH * 0.9], _label, [_muted, _ground] select _busy, TEXT_LABEL, true, "center"] call EFUNC(tacpad,drawText);
-} forEach (_cells select [0, VON_CUSTOM_COUNT]);
-[
-    _body, [_sl + _pad, _st + _padY + _rowH * 2, _sw - 2 * _pad, _rowH],
-    format ["%1 of %2 custom channels used - %3 calls free", _used, VON_CUSTOM_COUNT, VON_CUSTOM_COUNT - _used], _muted, TEXT_LABEL
-] call EFUNC(tacpad,drawText);
+private _slotsRect = [_x0, _top, _leftW, _slotsH];
+if (_ctx getOrDefault ["von", true]) then {
+    uiNamespace setVariable [QGVAR(radioCallsList), controlNull];
+    private _slots = (_ctx get "slots") select [0, CALL_SLOTS];
+    private _used = {(_x param [1, ""]) isNotEqualTo ""} count _slots;
+    ([_body, _slotsRect, "CALL SLOTS", format ["%1 / %2 IN USE", _used, CALL_SLOTS]] call FUNC(appPagePanel)) params ["_sl", "_st", "_sw"];
+    private _cellW = (_sw - 2 * _pad) / (CALL_SLOTS max 1);
+    private _ground = ["ground"] call EFUNC(tacpad,theme);
+    {
+        _x params [["_slot", 0, [0]], ["_callId", "", [""]]];
+        private _busy = _callId isNotEqualTo "";
+        private _cell = [_sl + _pad + _forEachIndex * _cellW, _st + _padY, _cellW - _pad, _rowH * 1.8];
+        if (_busy) then {
+            [_body, _cell, _ink] call EFUNC(tacpad,drawFill);
+        } else {
+            [_body, _cell, _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
+        };
+        _cell params ["_cx", "_cy", "_cw"];
+        [_body, [_cx, _cy, _cw, _rowH * 0.9], format ["CALL %1", _slot], [_muted, _ground] select _busy, TEXT_LABEL, true, "center"] call EFUNC(tacpad,drawText);
+        // Its state is a value: untracked, at the body size (2.3 / R1).
+        [_body, [_cx, _cy + _rowH * 0.9, _cw, _rowH * 0.9], ["FREE", "IN USE"] select _busy, [_muted, _ground] select _busy, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
+    } forEach _slots;
+    [
+        _body, [_sl + _pad, _st + _padY + _rowH * 2, _sw - 2 * _pad, _rowH],
+        format ["FIXED NETS  %1", (VON_FIXED_CUSTOM apply {format ["%1 on custom %2", _x select 0, _x select 1]}) joinString format ["  %1  ", MIDDOT_TEXT]],
+        _muted, TEXT_BODY
+    ] call EFUNC(tacpad,drawText);
+} else {
+    [_body, _slotsRect, _ctx] call FUNC(appRadioCallList);
+};
 
 [_body, [_x0, _top + _slotsH + _padY, _leftW, _h - _slotsH - _padY], _ctx] call FUNC(appRadioContacts);
 [_body, [_rightX, _top, _rightW, _h], _ctx] call FUNC(appRadioLive);

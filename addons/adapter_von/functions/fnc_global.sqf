@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The voice API's "global" hook (jmfsb_voice_fnc_global): on, Global is
  * opened to him (FUNC(channels) keeps it open while GVAR(globalOn) holds) and
  * made his current channel; off, it is closed again unless he is an admin, and

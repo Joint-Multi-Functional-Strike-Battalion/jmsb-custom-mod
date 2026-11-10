@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The grid square the player is in, for the walking view's readout - an 8 or
  * 10 figure grid, the player's choice (GVAR(gridDigits); user, 2026-10-21:
  * "8 or 10 player choice"). The map's
@@ -13,25 +13,35 @@
  * is loaded, so the readout agrees with its GRID tool; otherwise from the
  * engine's own square.
  *
+ * ANY POSITION, THE SAME DIGITS (review 2026-11-01, item 2.7: "6 figures on
+ * DRONES > Enemy, 8 in the header"). Given a position it answers that place's
+ * grid at the player's digit count, with no GPS state - a grid the screens
+ * draw for a fix, a log entry or a contact reads the way the header does.
+ *
  * Arguments:
- * None
+ * 0: Position - [] for where the player's GPS says he is <ARRAY> (optional, default [])
  *
  * Return Value:
  * [text, GPS state - "" good, GPS_STATE_SUSPECT or GPS_STATE_NOFIX] <ARRAY>
  *
  * Example:
  * ([] call jmfsb_devices_fnc_overlayGrid) params ["_text", "_state"]
+ * ([getPosASL _target] call jmfsb_devices_fnc_overlayGrid) select 0
  *
- * Public: No
+ * Public: Yes
  */
 
-private _unit = call CBA_fnc_currentUnit;
-private _pos = getPosASL _unit;
+params [["_at", [], [[]]]];
+
+private _pos = _at;
 private _state = "";
-if (!isNil QEFUNC(ew,gpsState)) then {
-    ([] call EFUNC(ew,gpsState)) params [["_gps", ""], "", ["_gpsPos", _pos]];
-    if (_gps in [GPS_STATE_NOFIX, GPS_STATE_SUSPECT]) then {_state = _gps};
-    _pos = _gpsPos;
+if (_at isEqualTo []) then {
+    _pos = getPosASL (call CBA_fnc_currentUnit);
+    if (!isNil QEFUNC(ew,gpsState)) then {
+        ([] call EFUNC(ew,gpsState)) params [["_gps", ""], "", ["_gpsPos", _pos]];
+        if (_gps in [GPS_STATE_NOFIX, GPS_STATE_SUSPECT]) then {_state = _gps};
+        _pos = _gpsPos;
+    };
 };
 if (_state isEqualTo GPS_STATE_NOFIX) exitWith {[GRID_NO_FIX, _state]};
 

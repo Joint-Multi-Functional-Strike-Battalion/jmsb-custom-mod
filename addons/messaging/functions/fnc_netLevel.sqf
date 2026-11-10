@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The effective notification level for one arriving row: 0 rings, 1 badges.
  *
  * A thread the player has explicitly followed or muted answers with that -

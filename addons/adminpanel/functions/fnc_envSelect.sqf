@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Selects the row of a TIME / WEATHER combo whose value is nearest the one
  * given, so a world value between two steps still lands on a row.
  *

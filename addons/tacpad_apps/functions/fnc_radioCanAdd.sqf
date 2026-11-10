@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the player may add people now: with no live (or dialling) call any
  * press starts a new one, which he owns; in a call only its OWNER - who started
  * it, or who it passed to when he left - invites (user, 2026-10-20: "its not

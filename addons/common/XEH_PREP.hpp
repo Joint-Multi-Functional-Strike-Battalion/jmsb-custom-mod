@@ -5,6 +5,7 @@ PREP(onModalClose);
 PREP(createPlayerMarker);
 PREP(readConfigToNamespace);
 PREP(easterDate);
+PREP(daysFromCivil);
 PREP(runAfterSettingsInit);
 PREP(addItem);
 
@@ -32,6 +33,23 @@ PREP(edenDroneFactionSave);
 PREP(addDebugCommand);
 PREP(debugCommand);
 PREP(debugReply);
+PREP(debugRunServer);
+// Who sent a request, and who is an admin - decided on the server (review S1-S7)
+PREP(sender);
+PREP(senderIs);
+PREP(senderIsAdmin);
+PREP(fromServer);
+PREP(adminCheck);
+PREP(adminSource);
+PREP(adminFlags);
+PREP(adminClaim);
+// Secrets entered in game, kept in the server's profile (review R4)
+PREP(secret);
+PREP(secretSet);
+PREP(secretStatus);
+// Tick timings against a budget, in the RPT (review R9)
+PREP(perfAdd);
+PREP(perfReport);
 PREP(renderIntelCircle);
 PREP(renderIntelIcons);
 PREP(hudPos);
@@ -40,6 +58,7 @@ PREP(hudMove);
 PREP(uiSquare);
 PREP(setDatalink);
 PREP(fireBarrage);
+PREP(onBarrage);
 PREP(findSite);
 PREP(taorGate);
 PREP(enemySide);
@@ -55,3 +74,12 @@ PREP(isISR);
 PREP(alert);
 PREP(onAlert);
 PREP(bloodType);
+// The artillery teams of a side, off the ORBAT squad kind (user, 2026-10-25).
+PREP(artyGroups);
+// Running with or without ALiVE (user, 2026-11-02): the one "is it loaded"
+// test, and the mission's own answers where the adapter is not there to ask.
+PREP(aliveLoaded);
+PREP(groundFor);
+PREP(settlements);
+PREP(sideFaction);
+PREP(hostileCommander);

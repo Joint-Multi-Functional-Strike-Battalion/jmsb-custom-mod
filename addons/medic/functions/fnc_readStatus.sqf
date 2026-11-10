@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The patient page's status lines: blood type, blood volume, bleeding, pain,
  * airway, chest and cardiac rhythm.
  *

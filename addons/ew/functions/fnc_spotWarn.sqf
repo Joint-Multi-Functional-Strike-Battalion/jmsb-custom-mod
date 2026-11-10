@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: SPOT JAM on a net (DESIGN_EW "Threat warning") - every player in
  * reach of an enemy spot jammer who holds the net it is aimed at is told
  * which net, once per THREAT_SHOW_S. What he hears is the noise on that one

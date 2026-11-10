@@ -2,7 +2,8 @@
 """Device frame textures for the jmfsb device shells.
 
 The renders arrive as RGB on white at whatever size the renderer gave them
-(`<id>_src.png`). Arma wants power-of-two textures, so each becomes a 2048x2048
+(`<id>_src.png`; a render may bring its keys in `<id>_src.json`, see
+sidecar_keys). Arma wants power-of-two textures, so each becomes a 2048x2048
 RGBA canvas at NATIVE resolution - nothing is scaled, the frame is only centred
 and the surplus white cropped or padded. The white outside the frame and the
 white inside the screen are cut to transparent by flood fill from the canvas
@@ -47,7 +48,19 @@ ART = os.path.normpath(os.path.join(HERE, "..", "art", "devices"))
 CANVAS = 2048
 # uav: the large tablet with hand grips, for players with the UAV trait. Its
 # source is the grips render flattened onto white (from large_grips_transparent.png).
-DEVICES = ["large", "vehicle", "phone", "side", "side2", "uav"]
+# rdc: the MPU5's chest screen, its render cut from the asset's texture by
+# tools/gen_rdc_src.py, which also brings its keys (rdc_src.json: round
+# buttons, which find_keys does not know).
+DEVICES = ["large", "vehicle", "phone", "side", "side2", "uav", "rdc"]
+
+# THE DEVICE CLASS (TAC//APP UI notes, 2026-10-30: "one shell, three device
+# classes: full, landscape, portrait; rows switch on class, not device name"),
+# written into frames.hpp as deviceClass and read by jmfsb_devices_fnc_deviceClass.
+DEVICE_CLASS = {
+    "large": "full", "vehicle": "full", "uav": "full", "rdc": "full",
+    "phone": "landscape",
+    "side": "portrait", "side2": "portrait",
+}
 
 # SCREEN ASPECT, width over height, where the render's is not the device's.
 # The large tablet was shot at 1.36:1 and the spec's screen is 16:10; it is
@@ -65,6 +78,11 @@ DARK = 60
 # dark, ignoring BEZEL_TRIM of the line at each end (corner shading).
 BEZEL_CLEAR = 0.01
 BEZEL_TRIM = 0.05
+# The RDC is painted, not rendered: its tan is shaded below DARK over much of
+# the right side and scratched darker everywhere, and one pixel in a hundred
+# was enough to walk the hole out through the key column to the body's edge.
+# Its band has to be nearly all dark to count - only its painted ring is.
+BEZEL_CLEAR_OF = {"rdc": 0.6}
 # Sentinel the flood fill paints the cut regions with; no frame pixel is it.
 SENTINEL = (255, 0, 255)
 # Marks a white region the pocket pass measured and kept as artwork.
@@ -83,6 +101,10 @@ KEEP = (4, 5, 6)
 # keep text clear of the lobes.
 RUBBER = 90
 RUBBER_OPEN_R = 12
+# No rubber on the RDC: its whole tan body is darker than RUBBER, so the
+# painted ring read as one thick dark mass with the frame and was kept in
+# dashes round the hole. Its screen is cut square, ring and all.
+RUBBER_OF = {"rdc": False}
 # THE HOLE'S CORNERS ARE SLIGHTLY ROUND (user, 2026-10-23: "on all devices on
 # the outside dark border add a slight roundness to the corners"). The square
 # cut is a rounded rectangle of this radius, so the render's own dark bezel
@@ -96,6 +118,9 @@ PREVIEW_CORNER_PX = 160
 # device blended with the white, and the least room below white a channel of
 # the device's colour needs to measure coverage by.
 EDGE_BAND = 3
+# How far the device's colour is carried out under the transparent pixels
+# (cut_alpha), so no studio white lies under alpha 0 at the bezel's edge.
+BLEED_PX = 24
 EDGE_MIN_ROOM = 8
 # Pocket pass: grid step for seeds, and the smallest white region cut.
 POCKET_GRID = 8
@@ -140,7 +165,7 @@ def screen_rect(arr):
     return l + 1, t + 1, r - 1, b - 1
 
 
-def through_bezel(arr, rect):
+def through_bezel(arr, rect, clear=BEZEL_CLEAR):
     """Grow the screen rectangle out through the black bezel band to the
     frame's straight inner edge, plus the one antialiased pixel at that edge.
 
@@ -170,16 +195,16 @@ def through_bezel(arr, rect):
     grow = True
     while grow:
         grow = False
-        if l > 0 and dark_share(lum[t:b + 1, l - 1]) > BEZEL_CLEAR:
+        if l > 0 and dark_share(lum[t:b + 1, l - 1]) > clear:
             l -= 1
             grow = True
-        if r < w - 1 and dark_share(lum[t:b + 1, r + 1]) > BEZEL_CLEAR:
+        if r < w - 1 and dark_share(lum[t:b + 1, r + 1]) > clear:
             r += 1
             grow = True
-        if t > 0 and dark_share(lum[t - 1, l:r + 1]) > BEZEL_CLEAR:
+        if t > 0 and dark_share(lum[t - 1, l:r + 1]) > clear:
             t -= 1
             grow = True
-        if b < h - 1 and dark_share(lum[b + 1, l:r + 1]) > BEZEL_CLEAR:
+        if b < h - 1 and dark_share(lum[b + 1, l:r + 1]) > clear:
             b += 1
             grow = True
     # The antialiased pixel where the band meets the frame.
@@ -209,6 +234,7 @@ def centre_on_canvas(src):
     arr = np.asarray(src)
     bx0, by0, bx1, by1 = frame_bbox(arr)
     bw, bh = bx1 - bx0 + 1, by1 - by0 + 1
+    k = 1.0
     if bw > CANVAS or bh > CANVAS:
         k = min(CANVAS / bw, CANVAS / bh)
         src = src.resize((int(round(src.size[0] * k)), int(round(src.size[1] * k))), Image.LANCZOS)
@@ -225,13 +251,27 @@ def centre_on_canvas(src):
         oy = (CANVAS - bh) // 2 - by0
     canvas = Image.new("RGB", (CANVAS, CANVAS), (255, 255, 255))
     canvas.paste(src, (ox, oy))
-    return canvas, (ox, oy), (bx0 + ox, by0 + oy, bx1 + ox, by1 + oy)
+    return canvas, (ox, oy), (bx0 + ox, by0 + oy, bx1 + ox, by1 + oy), k
 
 
-def cut_alpha(canvas, rect):
+def sidecar_keys(device, offset, scale):
+    """The keys a render brought with it - <id>_src.json, [[x, y, w, h], ...]
+    in the render's own pixels - placed on the canvas; [] without one."""
+    path = os.path.join(ART, device + "_src.json")
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8") as f:
+        keys = json.load(f)["keys"]
+    ox, oy = offset
+    return [[int(round(x * scale + ox)), int(round(y * scale + oy)), int(round(w * scale)), int(round(h * scale))]
+            for x, y, w, h in keys]
+
+
+def cut_alpha(canvas, rect, rubber=True):
     """Flood the background and the screen interior with the sentinel, turn
     those pixels transparent, and feather the one-pixel ring around the cut so
-    antialiased edges do not carry a white fringe."""
+    antialiased edges do not carry a white fringe. rubber: keep the corner
+    guards' lobes over the hole (RUBBER above)."""
     work = canvas.copy()
     w, h = work.size
     px = work.load()
@@ -273,7 +313,7 @@ def cut_alpha(canvas, rect):
     rounded = Image.new("L", (w, h), 0)
     ImageDraw.Draw(rounded).rounded_rectangle([x0, y0, x1, y1], radius=SCREEN_CORNER_R, fill=255)
     square = np.asarray(rounded) > 127
-    cut |= square & ~rubber_mask(canvas)
+    cut |= square & ~rubber_mask(canvas) if rubber else square
     alpha = np.where(cut, 0, 255).astype(np.uint8)
 
     # NO LIGHT EDGE (user, 2026-10-21: the tablet's corners, a pale outline
@@ -310,7 +350,30 @@ def cut_alpha(canvas, rect):
     share = np.where((room > EDGE_MIN_ROOM).any(axis=2), share, 1.0)
     edge_alpha = np.clip(share * 255.0, 0, 255).astype(np.uint8)
     alpha = np.where(band, edge_alpha, alpha)
-    out_rgb = np.where(band[..., None], np.clip(fg, 0, 255), rgb).astype(np.uint8)
+    out_rgb = np.where(band[..., None], np.clip(fg, 0, 255), rgb)
+
+    # UNDER THE TRANSPARENT PIXELS, THE DEVICE'S OWN COLOUR (user,
+    # 2026-10-31: "white pixels" down the bezel's outer edges). A cut pixel
+    # kept the studio white it was rendered on, and the game samples across
+    # the edge - filtering, mipmaps - so the white showed as a hairline where
+    # the bezel's edge runs straight. The device's colour is carried out
+    # BLEED_PX further, the same way the band was, and what is still beyond
+    # that takes the device's average: nothing white is left under alpha 0.
+    for _ in range(BLEED_PX):
+        total = np.zeros_like(rgb)
+        count = np.zeros(cut.shape, np.float32)
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            k = np.roll(known, (dy, dx), axis=(0, 1))
+            total += np.where(k[..., None], np.roll(fg, (dy, dx), axis=(0, 1)), 0.0)
+            count += k
+        new = cut & ~known & (count > 0)
+        if not new.any():
+            break
+        fg = np.where(new[..., None], total / np.maximum(count, 1)[..., None], fg)
+        known |= new
+    device_mean = rgb[~cut].mean(axis=0) if (~cut).any() else np.zeros(3, np.float32)
+    under = np.where(known[..., None], fg, device_mean)
+    out_rgb = np.where(cut[..., None], np.clip(under, 0, 255), out_rgb).astype(np.uint8)
 
     return Image.fromarray(np.dstack([out_rgb, alpha]), "RGBA")
 
@@ -438,9 +501,9 @@ def main():
         src = load(device)
         if device in ASPECT:
             src = widen(src, ASPECT[device])
-        canvas, offset, fbox = centre_on_canvas(src)
-        rect = through_bezel(np.asarray(canvas), screen_rect(np.asarray(canvas)))
-        out = cut_alpha(canvas, rect)
+        canvas, offset, fbox, scale = centre_on_canvas(src)
+        rect = through_bezel(np.asarray(canvas), screen_rect(np.asarray(canvas)), BEZEL_CLEAR_OF.get(device, BEZEL_CLEAR))
+        out = cut_alpha(canvas, rect, RUBBER_OF.get(device, True))
         out_path = os.path.join(ART, device + "_frame.png")
         out.save(out_path, optimize=False)
         x0, y0, x1, y1 = rect
@@ -461,7 +524,7 @@ def main():
             "screen_frac": [round(x0 / CANVAS, 6), round(y0 / CANVAS, 6),
                             round(w / CANVAS, 6), round(h / CANVAS, 6)],
         }
-        keys = find_keys(out, rect, fbox)
+        keys = sidecar_keys(device, offset, scale) or find_keys(out, rect, fbox)
         report[device]["keys_px"] = keys
         report[device]["keys_frac"] = [[round(v / CANVAS, 6) for v in k] for k in keys]
         print("%-8s src %dx%d  offset %s  screen %s (%dx%d)  keys %d" % (
@@ -502,12 +565,14 @@ def main():
                  "//   corner   the hole's corner radius (SCREEN_CORNER_R), the same fraction",
                  "//   keys[]   the six keys printed on the frame - F1 F2 F3 F4 LEFT RIGHT -",
                  "//            found in the render; empty when they could not all be found",
+                 "//   deviceClass  full, landscape or portrait: the rows switch on it",
                  ""]
         for device in DEVICES:
             body = report[device]["frame_frac"]
             fr = report[device]["screen_frac"]
             lines.append("class %s {" % device)
             lines.append("    frame = QPATHTOF(data\\%s.paa);" % device)
+            lines.append('    deviceClass = "%s";' % DEVICE_CLASS[device])
             lines.append("    body[] = {%s};" % ", ".join("%.6f" % v for v in body))
             lines.append("    screen[] = {%s};" % ", ".join("%.6f" % v for v in fr))
             lines.append("    corner = %.6f;" % (SCREEN_CORNER_R / CANVAS))

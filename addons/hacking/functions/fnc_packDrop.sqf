@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Packs a deployed drop back into a carried case, so a section can move its
  * collection point when the base moves.
  *

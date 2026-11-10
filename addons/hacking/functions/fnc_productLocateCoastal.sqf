@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE ANTI-SHIP: the coastal batteries themselves.
  *
  * JMSB spawns these rather than reading them off ALiVE (new.md section 1.2),

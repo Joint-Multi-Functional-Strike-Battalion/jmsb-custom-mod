@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Repaints the four map tabs so the active one is filled.
  *
  * A tab strip where nothing says which tab you are on is four buttons.

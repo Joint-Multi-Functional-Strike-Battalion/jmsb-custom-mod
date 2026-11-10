@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server-only. Unbuilds a patrol base: deletes the beacon and marker, re-places
  * the kit objects on the ground, runs the on-undeploy hook, frees a slot and
  * notifies everyone.
@@ -17,6 +17,16 @@ if !(isServer) exitWith {};
 
 params [["_beacon", objNull, [objNull]]];
 if (isNull _beacon) exitWith {};
+
+// A client's request is taken only from a living man at the beacon - the
+// action's own reach, checked again here from the real sender (review S7).
+if !([] call EFUNC(common,fromServer)) then {
+    private _who = ([] call EFUNC(common,sender)) select 1;
+    if (isNull _who || {!alive _who} || {(_who distance _beacon) > UNBUILD_RANGE}) then {_beacon = objNull};
+};
+if (isNull _beacon) exitWith {
+    WARNING_1("serverUnbuild: refused - machine %1 is not at the beacon",remoteExecutedOwner);
+};
 
 private _bases = missionNamespace getVariable [QGVAR(bases), []];
 private _entry = _bases select {(_x select 0) isEqualTo _beacon};

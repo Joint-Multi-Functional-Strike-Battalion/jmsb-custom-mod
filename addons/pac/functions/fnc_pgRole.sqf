@@ -140,10 +140,11 @@ switch (_s) do {
     };
 
     case "tiles": {
+        // No SUPPORT tile any more (user, 2026-11-01).
         private _choices = [
             ["drones", "drones", "Drone picture - contacts, bearing, range"], ["jam", "jam", "Jamming state"], ["hack", "hack", "Hacking suite"],
             ["weather", "weather", "Weather and light"], ["timer", "timer", "Mission timer"], ["radio", "radio", "Radio state"],
-            ["intel", "intel", "Intel take"], ["support", "support", "Supports available"], ["pac", "pac", "The PAC tile"]
+            ["intel", "intel", "Intel take"], ["pac", "pac", "The PAC tile"]
         ];
         ["tiles", _choices, [_r getOrDefault ["tiles", []]] call _fnc_pairs, PAC_IDC_LIST, PAC_UI_TOP, _h, "TAC//PAD tiles this role gets"] call FUNC(uiToggle);
         if (!_fed) then {

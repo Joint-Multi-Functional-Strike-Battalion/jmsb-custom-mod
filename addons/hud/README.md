@@ -132,6 +132,38 @@ screen, and two copies of the squad list on one screen is one too many. The
 controls are hidden rather than the layer torn down; cutting a title layer twice
 a minute is how a HUD starts flickering. Switchable off in settings.
 
+## Built once, updated in place
+
+The tick is once a second. It used to delete and recreate every control in
+both slots, finding them by walking every control on the mission display.
+Now:
+
+- **Readouts return draw ops, not controls.** Each `widget*` function appends
+  `[kind, args]` entries (`fill`, `frame`, `text`, `icon`) to a list; `args` are
+  exactly what it used to pass to the tacpad's `drawFill` / `drawFrame` /
+  `drawText` / `drawIcon`.
+- **`jmfsb_hud_fnc_paint` turns the list into controls** and keeps them on the
+  slot control, one entry per op. No display scan.
+- **The slot is rebuilt only when its key or its shape changes.** The key is
+  the readout id, the slot box from the Layout editor, the scheme colours, HUD
+  opacity, tacpad text and UI scale, the tacpad host rect and the screen units.
+  The shape is the op count, each op's kind, and the layout of each text,
+  frame and icon (box, size, weight, alignment, tracking, font, tinted or not).
+  A rebuild calls the tacpad helpers with the same args as before.
+- **Otherwise only what changed is set** on the existing controls: fill
+  position and colour, frame colour, icon position/texture/tint, and text with
+  `drawText`'s own markup. Same pixels either way.
+- **Off / vacant slots** are hidden and emptied once, then left alone.
+- **The scanner sweep** (`jmfsb_hud_fnc_sweep`) is read at most every
+  3 seconds, sooner if the player unit changes or the set is picked up or
+  dropped. The scanner itself still caches its own walk for 2 seconds.
+
+What updates in place: the clock and countdowns, bearings and ranges, jam
+percentages and bar lengths, APS charges and the emitter countdown, colours.
+What rebuilds: a row appearing or going (a casualty, the stopwatch starting, a
+second alarm, the APS intercept line), the squad size changing, moving or
+resizing a slot, cycling a slot, a scheme or scale change.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -143,7 +175,7 @@ a minute is how a HUD starts flickering. Switchable off in settings.
 
 ## Ships
 
-16 functions.
+17 functions.
 
 ## CBA settings
 
@@ -156,13 +188,14 @@ a minute is how a HUD starts flickering. Switchable off in settings.
 
 ## Functions
 
-<details><summary>16</summary>
+<details><summary>17</summary>
 
 - `jmfsb_hud_fnc_close`
 - `jmfsb_hud_fnc_cycle`
 - `jmfsb_hud_fnc_draw`
 - `jmfsb_hud_fnc_hidden`
 - `jmfsb_hud_fnc_open`
+- `jmfsb_hud_fnc_paint`
 - `jmfsb_hud_fnc_setShown`
 - `jmfsb_hud_fnc_slotState`
 - `jmfsb_hud_fnc_sweep`

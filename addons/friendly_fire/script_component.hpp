@@ -12,3 +12,5 @@
 #endif
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
+
+#define SERVER_OWNER 2

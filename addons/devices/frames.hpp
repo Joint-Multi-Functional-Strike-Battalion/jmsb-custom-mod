@@ -6,9 +6,11 @@
 //   corner   the hole's corner radius (SCREEN_CORNER_R), the same fraction
 //   keys[]   the six keys printed on the frame - F1 F2 F3 F4 LEFT RIGHT -
 //            found in the render; empty when they could not all be found
+//   deviceClass  full, landscape or portrait: the rows switch on it
 
 class large {
     frame = QPATHTOF(data\large.paa);
+    deviceClass = "full";
     body[] = {-0.000488, 0.192871, 1.000488, 0.613770};
     screen[] = {0.072754, 0.234863, 0.844238, 0.533203};
     corner = 0.006836;
@@ -16,6 +18,7 @@ class large {
 };
 class vehicle {
     frame = QPATHTOF(data\vehicle.paa);
+    deviceClass = "full";
     body[] = {0.000488, 0.005859, 0.999512, 0.993652};
     screen[] = {0.132324, 0.228027, 0.751953, 0.556641};
     corner = 0.006836;
@@ -23,6 +26,7 @@ class vehicle {
 };
 class phone {
     frame = QPATHTOF(data\phone.paa);
+    deviceClass = "landscape";
     body[] = {0.004883, 0.226074, 0.990234, 0.547852};
     screen[] = {0.088379, 0.273926, 0.813965, 0.456543};
     corner = 0.006836;
@@ -30,6 +34,7 @@ class phone {
 };
 class side {
     frame = QPATHTOF(data\side.paa);
+    deviceClass = "portrait";
     body[] = {0.164551, 0.076660, 0.670898, 0.846191};
     screen[] = {0.266602, 0.134766, 0.453125, 0.734375};
     corner = 0.006836;
@@ -37,6 +42,7 @@ class side {
 };
 class side2 {
     frame = QPATHTOF(data\side2.paa);
+    deviceClass = "portrait";
     body[] = {0.214844, 0.012207, 0.569824, 0.975098};
     screen[] = {0.258301, 0.094238, 0.483398, 0.801758};
     corner = 0.006836;
@@ -44,8 +50,17 @@ class side2 {
 };
 class uav {
     frame = QPATHTOF(data\uav.paa);
+    deviceClass = "full";
     body[] = {0.002930, 0.226562, 0.994141, 0.546387};
     screen[] = {0.105957, 0.264160, 0.750977, 0.474609};
     corner = 0.006836;
     keys[] = {{0.867676, 0.350586, 0.028320, 0.028320}, {0.867676, 0.393066, 0.028320, 0.028320}, {0.867676, 0.436035, 0.028320, 0.027832}, {0.867676, 0.478516, 0.028320, 0.027832}, {0.867676, 0.521484, 0.028320, 0.027344}, {0.867676, 0.563477, 0.028320, 0.027832}};
+};
+class rdc {
+    frame = QPATHTOF(data\rdc.paa);
+    deviceClass = "full";
+    body[] = {0.024414, 0.210938, 0.951172, 0.577637};
+    screen[] = {0.145996, 0.297363, 0.710938, 0.419922};
+    corner = 0.006836;
+    keys[] = {{0.898438, 0.440430, 0.046387, 0.046387}, {0.898438, 0.494141, 0.043945, 0.043945}, {0.899902, 0.543945, 0.048340, 0.048340}, {0.895508, 0.596680, 0.051758, 0.051758}, {0.033203, 0.324219, 0.087891, 0.087891}, {0.874512, 0.317383, 0.097656, 0.097656}};
 };

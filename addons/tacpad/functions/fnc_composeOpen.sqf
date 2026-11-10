@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the reader's right pane into compose. Opens the reader first if it is not
  * already up, so NEW off the docked rail lands on the same screen as NEW off the
  * full one.
@@ -46,6 +46,13 @@ if (isNil QEFUNC(messaging,templateIds)) exitWith {
     false
 };
 
+// A FRAGO OPENS THE ORDER IT CHANGES (2026-11-09): every opener of the FRAGO
+// card - a tile, the phone's key, the picker - lands on FUNC(composeFrago),
+// which comes back here with the order's card and its values.
+if (_templateId isEqualTo FRAGO_ID && _threadId isNotEqualTo "") exitWith {
+    [_threadId] call FUNC(composeFrago)
+};
+
 // THE SCREEN FIRST, THE STATE SECOND. Opening the reader clears compose - a
 // reader opened from the keybind must never come up mid-message - so the state
 // is set after it, not before.
@@ -58,6 +65,14 @@ if (isNull (uiNamespace getVariable [QGVAR(reader), displayNull])) exitWith {fal
 GVAR(composeOn) = true;
 GVAR(composeThread) = _threadId;
 GVAR(composeTemplate) = _templateId;
+// REAL WORLD / SIMPLE (2026-11-09): every card opens on the default
+// FUNC(composeShortDefault) gives - the player setting, or the unit's.
+GVAR(composeShortOn) = [] call FUNC(composeShortDefault);
+// Not a FRAGO until FUNC(composeFrago) says so, after this.
+GVAR(composeFrago) = [];
+// A card opened fresh starts at its top (FUNC(composeCard) puts a redraw's
+// scroll back, not an old one).
+GVAR(composeScroll) = [];
 GVAR(composePick) = _pick;
 GVAR(composeToPick) = false;
 GVAR(composeValues) = createHashMap;
@@ -71,6 +86,11 @@ GVAR(composeCc) = "";
 GVAR(composeTags) = "";
 GVAR(composeError) = "";
 GVAR(composeMissing) = [];
+GVAR(composeNote) = "";
+GVAR(composeMentionAsk) = [];
+// The SUPPORT rows and the tasking gate are asked afresh for a new message
+// (FUNC(composeToSupport)): the @ list asks them before any CHANGE press.
+GVAR(toSupport) = [];
 
 // An answer handed in by whatever opened this - the casualty a CASEVAC is being
 // filed for, say. A position is shown as its grid, exactly as CURRENT LOC shows

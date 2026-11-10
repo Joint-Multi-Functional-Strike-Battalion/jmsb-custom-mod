@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The FLASH banner (handoff 1a, "incoming FLASH traffic"; drawn as in 1d panel
  * 03): an accent strip naming the net, the subject and a preview, and three
  * actions - the first one-tap reply the thread will take, OPEN THREAD, and
@@ -92,7 +92,15 @@ _group ctrlCommit 0;
 [_group, [0, 0, _w, _stripH], _accent] call FUNC(drawFill);
 
 private _net = (_entry getOrDefault ["boxId", ""]) select [2];
-[_group, [_side, 0, _w * 0.7, _stripH], format ["FLASH - INCOMING ON %1 NET", toUpper _net], _ground, READER_K_SIZE, true, "left", true] call FUNC(drawText);
+// A support asset's box by its call sign (2026-11-01, design D1).
+private _asset = "";
+if (!isNil QEFUNC(support,boxName)) then {_asset = [_entry getOrDefault ["boxId", ""]] call EFUNC(support,boxName)};
+private _strip = if (_asset isNotEqualTo "") then {
+    format ["FLASH - INCOMING FROM %1", _asset]
+} else {
+    format ["FLASH - INCOMING ON %1 NET", toUpper _net]
+};
+[_group, [_side, 0, _w * 0.7, _stripH], _strip, _ground, READER_K_SIZE, true, "left", true] call FUNC(drawText);
 [_group, [_w * 0.7, 0, _w * 0.3 - _side, _stripH], [_entry getOrDefault ["lastActivity", 0]] call FUNC(clock), _ground, READER_K_SIZE, true, "right", true] call FUNC(drawText);
 
 private _cy = _stripH + READER_INSET * _padY;
@@ -110,7 +118,21 @@ private _btnW = (_w - 2 * _side - _pad * 4) / 3;
 
 // THE PRIMARY ACTION: the first one-tap reply the thread will take now, sent
 // into it on the press - the design's SMOKE OUT. None legal, no button.
-private _legal = ["reply", _entry getOrDefault ["status", ""]] call EFUNC(messaging,templateIds);
+// FUNC(threadLegal) (2026-11-02): never the asset's words to a player.
+// THE MESSAGE TEMPLATES (2026-11-09): an asset's question offers its first
+// answer (answer-only cards are its to offer); anything else the first one-tap
+// card that is not one of the asset thread's commands - ABORT or RTB is never
+// the banner's one press.
+private _legal = [_threadId] call FUNC(threadLegal);
+if ((_msg getOrDefault ["templateId", ""]) isEqualTo QUICK_PROMPT) then {
+    private _answerKey = ([QUICK_PROMPT, QUICK_PROMPT_ANSWERS] call EFUNC(messaging,fieldKeys)) param [0, ""];
+    private _answers = (createHashMapFromArray (_msg getOrDefault ["payload", []])) getOrDefault [_answerKey, ""];
+    if !(_answers isEqualType "") then {_answers = ""};
+    private _answering = [_threadId, createHashMap, true] call FUNC(threadLegal);
+    _legal = ((_answers splitString QUICK_ANSWER_SEP) apply {toLower (trim _x)}) select {_x in _answering};
+} else {
+    _legal = _legal select {(([_x] call EFUNC(messaging,template)) getOrDefault ["assetThread", false]) isNotEqualTo true};
+};
 private _quick = _legal findIf {((([_x] call EFUNC(messaging,template)) getOrDefault ["order", []]) isEqualTo [])};
 if (_quick >= 0) then {
     private _id = _legal # _quick;

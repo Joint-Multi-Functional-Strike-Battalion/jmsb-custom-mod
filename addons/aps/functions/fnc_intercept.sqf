@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One incoming round against one vehicle's launchers - Drongo's engagement,
  * kept whole (SCHEDULED, it sleeps): a beat to see the round is really
  * coming in, the approach angle (a top-attack dive is immune), the round's
@@ -66,35 +66,20 @@ if ((_veh getVariable [_pool, 0]) < 1) exitWith {};
 { _x doWatch _pPos } forEach crew _veh;
 [_veh] remoteExec [QFUNC(popSmoke), _veh];
 
-private _blast = {
-    params ["_at"];   // ATL
-    createVehicle [QGVAR(blast), _at, [], 0, "CAN_COLLIDE"];
-};
-private _spend = {
-    _veh setVariable [_pool, ((_veh getVariable [_pool, 0]) - 1) max 0, true];
-    [_veh, _rel, "INTERCEPT"] remoteExec [QFUNC(report), [0, -2] select isDedicatedServer];
-    if (GVAR(debug)) then { INFO_3("%1 killed %2 from %3 deg",typeOf _veh,typeOf _p,round _rel) };
-};
-
 if (_shell) exitWith {
     // on sight: the flash five metres out on the round's bearing
-    deleteVehicle _p;
-    [_veh getPos [5, (_rel + _facing) mod 360]] call _blast;
-    call _spend;
+    [_veh, _p, _pool, _rel, _veh getPos [APS_SHELL_FLASH, (_rel + _facing) mod 360]] call FUNC(kill);
 };
 
-// out to meet it
-private _ok = true;
-while {true} do {
-    if (isNull _p || {!alive _p}) exitWith { _ok = false };
-    if (!alive _veh) exitWith { _ok = false };
-    _d = _veh distance _p;
-    if (_d > _range + 1) exitWith { _ok = false };
-    if (_d < APS_KILL_RANGE) exitWith {};
-    sleep 0.001;
-};
-if (!_ok) exitWith {};
-private _at = getPosATL _p;
-deleteVehicle _p;
-[_at] call _blast;
-call _spend;
+// Out to meet it. Checked every frame, unscheduled: a sleep loop in the
+// scheduler can lag past the round's whole flight under load.
+[{
+    params ["_veh", "_p", "_range"];
+    if (isNull _p || {!alive _p} || {!alive _veh}) exitWith {true};
+    private _d = _veh distance _p;
+    _d > _range + 1 || _d < APS_KILL_RANGE
+}, {
+    params ["_veh", "_p", "", "_pool", "_rel"];
+    if (isNull _p || {!alive _p} || {!alive _veh} || {(_veh distance _p) >= APS_KILL_RANGE}) exitWith {};
+    [_veh, _p, _pool, _rel, getPosATL _p] call FUNC(kill);
+}, [_veh, _p, _range, _pool, _rel]] call CBA_fnc_waitUntilAndExecute;

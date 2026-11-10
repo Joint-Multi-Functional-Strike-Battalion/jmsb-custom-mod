@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The fired class event, on every machine, for every shot of every unit.
  *
  * THE HOT PATH. An ignored ammo type - every bullet and grenade - costs one

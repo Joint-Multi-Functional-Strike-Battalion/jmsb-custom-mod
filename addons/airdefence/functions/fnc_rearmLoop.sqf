@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts the rearm loop - once, whoever asks first. A SAM site that fired its
  * tubes dry and sat quiet for the rest of the mission read as broken, not
  * empty; every interval the surviving pieces of GVAR(hardware) come back to

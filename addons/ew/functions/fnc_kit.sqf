@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What EW kit a man has to hand - THE EQUIPMENT GATE (DESIGN_EW "ISR trait",
  * "EW hardware"):
  *

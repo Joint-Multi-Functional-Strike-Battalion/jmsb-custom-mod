@@ -4,6 +4,10 @@
 
 TAC//MEDIC: a tablet app and a live tile for the section's CLS and medics. The tile counts the wounded in the player's squad and turns to the inverted accent block the moment anyone is in cardiac arrest or bleeding heavily. The app lists the squad worst first (ARREST, UNCONSCIOUS, WOUNDED, OK, then the dead last, since they are not in the medic's queue) and opens a patient page. That page shows heart rate, blood pressure, SpO2, respiration rate, blood type, blood volume, bleeding, pain, airway, chest (pneumothorax / hemothorax), cardiac rhythm, wounds per body part, tourniquets, fractures and splints, IVs running, and a SHOW ON MAP button.
 
+**The list's state colour** is a full-height block on each row's left edge, 16 px wide (user, 2026-11-01; it was a 4 px bar). Same colours: green OK, yellow wounded, accent unconscious or bleeding heavily, the ground on the accent row for arrest, dim for dead.
+
+**SHOW ON MAP shows the team** (user, 2026-11-01). It hangs `jmfsb_bft_fnc_drawMembers` on the host's map once, so the tablet's map draws the squad's member icons round the casualty as the vanilla map does. BFT's settings decide what is drawn (`jmfsb_bft_memberMarkers`; nothing when it is Off), and GPS denial hides them. Without `jmfsb_bft` the map only pans.
+
 **Who sees it.** The tile and app are only for a player who is a CLS or a medic. That means his PAC skill tags (`jmfsb_pac_skillTags`) hold `CLS` or `MED`, or the same skills have set ACE's medic class (`ace_medical_medicClass` 1 or 2) or the Medic trait. Nobody else gets a tile, so nobody else gets a way into the app. When a mission gates tiles by role (`tiles[]`), a medic role has to list `medic` there.
 
 **Optional dependencies.** ACE medical and Advanced Combat Medicine (ACM) are both optional. Without ACE medical the tile is stale and the app says MEDICAL SYSTEM NOT LOADED. With ACE but no ACM, the ACE readings work and the ACM-only lines (devices, respiration, airway, chest, rhythm) say ACM NOT LOADED.
@@ -28,7 +32,7 @@ Without a device, the line shows the last hand check, with its age and the medic
 
 ACM's cuff readings (`MeasureBloodPressure` / `MeasureBloodPressureStethoscope`) are not recorded. Their treatment completes in 0.01 s and only opens ACM's gauge, which the medic can cancel, so `ace_treatmentSucceded` fires before any reading exists. They need the cuff on that arm, and while the cuff is on, the BP line is live anyway.
 
-The reading is taken on the patient's own machine, where his vitals are exact, through the `jmfsb_medic_measure` targeted event. It is published on him as `jmfsb_medic_checkHR` / `_checkBP` / `_checkRR` (`[value, missionTime, medicName]`), so every medic in the section sees the same last reading. A check on a limb under a tourniquet reads zero. There is no hand check for SpO2. With neither a device nor a hand check, the line reads `--` and NOT MONITORED.
+The reading is taken on the patient's own machine, where his vitals are exact. The medic's machine sends the check by `remoteExecCall` to the server's `srvMeasure`, which names the medic from the sender, checks he is alive and within 10 m of the patient, and sends it to `measureLocal` on the patient's machine, which takes it only from the server (review R1; it was the `jmfsb_medic_measure` CBA event, which any client could raise to stamp a check with any medic's name on anyone). It is published on him as `jmfsb_medic_checkHR` / `_checkBP` / `_checkRR` (`[value, missionTime, medicName]`), so every medic in the section sees the same last reading. A check on a limb under a tourniquet reads zero. There is no hand check for SpO2. With neither a device nor a hand check, the line reads `--` and NOT MONITORED.
 
 Blood type is always shown, because it comes off the dog tags. The app reads `ACM_circulation_BloodType` first (0-7 = O+, O-, A+, A-, B+, B-, AB+, AB-), then ACE's `ace_dogtags_dogtagData`. If neither is set, it calls `ace_dogtags_fnc_getDogtagData`, which works the tag out and publishes it, the same as a hand dog-tag check.
 
@@ -46,6 +50,22 @@ The bleed grade (SLOW / MODERATE / SEVERE / MASSIVE, with SEVERE and above count
 
 The variable names are ACE's public unit variables. For ACM they were read from the ACM 1.4.8 source (circulation, breathing, airway, disability, core), including its compiled functions for the macro-built names and enums. All of them are listed once, in `script_component.hpp`.
 
+## NEARBY tab
+
+The list has two tabs: SQUAD and NEARBY. NEARBY is every man within 10 m who is not in the medic's squad, the dead included - a casualty from another squad, or a training patient. His page stays open while he is within 10 m.
+
+## Watch HUD: the medical profile
+
+This addon registers the `medical` profile with `jmfsb_watch` (see its README and `docs/DESIGN_WATCH_HUD.json`). Anyone in AiTR goggles (ECOTI drawing: powered, AiTR on, no map or dialog) has it.
+
+- Add or remove a patient: look at any man within 5 m and press the action key (F9; numpad 9 in the numpad layout), or ACE interact on him, "Show vitals (AiTR)" / "Hide vitals (AiTR)". Up to 6. F2 shares the picked patient with every medic within 5 m.
+- Colour: his ACE triage card when set (T1 red, T2 yellow, T3 green, T4 grey), else his state.
+- Fields: HR and tourniquets, then BP and SpO2 for a medic (ACE medic class 2 or PAC Medic), bleeding for everyone else. Same device-gated readings as the app.
+- Triage: with no card set, the suggestion shows marked "?" - T1 arrest, unconscious or heavy bleeding; T2 bleeding or SpO2 under 90; T3 wounded; T4 dead. ACE self > Watch > the patient > Triage T1-T4 / clear sets ACE's own card, which sticks until changed.
+- Fields: HR, tourniquets and the longest one's minutes; then BP and SpO2 (medic) or bleeding (others), and the MIST's age.
+- REPORT (device F1 while the watch is on): the MIST card on the tablet, filled with the patient, wounds by body part, vitals, and tourniquets with their minutes and IVs. One thread per patient: a MIST already filed for him ("MIST <name>") is replied into; the first goes to MEDICAL.mist. Mechanism is the medic's to write; sending is his press. The MIST card has a PATIENT line for this.
+- Alerts, once each as they start: T1, tourniquet over 10 min, SpO2 under 90, MIST stale (triage changed since, or older than 5 min).
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -58,13 +78,14 @@ The variable names are ACE's public unit variables. For ACM they were read from 
 
 ## Ships
 
-16 functions.
+23 functions.
 
 ## Functions
 
-<details><summary>16</summary>
+<details><summary>23</summary>
 
 - `jmfsb_medic_fnc_age`
+- `jmfsb_medic_fnc_aitrOn`
 - `jmfsb_medic_fnc_app`
 - `jmfsb_medic_fnc_appList`
 - `jmfsb_medic_fnc_appNotice`
@@ -79,6 +100,12 @@ The variable names are ACE's public unit variables. For ACM they were read from 
 - `jmfsb_medic_fnc_readVitals`
 - `jmfsb_medic_fnc_recordCheck`
 - `jmfsb_medic_fnc_showOnMap`
+- `jmfsb_medic_fnc_srvMeasure`
 - `jmfsb_medic_fnc_tile`
+- `jmfsb_medic_fnc_triageSuggest`
+- `jmfsb_medic_fnc_watchAlerts`
+- `jmfsb_medic_fnc_watchReport`
+- `jmfsb_medic_fnc_watchRow`
+- `jmfsb_medic_fnc_watchTrace`
 
 </details>

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every camp ALiVE's military placement stood up, as a hunt pool.
  *
  * ALiVE has no camp registry. A random camp is a composition dropped on a

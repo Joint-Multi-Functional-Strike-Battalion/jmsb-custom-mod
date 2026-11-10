@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts one effector on a vehicle on HOLD, or takes it off (server, the one
  * arbiter). A hold is the crew's word that the system must not fire on its
  * own: HK HOLD stops the launchers, RF HOLD stops the emitter's automatic

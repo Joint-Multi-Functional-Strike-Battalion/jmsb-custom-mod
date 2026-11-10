@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Tells the suite where to draw: the rectangle, in screen units, and the
  * display. With no arguments it is the safe zone and no display, which is the
  * native host - FUNC(hostDisplay) answers with the vanilla map in that mode and

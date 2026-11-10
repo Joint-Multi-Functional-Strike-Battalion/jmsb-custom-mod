@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * DRONES - FEED: the picked drone's camera as a picture inside the app
  * (render-to-texture, FUNC(appDronesCamera)), with the HUD the design draws -
  * name, altitude, speed, heading, target grid and range, link - and the
@@ -12,6 +12,8 @@
  * ORBIT, GO TO (a map pick, FUNC(appDronesPick)), LASE / LASE OFF and RTB on
  * the drone he has linked, while the DATA link holds; the press asks the gate
  * again. MARK TARGET always. LASE on an airframe with no designator says so.
+ * A dead CONNECT has the gate's reason on a line under the buttons. The
+ * header's "CONTROL NEEDS DATA LINK" is the only place the page says it.
  *
  * MODE: a Drone40 variant (jmfsb_drone40) gets a row of RELAY / DECOY /
  * JAMMER / OFF above the buttons, its mode filled, live on the same gate as
@@ -46,6 +48,7 @@ private _name = _row param [1, ""];
 private _ground = ["ground"] call EFUNC(tacpad,theme);
 private _ink = ["ink"] call EFUNC(tacpad,theme);
 private _dim = ["dim"] call EFUNC(tacpad,theme);
+private _muted = ["muted"] call EFUNC(tacpad,theme);
 
 private _pad = PAD * HOST_W;
 private _padY = PAD * HOST_H;
@@ -54,13 +57,22 @@ private _btnH = _rowH * 1.2;
 // One row of buttons, two for a Drone40 (its MODE row).
 private _modeNow = _row param [13, ""];
 private _btnRows = [1, 2] select (_modeNow isNotEqualTo "");
-private _screen = [_left + _pad, _top + _padY, _w - 2 * _pad, _h - _btnRows * (_btnH + _padY) - _padY * 3];
+
+// WHY CONNECT IS DEAD, UNDER IT (review 2026-11-01, DESIGN_TABLET_REVIEW 3.3):
+// the gate's own words (jmfsb_devices_fnc_uavCan) on a line of their own
+// under the button row, at the body size - they were a tiny line over the
+// picture's bottom strip, nowhere near the button they explain.
+// Row fields 6, 8 and 10: linked to me, can connect, why not.
+private _deadConnect = !(_row param [8, false]) && !(_row param [6, false]) && (_row param [10, ""]) isNotEqualTo "";
+private _reasonH = [0, KV_ROW_H] select _deadConnect;
+
+private _screen = [_left + _pad, _top + _padY, _w - 2 * _pad, _h - _btnRows * (_btnH + _padY) - _padY * 3 - _reasonH];
 _screen params ["_sx", "_sy", "_sw", "_sh"];
 [_body, _screen, _ink] call EFUNC(tacpad,drawFill);
 
 if (_row isEqualTo []) exitWith {
     ["stop"] call FUNC(appDronesCamera);
-    [_body, [_sx + _pad, _sy + _sh * 0.45, _sw - 2 * _pad, _rowH], "NO DRONE PICKED", _ground, TEXT_TITLE, true, "center", true] call EFUNC(tacpad,drawText);
+    [_body, [_sx + _pad, _sy + _sh * 0.45, _sw - 2 * _pad, _rowH], "NO DRONE PICKED", _ground, TEXT_TITLE, true, "center"] call EFUNC(tacpad,drawText);
 };
 
 _row params ["_uav", "", "_word", "_q", "", "", "_mine", "", "_can", "", ["_why", ""], ["_lasing", false]];
@@ -109,7 +121,7 @@ private _buttons = [
     [["LASE", "LASE OFF"] select _lasing, "lase", _order, ["line", "alarm"] select _lasing],
     ["RTB", "rtb", _order, "line"]
 ];
-private _btnY = _top + _h - _btnH - _padY;
+private _btnY = _top + _h - _btnH - _padY - _reasonH;
 private _btnW = (_w - _pad * (count _buttons + 1)) / (count _buttons);
 {
     _x params ["_label", "_action", "_live", "_style"];
@@ -142,7 +154,7 @@ if (_modeNow isNotEqualTo "") then {
 };
 
 // Why CONNECT is dead, in the gate's own words (jmfsb_devices_fnc_uavCan) -
-// there is no terminal to blame any more.
-if (!_can && !_mine) then {
-    [_body, [_left + _pad, _topRowY - _rowH, _w - 2 * _pad, _rowH], _why, _dim, TEXT_LABEL] call EFUNC(tacpad,drawText);
+// there is no terminal to blame any more - starting under CONNECT.
+if (_deadConnect) then {
+    [_body, [_left + _pad, _btnY + _btnH, _w - 2 * _pad, _reasonH], _why, _muted, KV_TEXT] call EFUNC(tacpad,drawText);
 };

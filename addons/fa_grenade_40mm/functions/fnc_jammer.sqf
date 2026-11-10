@@ -2,7 +2,7 @@
 /*
  * Author: YonV
  * Mk388 JAM — area comms/GNSS jammer; enemy UAVs in radius lose their AI link.
- * Comms-mod integration: search for HOOK comments to connect ACRE2/Drongo EW.
+ * Comms-mod integration: search for HOOK comments to connect Drongo EW.
  *
  * Arguments:
  * 0: Firer <OBJECT>
@@ -45,8 +45,6 @@ _j setVariable ["jmfsb_fa_grenade_40mm_jammer", true, true];
     } forEach (getPos _j nearEntities [["Air","UAV"], _radius]);
     // HOOK: Drongo EW area jam at getPos _j
     if (GVAR(hasDEW)) then {};
-    // HOOK: enemy comms jam in radius
-    if (GVAR(hasACRE)) then {};
 }, 1, [_j, _side, _radius, time + _life]] call CBA_fnc_addPerFrameHandler;
 
 [_unit, "Area Jammer", format ["Active - %1 m bubble", _radius], [1, 0.776, 0.102, 1]] call FUNC(notify);

@@ -23,12 +23,8 @@ if (_backpackLoad isEqualTo -2) then {
     _backpackLoad = loadBackpack _unit;
 };
 
-//add HandleDisconnect-EH on server if not done yet
-if !(missionNamespace getVariable [QGVAR(HDCEHadded), false]) then {
-    [QGVAR(handleDisconnect), []] call CBA_fnc_serverEvent;
-    GVAR(HDCEHadded) = true;
-    publicVariable QGVAR(HDCEHadded);
-};
+// The server's HandleDisconnect handler is added once at its postInit
+// (review R1), not asked for here.
 
 //delete existing chestpack, if there is one
 if ([_unit] call FUNC(chestpack) != "") then {

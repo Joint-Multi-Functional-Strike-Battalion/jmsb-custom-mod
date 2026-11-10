@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The side's friendlies as ALiVE's COP knows them - profiled groups that are
  * not spawned right now and so are no group the tracker could draw.
  *

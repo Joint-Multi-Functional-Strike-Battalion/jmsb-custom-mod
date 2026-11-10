@@ -34,12 +34,12 @@ if (group _playerJoining != group _playerToJoin) then {
 
     if (_playerJoining != player) then { // show assigned player a message
         private _message = format ["%1 assigned you to %2's group!", name player, name _playerToJoin];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _playerJoining] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _playerJoining] call EFUNC(notify,broadcast);
     };
 
     if (_playerToJoin != player) then { // show player asssigned to a message
         private _message = format ["%1 assigned %2 to your group!", name player, name _playerJoining];
-        [QEGVAR(notify,post), ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], sideUnknown], _playerToJoin] call CBA_fnc_targetEvent;
+        ["Admin Panel", _message, [0.871, 0.361, 0.188, 1], _playerToJoin] call EFUNC(notify,broadcast);
     };
 } else {
     ["Admin Panel", format ["%1 is already in %2's group!", name _playerJoining, name _playerToJoin], [0.4, 0.702, 0.4, 1]] call EFUNC(notify,notify);

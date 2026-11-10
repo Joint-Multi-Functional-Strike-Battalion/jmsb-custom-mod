@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everyone aboard a vehicle, by seat: commander first, passengers last, each
  * with the seat the vehicle tablet prints (CMDR, DRV, GNR, PAX) and the state
  * the squad rail reads off a man (OK, WIA, UNCON, KIA).

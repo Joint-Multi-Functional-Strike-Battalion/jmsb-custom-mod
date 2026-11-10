@@ -56,4 +56,7 @@ if (!isNil "jmfsb_jamming_fnc_spawnTempZone" && {random 100 < _jamChance}) then 
 };
 
 // The one reaction path hears it too (new.md section 2).
-[QEGVAR(reaction,event), [_hacker, "hack"]] call CBA_fnc_serverEvent;
+// Called on the server, not raised as a CBA event (review R1).
+if (!isNil QEFUNC(reaction,roll)) then {
+    [_hacker, "hack"] call EFUNC(reaction,roll);
+};

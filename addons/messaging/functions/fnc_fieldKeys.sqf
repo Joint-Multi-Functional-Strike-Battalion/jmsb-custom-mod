@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Field keys of a template, in the order they appear on the form. A UI walks
  * this to build a compose screen; the ALiVE forwarder walks it to find the one
  * field it wants without knowing how many lines came before it.

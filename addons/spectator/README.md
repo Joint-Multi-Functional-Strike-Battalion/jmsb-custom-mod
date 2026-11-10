@@ -4,6 +4,12 @@
 
 Spectator camera for the dead and for admins.
 
+**Who may switch it (review R1).** `start`, `stop` and `reloadLocal` run on a
+player's own machine: called there (death, respawn, unconscious), or sent by
+the server by `remoteExec` (`enable`, `disable`, `restart`, all server only),
+and a remote call is taken only from the server. They were CBA events any
+client could raise to force every player in or out of spectator.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

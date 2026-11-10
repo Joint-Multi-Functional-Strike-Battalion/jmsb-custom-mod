@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The squad list's lines, one per living member of the player's group in
  * the group's own order: "<N> <NAME>", the number in his fire team's colour
  * (the number jmfsb_bft_fnc_memberNumber gives him everywhere), then his
@@ -17,6 +17,9 @@
  *   when any node the player reaches carries it. Shown only for players, and
  *   only while the player has RF nodes of his own - an AI or a mission
  *   without RF is unknown, not unlinked.
+ * - ★: your buddy, the man you paired with by ACE interaction
+ *   (jmfsb_bft_fnc_buddyOf; user, 2026-11-05) - a star texture, not a glyph,
+ *   so it shows whatever the font carries.
  *
  * Arguments:
  * 0: RF summary from FUNC(overlayRf) <HASHMAP>
@@ -40,6 +43,8 @@ private _voice = [] call FUNC(voiceTalkers);
 private _peers = _rf getOrDefault ["peers", []];
 private _haveRf = (_rf getOrDefault ["nodes", []]) isNotEqualTo [];
 private _hasBft = !isNil QEFUNC(bft,memberNumber);
+private _buddy = objNull;
+if (!isNil QEFUNC(bft,buddyOf)) then {_buddy = [_unit] call EFUNC(bft,buddyOf)};
 
 private _lines = [];
 {
@@ -70,6 +75,10 @@ private _lines = [];
         if ((_peers findIf {_tag in _x}) < 0) then {
             _flags pushBack format ["<t color='%1'>%2</t>", HTML_DIM, toString [183, 183]];
         };
+    };
+
+    if (_x isEqualTo _buddy) then {
+        _flags pushBack format ["<img image='%1' color='%2'/>", QPATHTOEF(bft,data\member_buddy_ca.paa), HTML_BUDDY];
     };
 
     _lines pushBack format [

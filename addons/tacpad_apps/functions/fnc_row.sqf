@@ -1,8 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws one row inside a panel body: an optional swatch, a label, an optional
- * right-aligned value, and a hairline under it.
+ * value - right-aligned at the far edge, or left-aligned in a value column
+ * when the caller sets one - and a hairline under it.
  *
  * Every list in the suite is this row - the roster, the traffic list, the tool
  * strip - so they cannot drift apart in padding, type size or divider weight,
@@ -19,9 +20,12 @@
  *      (optional, default {}). The control is passed so a row can carry what it
  *      is about on itself - reading it back off a list by position breaks the
  *      moment that list changes between the draw and the click.
+ * 7: Value column - where the value starts, as a fraction of the row's width,
+ *      left-aligned there; ROW_VALUE_RIGHT (0) for the value right-aligned at
+ *      the row's far edge <NUMBER> (optional, default ROW_VALUE_RIGHT)
  *
  * Return Value:
- * The row's text control <CONTROL>
+ * The row's text control - the label's; a value column draws its own <CONTROL>
  *
  * Public: No
  */
@@ -33,7 +37,8 @@ params [
     ["_value", "", [""]],
     ["_swatch", [], [[]]],
     ["_accented", false, [false]],
-    ["_onClick", {}, [{}]]
+    ["_onClick", {}, [{}]],
+    ["_valueAt", ROW_VALUE_RIGHT, [0]]
 ];
 
 if (isNull _body) exitWith {controlNull};
@@ -45,9 +50,15 @@ if (isNull _display) exitWith {controlNull};
 
 private _w = (ctrlPosition _body) # 2;
 private _scale = EGVAR(tacpad,textScale);
-private _rowH = ROW_H * _scale * HOST_H;
+// THE ROW RHYTHM (notes, 2026-10-30): the host class's pixels, grown by the
+// text scale only when the type would overflow them; the type is held to the
+// row either way.
+private _rowH = ROW_H_SCREEN;
 private _y = _index * _rowH;
 private _pad = PAD * HOST_W;
+private _size = [TEXT_BODY] call EFUNC(tacpad,textSize);
+private _lineH = [TEXT_BODY] call EFUNC(tacpad,textH);
+if (_lineH > _rowH) then {_size = _size * _rowH / _lineH};
 
 private _swatchW = 0;
 if (_swatch isNotEqualTo []) then {
@@ -60,24 +71,50 @@ if (_swatch isNotEqualTo []) then {
 
 private _text = _display ctrlCreate [QEGVAR(tacpad,cell), -1, _body];
 private _textX = _pad + _swatchW + ([0, _pad] select (_swatch isNotEqualTo []));
-_text ctrlSetPosition [_textX, _y, _w - _textX - _pad, _rowH];
 
+// A VALUE COLUMN (user, 2026-10-30, of the WEATHER rows: "move this data to
+// the left, hard to read across screen like this"). With a column set, the
+// label stops a pad short of it and the value is left-aligned from it in a
+// control of its own - structured text has no tab stop, so one control
+// cannot hold a label at the left and a value at a fixed x. Without one the
+// value rides right-aligned in the label's control, as every list always has.
+private _column = _valueAt > ROW_VALUE_RIGHT && _value != "";
+private _valueX = _w * _valueAt;
+private _labelW = [_w - _textX - _pad, (_valueX - _textX - _pad) max 0] select _column;
+_text ctrlSetPosition [_textX, _y, _labelW, _rowH];
+
+private _fontH = TEXT_BASE * pixelH * pixelGrid * HOST_K * _scale;
 private _colour = [_ink, _accent] select _accented;
+// The label in the sans, the value in the monospace (the two type roles).
 private _line1 = format [
-    "<t font='RobotoCondensed' size='%3' color='%1'>%2</t>",
+    "<t font='%4' size='%3' color='%1'>%2</t>",
     _colour call BIS_fnc_colorRGBAtoHTML,
     [_label] call EFUNC(tacpad,xmlSafe),
-    [TEXT_BODY] call EFUNC(tacpad,textSize)
+    _size,
+    FONT_LABEL
 ];
 if (_value != "") then {
-    _line1 = _line1 + format [
-        "<t font='RobotoCondensedBold' size='%3' align='right' color='%1'>%2</t>",
+    private _valueText = format [
+        "<t font='%4' size='%3' align='%5' color='%1'>%2</t>",
         _ink call BIS_fnc_colorRGBAtoHTML,
         [_value] call EFUNC(tacpad,xmlSafe),
-        [TEXT_BODY] call EFUNC(tacpad,textSize)
+        _size,
+        FONT_MONO_BOLD,
+        ["right", "left"] select _column
     ];
+    if (_column) then {
+        // The same class, y, height and font height as the label's control,
+        // so the two sit on one baseline.
+        private _cell = _display ctrlCreate [QEGVAR(tacpad,cell), -1, _body];
+        _cell ctrlSetPosition [_valueX, _y, _w - _valueX - _pad, _rowH];
+        _cell ctrlSetFontHeight _fontH;
+        _cell ctrlSetStructuredText parseText _valueText;
+        _cell ctrlCommit 0;
+    } else {
+        _line1 = _line1 + _valueText;
+    };
 };
-_text ctrlSetFontHeight (TEXT_BASE * pixelH * pixelGrid * HOST_K * _scale);
+_text ctrlSetFontHeight _fontH;
 _text ctrlSetStructuredText parseText _line1;
 _text ctrlCommit 0;
 

@@ -1,12 +1,13 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the module and arms leader chain. PLACING THE MODULE IS THE ENABLE - with no
  * module this system does nothing at all.
  *
  * The attributes are operation values only: how many, how often, how likely.
  * WHERE and WHO are never asked for; they come from ALiVE's commanders, their
- * TAORs and their objectives.
+ * TAORs and their objectives - or, without ALiVE, from the mission itself
+ * (see the bottom of this file).
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -43,8 +44,25 @@ GVAR(pops) = _logic getVariable ["pops", 3];
 // system uses is read from it. Both paths are covered: a module is normally
 // placed long before ALiVE finishes initialising, but one armed afterwards
 // would otherwise wait forever on an event that has already fired.
-if (EGVAR(adapter_alive,ready)) exitWith {
-    [] call FUNC(start);
+// The adapter's whenReady runs it now in that case, and once only - not the
+// ready CBA event any client could raise again (review R1).
+//
+// WITHOUT ALiVE IT STILL RUNS (user, 2026-11-02: "works with or without").
+// Placing this module is the statement that the mission is an insurgency, so
+// the mission's enemy is the insurgent side - or the side of a man synchronised
+// to the module, whose faction then names the leaders' too. Ground is the
+// module's TAOR field or the jmfsb_taor markers, the safe houses are in the
+// map's towns. Started once the mission is running: this module fires before
+// postInit, which would otherwise reset the chain's lists under it.
+//
+// The same branch when ALiVE is loaded with no commanders (user, 2026-11-02:
+// "same as not loaded"): the adapter's fallback, once it gives up.
+GVAR(syncedMan) = (_units select {_x isKindOf "CAManBase"}) param [0, objNull];
+private _without = {
+    ["Leader chain", "the mission's enemy, in the map's towns"] call EFUNC(common,aliveLoaded);
+    [{time > 0}, { [] call FUNC(start) }] call CBA_fnc_waitUntilAndExecute;
 };
-
-[QEGVAR(adapter_alive,ready), { [] call FUNC(start) }] call CBA_fnc_addEventHandler;
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    call _without;
+};
+[{ [] call FUNC(start) }, [], _without] call EFUNC(adapter_alive,whenReady);

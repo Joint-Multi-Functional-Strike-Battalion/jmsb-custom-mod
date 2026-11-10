@@ -5,7 +5,7 @@
 // whose they are is the hardware's: a vehicle's own crew side, a Site module's
 // sync, a battery jmfsb_airdefence placed.
 
-#define ADS_CATEGORY ["1st Joint Multi-Functional Strike Battalion", "Air Defence"]
+#define ADS_CATEGORY ["JMSB - Vehicles & Defence", "Air Defence"]
 
 [
     QGVAR(enabled), "CHECKBOX",

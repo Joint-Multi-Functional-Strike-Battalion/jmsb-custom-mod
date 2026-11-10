@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RF noise source (jmfsb_rf_fnc_addNoiseSource), server: what every powered
  * Drone40 Jammer puts into a receiver on VHF and UHF - the jammer power
  * setting plus the whip's gain, less the band's clear-ground path loss to the

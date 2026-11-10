@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Asks the server for this player's index - one row per thread they can see,
  * with no message bodies. Called once when the player exists and again after a
  * reconnect, because the client cache is disposable by design and refetching is
@@ -20,4 +20,6 @@
 
 if (isNull player) exitWith {};
 
-[QGVAR(requestIndex), [player]] call CBA_fnc_serverEvent;
+// By remoteExecCall, so the server can check the player named is the sender's
+// own (review S7).
+[player] remoteExecCall [QFUNC(srvRequestIndex), SERVER_OWNER];

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Renders a message as plain text, line by line, the way it would be read out
  * over the net. There is no UI yet, so this is how a message is seen at all -
  * in a notification, in a systemChat line, in the debug console. When a UI does
@@ -35,6 +35,28 @@ if (_withTitle) then {
     _out pushBack (_template get "title");
 };
 
+// A FRAGO (2026-11-09) reads as the order it changes, only the changed lines,
+// old value and new (FUNC(fragoLines)), then its reason.
+if (_templateId isEqualTo FRAGO_ID) exitWith {
+    private _card = [_values getOrDefault [FRAGO_CARD_KEY, ""]] call FUNC(template);
+    if (_card isNotEqualTo createHashMap) then {
+        _out pushBack format ["%1 - %2", toUpper (_card get "title"), "CHANGES"];
+        _out pushBack "";
+    };
+    {
+        _x params ["_lineTitle", "_lineLabel", "_change"];
+        _out pushBack format ["%1 - %2", toUpper _lineTitle, _lineLabel];
+        _out pushBack _change;
+        _out pushBack "";
+    } forEach ([_payload] call FUNC(fragoLines));
+    private _reason = _values getOrDefault [FRAGO_REASON_KEY, ""];
+    if (_reason isEqualType "" && {trim _reason isNotEqualTo ""}) then {
+        _out pushBack "REASON";
+        _out pushBack (trim _reason);
+    };
+    _out joinString endl
+};
+
 // THE CARD'S OWN SHAPE, not a flattened paragraph - the user's spec, in red:
 // every filled line renders as its key and title ("M - MECHANISM OF INJURY &
 // TIME"), the answer on the next line, and a blank line after, for every
@@ -49,37 +71,9 @@ if (_withTitle) then {
         private _value = _values getOrDefault [_key, ""];
         private _prefix = _x get "prefix";
 
-        private _text = switch (_x get "type") do {
-            case "bool": {
-                // A bool slot is not always a BOOL: reply prefills and edit
-                // harvests leave STRINGS here, and the old eager && handed
-                // that string straight to the and - 274 errors in one RPT,
-                // and every abort killed the composer that called this,
-                // which is what "the marker button does not work" and
-                // "cannot send" looked like from the outside. Truthy
-                // strings count as ticked.
-                private _on = if (_value isEqualType false) then {_value} else {
-                    _value isEqualType "" && {(toLower _value) in ["true", "yes", "x", "1"]}
-                };
-                if (_on) then {
-                    [_prefix, "yes"] select (_prefix == "")
-                } else {
-                    ""
-                };
-            };
-            case "grid": {
-                // A grid field usually holds a position, but a player who typed
-                // the grid rather than clicking the map leaves a string there.
-                if (_value isEqualType [] && {count _value >= 2}) then {
-                    mapGridPosition _value
-                } else {
-                    if (_value isEqualType "") then {trim _value} else {""};
-                };
-            };
-            default {
-                if (_value isEqualType "") then {trim _value} else {str _value};
-            };
-        };
+        // FUNC(fieldText) - a tick as its prefix, a grid with its marker's
+        // name, the rest as typed (split out 2026-11-09 for the FRAGO).
+        private _text = [_x, _value, _values] call FUNC(fieldText);
 
         if (_text != "") then {
             // A prefix is the label the card prints in front of the value -

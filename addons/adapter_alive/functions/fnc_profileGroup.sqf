@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hands a live group to ALiVE's profile system - the Jman path, and rule 3:
  * every jmfsb spawn is profiled.
  *

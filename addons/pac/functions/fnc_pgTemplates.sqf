@@ -118,6 +118,19 @@ switch (_t) do {
         if !(["templates"] call FUNC(fileFed)) then {
             _btns pushBack ["NEW TEMPLATE", {["deckTemplate", createHashMapFromArray [["id", ""]]] call FUNC(uiGo)}];
         };
+        // SIMPLE OR REAL WORLD TEMPLATES (user, 2026-11-09): the unit's view
+        // of every card in TAC//MSG - the short form or the doctrinal one,
+        // REAL WORLD unless set. One press flips it, at once
+        // (FUNC(adminSetting) -> FUNC(templateFormPublish)).
+        private _form = GVAR(settings) getOrDefault [TEMPLATE_FORM_KEY, TEMPLATE_FORM_REAL];
+        private _simple = _form isEqualTo TEMPLATE_FORM_SIMPLE;
+        _btns pushBack [["TEMPLATES: REAL WORLD", "TEMPLATES: SIMPLE"] select _simple, {
+            private _now = GVAR(settings) getOrDefault [TEMPLATE_FORM_KEY, TEMPLATE_FORM_REAL];
+            private _next = [TEMPLATE_FORM_SIMPLE, TEMPLATE_FORM_REAL] select (_now isEqualTo TEMPLATE_FORM_SIMPLE);
+            GVAR(settings) set [TEMPLATE_FORM_KEY, _next];
+            [player, TEMPLATE_FORM_KEY, _next] remoteExec [QFUNC(adminSetting), 2];
+            ["templates", createHashMapFromArray [["t", "deck"]]] call FUNC(uiSub);
+        }];
     };
 
     case "system": {

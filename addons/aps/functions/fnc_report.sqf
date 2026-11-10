@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The crew's readout (client): the system's name, its charges by side, and
  * where the last round came from as a clock bearing off the turret. Only
  * the people IN the vehicle see it.

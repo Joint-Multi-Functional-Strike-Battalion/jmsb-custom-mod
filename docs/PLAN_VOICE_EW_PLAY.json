@@ -1,0 +1,242 @@
+{
+  "title": "Voice, hacking, jamming, counter-drone, anti-detection - recommended changes",
+  "date": "2026-10-31",
+  "status": "plan, not built",
+  "rule": "Replace every hidden roll with something the player can see and act on before it resolves. The numbers RF and EW already compute become the UI.",
+  "priorities": {
+    "P1": "do first - fixes something broken or unproven",
+    "P2": "the core of making it playable",
+    "P3": "adds depth once P2 works"
+  },
+  "changes": [
+    {
+      "id": "V1", "area": "voice", "priority": "P1",
+      "title": "Server picks the voice system",
+      "change": "The server decides the system once and publishes it. Clients follow. A client that cannot run it gets system 'none': a note on screen, RADIO app shows VOICE UNAVAILABLE, text messaging still works.",
+      "why": "Today each machine picks its own. A player whose DLL fails lands on VON while everyone else is in LiveKit, and hears and is heard by nobody, with no warning.",
+      "builds_on": ["jmfsb_voice_fnc_selectSystem", "jmfsb_voice_system", "jmfsb_voice_loaded"],
+      "new": ["publicVariable of the server's choice", "'none' state in the core and the RADIO apps"]
+    },
+    {
+      "id": "V2", "area": "voice", "priority": "P1",
+      "title": "Freeze adapter_von",
+      "change": "VON stays only as a whole-session system chosen by the server when no DLL is used. No new VON features.",
+      "why": "LiveKit is the voice (2026-10-31). VON's limits (10 channels, per-speaker volume, setCurrentChannel refusals) all go away under LiveKit.",
+      "builds_on": ["addons/adapter_von"]
+    },
+    {
+      "id": "V3", "area": "voice", "priority": "P1",
+      "title": "Run the VON and LiveKit self tests",
+      "change": "Run T1-T5 and the LiveKit adapter in a two-player session before any other voice work. Add T6: does Ctrl + Caps Lock leak its first audio onto the old channel.",
+      "why": "Both adapters are marked NOT RUN IN GAME. T2 decides whether the cut-offs work at all.",
+      "builds_on": ["jmfsb_adapter_von_fnc_selfTest", "jmfsb_voice_fnc_selfTest"]
+    },
+    {
+      "id": "V4", "area": "voice", "priority": "P1",
+      "title": "Handle the PTT 2-4 channel refusal",
+      "change": "applyOpen checks that setCurrentChannel took; if not, the key says why (not yet a member) instead of transmitting on PTT 1's net.",
+      "builds_on": ["jmfsb_adapter_von_fnc_applyOpen", "jmfsb_adapter_von_fnc_setActive"]
+    },
+    {
+      "id": "V5", "area": "voice", "priority": "P1",
+      "title": "LiveKit secret off the clients",
+      "change": "The API secret lives only on the server (server-side file or server profile). The CBA settings keep the URL and key.",
+      "why": "CBA copies settings to every client, so every player can sign tokens for any room. Fix before the DLL is frozen and whitelisted.",
+      "builds_on": ["jmfsb_adapter_livekit_fnc_srvRoomToken", "jmfsb_adapter_livekit_fnc_srvEchoToken"]
+    },
+    {
+      "id": "V6", "area": "voice", "priority": "P2",
+      "title": "Audience from the server roster",
+      "change": "Who a speaker's key event goes to comes from the server's roster, not the speaker's own view of everyone's nets.",
+      "why": "Under LiveKit there is no getPlayerChannel fallback; a stale or JIP view means a listener never subscribes.",
+      "builds_on": ["jmfsb_adapter_von_fnc_audience", "jmfsb_voice_roster"]
+    },
+    {
+      "id": "V7", "area": "voice", "priority": "P3",
+      "title": "One voice design doc",
+      "change": "Rewrite DESIGN_VOICE.md's decision once around LiveKit; move VON-only prose into adapter_von's README."
+    },
+
+    {
+      "id": "H1", "area": "hacking", "priority": "P2",
+      "title": "Two bars: progress and trace",
+      "change": "Progress fills while in reach. A trace bar fills beside it from the net detection chance. STOP at any time banks a product sized to progress (the ladder's widest circle at low progress). Trace full = today's failure reaction. The fail roll goes.",
+      "builds_on": ["jmfsb_hacking_fnc_tabletAdvance", "jmfsb_hacking_fnc_netFailChance", "jmfsb_hacking_fnc_ladderCircle", "jmfsb_hacking_fnc_remoteHackFail"],
+      "defaults": {"stopMinProgress": 0.25, "traceFullAction": "remoteHackFail + reaction event"}
+    },
+    {
+      "id": "H2", "area": "hacking", "priority": "P2",
+      "title": "Stage 1: find the carrier",
+      "change": "The tablet shows the band as a waterfall. The target sits at its real net frequency. The player drags a tuner onto it; progress fills only while locked. With a sector antenna he faces the target to grow the peak.",
+      "builds_on": ["jmfsb_rf_fnc_netFreq", "jmfsb_rf_fnc_patternGain"],
+      "defaults": {"lockWidthMHz": 0.5, "lockWidthMHzISR": 1.0},
+      "test_first": "Can an Arma dialog redraw a waterfall at a usable rate? Prototype before building the rest."
+    },
+    {
+      "id": "H3", "area": "hacking", "priority": "P2",
+      "title": "Enemy hops by AI tier",
+      "change": "ACTIVE and SMART AI hop the target net; the peak jumps and must be found again. BASIC never hops. A captured key (INSPECT) stops hopping for the holder.",
+      "defaults": {"hopBASIC": "never", "hopACTIVE_s": [30, 40], "hopSMART_s": [20, 30]}
+    },
+    {
+      "id": "H4", "area": "hacking", "priority": "P2",
+      "title": "Stage 2: route through their mesh",
+      "change": "The board draws the enemy's real RF nodes in reach. The player picks a path from his entry node to the target. Each node costs time and trace; a node with a jammer or EW team nearby is guarded and costs more. Killing a relay or moving closer changes the board.",
+      "builds_on": ["jmfsb_rf mesh", "jmfsb_hacking_rfReach"],
+      "defaults": {"traceCostNode": 5, "traceCostGuarded": 20}
+    },
+    {
+      "id": "H5", "area": "hacking", "priority": "P2",
+      "title": "Stage 3: answer trace spikes",
+      "change": "Trace comes in spikes (own set radiating, a guarded node, SMART AI). Each gives a few seconds to answer: BURST (EMCON 2 for 10 s, progress pauses, spike halved), DECOY (spend a decoy, trace jumps to it), REROUTE (second path, lose some progress, trace drops), or ignore.",
+      "builds_on": ["EMCON levels", "jmfsb_ew decoys"],
+      "defaults": {"answerWindow_s": 4, "burst_s": 10, "rerouteProgressLoss": 0.2}
+    },
+    {
+      "id": "H6", "area": "hacking", "priority": "P3",
+      "title": "Two-man tower hack",
+      "change": "One player holds an ACE action at the tower cabinet while the ISR runs the board. Cabinet man lets go: back to stage 1. With him there the hack is faster.",
+      "defaults": {"cabinetTimeFactor": 0.5}
+    },
+    {
+      "id": "H7", "area": "hacking", "priority": "P3",
+      "title": "TAP gives readable traffic",
+      "change": "While a tapped key is held, the enemy net's orders, QRF calls and Force Director moves appear as short TAC//MSG lines on that net until they rekey. The player can keep listening or burn it with SPOOF.",
+      "builds_on": ["TAP action", "AI comms gate"]
+    },
+    {
+      "id": "H8", "area": "hacking", "priority": "P3",
+      "title": "TAKE OVER a hacked jammer",
+      "change": "A hacked jammer site can be taken over: it changes side and appears as one of the players' GJ jammers with the existing panel. The enemy treats it as a priority target.",
+      "builds_on": ["jamming site terminals", "jmfsb_ew jammer panel"]
+    },
+    {
+      "id": "H9", "area": "hacking", "priority": "P2",
+      "title": "Simple hack setting",
+      "change": "A setting keeps today's timed bar for groups that do not want the stages.",
+      "defaults": {"simpleHack": false}
+    },
+
+    {
+      "id": "J1", "area": "jamming", "priority": "P2",
+      "title": "Hunt the net",
+      "change": "Enemy nets show as traces on the waterfall. The operator drags spot jam onto one. Their answer by tier: BASIC nothing, ACTIVE moves to PACE alternate after 30 s, SMART goes EMCON and moves. The operator chases the net to its new place.",
+      "builds_on": ["spot jam", "PACE", "AI EW tiers"]
+    },
+    {
+      "id": "J2", "area": "jamming", "priority": "P2",
+      "title": "Show the DF clock",
+      "change": "The jammer panel shows the enemy's fix on it: error shrinking with each cut. Under the fires threshold, fires come. The operator decides when to go off air and move.",
+      "builds_on": ["jmfsb_ew tracks and fixes", "heat and battery bars"],
+      "defaults": {"firesOnFixUnder_m": 100}
+    },
+    {
+      "id": "J3", "area": "jamming", "priority": "P3",
+      "title": "Aim the sector by looking",
+      "change": "SECTOR azimuth set from where the operator looks, not a 15 deg step button. High ground reaches further (already in the link budget)."
+    },
+    {
+      "id": "J4", "area": "jamming", "priority": "P2",
+      "title": "Burn-through as a held key",
+      "change": "Holding PTT on a denied net past a few seconds ramps power; the chip counts BURN 3-2-1, the message goes through, the reaction QRF comes. Replaces the mission tickbox.",
+      "builds_on": ["jamming Radio Burn-Through", "jmfsb_reaction"],
+      "defaults": {"burnHold_s": 3}
+    },
+    {
+      "id": "J5", "area": "jamming", "priority": "P3",
+      "title": "Fight back when jammed",
+      "change": "The jammed side sees the jammer's pattern on the waterfall. A sweep jammer leaves a gap 3 ticks in 4; bursting into the gap gets the message through. Barrage needs burn-through or finding the site.",
+      "builds_on": ["sweep mode"]
+    },
+    {
+      "id": "J6", "area": "jamming", "priority": "P2",
+      "title": "PACE as a drill",
+      "change": "When a net goes red the device shows PACE -> ALT and a key. The leader switches; the squad follows. A team that switches in the window keeps talking.",
+      "defaults": {"paceWindow_s": 10}
+    },
+    {
+      "id": "J7", "area": "jamming", "priority": "P2",
+      "title": "Find the jammer with handhelds",
+      "change": "The scanner needle tightens as the player turns. A second player off-axis improves the fix. The site shows on the map only once the fix is small enough. The ACE disable is the reward.",
+      "builds_on": ["jmfsb_ew DF", "scanner"],
+      "defaults": {"siteShownUnder_m": 150}
+    },
+
+    {
+      "id": "D1", "area": "counter-drone", "priority": "P2",
+      "title": "Detect: sound and a detector",
+      "change": "Drones get positional sound by type. A drone detector item reads the VIDEO band: faster beeps as it closes, rough bearing ('DRONE NE, CLOSE'). ISR gets full bearing accuracy.",
+      "builds_on": ["ES ENEMY DRONE warning", "VIDEO band"],
+      "new": ["drone detector item"]
+    },
+    {
+      "id": "D2", "area": "counter-drone", "priority": "P2",
+      "title": "Four drone types, four answers",
+      "change": "Recon: hide or kill before it reports. FPV kamikaze: shoot or jam in the last seconds. Bomber: shoot during the hover. Fibre-optic FPV (2040): cannot be jammed, shoot only.",
+      "builds_on": ["jmfsb_uas patrol roles"]
+    },
+    {
+      "id": "D3", "area": "counter-drone", "priority": "P2",
+      "title": "Lase then fire the airburst",
+      "change": "The Mk364 fuze is set from the rangefinder while the laser is held on the drone. The preset cycle stays as a fallback.",
+      "builds_on": ["jmfsb_fa_antidrone_fnc_setBurst", "jmfsb_fa_antidrone_fnc_trackAD"]
+    },
+    {
+      "id": "D4", "area": "counter-drone", "priority": "P2",
+      "title": "Jam as a held bar",
+      "change": "Holding the jammer on a drone fills a bar. Full: recon goes home, FPV falls, bomber drops early. Held long enough a drone lands where it is and can be inspected.",
+      "builds_on": ["EW soft kill / hard kill", "Drone40 jammer", "APS RF burst"],
+      "defaults": {"jamToRtb_s": 4, "jamToLand_s": 10}
+    },
+    {
+      "id": "D5", "area": "counter-drone", "priority": "P2",
+      "title": "Exploit: follow it home",
+      "change": "A jammed recon drone flies to its operator or cache. Its control station is an RF emitter that can be DF'd while the drone is up. An inspected wreck gives the operator's last grid and sometimes a cache hint. Killing operator or cache thins the sky (existing supply rules).",
+      "builds_on": ["jmfsb_uas supply caches", "INSPECT", "jmfsb_ew DF"]
+    },
+
+    {
+      "id": "A1", "area": "anti-detection", "priority": "P2",
+      "title": "Own signature readout",
+      "change": "Four bars on the device: RF, THERMAL, SEEN, NOISE. RF from EMCON and keying; THERMAL from engines, generator, hot jammers, men in the open at night; SEEN from moving, open ground, vehicles without nets; NOISE from engines and generators.",
+      "builds_on": ["EMCON", "EW hardware noise and thermal"]
+    },
+    {
+      "id": "A2", "area": "anti-detection", "priority": "P2",
+      "title": "WATCHED builds, not snaps",
+      "change": "When an enemy drone or OP has you in view a WATCHED bar fills at a rate set by your signature. Break line of sight before it fills and it loses you. Full: a report is made.",
+      "defaults": {"watchedFull_s": 15, "decay_s": 10},
+      "test_first": "Against a real recon drone: does breaking LOS in time feel fair?"
+    },
+    {
+      "id": "A3", "area": "anti-detection", "priority": "P2",
+      "title": "The report has to get home",
+      "change": "A drone or OP report travels over the enemy mesh (the AI comms gate). Jam its link or kill the relay before it sends and no fires come.",
+      "builds_on": ["AI comms gate", "Force Director belief board"]
+    },
+    {
+      "id": "A4", "area": "anti-detection", "priority": "P3",
+      "title": "Thermal decoys",
+      "change": "A placeable heat prop that draws thermal sensors, beside the existing RF decoys and GPS SPOOF."
+    },
+    {
+      "id": "A5", "area": "anti-detection", "priority": "P3",
+      "title": "Vehicle camo net",
+      "change": "A net over a parked vehicle cuts SEEN and THERMAL close to zero. Up or down takes time.",
+      "defaults": {"netTime_s": 30}
+    },
+    {
+      "id": "A6", "area": "anti-detection", "priority": "P3",
+      "title": "Recon kit",
+      "change": "Thermal poncho / ghillie cuts THERMAL and SEEN for recon players. Better gear, not magic."
+    }
+  ],
+  "build_order": ["V1", "V3", "V4", "V5", "H2 prototype (waterfall test)", "H1", "A2", "D1", "D4", "rest of P2", "P3"],
+  "open": [
+    "Waterfall redraw rate in an Arma dialog (decides H2, J1, J5).",
+    "Fibre-optic FPV: which airframe, or a flag on an existing one.",
+    "Drone positional sounds: own files or config sounds.",
+    "Does WATCHED replace or wrap the engine's knowsAbout for drones.",
+    "Two-man tower: required or optional."
+  ]
+}

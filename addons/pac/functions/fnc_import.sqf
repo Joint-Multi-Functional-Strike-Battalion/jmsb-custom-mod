@@ -39,7 +39,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_text", "", [""]], ["_mode", "merge", [""]]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {false};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {false};
 
 private _red = [0.831, 0.267, 0.267, 1];
 private _green = [0.4, 0.702, 0.4, 1];
@@ -111,6 +111,8 @@ switch (_mode) do {
         GVAR(windows) = _windows;
         GVAR(opordArchive) = _opordsIn;
         GVAR(log) = _logIn;
+        // a restore is the whole store: the next database write is it, not a merge (FUNC(storeSync))
+        GVAR(syncReplace) = true;
         _newer = count _players;
         _added = count _sessions + count _windows;
     };

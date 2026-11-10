@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A radio profile, read-only: a copy of the entry RF built from RF_PROFILES
  * (id, bands, txPowerDbm, rxSensDbm, antennaGainDb, pattern, sectorDeg,
  * hopLimit, relayCapable, spreadGainDb, batteryWh). For consumers that price

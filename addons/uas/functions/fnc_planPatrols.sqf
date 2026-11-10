@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts each side's patrols over the ENEMY's objectives, as PROFILES.
  *
  * Reconnaissance flies where the enemy is. Every side used to orbit its own

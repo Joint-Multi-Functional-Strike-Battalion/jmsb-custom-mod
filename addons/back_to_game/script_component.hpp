@@ -12,3 +12,7 @@
 #endif
 
 #include "\z\jmfsb\addons\main\script_macros.hpp"
+
+// The server's machine: a client asks it by remoteExec, and it answers the
+// same way (review S7).
+#define SERVER_OWNER 2

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A leader died to something that was not a player - crossfire, a mine,
  * ALiVE's own war - and the network quietly promotes a successor.
  *

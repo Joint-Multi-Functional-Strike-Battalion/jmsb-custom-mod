@@ -1,7 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Whether a unit may open the panel.
+ * Author: YonV
+ * Whether a unit may open the panel - FOR SCREENS ONLY (review S1, 2026-10-31).
+ * Everything here can be written by a client: the flag, the published list,
+ * the switch. No server door reads this any more; the server decides from its
+ * own records (jmfsb_common_fnc_senderIsAdmin / fnc_adminCheck), and the
+ * flag and the list a client sees are the server's copies.
  *
  * TWO WAYS IN, AND BOTH ARE DELIBERATE. The panel's own list - the mission's,
  * see FUNC(adminList) - and jmfsb's admin flag, which is what `#login` and the

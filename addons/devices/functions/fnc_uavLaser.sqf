@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The laser designator a drone carries, if any: the first turret weapon (the
  * driver's counted as turret UAV_DRIVER_TURRET) whose magazine's ammo
  * simulates UAV_LASER_SIM, or that is one of the engine's designator families

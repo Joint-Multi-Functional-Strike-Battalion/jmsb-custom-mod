@@ -2,6 +2,7 @@
 PREP(open);
 PREP(close);
 PREP(draw);
+PREP(paint);
 PREP(cycle);
 PREP(toggle);
 PREP(slotState);
@@ -12,11 +13,13 @@ PREP(slotState);
 PREP(hidden);
 PREP(setShown);
 
-// The scanner sweep, read once per frame for whichever tiles want it.
+// The scanner sweep, read at most every HUD_SWEEP_TTL seconds for whichever
+// tiles want it.
 PREP(sweep);
 
-// One function per readout. Each fills a slot and returns nothing; none of them
-// measures anything - the data is whichever addon owns it.
+// One function per readout. Each appends its draw ops to the list it is given
+// (FUNC(paint) makes the controls); none of them measures anything - the data
+// is whichever addon owns it.
 PREP(widgetDrones);
 PREP(widgetJamming);
 PREP(widgetRadio);

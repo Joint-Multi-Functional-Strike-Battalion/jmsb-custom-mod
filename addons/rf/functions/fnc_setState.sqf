@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_setState: changes a node's state. Keys (all optional): on, tx, relay,
  * activeNet, monitorNet, emcon (0..3), keys - [[net id, key], ...] to
  * replace the key the node holds for nets already in its fill - and data -
@@ -28,8 +28,10 @@
 
 params [["_id", "", [""]], ["_changes", createHashMap, [createHashMap, []]]];
 
+// A client's call goes to the server by remoteExec, which takes it only for a
+// node the client holds (FUNC(srvRequest), review R1).
 if (!isServer) exitWith {
-    [QGVAR(setState), [_id, _changes]] call CBA_fnc_serverEvent;
+    ["setState", [_id, _changes]] remoteExecCall [QFUNC(srvRequest), SERVER_OWNER];
     true
 };
 if (_changes isEqualType []) then {_changes = createHashMapFromArray _changes};

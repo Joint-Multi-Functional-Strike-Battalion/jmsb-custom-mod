@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which mailboxes a player can see. This is the read permission for the whole
  * addon: the index they are sent and the threads they are allowed to open are
  * both worked out from this list, so there is one answer to "can they see it"

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What state a man is in, as a medic sorts him: ARREST, UNCONSCIOUS, WOUNDED,
  * OK or DEAD, with how hard he is bleeding and how many open wounds he has.
  *

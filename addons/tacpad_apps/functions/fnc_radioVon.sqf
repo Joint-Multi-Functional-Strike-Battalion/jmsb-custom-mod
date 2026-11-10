@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The VON channel a voice net rides on, in words (DESIGN_VOICE.md, "Channels"):
  * Group, Vehicle, Custom 1 .. Custom 10. Read off the net's voiceChannel in
  * jmfsb_voice_fnc_nets; a net the list does not carry reads "--".

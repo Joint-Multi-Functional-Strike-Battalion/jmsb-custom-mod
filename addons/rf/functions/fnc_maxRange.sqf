@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE PREFILTER. The distance at which a link on this band reaches quality 0
  * over clear ground with nothing in the way - no pair further apart than this
  * can link, so the mesh never casts a ray for it. Inverse of the log-distance

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Somewhere a car can actually stand near a building - the kerb outside it,
  * not the middle of its floor.
  *

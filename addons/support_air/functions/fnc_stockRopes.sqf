@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the rope ACE asks for in a transport that may fast-rope, so the
  * players in its cabin can deploy ropes themselves (ROPE_CLASS, ROPE_STOCK -
  * script_component.hpp says why). Tops the cargo up to ROPE_STOCK rather

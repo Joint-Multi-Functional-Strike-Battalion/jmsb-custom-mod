@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every CHANNELS_TICK_S: who may TALK on which VON channel
  * (enableChannel, voice only - text chat is left as the mission set it):
  * - Global: logged-in admins (and the host), and a C2 member (TL, ATL, HHC) who
@@ -41,8 +41,12 @@ private _want = [[CH_GLOBAL, _admin || _global], [CH_SIDE, false], [CH_COMMAND, 
     _want pushBack [CUSTOM_BASE + (_x select 1), _radio];
 } forEach GVAR(channelMap);
 
+// a channel held off for a refused PTT 2-4 key stays off until it is given
+// back (fnc_holdOff)
+private _heldOff = GVAR(holdOff) param [0, CH_NONE];
 {
     _x params ["_ch", "_voice"];
+    if (_ch isEqualTo _heldOff) then {continue};
     (channelEnabled _ch) params ["_chat", "_voiceNow"];
     if (_voiceNow isNotEqualTo _voice) then {_ch enableChannel [_chat, _voice]};
 } forEach _want;
@@ -50,6 +54,7 @@ private _want = [[CH_GLOBAL, _admin || _global], [CH_SIDE, false], [CH_COMMAND, 
 // Vehicle and Direct: closed by the cut-offs only, then put back
 {
     _x params ["_ch", "_cutAt"];
+    if (_ch isEqualTo _heldOff) then {continue};
     (channelEnabled _ch) params ["_chat", "_voiceNow"];
     if (GVAR(level) >= _cutAt) then {
         if !(_ch in GVAR(saved)) then {GVAR(saved) set [_ch, _voiceNow]};

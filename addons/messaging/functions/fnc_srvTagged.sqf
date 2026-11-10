@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everyone an audience tag list reaches, right now.
  *
  * A TAG IS AN ALERT, NOT AN ADDRESS. This is the whole point of tags and it is

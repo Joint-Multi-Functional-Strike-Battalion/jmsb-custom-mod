@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the picked air asset draws on the support board's map - the "overlay"
  * code of provider "air" (support core README), in ink under the request.
  * Read only from what the server published on the module.
@@ -17,9 +17,9 @@
  *     module's Friendly Range - the ring a release is held inside unless
  *     DANGER CLOSE was asked - when that range is above 0
  *
- * A CLASS CAS aircraft never flies from or to the module: it appears on its
- * ingress bearing and leaves by its exit (FUNC(casLaunch)), so it gets no leg
- * out or home.
+ * Every aircraft flies from and to its module or stand - a class one is made
+ * over the module when tasked and removed there when home (user, 2026-11-02:
+ * virtual until tasked), so every kind gets the leg out and home.
  *
  * Arguments:
  * 0: Asset id, "air:<n>" <STRING>
@@ -49,26 +49,26 @@ private _shapes = [["point", _home, format ["%1 %2", _logic getVariable [QGVAR(c
 private _plan = (_logic getVariable [QGVAR(plan), []]) select {((_x param [0, []]) param [0, ""]) isEqualType 0};
 if (_plan isEqualTo []) exitWith {_shapes};
 
-private _viaBase = _stand || _kind isNotEqualTo KIND_CAS;
-if (_viaBase && !alive (_logic getVariable [QGVAR(vehicle), objNull])) then {
+if (!alive (_logic getVariable [QGVAR(vehicle), objNull])) then {
     _shapes pushBack ["line", _home, (_plan select 0) select 0, ""];
 };
 private _last = _plan select -1;
-if (_viaBase && !((_last param [1, ""]) in [PLAN_BASE, PLAN_EGRESS])) then {
+if !((_last param [1, ""]) in [PLAN_BASE, PLAN_EGRESS]) then {
     _shapes pushBack ["line", _last select 0, _home, ""];
 };
 
 if (_kind isNotEqualTo KIND_CAS) exitWith {_shapes};
 
-private _at = _plan findIf {!((_x param [1, ""]) in [PLAN_IN, PLAN_OUT, PLAN_BASE, PLAN_EGRESS])};
+private _at = _plan findIf {!((_x param [1, ""]) in [PLAN_IN, PLAN_OUT, PLAN_BASE, PLAN_EGRESS, PLAN_HOLD])};
 if (_at < 0) exitWith {_shapes};
 (_plan select _at) params ["_pos", "_what"];
 
+// A fixed-wing on station holds off the map (2026-11-01): the leg to its hold.
 {
     _x params ["_label", "_name"];
     private _leg = _plan findIf {(_x param [1, ""]) isEqualTo _label};
     if (_leg > -1) then {_shapes pushBack ["line", _pos, (_plan select _leg) select 0, _name]};
-} forEach [[PLAN_IN, "INGRESS"], [PLAN_OUT, "EGRESS"]];
+} forEach [[PLAN_IN, "INGRESS"], [PLAN_OUT, "EGRESS"], [PLAN_HOLD, "HOLD"]];
 
 // A LOITER is weapons tight: nothing is released, nothing is held.
 private _range = _logic getVariable [QGVAR(friendlyRange), 0];

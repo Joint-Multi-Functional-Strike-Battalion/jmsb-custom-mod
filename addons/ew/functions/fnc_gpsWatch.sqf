@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every CLIENT_TICK_S: tells the network when this man's GPS loses
  * or regains its lock. Denial is worked out on his own machine (the jamming
  * addon's GPS field, jmfsb_jamming_gpsDenied); the BFT dots other men draw

@@ -49,6 +49,13 @@ GVAR(templateIds) = [];
 // config\config_messaging.hpp in the mission now; see FUNC(loadTemplates).
 call FUNC(loadTemplates);
 
+// THE CARDS THE MOD CARRIES (user, 2026-11-02): the reports and the replies
+// every thread takes, after the mission's deck - the mod's own card replaces
+// a mission card of the same id (FUNC(registerBuiltins)). The ids retired from
+// the deck, which pac templatesApply skips.
+GVAR(retiredCards) = CARDS_RETIRED;
+[[] call FUNC(builtinCards), QUOTE(COMPONENT)] call FUNC(registerBuiltins);
+
 // The store. Only the server ever writes to it; a client keeps a disposable
 // cache of what it has been shown and refetches after a reconnect.
 if (isServer) then {

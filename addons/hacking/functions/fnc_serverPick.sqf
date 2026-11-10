@@ -84,6 +84,6 @@ if (_product isEqualTo "package") exitWith {};
 // The message never differs either. A player who learns that a poisoned product
 // phrases its confirmation differently has been handed the tell for free.
 private _msg = ["Nothing to report.", "Intel plotted - check your map."] select _ok;
-[QGVAR(pickResult), [_msg, _side]] call CBA_fnc_globalEvent;
+[_msg, _side] remoteExecCall [QFUNC(pickResult), 0];
 
 INFO_3("Hacking: product '%1' by %2 -> %3",_product,name _caller,_ok);

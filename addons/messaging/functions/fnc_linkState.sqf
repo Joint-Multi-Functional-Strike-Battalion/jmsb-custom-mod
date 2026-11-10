@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The data link's state at this player's position: ONLINE, DEGRADED or DENIED,
  * read off the jamming registry's own field strength.
  *

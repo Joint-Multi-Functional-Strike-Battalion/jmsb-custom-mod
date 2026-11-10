@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The closest and furthest an asset can put its fires, from its own position
  * - the one pair the range check (FUNC(inRange)), the map rings (FUNC(overlay))
  * and the verdict before CONFIRM (FUNC(preview)) all read.

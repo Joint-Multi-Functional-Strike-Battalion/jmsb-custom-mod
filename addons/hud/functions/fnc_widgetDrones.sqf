@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * DRONES: what is in the air, and where.
  *
  * ITS OWN TILE because it is the one readout on the HUD that means MOVE. Sharing
@@ -9,7 +9,7 @@
  * stopping.
  *
  * Arguments:
- * 0: The slot control <CONTROL>
+ * 0: Draw ops, appended to - see FUNC(paint) <ARRAY>
  * 1: Y to start at <NUMBER>
  * 2: Slot width <NUMBER>
  * 3: Slot height <NUMBER>
@@ -17,12 +17,13 @@
  * Return Value:
  * None
  *
+ * Example:
+ * [_ops, _y, _w, _h] call jmfsb_hud_fnc_widgetDrones
+ *
  * Public: No
  */
 
-params [["_ctrl", controlNull, [controlNull]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
-
-if (isNull _ctrl) exitWith {};
+params [["_ops", [], [[]]], ["_y", 0, [0]], ["_w", 0, [0]], ["_h", 0, [0]]];
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink", "_accent", "_line"];
 
@@ -44,31 +45,31 @@ private _dim = [_ink # 0, _ink # 1, _ink # 2, 0.42];
 
 private _sweep = [] call FUNC(sweep);
 if (_sweep isEqualTo []) exitWith {
-    [_ctrl, [_pad, _y, _w - 2 * _pad, _rowH], "NO SET", _dim, (0.9 * _k), true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y, _w - 2 * _pad, _rowH], "NO SET", _dim, (0.9 * _k), true]];
 };
 
 _sweep params [["_droneState", 0], ["_nearest", 0], ["_droneDir", 0]];
 private _count = [0, _droneState] select (_droneState isEqualType 0);
 
-[
-    _ctrl, [_pad, _y, _w - 2 * _pad, _rowH * 1.5],
+_ops pushBack [HUD_OP_TEXT, [
+    [_pad, _y, _w - 2 * _pad, _rowH * 1.5],
     ["CLEAR", str _count] select (_count > 0),
     ([_ink, _accent] select (_count > 0)), (1.8 * _k), true
-] call EFUNC(tacpad,drawText);
+]];
 
 // NO CONTACTS, not "SPECTRUM CLEAR" - the spectrum is the jamming tile's word,
 // and this tile counts aircraft. The sub-line names what the big CLEAR is
 // clear OF, in the vocabulary of the thing being counted.
 if (_count isEqualTo 0) exitWith {
-    [_ctrl, [_pad, _y + _rowH * 1.6, _w - 2 * _pad, _rowH], "NO CONTACTS", _mute, (0.65 * _k), false, "left", true] call EFUNC(tacpad,drawText);
+    _ops pushBack [HUD_OP_TEXT, [[_pad, _y + _rowH * 1.6, _w - 2 * _pad, _rowH], "NO CONTACTS", _mute, (0.65 * _k), false, "left", true]];
 };
 
-[
-    _ctrl, [_pad, _y + _rowH * 1.6, _w - 2 * _pad, _rowH],
+_ops pushBack [HUD_OP_TEXT, [
+    [_pad, _y + _rowH * 1.6, _w - 2 * _pad, _rowH],
     format ["BRG %1", round _droneDir], _accent, (0.95 * _k), true
-] call EFUNC(tacpad,drawText);
+]];
 
-[
-    _ctrl, [_pad, _y + _rowH * 2.5, _w - 2 * _pad, _rowH],
+_ops pushBack [HUD_OP_TEXT, [
+    [_pad, _y + _rowH * 2.5, _w - 2 * _pad, _rowH],
     format ["%1 KM", (round (_nearest / 100)) / 10], _ink, (0.85 * _k), true
-] call EFUNC(tacpad,drawText);
+]];

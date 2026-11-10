@@ -1,5 +1,6 @@
 PREP(addCargo);
 PREP(checkItemValidity);
+PREP(crateDraggable);
 PREP(createCargoCrate);
 PREP(doEmptyCrate);
 PREP(doFieldHospital);

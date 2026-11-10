@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
-    Author: JMSB
+    Author: YonV
 
     Description:
         Lifts one platoon tab under the pointer, and puts it back when the

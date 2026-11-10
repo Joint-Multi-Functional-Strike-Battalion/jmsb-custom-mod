@@ -25,6 +25,14 @@ workshop = [
     "583544987", # CUP Terrains - Maps
 ]
 
+# The same with ALiVE loaded - the mod runs with or without it (user,
+# 2026-11-02); every other profile is the without-ALiVE run. docs/ALIVE_OPTIONAL.md.
+[alive]
+extends = "default"
+workshop = [
+    "620260972", # ALiVE
+]
+
 [ww2]
 extends = "default"
 dlc = [

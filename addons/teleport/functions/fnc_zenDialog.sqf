@@ -39,7 +39,8 @@ if (([_object] call FUNC(listCheck)) > -1) exitWith {
         _results params ["_name", "_side"];
         _args params ["_object"];
 
-        [_object, _name, _side # 0] remoteExec [QFUNC(addPoint), 2];
+        // The server checks this Zeus itself (review S7, FUNC(addPoint)).
+        [_object, _name, _side # 0] remoteExecCall [QFUNC(addPoint), SERVER_OWNER];
         [objNull, "Teleport point created."] call BIS_fnc_showCuratorFeedbackMessage;
     },
     {

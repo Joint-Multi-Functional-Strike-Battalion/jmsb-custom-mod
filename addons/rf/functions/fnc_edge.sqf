@@ -1,15 +1,17 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One mesh edge: the two-way quality between two nodes on a net, the weaker
  * of the two directions (a MANET link carries traffic both ways, and the
  * sets' TX powers differ).
  *
  * THE COST IS jmfsb_rf_fnc_pathLoss, the terrain and clutter casts. It is
  * cached per pair and band in jmfsb_rf_edgeCache and reused while neither end
- * has moved more than EDGE_REUSE_M and the entry is younger than the static
- * tick: two placed relays are re-cast every static tick, a man standing still
- * likewise, and only moving pairs pay every player tick. Pairs beyond the
+ * has moved more than EDGE_REUSE_M and the entry is younger than its life (the
+ * static tick plus a random share, so pairs do not all expire together): two
+ * placed relays are re-cast about every static tick, a man standing still
+ * likewise, and only moving pairs pay every player tick. At most
+ * EDGE_REBUILD_CAP unmoved pairs are re-cast per tick. Pairs beyond the
  * band's clear-ground range (jmfsb_rf_fnc_maxRange) never cast at all. The
  * cache is per band, so DATA and every voice net on the same band share it.
  *
@@ -89,16 +91,24 @@ private _key = format ["%1|%2|%3", _pair select 0, _pair select 1, _band];
 private _now = CBA_missionTime;
 private _hit = GVAR(edgeCache) getOrDefault [_key, []];
 private _loss = 0;
+// NOT ALL AT ONCE (review P2, 2026-10-31). Entries cast in the same tick used to
+// expire together, so every static tick re-cast every pair in one frame. Each
+// entry now lives a jittered share of the static tick past it, and once
+// EDGE_REBUILD_CAP pairs have been cast this tick a pair that has not moved
+// keeps its old loss until a later tick. A pair that moved is always re-cast.
 if (_hit isNotEqualTo [] && {
-    _hit params ["_c0", "_c1", "_t"];
-    (_c0 vectorDistance _p0) < EDGE_REUSE_M && {(_c1 vectorDistance _p1) < EDGE_REUSE_M} && {(_now - _t) < GVAR(tickStatic)}
+    _hit params ["_c0", "_c1", "_t", "", ["_life", GVAR(tickStatic)]];
+    (_c0 vectorDistance _p0) < EDGE_REUSE_M && {(_c1 vectorDistance _p1) < EDGE_REUSE_M}
+        && {(_now - _t) < _life || {(_ctx getOrDefault ["casts", 0]) >= EDGE_REBUILD_CAP}}
 }) then {
     _loss = _hit select 3;
 } else {
     // THE PER-PAIR TERRAIN AND CLUTTER CHECK - the expensive call of the tick
     private _parts = [_posA, _posB, _band, _objA, _objB] call FUNC(pathLoss);
     _loss = (_parts select 0) + (_parts select 1) + (_parts select 2);
-    GVAR(edgeCache) set [_key, [_p0, _p1, _now, _loss]];
+    private _life = GVAR(tickStatic) * (1 + random EDGE_LIFE_JITTER);
+    GVAR(edgeCache) set [_key, [_p0, _p1, _now, _loss, _life]];
+    _ctx set ["casts", (_ctx getOrDefault ["casts", 0]) + 1];
 };
 _loss = _loss + _bodyA + _bodyB;
 

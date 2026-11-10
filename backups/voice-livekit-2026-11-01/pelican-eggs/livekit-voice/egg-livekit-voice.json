@@ -1,0 +1,153 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PANEL",
+    "meta": {
+        "version": "PLCN_v2",
+        "update_url": "https://raw.githubusercontent.com/ghosts-of-battle/pelican-eggs/main/livekit-voice/egg-livekit-voice.json"
+    },
+    "exported_at": "2026-10-29T12:00:00+00:00",
+    "uuid": "961fe9e4-f5c7-498f-897b-c497b4e2b69a",
+    "name": "JMSB Voice (LiveKit)",
+    "author": "yonvclaw@gmail.com",
+    "description": "LiveKit media server (livekit/livekit-server, Apache 2.0) for the JMSB mod's own voice (docs/DESIGN_VOICE_LIVEKIT.md). Audio only. The primary allocation is the signalling port (TCP); add two more allocations for WebRTC: one UDP port for all media and one TCP fallback port, and put their numbers in the variables below. The Arma server needs the same API key and secret. With Echo test on, a bot answers the ECHO TEST call in the mod's phone and tablet: talk, pause, and hear yourself played back. Encryption (TLS) is optional and off by default: see livekit-voice/README.md.",
+    "features": [],
+    "docker_images": {
+        "yonvclaw/jmsb-livekit:latest": "yonvclaw/jmsb-livekit:latest"
+    },
+    "file_denylist": [],
+    "startup": "jmsb-voice-start",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"starting LiveKit server\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/ash\n# Nothing to install: the binary ships in the docker image.\nmkdir -p /mnt/server\necho 'JMSB voice (LiveKit): no install step needed.'\n",
+            "container": "ghcr.io/parkervcp/installers:alpine",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "API key",
+            "description": "The LiveKit API key. Letters and digits. The Arma server's voice config uses the same.",
+            "env_variable": "LIVEKIT_API_KEY",
+            "default_value": "jmsb",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "string",
+                "alpha_num",
+                "max:64"
+            ],
+            "field_type": "text",
+            "sort": 1
+        },
+        {
+            "name": "API secret",
+            "description": "The LiveKit API secret, at least 32 characters. The Arma server's voice config uses the same. Keep it private.",
+            "env_variable": "LIVEKIT_API_SECRET",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "string",
+                "min:32",
+                "max:128"
+            ],
+            "field_type": "text",
+            "sort": 2
+        },
+        {
+            "name": "UDP media port",
+            "description": "The UDP port for all WebRTC media: one of this server's additional allocations.",
+            "env_variable": "LIVEKIT_UDP_PORT",
+            "default_value": "7882",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "integer",
+                "min:1024",
+                "max:65535"
+            ],
+            "field_type": "text",
+            "sort": 3
+        },
+        {
+            "name": "TCP fallback port",
+            "description": "The TCP port for WebRTC when UDP is blocked: another additional allocation.",
+            "env_variable": "LIVEKIT_TCP_PORT",
+            "default_value": "7881",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "integer",
+                "min:1024",
+                "max:65535"
+            ],
+            "field_type": "text",
+            "sort": 4
+        },
+        {
+            "name": "Find public IP",
+            "description": "true: find the host's public IP by STUN and advertise it (cloud hosts with a private IP). false: advertise the host's own IP.",
+            "env_variable": "LIVEKIT_USE_EXTERNAL_IP",
+            "default_value": "true",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "field_type": "text",
+            "sort": 5
+        },
+        {
+            "name": "Log level",
+            "description": "debug, info, warn or error.",
+            "env_variable": "LIVEKIT_LOG_LEVEL",
+            "default_value": "info",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:debug,info,warn,error"
+            ],
+            "field_type": "text",
+            "sort": 6
+        },
+        {
+            "name": "Echo test",
+            "description": "true: the echo test bot answers ECHO TEST calls from in game (each player his own room, echo-<UID>; only players the Arma server signs in can call). false: no bot.",
+            "env_variable": "ECHO_TEST",
+            "default_value": "true",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "field_type": "text",
+            "sort": 7
+        },
+        {
+            "name": "Encryption (TLS)",
+            "description": "false: players connect with ws:// (unencrypted signalling; the voice itself is always encrypted). true: wss:// with the node's own certificate, mounted at /mnt/voice-cert. Needs the host setup in livekit-voice/README.md first, or the server will not start.",
+            "env_variable": "TLS",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "in:true,false"
+            ],
+            "field_type": "text",
+            "sort": 8
+        }
+    ]
+}

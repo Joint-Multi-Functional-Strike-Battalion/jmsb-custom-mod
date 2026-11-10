@@ -91,6 +91,7 @@
 #define IDC_ADMINPANEL_PLAYER_MEDICAL_PAIN  4347
 #define IDC_ADMINPANEL_PLAYER_MEDICAL_SP02  4330
 #define IDC_ADMINPANEL_PLAYER_MEDICAL_BLOOD 4362
+#define IDC_ADMINPANEL_PLAYER_MEDICAL_STABILIZE 4924
 #define IDC_ADMINPANEL_PLAYER_MEDICAL_WAKEUP 4925
 #define IDC_ADMINPANEL_PLAYER_MEDICAL_FULLHEAL 4926
 
@@ -255,3 +256,18 @@
 #define IDC_ADMINENV_WEATHER_APPLY            26329
 #define IDC_ADMINENV_NOTE                     26330
 #define IDC_ADMINENV_CLOSE                    26331
+
+// SECRETS (code review R4, 2026-10-31) - the small dialog `#jmfsb secrets`
+// opens: the LiveKit key and secret and the database string, set on the
+// server's own profile and never shown back. See FUNC(secretsLoad).
+#define IDD_ADMINPANEL_SECRETS                6972
+#define IDC_ADMINSECRETS_BACKGROUND           26400
+#define IDC_ADMINSECRETS_TITLE                26401
+#define IDC_ADMINSECRETS_NOTE                 26402
+// Per row: label 2641r, status 2642r, edit 2643r, SET 2644r (r = 0-3).
+#define IDC_ADMINSECRETS_LABEL                26410
+#define IDC_ADMINSECRETS_STATUS               26420
+#define IDC_ADMINSECRETS_EDIT                 26430
+#define IDC_ADMINSECRETS_SET                  26440
+#define IDC_ADMINSECRETS_CLOSE                26450
+#define IDC_ADMINSECRETS_ROWS                 4

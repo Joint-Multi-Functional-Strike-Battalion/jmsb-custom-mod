@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every frame:
  * - the cut-offs (fnc_applyBlock: dead, unconscious, out of air, radio
  *   silence);

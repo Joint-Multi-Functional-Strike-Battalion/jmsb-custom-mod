@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * VEHICLE STATUS's voice section: the nets the player is on while aboard, as
  * the voice API has them (docs/DESIGN_VOICE.md, "Nets on the devices"). VEH -
  * the crew intercom, VON's Vehicle channel - is listed because he is inside;

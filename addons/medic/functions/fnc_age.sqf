@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How long ago a mission time was, in the two or three characters a reading's
  * source line has room for: 40S, 12M, 2H.
  *

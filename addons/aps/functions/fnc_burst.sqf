@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE RF BURST (server, the one arbiter): one omnidirectional pulse off the
  * emitter. Guided munitions in the engagement sphere lose their guidance,
  * drones in it drop - own drones too, there is no IFF - and every radio in

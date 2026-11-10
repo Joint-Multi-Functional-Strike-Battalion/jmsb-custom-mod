@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The live jam zones as emitters, for direction finding (jmfsb_ew): where each
  * one radiates from, how far it reaches, what it denies and whose it is. A
  * zone with an object radiates from the object; an abstract zone (a hack's
@@ -12,7 +12,8 @@
  * None
  *
  * Return Value:
- * [[id, object, position ASL, outer radius m, domains, owner tag], ...] <ARRAY>
+ * [[id, object, position ASL, outer radius m, domains, owner tag, side], ...] -
+ * side is the commander's the site was built for, sideUnknown when none <ARRAY>
  *
  * Example:
  * [] call jmfsb_jamming_fnc_emitters
@@ -35,7 +36,8 @@ private _out = [];
         [getPosASL _obj, _x param [ZONE_POS, [0, 0, 0]]] select (isNull _obj),
         _x param [ZONE_RFALL, 0],
         _domains,
-        _model getOrDefault ["owner", ""]
+        _model getOrDefault ["owner", ""],
+        _model getOrDefault ["side", sideUnknown]
     ];
 } forEach (missionNamespace getVariable [QGVAR(jammers), []]);
 

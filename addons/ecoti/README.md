@@ -10,7 +10,8 @@ while the rest of the picture stays the goggle's own. Boxes only: no glow, no
 heat blob, no ring round the window and no HUD (users, 2026-10-15 and -17).
 Client-side only;
 nothing is sent over the network, so it works the same in single player, hosted
-and on a dedicated server.
+and on a dedicated server. The LZs and DZs it rings (2026-11-02) are the one
+thing it reads from the server, as the support core publishes them.
 
 ## The AiTR goggles
 
@@ -49,6 +50,14 @@ All of these, every frame - the moment one fails, the overlay and the HUD go:
   left the last boxes on screen over the map and the tablet (user, 2026-10-20)
 - he is wearing an opted-in NVG in **NVG mode** - or in day mode too when it says `jmfsb_ecoti_day = 1` (never TI)
 
+## How far it reaches
+
+Four ranges, each a player setting (user, 2026-10-24): **AI on foot 100 m**,
+**players on foot 250 m**, **vehicles and animals 250 m** - and **750 m for
+everything while he looks through a Vector** (the [JMSB] Vector Designator,
+or any ACE Vector: raised, in its optics, on foot). A target fades from the
+full-contrast distance to its own range.
+
 ## What it draws
 
 **One box per target** - every man, vehicle and animal in sensor range, in the
@@ -79,15 +88,15 @@ TAC//PAD - four more lines:
 ```
 SGT Reyes | MED                  rank, name and role
 OVERLORD 6 1                     his squad (group callsign)
-WIA 64% | CH 3 - GHOST | 43.100 MHz   health, channel, frequency
+WIA 64% | CH 3 - GHOST | NET C2   health, channel, active net
 ACE  A C E                       his ACE report, each letter coloured
 ```
 
 Rank and role names, the health test, the channel and the ACE report are the
 TAC//PAD squad page's own, so the card and the table never disagree. The
-frequency is ECOTI's: each player publishes his own current frequency (ACRE:
-the channel's in his radio's preset; game voice has no frequency, so his active
-net instead, `NET C2`), only when it changes. Without the TAC//PAD nobody is on the net and there are no cards.
+last field is ECOTI's: game voice has no frequency, so each player publishes
+his own active net, `NET C2`, only when it changes. The ACRE frequency it read
+before was removed on 2026-10-31 (DEC1). Without the TAC//PAD nobody is on the net and there are no cards.
 
 Hostile is `getFriend` below 0.6 from the player's side. A vehicle is what its
 commander is, and red if any civilian aboard is armed. Colour is worked out
@@ -133,6 +142,39 @@ at the centre a marker and the three-digit heading the camera faces, both in
 the TAC//PAD colour scheme's accent (white without the TAC//PAD). Like the
 boxes it is controls on the mission display, drawn from the same Draw3D.
 
+## LZs and DZs (2026-11-02)
+
+User, 2026-11-02: "in AiTR lz and drop zones need to be highlighted". Built,
+not seen in game.
+
+The open landing and drop zones of your side's support requests, as the
+server publishes them (`jmfsb_support`, "The active LZs and DZs"). Each is a
+ring of 24 dots on the ground at the zone's radius, and under it a label in
+the AiTR style:
+
+```
+LZ | PICKUP | RAVEN | 1.2 km
+LZ | INSERT | RAVEN | 800 m
+LZ | EXTRACT | ...    LZ | CASEVAC | ...    LZ | DEST | ...    LZ | QRF | ...
+DZ | PARA | ...    DZ | QRF | ...    DZ | STATIC / HALO / HAHO | SKYTRAIN | 3.4 km
+DZ | RELEASE | ...    DROP | RESUPPLY | ...    DROP | SLING | ...
+```
+
+The call sign is left out when it is longer than 12 letters. Dots and label
+are in the TAC//PAD accent, white without the TAC//PAD, as the compass.
+
+- **Any range, no line of sight.** It is a nav aid, not a sighting.
+- **Same rules as the boxes otherwise.** Only while AiTR is drawing (see "When
+  it is on"); the map, a dialog or Zeus hides it. Inside the round window only,
+  unless full screen. A dot or label off the screen is not drawn. The label
+  shows while the zone's centre is in view.
+- **At most 6 zones**, the nearest.
+- *AiTR LZ / DZ highlight* - each player's own setting, on by default. Off:
+  no zones.
+
+Cost: the list is read and each ring worked out twice a second, only when it
+changed; Draw3D only projects the 24 dots and the centre of each zone.
+
 ## Cost
 
 One Draw3D handler that draws from caches only - three projections and five
@@ -140,24 +182,61 @@ pooled controls moved per target in view. Who is in range is rebuilt
 twice a second; line of sight is re-checked in four slices, so each target is
 refreshed every 0.2 s and no frame checks them all.
 
+## Building marks
+
+A marked building gets a box in its colour, with its label and range, out to
+2 km and through walls (user, 2026-11-06). Three ways to mark one:
+
+- **Eden or Zeus:** the JMSB - AiTR Building Mark module, with a Colour and a
+  Label. It marks the buildings synced to it, else the nearest within 25 m.
+- **Zeus with ZEN:** the AiTR building mark module asks the colour and the
+  label in a dialog. CLEAR takes a mark off.
+- **Players:** the AiTR - mark building key, unbound by default. It takes the
+  building under the crosshair and asks the colour on numpad 6-9 on the phone
+  or side device. Numpad 0 / . pages, and CLEAR shows when it is marked.
+  With no device up, each press steps to the next colour.
+
+The server keeps the list and every player sees the same marks.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
 
 - `jmfsb_main`
+- `jmfsb_common`
 - `cba_main` _(external)_
 - `cba_xeh` _(external)_
 
 ## Ships
 
-18 functions.
+1 unit class, 31 functions.
+
+## Eden modules
+
+### JMSB - AiTR Building Mark
+
+`jmfsb_ecoti_moduleMark`, category jmfsb_modules
+
+Marks a building for every AiTR (ECOTI): a box round it in the Colour, the Label and range under it, out to 2 km, through walls.<br>Place it on the building, or sync buildings to it. Nothing synced: the nearest building within 25 m.<br>Players mark from their own key (AiTR - mark building) and pick the colour on numpad 6-9 on the phone or side device. A Zeus with ZEN has a dialog: 1st Joint Multi-Functional Strike Battalion > AiTR building mark.
+
+<details><summary>2 attributes</summary>
+
+- `colour`
+- `label`
+
+</details>
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
 | `jmfsb_ecoti_aitr` | CHECKBOX | Enable AiTR |
-| `jmfsb_ecoti_range` | SLIDER | Sensor range (m) |
+| `jmfsb_ecoti_rangeAi` | SLIDER | Range: AI on foot (m) |
+| `jmfsb_ecoti_rangePlayer` | SLIDER | Range: players on foot (m) |
+| `jmfsb_ecoti_rangeVehicle` | SLIDER | Range: vehicles and animals (m) |
+| `jmfsb_ecoti_rangeVector` | SLIDER | Range through a Vector (m) |
+| `jmfsb_ecoti_hideNear` | CHECKBOX | Hide close boxes |
+| `jmfsb_ecoti_hideNearDistance` | SLIDER | Hide close boxes inside (m) |
 | `jmfsb_ecoti_windowSize` | SLIDER | Thermal window size |
 | `jmfsb_ecoti_nearDistance` | SLIDER | Full contrast distance (m) |
 | `jmfsb_ecoti_lineWidth` | SLIDER | Box line width (px) |
@@ -165,28 +244,42 @@ refreshed every 0.2 s and no frame checks them all.
 | `jmfsb_ecoti_colorFriendly` | COLOR | Same side colour |
 | `jmfsb_ecoti_colorEnemy` | COLOR | Armed colour |
 | `jmfsb_ecoti_labels` | CHECKBOX | AiTR labels |
+| `jmfsb_ecoti_zoneHighlight` | CHECKBOX | AiTR LZ / DZ highlight |
 
 ## Functions
 
-<details><summary>18</summary>
+<details><summary>31</summary>
 
 - `jmfsb_ecoti_fnc_boxRect`
+- `jmfsb_ecoti_fnc_buildingBox`
 - `jmfsb_ecoti_fnc_draw`
 - `jmfsb_ecoti_fnc_drawBoxes`
 - `jmfsb_ecoti_fnc_drawCompass`
+- `jmfsb_ecoti_fnc_drawZones`
 - `jmfsb_ecoti_fnc_hideCovered`
 - `jmfsb_ecoti_fnc_isActive`
 - `jmfsb_ecoti_fnc_isFullScreen`
 - `jmfsb_ecoti_fnc_labelText`
 - `jmfsb_ecoti_fnc_manBox`
+- `jmfsb_ecoti_fnc_markKey`
+- `jmfsb_ecoti_fnc_markPick`
+- `jmfsb_ecoti_fnc_markPublish`
+- `jmfsb_ecoti_fnc_markSet`
+- `jmfsb_ecoti_fnc_markTarget`
+- `jmfsb_ecoti_fnc_moduleMark`
 - `jmfsb_ecoti_fnc_publishFreq`
+- `jmfsb_ecoti_fnc_rangeText`
 - `jmfsb_ecoti_fnc_targetCard`
 - `jmfsb_ecoti_fnc_targetColour`
 - `jmfsb_ecoti_fnc_targetLabel`
 - `jmfsb_ecoti_fnc_targetVisibility`
+- `jmfsb_ecoti_fnc_toggleHideNear`
 - `jmfsb_ecoti_fnc_togglePower`
 - `jmfsb_ecoti_fnc_updateCandidates`
 - `jmfsb_ecoti_fnc_updateVisibility`
+- `jmfsb_ecoti_fnc_updateZones`
+- `jmfsb_ecoti_fnc_vectorView`
 - `jmfsb_ecoti_fnc_vehicleBox`
+- `jmfsb_ecoti_fnc_zenMark`
 
 </details>

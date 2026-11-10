@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws the reader - handoff 1a, three panes: the nets and roster rail
  * (FUNC(readerRail)), the thread list (FUNC(readerList)), and the right pane,
  * which is the opened thread (FUNC(readerThreadView)), the net as one
@@ -33,7 +33,18 @@ if (isNull _shell) exitWith {};
 // THE CONTENT IS ITS OWN GROUP, thrown away whole and rebuilt - a group has an
 // idc and no opinion about creation order.
 private _old = _shell controlsGroupCtrl IDC_RD_CONTENT;
-if (!isNull _old) then {ctrlDelete _old};
+// THE CARD'S SCROLL SURVIVES THE REBUILD (user, 2026-11-05: "in messaging it
+// likes to return to the top, a pain if you are filling in lines at the
+// bottom"): every tick, marker and drop-down redraws the whole screen, so the
+// card body's place is kept here, with the card it belongs to, and
+// FUNC(composeCard) puts it back.
+if (!isNull _old) then {
+    private _card = _old controlsGroupCtrl IDC_RD_CARD_BODY;
+    if (!isNull _card) then {
+        GVAR(composeScroll) = [GVAR(composeTemplate), GVAR(composeThread), (ctrlScrollValues _card) select 0];
+    };
+    ctrlDelete _old;
+};
 
 ([] call FUNC(theme)) params ["", "_ink"];
 private _dim = ["dim"] call FUNC(theme);

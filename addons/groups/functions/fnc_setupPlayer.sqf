@@ -20,7 +20,7 @@ if (_isRespawn) then {
         // It used to ask the ALiVE adapter the same question. The question
         // outlived ALiVE; the addon that does the restoring is the one that
         // knows the answer now.
-        // Guarded the way the curator and ACRE calls below are: respawn is not
+        // Guarded the way the curator calls below are: respawn is not
         // in this addon's requiredAddons, and a build without it dresses the
         // man here rather than not at all.
         private _managed = !isNil QEFUNC(respawn,gearManaged) && {call EFUNC(respawn,gearManaged)};
@@ -34,12 +34,10 @@ if (_isRespawn) then {
         };
         if (player call jmfsb_players_fnc_isCurator) then {
             if (!isNil "jmfsb_curator_fnc_assignZeus") then {[player,true] call jmfsb_curator_fnc_assignZeus};
-            if (!isNil "acre_api_fnc_godModeConfigureAccess") then {[true,true] call acre_api_fnc_godModeConfigureAccess};
             [player,true] call admp_fnc_grantAdminAccess;
         } else {
             if (!isNil "jmfsb_curator_fnc_assignZeus") then {[player,false] call jmfsb_curator_fnc_assignZeus};
-            if (!isNil "acre_api_fnc_godModeConfigureAccess") then {[false,false] call acre_api_fnc_godModeConfigureAccess};
-        };  
+        };
 } else {
     player setUnitLoadout _defaultLoadout;
     
@@ -115,11 +113,9 @@ if (_isRespawn) then {
 
     if (player call jmfsb_players_fnc_isCurator) then {
         if (!isNil "jmfsb_curator_fnc_assignZeus") then {[player,true] call jmfsb_curator_fnc_assignZeus};
-        if (!isNil "acre_api_fnc_godModeConfigureAccess") then {[true,true] call acre_api_fnc_godModeConfigureAccess};
         [player,true] call admp_fnc_grantAdminAccess;
     } else {
         if (!isNil "jmfsb_curator_fnc_assignZeus") then {[player,false] call jmfsb_curator_fnc_assignZeus};
-        if (!isNil "acre_api_fnc_godModeConfigureAccess") then {[false,false] call acre_api_fnc_godModeConfigureAccess};
     };
 
     /* rank stuff ------------------------------------------------------------------------------------------------------ */
@@ -141,40 +137,5 @@ if (_isRespawn) then {
     player call EFUNC(gear,saveLoadout);
 };
 
-//re-tune ACRE / TFAR radios to the joined group's nets - runs for BOTH a fresh join and a respawn.
-//Game voice (jmfsb_voice) needs no tuning: its TEAM net is the Arma group itself.
-//getRadioChannel keys off the player's current squad, so this re-applies for whatever group was joined.
-//The squad name is read from groupId (group player), but the server creates, names (setGroupIdGlobal)
-//and joins the group in the same frame it remote-executes this function, so the client can still be
-//looking at its previous group when the tuning runs - worst case for the first player into an empty
-//squad, whose group is built from scratch. Wait for the new name to replicate before reading it,
-//with a wall-clock deadline so anyone outside the configured squads still falls back to the defaults.
-private _squadNames = (([] call FUNC(orbat)) # 0) apply {toUpper (_x select 0)};
-private _deadline = diag_tickTime + 10;
-
-if (EGVAR(patches,usesACRE)) then {
-    [{
-        params ["_squadNames","_deadline"];
-        ([] call acre_api_fnc_isInitialized) && {
-            ((toUpper (groupId (group player))) in _squadNames) || {diag_tickTime > _deadline}
-        }
-    }, {
-        INFO_1("GearRadio","Setting up ACRE radio channels for %1...",player);
-        [player] call EFUNC(players,setRadioChannel);
-        [jmfsbFR_radio_acreActiveRadio] call EFUNC(players,setActiveRadio);
-    }, [_squadNames,_deadline]] call CBA_fnc_waitUntilAndExecute;
-};
-
-if (EGVAR(patches,usesTFAR)) then {
-    [{
-        params ["_squadNames","_deadline"];
-        private _r = call TFAR_fnc_activeSwRadio;
-        (!isNil "_r" && {_r isEqualType "" && _r isNotEqualTo ""}) && {
-            ((toUpper (groupId (group player))) in _squadNames) || {diag_tickTime > _deadline}
-        }
-    }, {
-        INFO_1("GearRadio","Setting up TFAR radio channels for %1...",player);
-        [player] call EFUNC(players,setRadioChannel);
-        [missionNamespace getVariable ["jmfsbFR_radio_tfarActiveRadio", ""]] call EFUNC(players,setActiveRadio);
-    }, [_squadNames,_deadline]] call CBA_fnc_waitUntilAndExecute;
-};
+// No radio re-tuning on a join or respawn: game voice's TEAM net is the Arma
+// group itself (the ACRE / TFAR tuning went with DEC1, 2026-10-31).

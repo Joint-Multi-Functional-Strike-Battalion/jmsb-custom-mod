@@ -25,3 +25,14 @@ PREP(testChannel);
 PREP(testResult);
 PREP(warn);
 PREP(voiceChatLoad);
+
+// The mic's channel under the player's talk keys and voice activation, and
+// his radio volume (user, 2026-10-24).
+PREP(applyOpen);
+PREP(hold);
+PREP(holdOff);
+PREP(liveCallChannel);
+PREP(openChannel);
+PREP(openState);
+PREP(openToggle);
+PREP(volumeStep);

@@ -24,9 +24,15 @@ Example:
 Author:
     JMSB
 ---------------------------------------------------------------------------- */
-params [["_title", "", [""]], ["_text", "", [""]], ["_colour", [0.871, 0.361, 0.188, 1], [[]], 4], ["_pos", [], [[]]]];
+params [["_title", "", [""]], ["_text", "", [""]], ["_colour", NOTE_DEFAULT, [[]], 4], ["_pos", [], [[]]]];
 
 if (!hasInterface) exitWith { false };
+// A remote call only from the server (FUNC(broadcast) and the server's own
+// replies) - review R1: a client must not put text on another's screen.
+if !([] call EFUNC(common,fromServer)) exitWith {
+    WARNING_1("notify: refused - not from the server (machine %1)",remoteExecutedOwner);
+    false
+};
 
 // Kept for the reader's LOG view whether the popup is enabled or not - the log
 // is the record of what was said, and a hint fallback is still something said.

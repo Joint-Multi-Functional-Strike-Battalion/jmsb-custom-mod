@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes a string safe to put inside a structured-text tag.
  *
  * parseText is XML. An ampersand starts an entity, so "NETS & ALERTS" is not a

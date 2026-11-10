@@ -1,12 +1,22 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a module's aircraft class in the air over the module - the module is
  * the airbase - pointed at where it is going, crewed and ready.
  *
+ * VIRTUAL UNTIL TASKED (user, 2026-11-02: "all support aircraft needs to be
+ * virtual till tasked, then they spawn in at alt over the support module
+ * location"). Made when it is tasked, never before: at its flight level over
+ * the module, engines on and flying (EFUNC(support,spawnAirborne) - a plane
+ * fast enough not to stall), clear of any other aircraft there. Full of fuel
+ * and stores: every tasking is a fresh airframe.
+ *
  * IN THE AIR, NOT ON A RUNWAY. A module dropped in a field has no runway, and
- * AI taxiing is the least reliable thing the engine does; the response delay
- * on the module is the time a real launch would have taken.
+ * AI taxiing is the least reliable thing the engine does.
+ *
+ * ITS AIRFIELD (2026-11-01) is the module it was made over: the support
+ * core's tactical lights let it show lights there and nowhere else
+ * (FUNC(prepareAircraft)).
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -22,19 +32,14 @@
  * Public: No
  */
 
-// A fixed-wing aircraft created still is a stall; it starts at this share of
-// its top speed.
-#define PLANE_START_SPEED 0.6
-
-params [["_logic", objNull, [objNull]], ["_to", [], [[]]], ["_height", 100, [0]], ["_from", [], [[]]]];
+params [["_logic", objNull, [objNull]], ["_to", [], [[]]], ["_height", 0, [0]]];
 
 if (isNull _logic) exitWith {objNull};
 
 private _cls = _logic getVariable [QGVAR(cls), ""];
 private _home = _logic getVariable [QGVAR(home), getPosATL _logic];
-private _at = [_from, _home] select (_from isEqualTo []);
-private _start = [_at select 0, _at select 1, _height];
-private _dir = if (_to isEqualTo []) then {_logic getVariable [QGVAR(homeDir), 0]} else {_at getDir _to};
+private _start = [_home select 0, _home select 1, _height];
+private _dir = if (count _to < 2) then {_logic getVariable [QGVAR(homeDir), 0]} else {_home getDir _to};
 
 private _veh = createVehicle [_cls, _start, [], 0, "FLY"];
 if (isNull _veh) exitWith {
@@ -42,13 +47,22 @@ if (isNull _veh) exitWith {
     objNull
 };
 
-_veh setDir _dir;
-_veh setPosATL _start;
-_veh setVectorUp [0, 0, 1];
-if (_veh isKindOf "Plane") then {
-    _veh setVelocityModelSpace [0, PLANE_START_SPEED * getNumber (configFile >> "CfgVehicles" >> _cls >> "maxSpeed") / 3.6, 0];
+// A CLEAR START FOR THE ROTOR (2026-11-02, the user's RPT 07:37:53: RAVEN's
+// main rotor wrecked before it had flown anywhere, nothing hit it): a
+// helicopter is not started with anything standing into its rotor disc - the
+// nearest clear spot instead, said in the RPT (FUNC(clearSpot)).
+if ([_veh] call EFUNC(support,isRotary)) then {
+    ([_veh, _start, _height, CLEAR_SPAWN_SEARCH] call FUNC(clearSpot)) params ["_spot", "_blockers"];
+    if (_blockers isEqualTo []) exitWith {};
+    private _callsign = _logic getVariable [QGVAR(callsign), "AIR"];
+    if (_spot isEqualTo []) exitWith {
+        WARNING_4("%1: '%2' starts at %3 with %4 in its rotor's way - no clear spot near",_callsign,_cls,mapGridPosition _start,_blockers joinString ", ");
+    };
+    WARNING_5("%1: '%2' start at %3 blocked for the rotor by %4 - moved %5 m",_callsign,_cls,mapGridPosition _start,_blockers joinString ", ",round (_start distance2D _spot));
+    _start = [_spot select 0, _spot select 1, _height];
 };
-_veh flyInHeight _height;
+[_veh, _start, _height, _dir] call EFUNC(support,spawnAirborne);
+_veh setVariable [QGVAR(airfield), _home];
 
 if (isNull ([_logic, _veh] call FUNC(prepareAircraft))) exitWith {
     deleteVehicle _veh;

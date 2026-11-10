@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A vehicle's damage by part, grouped the way a crew says it: HULL, ENGINE,
  * FUEL, OPTICS, TURRET, GUN, TRACKS or WHEELS, ROTORS, AVIONICS, CONTROLS,
  * ARMOUR, GLASS and whatever is left as OTHER.

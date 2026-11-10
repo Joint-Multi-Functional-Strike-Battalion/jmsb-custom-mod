@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The JMSB - Air Defence Site module: its synced air defence vehicles share one
  * alarm area and take the module's Protected Radius and Intercept Chance
  * (either left at its "own" value falls back to the vehicle's reach and the

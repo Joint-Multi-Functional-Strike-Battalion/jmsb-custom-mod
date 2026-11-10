@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens an app full size over the map. This is what a live tile does when it is
  * clicked, and it is the only route in - a tile never opens anything itself, so
  * there is one place that knows how an app is shown.

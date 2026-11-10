@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_register: puts a node in the registry, or updates it. Idempotent by id -
  * an adapter registers again whenever the set's object, profile or fill
  * changes (respawn, new radio, plan arrived), and the node keeps its state.
@@ -54,8 +54,10 @@ params [
 
 if (_id isEqualTo "") then {_id = "rf_" + ([] call FUNC(newKey))};
 
+// A client's call goes to the server by remoteExec, which takes it only for a
+// node the client holds itself (FUNC(srvRequest), review R1).
 if (!isServer) exitWith {
-    [QGVAR(register), [_object, _profile, _nets, _id, _owner, _holder, _side, _data]] call CBA_fnc_serverEvent;
+    ["register", [_object, _profile, _nets, _id, _owner, _holder, _side, _data]] remoteExecCall [QFUNC(srvRequest), SERVER_OWNER];
     _id
 };
 
@@ -110,6 +112,8 @@ _node set ["nets", _fill];
 _node set ["owner", _owner];
 _node set ["holder", _holder];
 _node set ["hasHolder", !isNull _holder];
+// Whose it is across a respawn, for FUNC(mayTouch).
+_node set ["holderUid", getPlayerUID _holder];
 _node set ["side", str _side];
 if (_data isEqualType []) then {_data = createHashMapFromArray _data};
 (_node get "data") merge [_data, true];

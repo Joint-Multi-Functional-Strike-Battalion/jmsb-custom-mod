@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a threat is at a given time, from its predicted path - never from the
  * round itself, which on a dedicated server may be another machine's.
  *

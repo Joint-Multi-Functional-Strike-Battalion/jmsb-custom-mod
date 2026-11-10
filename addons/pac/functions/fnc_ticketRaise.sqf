@@ -21,6 +21,8 @@
 params [["_caller", objNull, [objNull]], ["_kind", "", [""]], ["_subject", "", [""]], ["_body", "", [""]], ["_about", "", [""]]];
 
 if (!isServer || isNull _caller) exitWith {};
+// A request is raised in the sender's own name only (review S5).
+if !([_caller] call EFUNC(common,senderIs)) exitWith {};
 if ((GVAR(settings) getOrDefault ["sync", "off"]) isNotEqualTo "service") exitWith {
     ["TAC//PAC", "PAC requests need the database, and this server has none.", [0.831, 0.267, 0.267, 1]] remoteExec ["jmfsb_notify_fnc_notify", owner _caller];
 };

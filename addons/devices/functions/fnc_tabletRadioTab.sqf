@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Steps the tablet's RADIO app to its previous or next tab - NETS, CALLS,
  * MANAGE - for the tab keys (numpad 7 / 8) while the tablet is up and RADIO is
  * the open app. The tab is the app's own (jmfsb_tacpad_apps_radioTab in

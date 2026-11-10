@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Plays a radio or call sound locally, at the net's pitch (C2 low, TEAM mid,
  * A2G high, CALL two-tone; setting Pitch per net) from the net's ear (L / B /
  * R: VON cannot pan voice, so the ear pans the net's beeps and static).

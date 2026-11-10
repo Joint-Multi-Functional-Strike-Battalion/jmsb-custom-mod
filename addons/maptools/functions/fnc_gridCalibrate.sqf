@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Works out, once per mission, where this terrain's grid squares fall - so a
  * ten-digit grid can be built on the engine's own coarse one.
  *

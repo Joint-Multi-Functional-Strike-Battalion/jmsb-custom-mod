@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Does an audience tag name this man?
  *
  * ONE RULE, BOTH ENDS. The server asks it of every player to find out who a tag

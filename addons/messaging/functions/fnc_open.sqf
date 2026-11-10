@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens a thread: fetches its messages from the server if they are not cached,
  * marks them read, and hands the rendered thread to the callback. With no UI
  * yet the default callback prints it, which is how a thread is read today.
@@ -50,7 +50,9 @@ GVAR(openCallback) = _callback;
 private _cached = (missionNamespace getVariable [QGVAR(cache), createHashMap]) getOrDefault [_threadId, []];
 if (_cached isNotEqualTo []) exitWith {
     _cached call _callback;
-    [QGVAR(markRead), [player, _threadId]] call CBA_fnc_serverEvent;
+    [player, _threadId] remoteExecCall [QFUNC(srvMarkRead), SERVER_OWNER];
 };
 
-[QGVAR(requestThread), [player, _threadId]] call CBA_fnc_serverEvent;
+// By remoteExecCall, so the server can check the player named is the sender's
+// own (review S7).
+[player, _threadId] remoteExecCall [QFUNC(srvRequestThread), SERVER_OWNER];

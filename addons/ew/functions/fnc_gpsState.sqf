@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: this man's GPS (DESIGN_RF "rf_gpsState"), from his slice and the
  * jamming addon's denial:
  *

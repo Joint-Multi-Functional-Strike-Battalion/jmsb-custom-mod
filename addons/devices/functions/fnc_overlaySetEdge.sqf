@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets which edge of the screen a side device sits against and keeps it in
  * the player's profile, the way the shown / hidden state is kept
  * (FUNC(overlaySetShown)). Set from the tablet's SETTINGS > DEVICES and from a

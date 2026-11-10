@@ -1,11 +1,14 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the call's OWNER - who started it - adds people. They ring until
  * they accept. Anyone else is refused with REASON_NOT_OWNER (user,
  * 2026-10-20: the channel owner invites, not the RTO).
  * People he cannot reach on DATA, or who are in another call, are skipped
  * and he is told; the adds stop at CALL_MAX_MEMBERS in the call.
+ * Reached by remoteExec from FUNC(callAdd): who adds must be the sender
+ * (jmfsb_common_fnc_senderIs). Refusals go back by remoteExec to
+ * FUNC(callFailed).
  *
  * Arguments:
  * 0: Call id <STRING>
@@ -16,22 +19,23 @@
  * None
  *
  * Example:
- * ["123_1", [_unit], player] call jmfsb_voice_fnc_srvAdd
+ * ["123_1", [_unit], player] remoteExecCall ["jmfsb_voice_fnc_srvAdd", 2]
  *
  * Public: No
  */
 
 params [["_callId", "", [""]], ["_units", [], [[]]], ["_by", objNull, [objNull]]];
 
+if (!isServer || {!([_by] call EFUNC(common,senderIs))}) exitWith {};
 private _call = GVAR(calls) getOrDefault [_callId, createHashMap];
 if (count _call == 0 || isNull _by) exitWith {};
 private _members = _call get "members";
 private _ringing = _call get "ringing";
 if !(_by in _members) exitWith {
-    [QGVAR(callFailed), [_callId, REASON_REFUSED, [_by]], _by] call CBA_fnc_targetEvent;
+    [_callId, REASON_REFUSED, [_by]] remoteExecCall [QFUNC(callFailed), _by];
 };
 if (_by isNotEqualTo (_call getOrDefault ["owner", _call get "from"])) exitWith {
-    [QGVAR(callFailed), [_callId, REASON_NOT_OWNER, [_by]], _by] call CBA_fnc_targetEvent;
+    [_callId, REASON_NOT_OWNER, [_by]] remoteExecCall [QFUNC(callFailed), _by];
 };
 
 _units = (_units select {!isNull _x && alive _x && isPlayer _x}) - _members;
@@ -47,10 +51,10 @@ private _room = (CALL_MAX_MEMBERS - count _members - count _ringing) max 0;
 if (count _ok > _room) then {_ok resize _room};
 
 if (_noRoute isNotEqualTo []) then {
-    [QGVAR(callFailed), [_callId, REASON_NO_ROUTE, _noRoute], _by] call CBA_fnc_targetEvent;
+    [_callId, REASON_NO_ROUTE, _noRoute] remoteExecCall [QFUNC(callFailed), _by];
 };
 if (_busy isNotEqualTo []) then {
-    [QGVAR(callFailed), [_callId, REASON_BUSY, _busy], _by] call CBA_fnc_targetEvent;
+    [_callId, REASON_BUSY, _busy] remoteExecCall [QFUNC(callFailed), _by];
 };
 
 private _now = CBA_missionTime;

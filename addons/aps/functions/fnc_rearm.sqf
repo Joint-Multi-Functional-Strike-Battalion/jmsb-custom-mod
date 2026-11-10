@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reloads a vehicle's launchers to full (server) and tells its crew.
  *
  * Arguments:

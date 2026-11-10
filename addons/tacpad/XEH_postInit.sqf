@@ -69,33 +69,40 @@ addMissionEventHandler ["Map", {
 // arrives later, as an event. Without this it went only to the notification
 // stack, which is an RscTitles layer and therefore behind this dialog: the send
 // appeared to work and the message simply never existed.
-[QEGVAR(messaging,reject), {
-    params [["_templateId", "", [""]], ["_why", "", [""]]];
+//
+// A hook on messaging's cltReject, which takes its call only from the server -
+// not the CBA event it used to be, which any client could raise to fake a
+// refusal on every screen (review S7).
+if (!isNil QEFUNC(messaging,onReject)) then {
+    [{
+        params [["_templateId", "", [""]], ["_why", "", [""]]];
 
-    GVAR(composeError) = _why;
+        GVAR(composeError) = _why;
 
-    // Put the card back, with everything that was in it. Only when the player
-    // has not already started composing something else - restoring over a
-    // half-written report to explain a refusal of the last one is worse than the
-    // refusal.
-    if (!GVAR(composeOn) && {GVAR(composePending) isNotEqualTo []}) then {
-        GVAR(composePending) params ["_thread", "_template", "_values", "_grids", "_to", ["_cc", ""], ["_pin", []]];
-        GVAR(composeThread) = _thread;
-        GVAR(composeTemplate) = _template;
-        GVAR(composeValues) = _values;
-        GVAR(composeGridText) = _grids;
-        GVAR(composeTo) = _to;
-        GVAR(composeCc) = _cc;
-        GVAR(composePin) = _pin;
-        GVAR(composeOn) = true;
-    };
+        // Put the card back, with everything that was in it. Only when the player
+        // has not already started composing something else - restoring over a
+        // half-written report to explain a refusal of the last one is worse than
+        // the refusal.
+        if (!GVAR(composeOn) && {GVAR(composePending) isNotEqualTo []}) then {
+            GVAR(composePending) params ["_thread", "_template", "_values", "_grids", "_to", ["_cc", ""], ["_pin", []], ["_frago", []]];
+            GVAR(composeThread) = _thread;
+            GVAR(composeTemplate) = _template;
+            GVAR(composeValues) = _values;
+            GVAR(composeGridText) = _grids;
+            GVAR(composeTo) = _to;
+            GVAR(composeCc) = _cc;
+            GVAR(composePin) = _pin;
+            GVAR(composeFrago) = _frago;
+            GVAR(composeOn) = true;
+        };
 
-    GVAR(composePending) = [];
+        GVAR(composePending) = [];
 
-    if (!isNull (uiNamespace getVariable [QGVAR(reader), displayNull])) then {
-        {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
-    };
-}] call CBA_fnc_addEventHandler;
+        if (!isNull (uiNamespace getVariable [QGVAR(reader), displayNull])) then {
+            {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+        };
+    }] call EFUNC(messaging,onReject);
+};
 
 // TRAFFIC ARRIVING REDRAWS THE READER. Nothing did this, and it is the whole of
 // "I send to a channel and it does not show up" and "a quick reply does not
@@ -104,32 +111,60 @@ addMissionEventHandler ["Map", {
 // never told. Touching a dropdown forced a redraw, which is why that one
 // interaction appeared to fix it.
 //
-// BOTH EVENTS, and that is the half that was missed even where a listener
-// existed. FUNC(cltReceive) raises `received` for traffic addressed to you and
-// `indexRefreshed` for a QUIET update - a filing into a shared box you can read
-// but were not addressed on. Your own copy of a message you just sent to a
-// channel arrives on the quiet path, so listening only to `received` meant the
-// sender never saw their own traffic.
-{
-    [_x, {
-        if (!isNull (uiNamespace getVariable [QGVAR(reader), displayNull])) then {
-            {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
-        };
-    }] call CBA_fnc_addEventHandler;
-} forEach [QEGVAR(messaging,received), QEGVAR(messaging,indexRefreshed)];
+// BOTH PATHS, and that is the half that was missed even where a listener
+// existed. FUNC(cltReceive) runs the onReceive hooks for traffic addressed to
+// you and raises `indexRefreshed` for a QUIET update - a filing into a shared
+// box you can read but were not addressed on. Your own copy of a message you
+// just sent to a channel arrives on the quiet path, so listening only to
+// arrivals meant the sender never saw their own traffic.
+//
+// Arrivals come through messaging's onReceive hook, which only cltReceive runs
+// and cltReceive takes its call only from the server - not the `received` CBA
+// event it used to be, which any client could raise (review S7). The quiet
+// `indexRefreshed` event stays: it only redraws from this player's own index.
+private _fnc_readerRedraw = {
+    if (!isNull (uiNamespace getVariable [QGVAR(reader), displayNull])) then {
+        {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+    };
+};
+[QEGVAR(messaging,indexRefreshed), _fnc_readerRedraw] call CBA_fnc_addEventHandler;
 
-// FLASH TRAFFIC PUTS A BANNER OVER WHATEVER IS ON SCREEN - the reader, the map
-// or the device (handoff 1a; FUNC(readerFlash) decides where). Only traffic
-// that arrived for this player, never his own copy, and only FLASH: a callout
-// by name already escalates the notification, and a banner per callout would
-// be the double notification the user asked to be rid of.
-[QEGVAR(messaging,received), {
-    params [["_message", createHashMap, [createHashMap]], ["_entry", createHashMap, [createHashMap]]];
-    if (!GVAR(enabled)) exitWith {};
-    if ((_entry getOrDefault ["priority", ""]) isNotEqualTo "high") exitWith {};
-    if ((getPlayerUID player) in (_message getOrDefault ["readBy", []])) exitWith {};
-    [[_entry, _message]] call FUNC(readerFlash);
-}] call CBA_fnc_addEventHandler;
+if (!isNil QEFUNC(messaging,onReceive)) then {
+    [_fnc_readerRedraw] call EFUNC(messaging,onReceive);
+
+    // FLASH TRAFFIC PUTS A BANNER OVER WHATEVER IS ON SCREEN - the reader, the
+    // map or the device (handoff 1a; FUNC(readerFlash) decides where). Only
+    // traffic that arrived for this player, never his own copy, and only
+    // FLASH: a callout by name already escalates the notification, and a
+    // banner per callout would be the double notification the user asked to
+    // be rid of.
+    [{
+        params [["_message", createHashMap, [createHashMap]], ["_entry", createHashMap, [createHashMap]]];
+        if (!GVAR(enabled)) exitWith {};
+        if ((_entry getOrDefault ["priority", ""]) isNotEqualTo "high") exitWith {};
+        if ((getPlayerUID player) in (_message getOrDefault ["readBy", []])) exitWith {};
+        [[_entry, _message]] call FUNC(readerFlash);
+    }] call EFUNC(messaging,onReceive);
+
+    // AFTER CONTACT, A SITREP (user, 2026-11-02: "after contact a sitrep should
+    // be sent"). His own TIC coming back filed starts the watch for the contact
+    // ending; his SITREP, the thread closing or a new TIC from his group move
+    // it on - off the traffic that arrives and the quiet index updates, never
+    // a poll (FUNC(contactTraffic)).
+    [{
+        params [["_message", createHashMap, [createHashMap]]];
+        [_message] call FUNC(contactTraffic);
+    }] call EFUNC(messaging,onReceive);
+    [QEGVAR(messaging,indexRefreshed), {[] call FUNC(contactTraffic)}] call CBA_fnc_addEventHandler;
+
+    // QUICK ANSWERS ON THE WALKING VIEW (user, 2026-11-06): what an asset asks
+    // him, what settles it, and the requests he is the crew for
+    // (FUNC(askTraffic)). A quiet index update can close a thread he only
+    // reads (an observer's): the list is pruned on the next draw
+    // (FUNC(askList)), and the strip redraws now.
+    [{_this call FUNC(askTraffic)}] call EFUNC(messaging,onReceive);
+    [QEGVAR(messaging,indexRefreshed), {[] call FUNC(askChanged)}] call CBA_fnc_addEventHandler;
+};
 
 // A scheme change repaints what is already on screen. Judging a colour you
 // cannot see until you reopen the map is guessing, not choosing.
@@ -149,3 +184,24 @@ addMissionEventHandler ["Map", {
         [] call FUNC(open);
     };
 }] call CBA_fnc_addEventHandler;
+
+// A SCHEME ID THAT WAS RENAMED (2026-10-08: Night Brass became JMSB Night) is
+// still in a profile saved before the rename; CBA warns about it on every
+// start (RPT, 2026-10-30) and falls back to the default, which is that same
+// scheme. Rewritten once, in the profile's own store, through CBA's hash API
+// and only when the store is the hash CBA keeps there, so the next start is
+// quiet. CBA has already read the store this session: this is for the next.
+// CBA keeps [value, priority] under the lower-case setting name - not the
+// bare value (the first cut compared the pair to a string and never matched;
+// the warning stayed, RPT 2026-10-31).
+private _store = profileNamespace getVariable [CBA_PROFILE_STORE, []];
+if ([_store] call CBA_fnc_isHash) then {
+    private _entry = [_store, toLower QGVAR(scheme)] call CBA_fnc_hashGet;
+    if (!isNil "_entry" && {_entry isEqualType []} && {(_entry param [0, ""]) isEqualTo SCHEME_LEGACY}) then {
+        _entry set [0, SCHEME_DEFAULT];
+        [_store, toLower QGVAR(scheme), _entry] call CBA_fnc_hashSet;
+        profileNamespace setVariable [CBA_PROFILE_STORE, _store];
+        saveProfileNamespace;
+        INFO_2("scheme '%1' in the profile is now '%2'",SCHEME_LEGACY,SCHEME_DEFAULT);
+    };
+};

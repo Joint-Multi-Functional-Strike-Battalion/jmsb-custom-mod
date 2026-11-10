@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A TIME / WEATHER preset button: puts clear, cloudy, storm or fog in the four
  * weather combos. Only the combos - SET WEATHER applies.
  *

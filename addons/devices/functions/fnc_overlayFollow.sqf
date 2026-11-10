@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps the walking view's map centred on the player at the player's zoom,
  * every frame. Hung on the map's own Draw event, which fires each frame the
  * map is drawn, so the man stays dead centre as he walks - the half-second

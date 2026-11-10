@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a CBA scripted scope's picture-in-picture view in the goggle's mode
  * (user, 2026-10-17: "when you have nvgs on the scope nvg should also be on").
  * CBA renders the magnified view of its PiP scopes (the Vortex M157 on the

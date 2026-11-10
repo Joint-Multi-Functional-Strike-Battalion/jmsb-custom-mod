@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A distance in metres under a kilometre, in kilometres to two places above.
  *
  * Arguments:
@@ -12,7 +12,7 @@
  * Example:
  * [1234] call jmfsb_maptools_fnc_distanceText
  *
- * Public: No
+ * Public: Yes
  */
 
 params [["_metres", 0, [0]]];

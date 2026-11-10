@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A time as the support board's verdict line reads it: whole seconds under a
  * minute, then minutes and seconds rounded to ETA_STEP ("40 S", "3 MIN",
  * "2 MIN 40 S"). Shared by both CAS providers - this addon's drones and

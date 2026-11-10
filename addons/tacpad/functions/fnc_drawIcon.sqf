@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An image, tinted and squared. The suite's one concession to iconography: the
  * design specifies no icons anywhere, and squad health is the exception it
  * already makes for colour, so it is the one place a glyph says more than a

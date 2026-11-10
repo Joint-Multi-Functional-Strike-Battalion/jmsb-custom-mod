@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Does this player's profile name start with their squad tag?
  *
  * Not "are they in a squad" - the question the caller is actually asking is

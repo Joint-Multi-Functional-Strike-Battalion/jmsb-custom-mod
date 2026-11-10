@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * KeyDown on the mission display: swallows the VON toggle (Voice Over Net)
  * so the mic is never left open - the mesh volume, the sounds and the
  * cut-offs all follow the push-to-talk - and tells the player once to bind
@@ -24,6 +24,6 @@ params ["", ["_key", -1, [0]]];
 if !(_key in (actionKeys ACTION_TOGGLE)) exitWith {false};
 if (!GVAR(toldToggle)) then {
     GVAR(toldToggle) = true;
-    [QEGVAR(voice,note), [NOTE_TITLE, NOTE_TOGGLE]] call CBA_fnc_localEvent;
+    [NOTE_TITLE, NOTE_TOGGLE] call EFUNC(notify,notify);
 };
 true

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SHOW ON MAP from the ES tab: closes the app and pans the host's map to a
  * track's fix (or the sensor end of its latest DF line), keeping the zoom -
  * the medic app's SHOW ON MAP, on the vanilla map or the device host alike.

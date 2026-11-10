@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds `admp_authorisedIDs` - who this mission lets into the panel.
  *
  * TWO LISTS, TWO JOBS (user, 2026-09-09: "#defined admins should just be for

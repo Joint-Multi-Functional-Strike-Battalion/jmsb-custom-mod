@@ -9,6 +9,12 @@
 // mission is actually tested in is worthless, so these use the same mechanism
 // jmfsb's own #login uses and work in singleplayer, hosted and dedicated.
 //
+// ADMINS ONLY (review S7). Anyone could type them, and they went on a CBA
+// event any client could raise: a squad spawned and a fire mission called by
+// any player. Now they go by remoteExec to FUNC(probe), which takes them only
+// from an admin by the server's records - the host and a single player are
+// the server and pass; on a dedicated server, #login first.
+//
 //   #jmfsbreads     commanders, controltype, TAORs, AA pool
 //   #jmfsbsquad     spawn -> profile -> waypoint
 //   #jmfsbfire      one ARTY_REQUEST
@@ -21,53 +27,45 @@
 
 if (hasInterface) then {
     ["jmfsbreads", {
-        [QGVAR(run), ["alive.reads", player]] call CBA_fnc_serverEvent;
+        ["alive.reads"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
 
     ["jmfsbsquad", {
-        [QGVAR(run), ["alive.squad", player]] call CBA_fnc_serverEvent;
+        ["alive.squad"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
 
     ["jmfsbfire", {
-        [QGVAR(run), ["alive.fire", player]] call CBA_fnc_serverEvent;
+        ["alive.fire"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
 
     ["jmfsbcapture", {
-        [QGVAR(run), ["alive.capture", player]] call CBA_fnc_serverEvent;
+        ["alive.capture"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
 
     // Not slice zero - a read-only answer to ALiVE's repeating combat-simulator
     // errors, which name ALiVE's own file and never the vehicle behind them.
     ["jmfsbdamage", {
-        [QGVAR(run), ["alive.damage", player]] call CBA_fnc_serverEvent;
+        ["alive.damage"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
 
     // Server frame rate and what is on the map, on demand. Diagnosing "the
     // lag" from an RPT after the run is guesswork; this measures it while it
     // is happening.
     ["jmfsbperf", {
-        [QGVAR(run), ["perf", player]] call CBA_fnc_serverEvent;
+        ["perf"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
+    }, "all"] call CBA_fnc_registerChatCommand;
+
+    // TRAINING HOLD. A mission with the JMSB - Hold ALiVE module starts with
+    // ALiVE paused; this starts it. Admins only - FUNC(hold) checks the sender.
+    ["jmfsbalivestart", {
+        [false] remoteExecCall [QFUNC(hold), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
 };
 
-// ---------------------------------------------------------------------------
-// ALiVE COMBAT SUPPORT AS A SUPPORT PROVIDER. The support core owns the
-// registry, the gate and the request flow; this registers ALiVE's NEO assets
-// and the ATO's one row as provider "alive", so every ALiVE name stays in this
-// addon. Ids are "alive:<type>:<index>" and "alive:ato". The AI commander's
-// artillery is deliberately absent - see the note at the ATO publish loop below.
-// An ATO task is a server event, because the request has to be raised on the
-// machine that holds ALiVE's event log.
-//
-// ON EVERY MACHINE, ABOVE THE SERVER-ONLY EXIT: TAC//SUPPORT is drawn on the
-// client and reads its rows locally. (The old ATO provider sat below that exit
-// and so only ever reached the server's own screen.)
-[SUPPORT_KIND, createHashMapFromArray [
-    ["assets", FUNC(supportAssets)],
-    ["task", FUNC(supportTask)],
-    ["sitrep", FUNC(supportSitrep)],
-    ["types", call FUNC(supportTypes)]
-]] call EFUNC(support,registerProvider);
+// NO SUPPORT PROVIDER (user, 2026-11-02: "if alive is present we integrate -
+// but not the support"). ALiVE's NEO combat support and its ATO are not
+// support assets: TAC//MSG lists the mod's own providers only, the same with
+// or without ALiVE. Nothing here registers with the support core.
 
 if (!isServer) exitWith {};
 
@@ -76,16 +74,18 @@ if (!isServer) exitWith {};
 // defence at all with an empty picker. See the function.
 [] call FUNC(registerFactionAA);
 
-[QGVAR(run), {
-    params [["_which", "", [""]], ["_caller", objNull, [objNull]]];
-    [_which, _caller] call FUNC(probe);
-}] call CBA_fnc_addEventHandler;
-
 // POOL SIZES, PUBLISHED. A device draws its own buttons and cannot ask the
 // server what is worth offering, so the two counts go public on a slow beat.
 // Counts only - never the contents, which stay server-side where a client
-// cannot read the enemy's positions out of a variable.
-[QGVAR(ready), {
+// cannot read the enemy's positions out of a variable. Started once, from
+// FUNC(whenReady) - not the ready CBA event any client could raise again
+// (review R1).
+//
+// No fallback (user, 2026-11-02: "same as not loaded"): when FUNC(ready) gives
+// up on a mission with no commander, nothing here starts - no pools, no
+// bridge, no COP or LAMBS settings - exactly as when this PBO is not loaded.
+// The counts stay unset, which every reader takes as 0.
+[{
     [{
         // ONE HEAVY WALK PER TICK, NOT ALL OF THEM. aaTargets, artyTargets,
         // camps and radars each walk the whole profile system with config
@@ -102,13 +102,6 @@ if (!isServer) exitWith {};
             case 3: { missionNamespace setVariable [QGVAR(radarCount), count (call FUNC(radars)), true] };
         };
 
-        // The ATO presence flag is all the support app needs from ALiVE now -
-        // the battery registry is deliberately NOT published: listing every
-        // AI-commander gun made the app a directory of assets the player
-        // cannot actually task (ARTY_REQUEST picks its own battery, and only
-        // where a friendly artillery module exists at all).
-        missionNamespace setVariable [QGVAR(atoPub),
-            (allMissionObjects ATO_CLASS) apply {toUpper (_x getVariable ["side", ""])}, true];
         // hubCount reads the supply-network hash, which is small - every tick.
         missionNamespace setVariable
             [QGVAR(hubCount), count (call FUNC(logisticsHubs)), true];
@@ -190,16 +183,5 @@ if (!isServer) exitWith {};
             && {!(_x getVariable [QEGVAR(common,lambsOff), false])}
         });
     }, POOL_TICK, []] call CBA_fnc_addPerFrameHandler;
-}] call CBA_fnc_addEventHandler;
-
-if (isServer) then {
-    [QGVAR(supportRequest), {
-        params ["_kind", "_side", "_pos", "_who"];
-        private _ok = switch (_kind) do {
-            case "cas":  { [_side, _pos] call FUNC(requestCAS) };
-            default { false };
-        };
-        INFO_4("support request %1 by %2 for %3 -> %4",_kind,_who,_side,_ok);
-    }] call CBA_fnc_addEventHandler;
-};
+}] call FUNC(whenReady);
 

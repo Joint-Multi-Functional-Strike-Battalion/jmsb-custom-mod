@@ -13,6 +13,7 @@ PREP(age);
 // Manual measurements: the medic's machine hears the treatment, the patient's
 // machine takes the reading
 PREP(recordCheck);
+PREP(srvMeasure);
 PREP(measureLocal);
 
 // The tile and the app
@@ -22,3 +23,12 @@ PREP(appNotice);
 PREP(appList);
 PREP(appPatient);
 PREP(showOnMap);
+
+
+// The watch HUD's medical profile: who sees it, the readout, the MIST report
+PREP(aitrOn);
+PREP(watchRow);
+PREP(watchTrace);
+PREP(watchReport);
+PREP(watchAlerts);
+PREP(triageSuggest);

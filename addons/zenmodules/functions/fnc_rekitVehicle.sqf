@@ -48,7 +48,6 @@
         _objectPos call EFUNC(vehicle,addDefaultLoadout);
         _objectPos call EFUNC(vehicle,addCosmetics);
         _objectPos call EFUNC(vehicle,addStagingActions);
-        _objectPos call EFUNC(vehicle,addRadio);
     },
     {},
     [_objectPos]

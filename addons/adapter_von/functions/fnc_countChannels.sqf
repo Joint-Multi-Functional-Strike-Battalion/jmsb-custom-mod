@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: how many of the engine's ten custom channels are in use - ours (C2,
  * A2G, the CALL slots) and any the mission made itself - published to everyone
  * as jmfsb_adapter_von_channelUse [used, CUSTOM_MAX] for the devices' gauge

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * DRONE CONTROL WITHOUT A UAV TERMINAL. The vanilla terminal is out of the
  * arsenal (user, 2026-10-20), and connectTerminalToUAV / isUAVConnectable both
  * want one in the GPS slot - so the devices fly drones themselves: the UAV

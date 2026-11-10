@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, each DF tick, before anything is heard: drops what is gone.
  *
  *   jammers   whose operator died or left, or no longer has the kit he

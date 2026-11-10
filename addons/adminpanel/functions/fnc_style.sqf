@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Paints and sizes the console from the player's tacpad settings.
  *
  * WHY A FUNCTION AND NOT CONFIG. The colours in ui\dialog.inc.hpp are the dark
@@ -167,6 +167,7 @@ private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
     IDC_ADMINPANEL_ADMIN_PROMOTE,
     IDC_ADMINPANEL_PLAYER_VEHICLE_DISMOUNT,
     IDC_ADMINPANEL_PLAYER_VEHICLE_UNSTUCK,
+    IDC_ADMINPANEL_PLAYER_MEDICAL_STABILIZE,
     IDC_ADMINPANEL_PLAYER_MEDICAL_WAKEUP,
     IDC_ADMINPANEL_PLAYER_CAMDISPLAY_VIEWMODE,
     IDC_ADMINPANEL_PLAYER_CAMDISPLAY_VISMODE,

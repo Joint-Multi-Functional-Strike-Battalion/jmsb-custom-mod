@@ -55,7 +55,6 @@ GVAR(grades) = createHashMapFromArray [
 GVAR(blacklist) = [QGVAR(blast), QGVAR(pulse), "SmallSecondary", "HelicopterExploSmall", "HelicopterExploBig"];
 
 GVAR(moduleUp) = false;
-GVAR(enabled) = true;   // the CBA setting overwrites this at preInit
 GVAR(hardKill) = true;
 GVAR(rfBurst) = true;
 GVAR(rfAir) = true;

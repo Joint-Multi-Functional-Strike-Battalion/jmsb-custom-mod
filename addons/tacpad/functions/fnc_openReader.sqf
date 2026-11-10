@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens the full-size TAC//MSG reader - the design's option 1a, three panes:
  * nets and roster down the left, the traffic list beside it, the opened thread
  * filling the rest.
@@ -41,8 +41,13 @@
 
 if (!hasInterface) exitWith {false};
 
+// Not messaging's own notify - it is missing too. The notify addon, else a hint.
 if (isNil QEGVAR(messaging,index)) exitWith {
-    ["READER", "Messaging is not loaded.", "high"] call EFUNC(messaging,notify);
+    if (isNil QEFUNC(notify,notify)) then {
+        hint "READER: Messaging is not loaded.";
+    } else {
+        ["READER", "Messaging is not loaded."] call EFUNC(notify,notify);
+    };
     false
 };
 
@@ -105,6 +110,7 @@ GVAR(readerThread) = "";
 GVAR(readerTab) = "all";
 GVAR(readerFilter) = "";
 GVAR(readerMarkers) = false;
+GVAR(readerAdjust) = [];
 
 // A reader opened cold is never mid-message. FUNC(composeOpen) turns compose
 // back on after this returns, which is why the order matters.

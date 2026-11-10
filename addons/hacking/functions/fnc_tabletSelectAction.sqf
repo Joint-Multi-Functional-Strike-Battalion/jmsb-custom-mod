@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Picks what the hack does when it completes - the HACK app's ACTIONS row:
  * HACK_ACTION_SPOOF ("spoof") where FUNC(canSpoof) allows it, anything else
  * the kind's own (TAP a product, DISABLE a drone). Refuses while a hack is

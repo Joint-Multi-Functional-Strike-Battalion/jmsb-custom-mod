@@ -27,7 +27,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_kind", "", [""]], ["_arg", ""]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {false};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {false};
 
 private _title = "";
 private _text = "";

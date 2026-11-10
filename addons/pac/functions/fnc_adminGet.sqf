@@ -25,7 +25,7 @@ Author:
 params [["_caller", objNull, [objNull]], ["_uid", "", [""]]];
 
 if (!isServer) exitWith {false};
-if (isNull _caller || {!([_caller] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {false};
+if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {false};
 
 private _rec = GVAR(players) getOrDefault [_uid, createHashMap];
 if (count _rec isEqualTo 0) exitWith {false};

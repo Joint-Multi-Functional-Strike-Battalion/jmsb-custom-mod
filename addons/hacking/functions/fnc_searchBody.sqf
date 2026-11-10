@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes the intel off a body, INTO THE SEARCHER'S INVENTORY.
  *
  * Nothing is banked here. The item is worth nothing until it is deposited at

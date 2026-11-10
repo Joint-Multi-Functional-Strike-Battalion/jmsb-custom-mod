@@ -16,16 +16,15 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-1 unit class, 1 weapon/item class, 5 functions.
+1 unit class, 1 weapon/item class, 4 functions.
 
 ## Functions
 
-<details><summary>5</summary>
+<details><summary>4</summary>
 
 - `jmfsb_satcom_fnc_canDeploy`
 - `jmfsb_satcom_fnc_canPickUp`
 - `jmfsb_satcom_fnc_deploy`
-- `jmfsb_satcom_fnc_hasAcre`
 - `jmfsb_satcom_fnc_pickUp`
 
 </details>

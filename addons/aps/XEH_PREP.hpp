@@ -7,6 +7,7 @@ PREP(register);
 PREP(watch);
 PREP(charges);
 PREP(intercept);
+PREP(kill);
 PREP(rearm);
 PREP(popSmoke);
 PREP(report);

@@ -7,7 +7,7 @@
 [
     QGVAR(enabled), "CHECKBOX",
     ["Enable HUD", "Draws the two readout slots on the game screen. Off leaves the screen exactly as it was; the map suite is unaffected either way."],
-    ["1st Joint Multi-Functional Strike Battalion", "HUD"],
+    ["JMSB - Tablet & Map", "HUD"],
     true,
     false,
     {[QGVAR(enabled_changed), []] call CBA_fnc_localEvent}
@@ -19,7 +19,7 @@
 [
     QGVAR(hideOnMap), "CHECKBOX",
     ["Hide with the map", "Takes the HUD off screen while the map is open, where the tacpad shows the same readings in more detail. Off leaves it up, over the map."],
-    ["1st Joint Multi-Functional Strike Battalion", "HUD"],
+    ["JMSB - Tablet & Map", "HUD"],
     true,
     false
 ] call CBA_fnc_addSetting;
@@ -31,7 +31,7 @@
 [
     QGVAR(showInTablet), "CHECKBOX",
     ["Show in tablet mode", "Keeps the HUD slots on the game screen when the tacpad display mode is TABLET. Off by default there: the device shows the same readouts."],
-    ["1st Joint Multi-Functional Strike Battalion", "HUD"],
+    ["JMSB - Tablet & Map", "HUD"],
     false,
     false,
     {[QGVAR(enabled_changed), []] call CBA_fnc_localEvent}
@@ -40,7 +40,7 @@
 [
     QGVAR(opacity), "SLIDER",
     ["HUD opacity", "How solid the slot backgrounds are over the world. The text stays fully opaque at any setting."],
-    ["1st Joint Multi-Functional Strike Battalion", "HUD"],
+    ["JMSB - Tablet & Map", "HUD"],
     [0, 1, 0.55, 2, true],
     false,
     {[QGVAR(enabled_changed), []] call CBA_fnc_localEvent}

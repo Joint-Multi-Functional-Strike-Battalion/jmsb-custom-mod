@@ -1,8 +1,8 @@
 #include "script_component.hpp"
 
 // THE RF CORE: registry, link budget, mesh, client slices. Depends on CBA
-// only; the voice adapters (jmfsb_voice / adapter_von), adapter_acre and every
-// consumer depend on it.
+// only; the voice core and its adapters (jmfsb_voice, adapter_von,
+// adapter_livekit) and every consumer depend on it.
 class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;

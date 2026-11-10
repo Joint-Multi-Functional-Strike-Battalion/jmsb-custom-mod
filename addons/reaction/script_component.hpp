@@ -36,6 +36,11 @@
 #define REACT_SPOTTED_TICK     30
 #define REACT_SPOTTED_RANGE    300
 #define REACT_SPOTTED_COOLDOWN 300
+// Without ALiVE (user, 2026-11-02): how well a hostile side must know a man
+// (knowsAbout, 0-4) before he is told it has his position, and below which a
+// side counts as hostile.
+#define REACT_SPOTTED_KNOWS    3
+#define REACT_HOSTILE_BELOW    0.6
 #define REACT_FLAG_MULT     3
 #define REACT_FLAG_DECAY    300
 
@@ -48,12 +53,36 @@
 #define REACT_MAJOR_COOLDOWN 120
 
 // The shells, when the commander's own guns cannot be reached.
+// COUNTER-BATTERY (fnc_cbShot / cbFire): the shell of the virtual answer and
+// the gap between its rounds, and how far round the fixed guns their crew are
+// warned.
+#define CB_AMMO             "Sh_155mm_AMOS"
+#define CB_GAP              3
+#define CB_WARN_RADIUS      150
+// A virtual barrage's battery (fnc_cbVirtual): placed this far from where it
+// lands, inside the map, and reused for any barrage within its reach - so a
+// fix means the same battery next time.
+#define CB_SITE_MIN         3000
+#define CB_SITE_MAX         7000
+#define CB_SITE_REACH       9000
+#define CB_SITE_EDGE        200
+#define CB_SITE_TRIES       8
+// What the radar calls a gun it cannot name (a virtual battery).
+#define CB_WHAT_DEFAULT     "artillery"
+// The radar's reports to the players' artillery team (fnc_cbRadar): the call
+// sign they are filed under, and how often one gun may fire before its own
+// machine asks again (the server has its own per-gun cooldown).
+#define CB_RADAR_CALLSIGN   "CB RADAR"
+#define CB_RADAR_LOCAL_GAP  10
 #define REACT_FALLBACK_AMMO "Sh_82mm_AMOS"
 #define REACT_FALLBACK_DISP 60
 #define REACT_FALLBACK_GAP  4
 
-// ACRE reports transmit power in milliwatts.
+// The jamming calculator takes transmit power in milliwatts.
 #define REACT_MW_PER_WATT   1000
+// A game-voice key-up beyond the squad: no per-set power, taken as this many
+// watts (fnc_onTransmit).
+#define REACT_VOICE_WATTS   5
 
 // How smothered the ground has to be before keying up counts as punching
 // THROUGH something rather than just talking in a noisy place. Same number
@@ -69,6 +98,8 @@
 // Game voice net kinds (jmfsb_voice_fnc_nets) a key-up on never reaches the
 // filter: the squad's own net, the crew intercom, and direct speech.
 #define REACT_VOICE_SAFE_KINDS ["team", "veh", "direct"]
-// Under ACRE (jmfsb_voice_system) the ACRE poll below hears his key-ups itself,
-// with the radio's power; the voice talk event would count them twice.
-#define REACT_VOICE_SYSTEM_ACRE "acre"
+
+// What a client may report about its own player (FUNC(report), review R1),
+// and the server's machine id for the requests that go to it.
+#define REACT_CLIENT_SOURCES ["radio", "burnthrough", "hack"]
+#define SERVER_OWNER         2

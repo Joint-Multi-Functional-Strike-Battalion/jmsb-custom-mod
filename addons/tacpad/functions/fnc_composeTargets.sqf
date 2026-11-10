@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everything a new message can be addressed to, as [mailbox id, label] pairs.
  *
  * THE ONE LIST. The nets, the squads and the people were rebuilt inline in the
@@ -16,6 +16,11 @@
  * The label is what the player reads and what the CC line takes an @ name from,
  * so it is uppercase here rather than at each call site.
  *
+ * WORKED OUT ONCE A FRAME (code review R8). One reader draw asks for the list
+ * from the TO line, the CC line and the picker - each a walk over every
+ * player - so the first ask in a frame builds it and the rest of that frame
+ * get a copy of the same list, for the same player.
+ *
  * Arguments:
  * None
  *
@@ -27,6 +32,9 @@
  *
  * Public: Yes
  */
+
+(missionNamespace getVariable [QGVAR(targetsMemo), [-1, objNull, []]]) params ["_frame", "_for", "_memo"];
+if (_frame isEqualTo diag_frameNo && {_for isEqualTo player}) exitWith {+_memo};
 
 private _targets = [];
 
@@ -47,4 +55,5 @@ private _targets = [];
     _targets pushBack [format ["P:%1", getPlayerUID _x], toUpper (name _x)];
 } forEach (allPlayers select {side group _x isEqualTo side group player});
 
-_targets
+missionNamespace setVariable [QGVAR(targetsMemo), [diag_frameNo, player, _targets]];
++_targets

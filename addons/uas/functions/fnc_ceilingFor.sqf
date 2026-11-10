@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How many airframes one patrol may have up RIGHT NOW.
  *
  * IT USED TO BE A SIDE'S CEILING, and it is a patrol's cap now. One module is

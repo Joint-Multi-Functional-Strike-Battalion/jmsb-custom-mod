@@ -1,14 +1,19 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The watch on one QRF insertion, every JUMP_INTERVAL seconds - which is also
  * the spacing between jumpers. Phases:
  *
  *   "in"        inbound. A static-line stick starts a couple of seconds'
  *               flying short of the grid, and half the stick's length more,
- *               so it is centred on the grid. An AIR ASSAULT, near the grid,
+ *               so it is centred on the grid; on the way it leaves the
+ *               transit height for the static-line height on the slope
+ *               EFUNC(support,approachHeight) gives (2026-11-01). An AIR
+ *               ASSAULT flies nap of the earth and, near the grid,
  *               fast-ropes if it can (ACE fast-roping loaded and the airframe
- *               has FRIES) and lands if it cannot
+ *               has FRIES) and lands if it cannot - tasked by message, only
+ *               once it is CLEARED TO LAND, circling the grid till then
+ *               (user, 2026-11-02, EFUNC(support,lzClear))
  *   "jumping"   one man out per tick (FUNC(jump)) until the cabin is empty,
  *               then home; the squad gets its task when the last one is down
  *   "ropeIn"    hovering in over the grid; settled, ACE puts the squad on
@@ -54,7 +59,12 @@ if (isNull _logic) exitWith {
     [_veh] call FUNC(sweep);
 };
 
-if (!alive _veh) exitWith {
+// DISABLED IS LOST (user, 2026-11-02): an airframe that cannot fly for
+// FAULT_GRACE s is written off and counted (FUNC(writeOff)) - ended below as a
+// wreck is.
+private _writeOff = WRITE_OFF_NONE;
+if (alive _veh) then {_writeOff = [_logic, _veh, _st] call FUNC(writeOff)};
+if (!alive _veh || _writeOff isEqualTo WRITE_OFF_DONE) exitWith {
     [_handle] call CBA_fnc_removePerFrameHandler;
     // Whoever is already out still gets a job: the squad's task is otherwise
     // only handed over at the end of the stick or the dismount. Down means
@@ -92,7 +102,7 @@ if (_phase in ["in", "ropeIn", "landing"] && {(_logic getVariable [QGVAR(abort),
 private _fnc_squadDown = {
     [_logic, _grp, _pos, _requester] call FUNC(qrfLanded);
     _veh land "NONE";
-    _veh flyInHeight ASSAULT_CRUISE;
+    [_veh, FLY_TRANSIT] call EFUNC(support,flyAt);
     if (!isNil "ace_fastroping_fnc_cutRopes" && {(_veh getVariable ["ace_fastroping_deployedRopes", []]) isNotEqualTo []}) then {
         [_veh] call ace_fastroping_fnc_cutRopes;
     };
@@ -100,9 +110,107 @@ private _fnc_squadDown = {
 };
 
 switch (_phase) do {
+    // AN RTB'S LANDING FOR THE PLAYERS ABOARD (user, 2026-11-09, FUNC(qrfReply)):
+    // there, the circle for the mark and the clearance (EFUNC(support,lzClear)),
+    // a landing, PAX OFF?, home once the players are out.
+    case QRF_PHASE_RTB_IN: {
+        private _at = _st getOrDefault ["rtbPos", _pos];
+        if (_veh distance2D _at > ARRIVE_RING) exitWith {};
+        private _job = _logic getVariable [QGVAR(qrfJob), createHashMap];
+        private _threadId = _job getOrDefault ["thread", ""];
+        private _landing = _job getOrDefault ["landing", ""];
+        if (_landing isEqualTo "") exitWith {
+            _job set ["landing", LANDING_CIRCLING];
+            [_veh, LZ_CIRCLE_HEIGHT] call EFUNC(support,flyAt);
+            [_veh, _at, "LIMITED", "LOITER", LZ_CIRCLE_RADIUS] call FUNC(moveTo);
+            _logic setVariable [QGVAR(status), "circling", true];
+            [
+                format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id), -1]],
+                _threadId,
+                _logic getVariable [QGVAR(callsign), "QRF"],
+                _veh,
+                _at,
+                "",
+                {_this call FUNC(liftCleared)},
+                {_this call FUNC(threadTimeout)}
+            ] call EFUNC(support,lzClear);
+        };
+        if (_landing isNotEqualTo LANDING_CLEARED) exitWith {};
+        private _landAt = _job getOrDefault ["landAt", []];
+        if (count _landAt >= 2) then {_at = _landAt};
+        _st set ["rtbPos", _at];
+        [_veh, _at, "LAND"] call FUNC(landAt);
+        _st set ["phase", QRF_PHASE_RTB_LANDING];
+        _st set ["since", CBA_missionTime];
+        _logic setVariable [QGVAR(status), "landing", true];
+    };
+    case QRF_PHASE_RTB_LANDING: {
+        if !(isTouchingGround _veh && {speed _veh < SETTLED_SPEED}) exitWith {
+            if (CBA_missionTime - (_st get "since") > LANDING_PATIENCE) then {
+                [_veh, _st getOrDefault ["rtbPos", _pos], "LAND"] call FUNC(landAt);
+                _st set ["since", CBA_missionTime];
+            };
+        };
+        private _job = _logic getVariable [QGVAR(qrfJob), createHashMap];
+        [_logic, CARD_WHEELS_DOWN, mapGridPosition _veh] call FUNC(threadCard);
+        _st set ["phase", QRF_PHASE_RTB_DOWN];
+        _logic setVariable [QGVAR(status), "waiting", true];
+        [_logic, _job getOrDefault ["thread", ""], PROMPT_PAX, ANSWERS_PAX] call FUNC(threadPrompt);
+    };
+    case QRF_PHASE_RTB_DOWN: {
+        if (((fullCrew [_veh, "cargo", false]) findIf {isPlayer (_x select 0) && {alive (_x select 0)}}) >= 0) exitWith {};
+        private _job = _logic getVariable [QGVAR(qrfJob), createHashMap];
+        private _threadId = _job getOrDefault ["thread", ""];
+        _st set ["phase", "home"];
+        if (_threadId isEqualTo "") exitWith {};
+        [_logic, "CLOSED", SAID_RTB, _threadId] call FUNC(threadState);
+        _logic setVariable [QGVAR(qrfJob), nil];
+    };
     case "in": {
+        // ON THE WAY IN (user, 2026-11-01): INBOUND - ETA every minute, 1 MIN
+        // OUT - POP SMOKE (FLASH, the issuer's popup) in the thread a message
+        // tasked it with (EFUNC(support,inbound)).
+        private _threadId = _logic getVariable [QGVAR(sortieThread), ""];
+        if (_threadId isNotEqualTo "") then {
+            [format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id), -1]], _threadId, _logic getVariable [QGVAR(callsign), "QRF"], _veh, _pos] call EFUNC(support,inbound);
+        };
         if (_task isEqualTo TASK_ASSAULT) exitWith {
             if (_veh distance2D _pos > ASSAULT_APPROACH) exitWith {};
+            // CIRCLE TILL THE MARK IS VERIFIED, THEN CLEARED TO LAND (user,
+            // 2026-11-02: "either way transport needs final permission to
+            // land"): an air assault tasked by message circles the point while
+            // the support core verifies the caller's mark and asks READY TO
+            // LAND - CLEARED? (EFUNC(support,lzClear)); cleared
+            // (FUNC(liftCleared)), it ropes or lands on the verified mark.
+            private _job = _logic getVariable [QGVAR(qrfJob), createHashMap];
+            private _landing = _job getOrDefault ["landing", ""];
+            private _byMessage = _threadId isNotEqualTo "" && (_job getOrDefault ["thread", ""]) isEqualTo _threadId;
+            if (_byMessage && _landing isNotEqualTo LANDING_CLEARED) exitWith {
+                if (_landing isNotEqualTo "") exitWith {};
+                _job set ["landing", LANDING_CIRCLING];
+                [_veh, LZ_CIRCLE_HEIGHT] call EFUNC(support,flyAt);
+                [_veh, _pos, "LIMITED", "LOITER", LZ_CIRCLE_RADIUS] call FUNC(moveTo);
+                _logic setVariable [QGVAR(status), "circling", true];
+                [_logic, format ["circling %1, looking for your smoke", mapGridPosition _pos], "normal", _requester] call FUNC(say);
+                [
+                    format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id), -1]],
+                    _threadId,
+                    _logic getVariable [QGVAR(callsign), "QRF"],
+                    _veh,
+                    _pos,
+                    "",
+                    {_this call FUNC(liftCleared)},
+                    {_this call FUNC(threadTimeout)}
+                ] call EFUNC(support,lzClear);
+            };
+            if (_byMessage) then {
+                private _at = _job getOrDefault ["landAt", []];
+                if (count _at >= 2) then {
+                    _pos = _at;
+                    _st set ["pos", _at];
+                };
+                [_logic, format ["cleared to land, going in at %1", mapGridPosition _pos], "normal", _requester] call FUNC(say);
+            };
             private _cfg = configOf _veh;
             private _rope = EGVAR(common,aceFastroping) && {!isNil "ace_fastroping_fnc_deployAI"} && {getNumber (_cfg >> "ace_fastroping_enabled") > 0};
             if (_rope) then {
@@ -110,8 +218,9 @@ switch (_phase) do {
                 if (getNumber (_cfg >> "ace_fastroping_enabled") isEqualTo 2 && {!isNil "ace_fastroping_fnc_equipFRIES"}) then {
                     [_veh] call ace_fastroping_fnc_equipFRIES;
                 };
-                _veh flyInHeight FASTROPE_HOVER;
-                [_veh, _pos, "LIMITED"] call FUNC(moveTo);
+                // The rope hover is the flight control's (2026-11-05,
+                // FUNC(heliTake)).
+                [_veh, _pos, FASTROPE_HOVER, false, true, HELI_APPROACH_SPEED, "the rope hover"] call FUNC(heliTake);
                 _st set ["phase", "ropeIn"];
             } else {
                 [_veh, _pos, "GET OUT"] call FUNC(landAt);
@@ -121,6 +230,7 @@ switch (_phase) do {
             _logic setVariable [QGVAR(status), ["landing", "fast-roping"] select _rope, true];
         };
 
+        [_veh, [_veh, _logic getVariable [QGVAR(staticAlt), 250], _veh distance2D _pos] call EFUNC(support,approachHeight)] call EFUNC(support,flyAt);
         private _ms = speed _veh / 3.6;
         private _lead = JUMP_LEAD_TIME * _ms + JUMP_LEAD_EXTRA + count (_st get "jumpers") * JUMP_INTERVAL * _ms / 2;
         if (_veh distance2D _pos > _lead) exitWith {};
@@ -136,7 +246,7 @@ switch (_phase) do {
             if (alive _u && {vehicle _u isEqualTo _veh}) then {_next = _u};
         };
         if (!isNull _next) then {
-            [_next, _veh] call FUNC(jump);
+            [_next, _veh] remoteExecCall [QFUNC(jump), _next];
         };
         if (_jumpers isNotEqualTo []) exitWith {};
 
@@ -154,6 +264,8 @@ switch (_phase) do {
         private _over = _veh distance2D _pos < ROPE_RING && {speed _veh < ROPE_SPEED};
         if (!_over && {CBA_missionTime - (_st get "since") < LANDING_PATIENCE}) exitWith {};
         [_veh, false, false] call ace_fastroping_fnc_deployAI;
+        // WHEELS DOWN in a thread a message tasked it with (step 7).
+        [_logic, CARD_WHEELS_DOWN, format ["ROPES - %1", mapGridPosition _veh]] call FUNC(threadCard);
         _st set ["phase", "dismount"];
         _st set ["since", CBA_missionTime];
     };
@@ -168,6 +280,8 @@ switch (_phase) do {
             unassignVehicle _x;
             moveOut _x;
         } forEach ((units _grp) select {vehicle _x isEqualTo _veh});
+        // WHEELS DOWN in a thread a message tasked it with (step 7).
+        [_logic, CARD_WHEELS_DOWN, mapGridPosition _veh] call FUNC(threadCard);
         _st set ["phase", "dismount"];
         _st set ["since", CBA_missionTime];
     };

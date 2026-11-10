@@ -11,7 +11,9 @@ Description:
     (GVAR(windows) with an end) of kind "operation" that started on or after
     the enlistment date; "on for" is any session filed under that window.
     Pass another kind to count those instead - FUNC(promotionPoints) asks for
-    "training". A window from before kinds counts as an operation.
+    "training". A window from before kinds counts as an operation. Only
+    sessions on the ops server count for an operation; training counts ops
+    and training servers; dev counts for neither (PAC_SERVERS).
 
 Parameters:
     0: UID <STRING>
@@ -39,9 +41,16 @@ private _ids = [];
     if ((([_start] call FUNC(stampMinutes)) # 0) >= _sinceMin) then {_ids pushBack _id};
 } forEach GVAR(windows);
 
+// Which servers' sessions count for the kind: operations on ops only, training
+// on ops or training, special anywhere. A row from before server ids is ops.
+private _servers = switch (_kind) do {
+    case "operation": {[PAC_SERVER_OPS]};
+    case "training": {[PAC_SERVER_OPS, PAC_SERVER_TRAINING]};
+    default {PAC_SERVERS};
+};
 private _attended = [];
 {
-    if ((_x # 0) isEqualTo _uid && {(_x param [5, ""]) in _ids}) then {_attended pushBackUnique (_x # 5)};
+    if ((_x # 0) isEqualTo _uid && {(_x param [5, ""]) in _ids} && {(_x param [PAC_ROW_SERVER, PAC_SERVER_OPS]) in _servers}) then {_attended pushBackUnique (_x # 5)};
 } forEach GVAR(sessions);
 
 private _excused = (_rec getOrDefault ["excused", []]) select {_x in _ids && {!(_x in _attended)}};

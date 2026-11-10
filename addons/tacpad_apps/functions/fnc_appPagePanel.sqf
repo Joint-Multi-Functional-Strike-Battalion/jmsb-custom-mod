@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One panel of a board (RADIO, DRONES, HACK): a hairline box, the title on
  * the left, a right label, and the heavy ink rule under the header - the
  * design's "Panels: title + right label, rule under the header".

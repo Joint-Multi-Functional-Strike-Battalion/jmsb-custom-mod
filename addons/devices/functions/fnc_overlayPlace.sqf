@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Lays the walking view out for one device on one edge: the frame, the
  * ground, the status cells, the map, the squad list, the talking
  * chip and the call strip, from the screen rectangle FUNC(overlayLayout)
@@ -38,8 +38,11 @@ if (isNull _display) exitWith {false};
 if (_texture isEqualTo "") exitWith {false};
 
 ([] call EFUNC(tacpad,theme)) params ["_ground", "_ink"];
+// The rows switch on the device's class, not its name (notes, 2026-10-30).
+GVAR(overlayClass) = [_device] call FUNC(deviceClass);
 private _rows = [_screenPos] call FUNC(overlayRows);
 private _textH = _rows get "textH";
+private _wash = [_ground # 0, _ground # 1, _ground # 2, OVERLAY_WASH_ALPHA];
 
 private _frame = _display displayCtrl IDC_OVERLAY_FRAME;
 _frame ctrlSetText _texture;
@@ -56,16 +59,28 @@ _call ctrlSetPosition (_rows get "call");
 _call ctrlSetFontHeight _textH;
 _call ctrlSetBackgroundColor COLOUR_BAR_SCRIM;
 
+// The quick-answer strip (2026-11-06), on the call strip's scrim.
+private _ask = _display displayCtrl IDC_OVERLAY_ASK;
+_ask ctrlSetPosition (_rows get "ask");
+_ask ctrlSetFontHeight _textH;
+_ask ctrlSetBackgroundColor COLOUR_BAR_SCRIM;
+
+// The status cells: the row's type size; FUNC(overlayDraw) fits each cell's
+// text under it by measure every tick.
+private _statusTextH = _rows get "statusTextH";
 {
     private _cell = _display displayCtrl IDC_OVERLAY_CELL(_forEachIndex);
     _cell ctrlSetPosition _x;
-    _cell ctrlSetFontHeight (_textH min ((_x select 3) * OVERLAY_CELL_TEXT_FIT));
+    // Numbers: the monospace (the two type roles, notes 2026-10-30).
+    _cell ctrlSetFont FONT_MONO_BOLD;
+    _cell ctrlSetFontHeight _statusTextH;
 } forEach (_rows get "status");
 
+// The talking box on a wash of the ground, so it reads over any map.
 private _talk = _display displayCtrl IDC_OVERLAY_TALK;
 _talk ctrlSetPosition (_rows get "talk");
 _talk ctrlSetFontHeight _textH;
-_talk ctrlSetBackgroundColor COLOUR_BAR_SCRIM;
+_talk ctrlSetBackgroundColor _wash;
 
 // The squad list: one column over the phone's map, two under the side
 // devices'. Its height on the phone follows its length (FUNC(overlayDraw)).

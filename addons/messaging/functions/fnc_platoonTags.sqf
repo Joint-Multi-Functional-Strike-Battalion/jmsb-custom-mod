@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The unit's platoons as addressable tags: [callsign, [squad ids]].
  *
  * A PLATOON WAS NOT A TAG YOU COULD USE. FUNC(tagMatch) resolves a squad, a

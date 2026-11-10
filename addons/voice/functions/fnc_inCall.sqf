@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The call a unit is in, as a member or ringing. The server reads its own
  * call registry; a client reads the published table.
  *

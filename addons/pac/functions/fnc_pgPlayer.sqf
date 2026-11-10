@@ -4,7 +4,7 @@
     Author: YonV
     Description: One operator - the website's ?page=player, its blocks as
         tabs because a page in game cannot scroll: DETAILS, SKILLS,
-        QUALIFICATIONS, TRAINING, AWARDS, NOTES, THE REST.
+        QUALIFICATIONS, TRAINING, RANGES, AWARDS, NOTES, THE REST.
 
         THE WHOLE RECORD comes from the server (FUNC(adminGet)) - the roster
         a client holds is the published row, which has no notes, no
@@ -46,7 +46,7 @@ private _fnc_opts = {
 
 [[
     ["DETAILS", "details"], ["SKILLS", "skills"], ["QUALIFICATIONS", "quals"], ["TRAINING", "training"],
-    ["AWARDS", "awards"], ["NOTES", "notes"], ["THE REST", "rest"]
+    ["RANGES", "ranges"], ["AWARDS", "awards"], ["NOTES", "notes"], ["THE REST", "rest"]
 ], _sec, {
     params ["_id"];
     ["player", createHashMapFromArray [["uid", GVAR(uiArgs) get "uid"], ["s", _id]]] call FUNC(uiSub);
@@ -218,6 +218,33 @@ switch (_sec) do {
         ]] call FUNC(uiButtons);
     };
 
+    case "ranges": {
+        // Shooting-range runs (FUNC(rangeStore)): by range, newest first, the
+        // latest run of each range in PAC_RANGE_LATEST.
+        private _runs = _rec getOrDefault ["ranges", []];
+        private _names = [];
+        {_names pushBackUnique (_x param [1, ""])} forEach _runs;
+        _names sort true;
+        private _rows = [];
+        {
+            private _name = _x;
+            // the stamps sort as text, so descending is newest first
+            private _of = (_runs select {(_x param [1, ""]) isEqualTo _name}) apply {[_x param [0, ""], _x]};
+            _of sort false;
+            {
+                (_x # 1) params [["_when", ""], ["_range", ""], ["_mode", ""], ["_detail", ""], ["_hits", 0], ["_shown", 0], ["_secs", 0]];
+                private _pct = if (_shown > 0) then {round (100 * _hits / _shown)} else {0};
+                private _row = [[_range, _when select [0, 16], format ["%1 / %2  (%3%%)  %4 s", _hits, _shown, _pct, _secs],
+                    format ["%1 - %2", _mode, _detail]], ""];
+                if (_forEachIndex isEqualTo 0) then {_row pushBack PAC_RANGE_LATEST};
+                _rows pushBack _row;
+            } forEach _of;
+        } forEach _names;
+        if (_rows isEqualTo []) then {_rows = [[["None yet", "", "", ""], "", [0.545, 0.592, 0.639, 1]]]};
+        [PAC_IDC_LIST, ["Range", "When", "Score", "Mode"], [0, 0.26, 0.44, 0.66], _rows, {}, _y, _h,
+            format ["Ranges  %1 runs  -  the latest of each range is highlighted", count _runs]] call FUNC(uiList);
+    };
+
     case "rest": {
         (_rec getOrDefault ["_promotion", [0, [], "", 0, 0]]) params [["_pts", 0], ["_breakdown", []], ["_next", ""], ["_need", 0]];
         (_rec getOrDefault ["attendanceSummary", [0, 0, 0, 0, 0]]) params [["_sched", 0], ["_attended", 0], ["_excused", 0], ["_unexcused", 0], ["_pct", 0]];
@@ -252,7 +279,13 @@ switch (_sec) do {
                 if (isNull _u) exitWith {};
                 [format ["Kick %1 from the server?", name _u], {
                     params ["_u"];
-                    serverCommand format ["#kick %1", name _u];
+                    // By player id, not name (review L1): a name can be shared
+                    // or carry spaces. serverCommand works only for the logged-in
+                    // server admin, and only a kick that went out is logged.
+                    if !(serverCommandAvailable "#kick") exitWith {["Log in as the server's admin (#login) to kick.", true] call FUNC(uiHint)};
+                    private _id = getPlayerID _u;
+                    if (_id isEqualTo "") exitWith {["That player has left.", true] call FUNC(uiHint)};
+                    if !(serverCommand format ["#kick %1", _id]) exitWith {["The server did not take the kick.", true] call FUNC(uiHint)};
                     [player, "kick", [_u] call FUNC(uid), format ["kicked %1", name _u]] remoteExec [QFUNC(adminLogAdd), 2];
                 }, _u] call FUNC(uiConfirm);
             }, true];
@@ -262,7 +295,12 @@ switch (_sec) do {
                 if (isNull _u) exitWith {};
                 [format ["BAN %1 from the server? This is not a kick.", name _u], {
                     params ["_u"];
-                    serverCommand format ["#ban %1", name _u];
+                    // As the kick (review L1): by player id, logged-in admin
+                    // only, logged only when the server took it.
+                    if !(serverCommandAvailable "#kick") exitWith {["Log in as the server's admin (#login) to ban.", true] call FUNC(uiHint)};
+                    private _id = getPlayerID _u;
+                    if (_id isEqualTo "") exitWith {["That player has left.", true] call FUNC(uiHint)};
+                    if !(serverCommand format ["#exec ban %1", _id]) exitWith {["The server did not take the ban.", true] call FUNC(uiHint)};
                     [player, "ban", [_u] call FUNC(uid), format ["banned %1", name _u]] remoteExec [QFUNC(adminLogAdd), 2];
                 }, _u] call FUNC(uiConfirm);
             }, true];

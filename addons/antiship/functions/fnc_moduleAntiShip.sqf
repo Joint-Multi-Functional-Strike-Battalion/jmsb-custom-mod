@@ -59,7 +59,7 @@ private _run = {
     private _players = call EFUNC(common,playerSides);
     private _jobs = [];     // [side, taor markers, blacklist markers]
 
-    if (missionNamespace getVariable [QEGVAR(adapter_alive,ready), false]) then {
+    if (!isNil QEFUNC(adapter_alive,commanders) && {missionNamespace getVariable [QEGVAR(adapter_alive,ready), false]}) then {
         {
             _x params ["_side"];
             if (_side in [west, east, independent]
@@ -192,10 +192,27 @@ private _run = {
 };
 
 // ALiVE's commanders come up after the module runs. Wait for the adapter; if it
-// never says ready - no ALiVE, or a mission without commanders - site in the
-// module's own area instead of siting nothing.
-private _args = [_batteries, _launchers, _radars, _area];
-[
-    {missionNamespace getVariable [QEGVAR(adapter_alive,ready), false]},
-    _run, _args, AS_ALIVE_WAIT, _run
-] call CBA_fnc_waitUntilAndExecute;
+// gives up - a mission without commanders - site in the module's own area
+// instead of siting nothing.
+//
+// One path without ALiVE (user, 2026-11-02: "works with or without" - "same
+// as not loaded"): no ALiVE loaded, nothing to wait for, so the module's own
+// area as soon as the mission runs; ALiVE loaded with no commanders, the same
+// branch once the adapter gives up (its give-up replaced this module's own
+// AS_ALIVE_WAIT timeout). _run travels in the arguments: a hook runs later, where
+// this function's locals are gone.
+private _job = [_run, [_batteries, _launchers, _radars, _area]];
+private _without = {
+    params ["_run", "_args"];
+    ["Anti-ship", "using the module's own area"] call EFUNC(common,aliveLoaded);
+    [{time > 0}, _run, _args] call CBA_fnc_waitUntilAndExecute;
+};
+
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    _job call _without;
+};
+
+[{
+    params ["_run", "_args"];
+    _args call _run;
+}, _job, _without] call EFUNC(adapter_alive,whenReady);

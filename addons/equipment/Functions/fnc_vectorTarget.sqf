@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where the player is looking through a [JMSB] Vector, as an ASL position.
  *
  * ONE RAYCAST, TWO CONSUMERS. The shared target marker and the personal waypoint

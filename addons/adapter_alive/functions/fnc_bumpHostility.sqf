@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Raises the civilian population's hostility toward a side, in the settlement
  * nearest a position.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Fits one of this addon's dialogs - the console, the message box, TIME /
  * WEATHER - to the tablet's screen when the tacpad is hosted on a device that
  * is open, instead of the whole monitor (user, 2026-10-20: "all apps need to
@@ -33,7 +33,10 @@
 params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {false};
-if (HOST_NATIVE || {isNull (HOST_DISPLAY)}) exitWith {false};
+// Fitted whenever the device dialog is up - it hands its screen rectangle to
+// the tacpad on open whatever the display mode - not only in tablet mode
+// (user, 2026-10-24: the console came up without the frame).
+if (isNull (findDisplay ADMIN_TABLET_IDD) && {HOST_NATIVE || {isNull (HOST_DISPLAY)}}) exitWith {false};
 
 private _sx = HOST_W / safeZoneW;
 private _sy = HOST_H / safeZoneH;

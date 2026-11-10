@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Rebuilds the band table from the band settings: one entry per band of
  * [path-loss exponent, loss at 1 m dB, noise floor dBm]. Called at preInit and
  * from every band setting's change script, so the link budget reads one map

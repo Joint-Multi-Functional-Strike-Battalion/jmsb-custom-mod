@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The MEDIC app's patient page: the four monitored numbers, the status lines
  * and the body, for one man. BACK returns to the list; SHOW ON MAP closes the
  * app over him (FUNC(showOnMap)).
@@ -213,7 +213,7 @@ _y = _y + _rowH * 1.5;
     if (_ly + _rowH > _h) then {break};
     [_body, [_rx, _ly, _rw, _rowH], _x, _dim, TEXT_LABEL, false] call EFUNC(tacpad,drawText);
 } forEach [
-    "THE TABLET'S EKG AND PULSE OX READ HR, SPO2 AND RHYTHM LIVE.",
+    "THE TABLET READS HR, BP, SPO2, RESP RATE AND RHYTHM LIVE.",
     "BP NEEDS A CUFF OR THE AED'S NIBP.  RR NEEDS THE CAPNO.",
     "A DEVICE ON THE PATIENT WINS OVER THE TABLET'S LEADS.",
     "OTHERWISE THE LAST HAND CHECK, WITH ITS AGE."

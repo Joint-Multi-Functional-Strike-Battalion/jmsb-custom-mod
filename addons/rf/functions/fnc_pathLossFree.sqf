@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Log-distance path loss for a band over clear ground: ref + 10 n log10(d).
  * Pure arithmetic; the band table is the only thing it reads. Public so a
  * noise source (jmfsb_rf_fnc_addNoiseSource) can price its own emission with

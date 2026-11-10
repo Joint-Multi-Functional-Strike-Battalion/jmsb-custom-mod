@@ -1,0 +1,281 @@
+{
+  "title": "JMSB custom mod - recommendations from the code review",
+  "date": "2026-10-31",
+  "based_on": [
+    "REVIEW_CODE_2026-10-31.json",
+    "PLAN_VOICE_EW_PLAY.json"
+  ],
+  "note": "House rules that stop whole classes of the review's findings, not one-off fixes. Effort: S under a day, M a few days, L a week or more.",
+  "recommendations": [
+    {
+      "id": "R1",
+      "order": 1,
+      "effort": "M",
+      "title": "One trust rule for every client-to-server request",
+      "why": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7"
+      ],
+      "what": "The server never trusts who or what a client says. Every server entry point that acts on a client request checks the real sender and its rights itself.",
+      "how": [
+        "Requests that need trust go by remoteExec to a whitelisted function, so remoteExecutedOwner is set. CBA server events do not tell you the sender.",
+        "The server works out the sender itself: from remoteExecutedOwner, that connection's own Steam ID (allUsers / getUserInfo - check the field order). Never a unit, UID, side, requester or callsign from the arguments.",
+        "Anything the server decides on (admin list, rights, cooldowns) is kept in localNamespace, which is not networked. Any client can publicVariable any missionNamespace name and overwrite the server's copy.",
+        "One common server helper: sender Steam ID, sender unit, is admin, is on this side.",
+        "Re-run the client's own checks (canTask, range, cooldown, hacked) on the server before acting."
+      ]
+    },
+    {
+      "id": "R2",
+      "order": 2,
+      "effort": "S",
+      "title": "Admin by Steam ID, decided on the server only",
+      "why": [
+        "S1",
+        "S2",
+        "S4",
+        "S5"
+      ],
+      "what": "One admin list of Steam IDs, owned by the server and kept in localNamespace. The server checks the sender's own Steam ID (R1) against it. Clients get a published copy for the UI only; the server never reads that copy back.",
+      "how": [
+        "At boot the server loads the list from PAC's admins plus a seed list, so you cannot lock yourself out: Steam IDs in a Pelican egg variable (e.g. JMSB_ADMIN_UIDS) or saved in the server's own profile.",
+        "Remove the other ways in: the client-set jmfsb_common_isAdmin flag, the client-published admp_authorisedIDs, and everyoneAdmin as a mission variable.",
+        "Adding or removing an admin in game is a PAC admin action the server checks by sender Steam ID, then writes to the store and republishes.",
+        "Admin panel, PAC, ZEN, teleport, rank, role and the secret entry (R4) all use this one check."
+      ]
+    },
+    {
+      "id": "R4",
+      "order": 3,
+      "effort": "S",
+      "title": "Secrets never in CBA settings",
+      "why": [
+        "S9"
+      ],
+      "what": "Every CBA server setting is copied to every client, so secrets cannot be settings. The LiveKit API secret and the database password (and the pacdb key) leave CBA settings entirely; only non-secret values stay (LiveKit URL and key id, database host).",
+      "how": [
+        "The server reads each secret in this order: (1) a value an admin entered in game - sent from his client to the server only by remoteExec, checked by Steam ID (R2), saved in the server's own profileNamespace, never published; (2) an environment variable (a Pelican egg variable); (3) a file next to the server.",
+        "The server hands the secret to its extension once at boot (a 'configure' command) and keeps no SQF variable with it, so nothing can publish it by accident. For LiveKit this changes the server .so only; the frozen client DLL does not change.",
+        "The admin UI shows only SET / NOT SET and the last four characters.",
+        "Rotate both after the fix: a new LiveKit key and secret in the egg, a new Atlas password. Every build so far shipped the old ones to every player.",
+        "Keep the existing limits: Atlas IP allowlist and a database user with rights on PAC's database only.",
+        "Order: in-game entry (1) only after R1/R2 are done; until then use the environment variable only."
+      ]
+    },
+    {
+      "id": "R3",
+      "order": 4,
+      "effort": "S",
+      "title": "A remote-exec whitelist in the mod, and no raw code over the wire",
+      "why": [
+        "S3",
+        "S8"
+      ],
+      "what": "CfgRemoteExec in the mod listing only the functions clients may call. No remoteExec of 'call', compile or code strings.",
+      "how": [
+        "Add the whitelist to the main addon.",
+        "Turn each raw-code remoteExec (endex, admin panel) into a named function or a CBA event.",
+        "Write in SETUP.md what a mission's own whitelist must include (voice tokens, PAC, support)."
+      ]
+    },
+    {
+      "id": "R5",
+      "order": 5,
+      "effort": "M",
+      "title": "Locality rules, written down and followed",
+      "why": [
+        "B5",
+        "B7",
+        "B8",
+        "B12",
+        "B19",
+        "B20",
+        "P9"
+      ],
+      "what": "A short section in CODING_GUIDELINES.md and the same pattern everywhere.",
+      "how": [
+        "Never use player in server code; use the unit passed in.",
+        "Fired handlers act only where the projectile or shooter is local.",
+        "AI orders, moveOut and similar run on the machine that owns the unit; send them there.",
+        "Killed handlers: MPKilled, or register where the unit is local.",
+        "No waitUntil or sleep in anything a handler or call can reach; use CBA_fnc_waitUntilAndExecute."
+      ]
+    },
+    {
+      "id": "R6",
+      "order": 6,
+      "effort": "S",
+      "title": "Init order and optional mods",
+      "why": [
+        "B6",
+        "B9",
+        "B16",
+        "B24",
+        "B26"
+      ],
+      "what": "Every addon lists in requiredAddons the addons whose variables it reads at load. Anything from an optional mod (ALiVE, ACM, messaging) is read with a default and its functions checked for nil.",
+      "how": [
+        "Read settings only after CBA_settingsInitialized.",
+        "getVariable [name, default] for every cross-addon flag that may be absent.",
+        "Never let a setting's default be overwritten after the settings include (APS)."
+      ]
+    },
+    {
+      "id": "R7",
+      "order": 7,
+      "effort": "M",
+      "title": "A network budget",
+      "why": [
+        "P4",
+        "P8",
+        "B3"
+      ],
+      "what": "Broadcast only what other machines read, only when it changes, and only to who needs it.",
+      "how": [
+        "No public setVariable inside a loop or a damage handler.",
+        "Progress and timers go out in coarse steps (start, 25%, 50%, done), not every second.",
+        "Server-only handlers get server events, not global ones.",
+        "Big tables (PAC roster) send a change, not the whole table, and clients re-apply only what changed."
+      ]
+    },
+    {
+      "id": "R8",
+      "order": 8,
+      "effort": "M",
+      "title": "UI: build once, update values",
+      "why": [
+        "P5",
+        "P6"
+      ],
+      "what": "The tablet rows already skip work with a change key. Make that one shared helper and use it for the HUD, devices, overlay, timer, scanner and tiles.",
+      "how": [
+        "Create controls when an app opens; on a tick only change text, colour and visibility.",
+        "Recreate only when the change key differs.",
+        "Debounce redraws to one per frame.",
+        "Never recreate a render-to-texture picture on a tick."
+      ]
+    },
+    {
+      "id": "R9",
+      "order": 9,
+      "effort": "L",
+      "title": "A performance budget for the two heavy systems",
+      "why": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "what": "The RF mesh and APS are the costs that grow with player and vehicle count. Give each a budget per frame and measure against it.",
+      "how": [
+        "RF mesh: recompute only when an edge changed, a few sources per tick, relays only among relay nodes, jittered edge cache with a cap per tick.",
+        "APS: one shared handler for all fitted vehicles, slower scan when nothing is incoming, only crewed vehicles with the engine on.",
+        "Put a timer on each tick (diag addon) that logs to the RPT, so a 40-player test gives real numbers instead of the review's estimates."
+      ]
+    },
+    {
+      "id": "R10",
+      "order": 10,
+      "effort": "M",
+      "title": "Run it before building more",
+      "why": [
+        "all - nothing has been run in game"
+      ],
+      "what": "Every addon README says NOT RUN IN GAME. A smoke test on a dedicated server finds the locality and init bugs faster than reading.",
+      "how": [
+        "Test mission on a dedicated server with two clients and a headless client.",
+        "Run TESTS.md's play test, the VON self tests and the LiveKit echo and two-player tests.",
+        "Record a status per addon (not run / runs / passes) in TESTS.md and drop the NOT RUN line as each passes.",
+        "Fix the HIGH findings first so the test isn't buried in known errors."
+      ]
+    },
+    {
+      "id": "R11",
+      "order": 11,
+      "effort": "S",
+      "title": "Commit and push the week of work",
+      "why": [
+        "477 changed files since 2026-10-23"
+      ],
+      "what": "The GitHub copy is a week behind and the whole LiveKit build is only on one disk.",
+      "how": [
+        "Commit now, in a few commits by area if you want history.",
+        "Push to the superdev branch.",
+        "After that, small commits per change."
+      ]
+    },
+    {
+      "id": "R12",
+      "order": 12,
+      "effort": "M",
+      "title": "PAC: one writer, one state",
+      "why": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "P4"
+      ],
+      "what": "PAC's store is written from several places at once and before it has loaded.",
+      "how": [
+        "No write of any kind until the store is READY; players connected during boot are picked up after.",
+        "One queue for every extension request, with keyed replies.",
+        "A heartbeat that flushes pending saves.",
+        "Publish skills/rank changes separately from first-spawn work (seed, slot, loadout)."
+      ]
+    },
+    {
+      "id": "R13",
+      "order": 13,
+      "effort": "M",
+      "title": "Voice: fix before the first LiveKit test",
+      "why": [
+        "B14",
+        "B15",
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V8"
+      ],
+      "what": "The server picks the voice system for everyone; the mixer starts speakers silent; hearing follows current nets only.",
+      "how": [
+        "Server-published system choice, with a 'voice unavailable' state (PLAN V1).",
+        "Mixer keeps gain on reader restart, new speakers at 0; gain only for nets the listener is on now.",
+        "Auto-subscribe off; one connect at a time; listen even without a mic.",
+        "Under LiveKit turn game VON voice off on every channel."
+      ]
+    },
+    {
+      "id": "R14",
+      "order": 14,
+      "effort": "M",
+      "title": "Remove TFAR and ACRE, and other dead code",
+      "why": [
+        "DEC1",
+        "L4"
+      ],
+      "what": "Fewer paths to test. Keep PAC's TFAR/ACRE fields.",
+      "how": [
+        "Remove adapter_tfar, adapter_acre, radio_mesh, acre_faces and the three TFAR compatibility patches.",
+        "Remove the TFAR/ACRE choices and the external-radio mode from the voice core.",
+        "Trim the TFAR/ACRE branches in the other addons the review listed.",
+        "Also drop the legacy redirects to missing functions and the duplicate onPlayerConnected handler, and repair the find-and-replace damage in the wiki URL and extension names."
+      ]
+    }
+  ],
+  "first_week": [
+    "R11",
+    "R1 + R2 (Steam ID admin, server-side sender, localNamespace)",
+    "R4 via environment variables, then rotate",
+    "R3",
+    "the will-break HIGHs",
+    "R10 smoke test"
+  ],
+  "updated": "2026-10-31 20:35 - R1, R2, R4 revised (Steam ID admin, localNamespace, secrets off CBA)"
+}

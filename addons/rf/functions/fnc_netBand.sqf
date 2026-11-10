@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_netBand: the band a net is on (server; on a client the net table is
  * empty and the answer is ""). For anything that prices noise by net - a
  * jammer that attacks one net hits that net's band.

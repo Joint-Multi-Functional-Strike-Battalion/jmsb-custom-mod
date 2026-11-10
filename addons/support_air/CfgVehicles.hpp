@@ -10,7 +10,7 @@ class CfgVehicles {
     };
 
     // ONE MODULE IS ONE ASSET ON TAC//SUPPORT, AND MANY MAY BE PLACED - the
-    // same shape as the CAS drone module in addons/cas, so the four of these
+    // same shape as the CAS drone module in addons/cas, so the three of these
     // read the same in Eden as the one already there. No module, no asset: an
     // air asset exists because a mission maker put it on the map, never
     // because a setting switched a kind of support on.
@@ -19,11 +19,22 @@ class CfgVehicles {
     // only place allegiance is typed; every module here belongs to the
     // players and reads their side from the slots.
     //
-    // THE MODULE IS THE AIRBASE. Aircraft built from a class appear at the
-    // module and go home to it; a module synced to an aircraft flies THAT
-    // aircraft from where it stands and parks it back there. Where the
-    // support goes is the requester's grid on TAC//SUPPORT, never a module
-    // field.
+    // THE MODULE IS THE BASE (user, 2026-11-02: "all support aircraft needs to
+    // be virtual till tasked, then they spawn in at alt over the support module
+    // location"). An aircraft built from a class does not exist until a task
+    // is accepted; then it is made in the air over the module at its height,
+    // flies the task, comes back over the module and is removed there. A
+    // module synced to an aircraft flies THAT aircraft from where it stands
+    // and parks it back there. Where the support goes is the requester's grid,
+    // never a module field. RESPAWNS (user, 2026-11-02: "make sure there is a
+    // respawn count for each support, default no respawns") is how many more
+    // airframes it has after one is lost.
+    //
+    // RETIRED 2026-11-02 with the virtual model, removed here: Response Delay
+    // (spawnDelay - made at once when tasked), the CAS Ingress Distance
+    // (ingressDistance - made over the module, not out on the bearing) and
+    // Drone Escorts (escorts - a jet always takes them, a helicopter by LZ
+    // security). A mission that set them still loads; the values are not read.
     class GVAR(moduleCAS): Module_F {
         scope = 2;
         scopeCurator = 2;
@@ -56,22 +67,6 @@ class CfgVehicles {
                 defaultValue = "'HOG'";
                 expression = QUOTE(_this setVariable [ARR_2('callsign',_value)]);
             };
-            class sorties: Edit {
-                property = QGVAR(casSorties);
-                displayName = "Sorties";
-                tooltip = "How many times this asset may be tasked before it is spent. A synced aircraft is also spent when it is lost. 0: unlimited.";
-                typeName = "NUMBER";
-                defaultValue = "4";
-                expression = QUOTE(_this setVariable [ARR_2('sorties',_value)]);
-            };
-            class altitude: Edit {
-                property = QGVAR(casAltitude);
-                displayName = "Altitude (m)";
-                tooltip = "Height above the terrain the aircraft works at unless the requester picks one. A helicopter is held to its own ceiling for this - see the README.";
-                typeName = "NUMBER";
-                defaultValue = "600";
-                expression = QUOTE(_this setVariable [ARR_2('altitude',_value)]);
-            };
             class runIn: Edit {
                 property = QGVAR(casRunIn);
                 displayName = "Run-In Distance (m)";
@@ -83,7 +78,7 @@ class CfgVehicles {
             class stationTime: Edit {
                 property = QGVAR(casStationTime);
                 displayName = "Time On Station (sec)";
-                tooltip = "How long a SAD or a LOITER holds over the grid before the aircraft goes home by itself.";
+                tooltip = "How long a SAD, a LOITER or a REQUEST ON STATION holds before the aircraft returns to base, where it is removed until its next task.";
                 typeName = "NUMBER";
                 defaultValue = "600";
                 expression = QUOTE(_this setVariable [ARR_2('stationTime',_value)]);
@@ -96,26 +91,26 @@ class CfgVehicles {
                 defaultValue = "300";
                 expression = QUOTE(_this setVariable [ARR_2('searchRadius',_value)]);
             };
-            class spawnDelay: Edit {
-                property = QGVAR(casSpawnDelay);
-                displayName = "Response Delay (sec)";
-                tooltip = "Time between the request being accepted and the aircraft leaving the module. A synced aircraft starts at once - it has to take off.";
-                typeName = "NUMBER";
-                defaultValue = "60";
-                expression = QUOTE(_this setVariable [ARR_2('spawnDelay',_value)]);
-            };
             class cooldown: Edit {
                 property = QGVAR(casCooldown);
                 displayName = "Cooldown (sec)";
-                tooltip = "Time after a sortie ends before this asset can be tasked again.";
+                tooltip = "Time after an aircraft is gone (home or lost) before this asset can be tasked again.";
                 typeName = "NUMBER";
                 defaultValue = "300";
                 expression = QUOTE(_this setVariable [ARR_2('cooldown',_value)]);
             };
+            class respawns: Edit {
+                property = QGVAR(casRespawns);
+                displayName = "Respawns";
+                tooltip = "Replacement aircraft after one is LOST (destroyed, crew dead, or disabled). The next task after the Respawn Delay gets a new one. Going home after a task uses none - the aircraft is removed over the module and made again for the next task. 0: none - after a loss the asset leaves the SUPPORT list.";
+                typeName = "NUMBER";
+                defaultValue = "0";
+                expression = QUOTE(_this setVariable [ARR_2('respawns',_value)]);
+            };
             class respawnDelay: Edit {
                 property = QGVAR(casRespawnDelay);
                 displayName = "Respawn Delay (sec)";
-                tooltip = "How long after its aircraft is lost a replacement is ready. A synced aircraft is rebuilt on its own stand with the crew it started with. -1: never - a lost aircraft is the asset lost for good.";
+                tooltip = "How long after its aircraft is lost the asset can be tasked again, while Respawns are left. A synced aircraft is rebuilt on its own stand with the crew it started with.";
                 typeName = "NUMBER";
                 defaultValue = "300";
                 expression = QUOTE(_this setVariable [ARR_2('respawnDelay',_value)]);
@@ -132,14 +127,6 @@ class CfgVehicles {
                     class atStart { name = "At the request"; value = 1; };
                 };
             };
-            class ingressDistance: Edit {
-                property = QGVAR(casIngressDistance);
-                displayName = "Ingress Distance (m)";
-                tooltip = "An aircraft built from the class appears this far out on the requested INGRESS bearing and leaves the same distance out on the EGRESS, where it is removed - no airbase needed. Without an ingress it comes from the module's side. A synced aircraft takes off from its stand and flies the same legs.";
-                typeName = "NUMBER";
-                defaultValue = "6000";
-                expression = QUOTE(_this setVariable [ARR_2('ingressDistance',_value)]);
-            };
             class friendlyRange: Edit {
                 property = QGVAR(casFriendlyRange);
                 displayName = "Friendly Range (m)";
@@ -148,29 +135,51 @@ class CfgVehicles {
                 defaultValue = "100";
                 expression = QUOTE(_this setVariable [ARR_2('friendlyRange',_value)]);
             };
+            // DRONE ESCORTS (user, 2026-11-02: "drone escorts is based on lz
+            // security for helos and always for fix wings"), the same two
+            // classes on every support aircraft module (FUNC(escortLaunch)).
+            class escortPlane: Edit {
+                property = QGVAR(casEscortPlane);
+                displayName = "Fixed-Wing Escort Class";
+                tooltip = "The fixed-wing drone a jet's two escorts fly - a jet always takes them, made beside it over the module and removed with it. They are what ALL ATTACK sends at the target area. Empty: the side's vanilla UCAV. Not a fixed-wing class in this mission: no escort, and one RPT warning.";
+                typeName = "STRING";
+                control = QGVAR(pickEscortPlane);
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('escortPlane',_value)]);
+            };
+            class escortHeli: Edit {
+                property = QGVAR(casEscortHeli);
+                displayName = "Rotary Escort Class";
+                tooltip = "The rotary drone a helicopter's two escorts fly - only when the request's LZ security is YELLOW or RED. Empty: none. Not a helicopter class in this mission: no escort, and one RPT warning.";
+                typeName = "STRING";
+                control = QGVAR(pickEscortHeli);
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('escortHeli',_value)]);
+            };
         };
 
         class ModuleDescription: ModuleDescription {
             description[] = {
                 "One taskable CAS aircraft on TAC//SUPPORT. Place one module per aircraft; many are allowed.",
                 "",
-                "Sync the module to an aircraft to fly that aircraft; otherwise the Aircraft Class is created at the module, which is its airbase.",
+                "Sync the module to an aircraft to fly that aircraft from its stand. Otherwise the Aircraft Class is virtual until tasked: when a task is accepted it is made in the air over the module - a helicopter nap of the earth, a jet at 4000 m - flies the task, and is removed over the module when it comes home.",
                 "",
-                "SAD holds over the grid and strikes what is painted or known inside the radius. LOITER orbits weapons-tight. ATTACK RUN makes the passes the requester sets, laser or smoke first.",
+                "SAD holds over the grid and strikes what is painted or known inside the radius. LOITER orbits weapons-tight. ATTACK RUN makes the passes the requester sets, laser or smoke first. A jet with its escorts up can be cleared ALL ATTACK: the drones attack the target area too.",
+                "",
+                "Flies tactically: lights only over its airfield; a helicopter nap of the earth; a fixed-wing attacks from 4000 m and holds 8 km off the map on station.",
                 "",
                 "Aircraft Class - Crewed or drone aircraft; blank for the side's vanilla CAS jet",
                 "Callsign - What TAC//SUPPORT and the radio call it",
-                "Sorties - Taskings before it is spent; 0 for unlimited",
-                "Altitude (m) - Working height above the terrain",
                 "Run-In Distance (m) - How far past the target a run turns out",
-                "Time On Station (sec) - How long a SAD or LOITER holds",
+                "Time On Station (sec) - How long a SAD, LOITER or REQUEST ON STATION holds",
                 "Terminal Search (m) - Laser/smoke search radius on a run; 0 for none",
-                "Response Delay (sec) - Time from accepted request to launch",
-                "Cooldown (sec) - Time after a sortie before it can be tasked again",
-                "Respawn Delay (sec) - Time to replace a lost aircraft; -1 never",
+                "Cooldown (sec) - Time after an aircraft is gone before it can be tasked again",
+                "Respawns - Replacements after a loss; 0 for none",
+                "Respawn Delay (sec) - Time after a loss before it can be tasked again",
                 "Cooldown Starts - End of the sortie, or at the request",
-                "Ingress Distance (m) - Where a class aircraft appears and leaves",
-                "Friendly Range (m) - Releases held this close to friendlies unless DANGER CLOSE"
+                "Friendly Range (m) - Releases held this close to friendlies unless DANGER CLOSE",
+                "Fixed-Wing Escort Class - A jet's two drones, always; empty for the side's UCAV",
+                "Rotary Escort Class - A helicopter's two drones on a YELLOW or RED LZ; empty for none"
             };
         };
     };
@@ -193,7 +202,7 @@ class CfgVehicles {
             class aircraftClass: Edit {
                 property = QGVAR(transportAircraftClass);
                 displayName = "Helicopter Class";
-                tooltip = "Classname of the helicopter this asset flies. Ignored when the module is synced to a helicopter: that one flies instead. BLANK: the side's vanilla transport helicopter.";
+                tooltip = "Classname of the helicopter or VTOL this asset flies. A VTOL takes off, hovers and lands as a helicopter and flies as a plane beyond 1 km of its point. Ignored when the module is synced to an aircraft: that one flies instead. BLANK: the side's vanilla transport helicopter.";
                 typeName = "STRING";
                 control = QGVAR(pickHeli);
                 defaultValue = "''";
@@ -214,22 +223,6 @@ class CfgVehicles {
                 typeName = "NUMBER";
                 defaultValue = "0";
                 expression = QUOTE(_this setVariable [ARR_2('seats',_value)]);
-            };
-            class airframes: Edit {
-                property = QGVAR(transportAirframes);
-                displayName = "Airframes Available";
-                tooltip = "How many helicopters may be lost before the asset is spent. A synced helicopter is one airframe whatever this says. 0: unlimited.";
-                typeName = "NUMBER";
-                defaultValue = "2";
-                expression = QUOTE(_this setVariable [ARR_2('airframes',_value)]);
-            };
-            class height: Edit {
-                property = QGVAR(transportHeight);
-                displayName = "Flight Height (m)";
-                tooltip = "Height above the terrain flown between points unless the requester picks one.";
-                typeName = "NUMBER";
-                defaultValue = "80";
-                expression = QUOTE(_this setVariable [ARR_2('height',_value)]);
             };
             class waitTime: Edit {
                 property = QGVAR(transportWaitTime);
@@ -324,26 +317,26 @@ class CfgVehicles {
                 defaultValue = "250";
                 expression = QUOTE(_this setVariable [ARR_2('jumpHeight',_value)]);
             };
-            class spawnDelay: Edit {
-                property = QGVAR(transportSpawnDelay);
-                displayName = "Response Delay (sec)";
-                tooltip = "Time between the first request and the helicopter leaving the module. Later orders go to the helicopter already out.";
-                typeName = "NUMBER";
-                defaultValue = "60";
-                expression = QUOTE(_this setVariable [ARR_2('spawnDelay',_value)]);
-            };
             class cooldown: Edit {
                 property = QGVAR(transportCooldown);
                 displayName = "Cooldown (sec)";
-                tooltip = "Time after the helicopter is home before it can be tasked again.";
+                tooltip = "Time after the helicopter is home (or lost) before it can be tasked again.";
                 typeName = "NUMBER";
                 defaultValue = "120";
                 expression = QUOTE(_this setVariable [ARR_2('cooldown',_value)]);
             };
+            class respawns: Edit {
+                property = QGVAR(transportRespawns);
+                displayName = "Respawns";
+                tooltip = "Replacement helicopters after one is LOST (destroyed, crew dead, or disabled). The next task after the Respawn Delay gets a new one. Going home after a lift uses none - it lands at the module, is removed, and is made again for the next task. 0: none - after a loss the asset leaves the SUPPORT list.";
+                typeName = "NUMBER";
+                defaultValue = "0";
+                expression = QUOTE(_this setVariable [ARR_2('respawns',_value)]);
+            };
             class respawnDelay: Edit {
                 property = QGVAR(transportRespawnDelay);
                 displayName = "Respawn Delay (sec)";
-                tooltip = "How long after its aircraft is lost a replacement is ready. A synced aircraft is rebuilt on its own stand with the crew it started with. Airframes Available still caps how many may be lost. -1: never - a lost aircraft is the asset lost for good.";
+                tooltip = "How long after its helicopter is lost the asset can be tasked again, while Respawns are left. A synced helicopter is rebuilt on its own stand with the crew it started with.";
                 typeName = "NUMBER";
                 defaultValue = "60";
                 expression = QUOTE(_this setVariable [ARR_2('respawnDelay',_value)]);
@@ -360,197 +353,46 @@ class CfgVehicles {
                     class atStart { name = "At the request"; value = 1; };
                 };
             };
+            // DRONE ESCORTS (user, 2026-11-02: "based on lz security for
+            // helos"). A helicopter only, so the rotary class only.
+            class escortHeli: Edit {
+                property = QGVAR(transportEscortHeli);
+                displayName = "Rotary Escort Class";
+                tooltip = "The rotary drone of the helicopter's two escorts - only when the request's LZ security is YELLOW or RED (GREEN, or no security line: none). Made beside it over the module, nap of the earth and dark like it, removed with it. Empty: none. Not a helicopter class in this mission: no escort, and one RPT warning.";
+                typeName = "STRING";
+                control = QGVAR(pickEscortHeli);
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('escortHeli',_value)]);
+            };
         };
 
         class ModuleDescription: ModuleDescription {
             description[] = {
                 "One taskable transport helicopter on TAC//SUPPORT. Place one module per helicopter; many are allowed.",
                 "",
-                "Sync the module to a helicopter to fly that one; otherwise the class is created at the module, which is its base. The helicopter stays out between orders until it is sent home (RTB) or an EXTRACT brings it back.",
+                "Sync the module to a helicopter to fly that one from its stand. Otherwise the class is virtual until tasked: when a request is accepted it is made in the air over the module, nap of the earth, and flies the lift. After it it flies the egress, RTBs to the module, lands, unloads and is removed - ready for the next request.",
+                "",
+                "Flies tactically: nap of the earth (higher with a sling load), lights only over its base.",
                 "",
                 "Helicopter Class - Blank for the side's vanilla transport",
                 "Callsign - What TAC//SUPPORT and the radio call it",
                 "Seats - Passenger seats offered; 0 for all",
-                "Airframes Available - Losses before it is spent; 0 for unlimited",
-                "Flight Height (m) - Height flown between points",
                 "Extract Wait (sec) - How long an EXTRACT waits for the requester's group",
                 "Task: ... - Which of PICKUP, LAND, LAND ENG OFF, HOVER, EXTRACT, PICKUP > LZ, LOITER, FASTROPE, HELOCAST, PARADROP and SLINGLOAD it offers",
                 "Paradrop Height (m) - Height a paradrop crosses the drop zone at",
-                "Response Delay (sec) - Time from the first request to launch",
                 "Cooldown (sec) - Time after it is home before it can be tasked again",
-                "Respawn Delay (sec) - Time to replace a lost helicopter; -1 never",
-                "Cooldown Starts - End of the sortie, or at the request"
-            };
-        };
-    };
-
-    class GVAR(moduleLogistics): Module_F {
-        scope = 2;
-        scopeCurator = 2;
-        displayName = "JMSB - Logistics Drop";
-        author = QAUTHOR;
-        category = "jmfsb_modules";
-        function = QUOTE(DFUNC(moduleLogistics));
-        functionPriority = 1;
-        isGlobal = 2;
-        isTriggerActivated = 0;
-        isDisposable = 0;
-        is3DEN = 0;
-        icon = "\a3\ui_f\data\map\markers\nato\b_support.paa";
-
-        class Attributes: AttributesBase {
-            class aircraftClass: Edit {
-                property = QGVAR(logisticsAircraftClass);
-                displayName = "Aircraft Class";
-                tooltip = "Classname of the aircraft that flies the drop from the module. Sling needs a helicopter that can lift the crate. BLANK: the side's vanilla heavy helicopter.";
-                typeName = "STRING";
-                control = QGVAR(pickCargo);
-                defaultValue = "''";
-                expression = QUOTE(_this setVariable [ARR_2('aircraftClass',_value)]);
-            };
-            class callsign: Edit {
-                property = QGVAR(logisticsCallsign);
-                displayName = "Callsign";
-                tooltip = "What TAC//SUPPORT and the radio call it. Give each module its own.";
-                typeName = "STRING";
-                defaultValue = "'MULE'";
-                expression = QUOTE(_this setVariable [ARR_2('callsign',_value)]);
-            };
-            class method: Combo {
-                property = QGVAR(logisticsMethod);
-                displayName = "Method";
-                tooltip = "PARACHUTE: the crate leaves the aircraft over the grid under a cargo chute. SLING: a helicopter carries it on the hook and sets it down - a fixed-wing aircraft or a helicopter that cannot lift it falls back to the parachute.";
-                typeName = "NUMBER";
-                defaultValue = "0";
-                expression = QUOTE(_this setVariable [ARR_2('method',_value)]);
-                class Values {
-                    class chute { name = "Parachute"; value = 0; default = 1; };
-                    class sling { name = "Sling (helicopter)"; value = 1; };
-                };
-            };
-            class arsenalLists: Edit {
-                property = QGVAR(logisticsArsenalLists);
-                displayName = "PAC Arsenal Lists";
-                tooltip = "Comma-separated arsenal list names whose classes fill the crate: 'magazines', 'itemsMedical', ... from the unit's common arsenal, or 'variant.list' from a named arsenal version. The mission's own Common_Arsenal lists of the same name are added. Separate LOADS with ';' (magazines; itemsMedical) and the requester picks one per drop as CONTENTS. Empty, or nothing found: the crate keeps its own contents.";
-                typeName = "STRING";
-                defaultValue = "'magazines'";
-                expression = QUOTE(_this setVariable [ARR_2('arsenalLists',_value)]);
-            };
-            class magCount: Edit {
-                property = QGVAR(logisticsMagCount);
-                displayName = "Magazines Per Class";
-                tooltip = "How many of each magazine on the lists go in the crate.";
-                typeName = "NUMBER";
-                defaultValue = "10";
-                expression = QUOTE(_this setVariable [ARR_2('magCount',_value)]);
-            };
-            class itemCount: Edit {
-                property = QGVAR(logisticsItemCount);
-                displayName = "Other Gear Per Class";
-                tooltip = "How many of each weapon, item or backpack on the lists go in the crate.";
-                typeName = "NUMBER";
-                defaultValue = "2";
-                expression = QUOTE(_this setVariable [ARR_2('itemCount',_value)]);
-            };
-            class crateClass: Edit {
-                property = QGVAR(logisticsCrateClass);
-                displayName = "Crate Class";
-                tooltip = "Classname of the box that is dropped. When the arsenal lists give nothing it is dropped with its own contents.";
-                typeName = "STRING";
-                defaultValue = "'B_supplyCrate_F'";
-                expression = QUOTE(_this setVariable [ARR_2('crateClass',_value)]);
-            };
-            class drops: Edit {
-                property = QGVAR(logisticsDrops);
-                displayName = "Drops";
-                tooltip = "How many crates this asset delivers before it is spent. 0: unlimited.";
-                typeName = "NUMBER";
-                defaultValue = "3";
-                expression = QUOTE(_this setVariable [ARR_2('drops',_value)]);
-            };
-            class dropHeight: Edit {
-                property = QGVAR(logisticsDropHeight);
-                displayName = "Drop Height (m)";
-                tooltip = "Height above the terrain a parachute drop is released from unless the requester picks one.";
-                typeName = "NUMBER";
-                defaultValue = "250";
-                expression = QUOTE(_this setVariable [ARR_2('dropHeight',_value)]);
-            };
-            class spawnDelay: Edit {
-                property = QGVAR(logisticsSpawnDelay);
-                displayName = "Response Delay (sec)";
-                tooltip = "Time between the request being accepted and the aircraft leaving the module.";
-                typeName = "NUMBER";
-                defaultValue = "60";
-                expression = QUOTE(_this setVariable [ARR_2('spawnDelay',_value)]);
-            };
-            class cooldown: Edit {
-                property = QGVAR(logisticsCooldown);
-                displayName = "Cooldown (sec)";
-                tooltip = "Time after the aircraft is home before the next drop can be requested.";
-                typeName = "NUMBER";
-                defaultValue = "300";
-                expression = QUOTE(_this setVariable [ARR_2('cooldown',_value)]);
-            };
-            class respawnDelay: Edit {
-                property = QGVAR(logisticsRespawnDelay);
-                displayName = "Respawn Delay (sec)";
-                tooltip = "How long after its aircraft is lost the asset can fly again. -1: never - a lost aircraft is the asset lost for good.";
-                typeName = "NUMBER";
-                defaultValue = "300";
-                expression = QUOTE(_this setVariable [ARR_2('respawnDelay',_value)]);
-            };
-            class cooldownTrigger: Combo {
-                property = QGVAR(logisticsCooldownTrigger);
-                displayName = "Cooldown Starts";
-                tooltip = "END: the cooldown runs once the aircraft is home (or gone). START: it runs from the moment the request is accepted, while the sortie flies.";
-                typeName = "NUMBER";
-                defaultValue = "0";
-                expression = QUOTE(_this setVariable [ARR_2('cooldownTrigger',_value)]);
-                class Values {
-                    class atEnd { name = "End of the sortie"; value = 0; default = 1; };
-                    class atStart { name = "At the request"; value = 1; };
-                };
-            };
-            class signal: Combo {
-                property = QGVAR(logisticsSignal);
-                displayName = "Crate Signal";
-                tooltip = "What the crate sets off once it is on the ground, so the section can find it - unless the requester picks another.";
-                typeName = "NUMBER";
-                defaultValue = "0";
-                expression = QUOTE(_this setVariable [ARR_2('signal',_value)]);
-                class Values {
-                    class smoke { name = "Blue smoke"; value = 0; default = 1; };
-                    class ir { name = "IR strobe"; value = 1; };
-                    class chem { name = "Chemlight"; value = 2; };
-                    class flare { name = "Flare"; value = 3; };
-                    class none { name = "None"; value = 4; };
-                };
-            };
-        };
-
-        class ModuleDescription: ModuleDescription {
-            description[] = {
-                "One taskable supply drop on TAC//SUPPORT. An aircraft leaves the module, flies to the requester's grid, puts a crate down and goes home.",
-                "",
-                "The crate is filled from the unit's PAC arsenal lists named here, so it carries the unit's own gear.",
-                "",
-                "Aircraft Class - Blank for the side's vanilla heavy helicopter",
-                "Callsign - What TAC//SUPPORT and the radio call it",
-                "Method - Parachute, or sling for a helicopter",
-                "PAC Arsenal Lists - List names that fill the crate; ';' between loads the requester picks from",
-                "Magazines Per Class / Other Gear Per Class - Quantities",
-                "Crate Class - The box; dropped with its own contents when the lists give nothing",
-                "Drops - Crates before it is spent; 0 for unlimited",
-                "Drop Height (m) - Parachute release height",
-                "Response Delay (sec) - Time from accepted request to launch",
-                "Cooldown (sec) - Time after the aircraft is home before the next drop",
-                "Respawn Delay (sec) - Time before a lost aircraft is replaced; -1 never",
+                "Respawns - Replacements after a loss; 0 for none",
+                "Respawn Delay (sec) - Time after a loss before it can be tasked again",
                 "Cooldown Starts - End of the sortie, or at the request",
-                "Crate Signal - Smoke, IR strobe, chemlight, flare or none on the landed crate"
+                "Rotary Escort Class - Two drones on a YELLOW or RED LZ; empty for none"
             };
         };
     };
+
+    // JMSB - LOGISTICS DROP MOVED to addons/support_logistics (user,
+    // 2026-11-01): JMSB - Logistics there, with a catalog, airdrop and sling.
+    // Its old class, jmfsb_support_air_moduleLogistics, is defined there,
+    // hidden, so the missions that placed it still load.
 
     class GVAR(moduleQRF): Module_F {
         scope = 2;
@@ -634,14 +476,6 @@ class CfgVehicles {
                 defaultValue = "100";
                 expression = QUOTE(_this setVariable [ARR_2('defendRadius',_value)]);
             };
-            class squads: Edit {
-                property = QGVAR(qrfSquads);
-                displayName = "Squads";
-                tooltip = "How many squads this asset inserts before it is spent. 0: unlimited.";
-                typeName = "NUMBER";
-                defaultValue = "2";
-                expression = QUOTE(_this setVariable [ARR_2('squads',_value)]);
-            };
             class staticAlt: Edit {
                 property = QGVAR(qrfStaticAlt);
                 displayName = "Static Line Height (m)";
@@ -649,14 +483,6 @@ class CfgVehicles {
                 typeName = "NUMBER";
                 defaultValue = "250";
                 expression = QUOTE(_this setVariable [ARR_2('staticAlt',_value)]);
-            };
-            class spawnDelay: Edit {
-                property = QGVAR(qrfSpawnDelay);
-                displayName = "Response Delay (sec)";
-                tooltip = "Time between the request being accepted and the aircraft leaving the module.";
-                typeName = "NUMBER";
-                defaultValue = "90";
-                expression = QUOTE(_this setVariable [ARR_2('spawnDelay',_value)]);
             };
             class cooldown: Edit {
                 property = QGVAR(qrfCooldown);
@@ -666,10 +492,18 @@ class CfgVehicles {
                 defaultValue = "600";
                 expression = QUOTE(_this setVariable [ARR_2('cooldown',_value)]);
             };
+            class respawns: Edit {
+                property = QGVAR(qrfRespawns);
+                displayName = "Respawns";
+                tooltip = "Replacement aircraft after one is LOST (destroyed, crew dead, or disabled). The next request after the Respawn Delay gets a new one. Every request is a fresh aircraft and squad made over the module; going home after an insertion uses none. 0: none - after a loss the asset leaves the SUPPORT list.";
+                typeName = "NUMBER";
+                defaultValue = "0";
+                expression = QUOTE(_this setVariable [ARR_2('respawns',_value)]);
+            };
             class respawnDelay: Edit {
                 property = QGVAR(qrfRespawnDelay);
                 displayName = "Respawn Delay (sec)";
-                tooltip = "How long after its aircraft is lost the asset can fly again. -1: never - a lost aircraft is the asset lost for good.";
+                tooltip = "How long after its aircraft is lost the asset can be tasked again, while Respawns are left.";
                 typeName = "NUMBER";
                 defaultValue = "300";
                 expression = QUOTE(_this setVariable [ARR_2('respawnDelay',_value)]);
@@ -686,11 +520,31 @@ class CfgVehicles {
                     class atStart { name = "At the request"; value = 1; };
                 };
             };
+            // DRONE ESCORTS (user, 2026-11-02: "based on lz security for helos
+            // and always for fix wings").
+            class escortPlane: Edit {
+                property = QGVAR(qrfEscortPlane);
+                displayName = "Fixed-Wing Escort Class";
+                tooltip = "The fixed-wing drone of a plane's two escorts - a plane always takes them, made beside it over the module and removed with it. Empty: the side's vanilla UCAV. Not a fixed-wing class in this mission: no escort, and one RPT warning.";
+                typeName = "STRING";
+                control = QGVAR(pickEscortPlane);
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('escortPlane',_value)]);
+            };
+            class escortHeli: Edit {
+                property = QGVAR(qrfEscortHeli);
+                displayName = "Rotary Escort Class";
+                tooltip = "The rotary drone of a helicopter's two escorts - only when the request's LZ security is YELLOW or RED (a QRF card has none: no escort). Empty: none. Not a helicopter class in this mission: no escort, and one RPT warning.";
+                typeName = "STRING";
+                control = QGVAR(pickEscortHeli);
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('escortHeli',_value)]);
+            };
         };
 
         class ModuleDescription: ModuleDescription {
             description[] = {
-                "One taskable quick reaction force on TAC//SUPPORT: an AI squad of the players' side, flown from the module and inserted at the requester's grid.",
+                "One taskable quick reaction force on TAC//SUPPORT: an AI squad of the players' side, flown from the module and inserted at the requester's grid. Virtual until tasked: at the request the aircraft is made in the air over the module with the squad aboard. After the insertion it RTBs to the module and is removed - ready for the next request.",
                 "",
                 "The requester picks the insertion among those the module allows: STATIC LINE or AIR ASSAULT. On the ground the squad defends the grid or joins the requester.",
                 "",
@@ -700,12 +554,13 @@ class CfgVehicles {
                 "Insert: ... - Which insertion methods are offered",
                 "On The Ground - Defend the grid or join the requester",
                 "Defend Radius (m) - Area a defending squad holds",
-                "Squads - Insertions before it is spent; 0 for unlimited",
                 "Static Line Height (m) - Height of the static-line pass",
-                "Response Delay (sec) - Time from accepted request to launch",
                 "Cooldown (sec) - Time after the aircraft is home before the next squad",
-                "Respawn Delay (sec) - Time before a lost aircraft is replaced; -1 never",
-                "Cooldown Starts - End of the sortie, or at the request"
+                "Respawns - Replacements after a loss; 0 for none",
+                "Respawn Delay (sec) - Time after a loss before it can be tasked again",
+                "Cooldown Starts - End of the sortie, or at the request",
+                "Fixed-Wing Escort Class - A plane's two drones, always; empty for the side's UCAV",
+                "Rotary Escort Class - A helicopter's two drones on a YELLOW or RED LZ; empty for none"
             };
         };
     };

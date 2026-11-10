@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The colour set every panel paints itself with. Four tokens and nothing else:
  * ground, ink, accent and line. No control anywhere hard-codes a hex, which is
  * what makes a scheme change a repaint rather than a rebuild - and what makes

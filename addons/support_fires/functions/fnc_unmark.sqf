@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes an asset's target marker off every map and out of the JIP queue
  * (FUNC(mark)).
  *
@@ -20,5 +20,6 @@ params [["_logic", objNull, [objNull]]];
 if (!isServer || {isNull _logic}) exitWith {};
 
 private _id = _logic getVariable [QGVAR(id), -1];
-[format ["%1_mark_%2", QUOTE(ADDON), _id]] call CBA_fnc_removeGlobalEventJIP;
-[QGVAR(unmark), [_id]] call CBA_fnc_globalEvent;
+// By remoteExec, taken only from the server (review S7).
+remoteExecCall ["", format ["%1_mark_%2", QUOTE(ADDON), _id]];
+[_id] remoteExecCall [QFUNC(unmarkLocal), 0];

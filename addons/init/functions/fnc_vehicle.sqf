@@ -47,7 +47,6 @@ if !(EGVAR(Settings,enableVehicleSystem)) exitWith {};
         TRACE_INFO_2("VehicleinitPost","Applying Server Init: (%1 [%2])",_vehicle,typeOf _vehicle);
         _vehicle call EFUNC(vehicle,addDefaultLoadout);
         _vehicle call EFUNC(vehicle,addCosmetics);
-        _vehicle call EFUNC(vehicle,addRadio);
         _vehicle call EFUNC(vehicle,addFunctionsGlobal);
     };
     if (local _vehicle) then {

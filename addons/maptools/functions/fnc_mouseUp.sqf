@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The release that ends a ruler drag. Only the release of the press that
  * anchored a ruler means anything here.
  *

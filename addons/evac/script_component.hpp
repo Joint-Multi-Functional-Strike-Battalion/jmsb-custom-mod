@@ -28,3 +28,14 @@
 // evac is the only way back. Pure ACE medical - no ACM dependency.
 
 #define EVAC_DEFAULT_TIME 10   // seconds: medic evac progress-bar time
+
+// The server's own evac checks (FUNC(evacServer), review S6). The action
+// reaches 4 m; the server allows some drift while the bar runs and the call
+// travels. One casualty is not evacuated twice inside the guard.
+#define SERVER_OWNER 2
+#define EVAC_RANGE 10          // metres, medic to casualty
+#define EVAC_GUARD 10          // seconds between two evacs of one casualty
+#define EVAC_SETTLE 1          // seconds before the clone takes its injuries
+#define EVAC_PLACE_DIST 1.5    // metres: where the healed player is put, beside the medic
+#define EVAC_PLACE_DIR 90      // degrees, relative to the medic
+#define EVAC_FAIL_COLOR [0.831, 0.267, 0.267, 1]
