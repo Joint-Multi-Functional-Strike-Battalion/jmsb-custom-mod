@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server-only. Unbuilds a patrol base: deletes the beacon and marker, re-places
  * the kit objects on the ground, runs the on-undeploy hook, frees a slot and
  * notifies everyone.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A side's artillery, from the profile system, as a hunt pool (new.md
  * section 1.1 - jmfsb spawns none of this).
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Tells the extension which microphone and speakers to use - the player's
  * two settings (part of a device's name as Windows lists it; empty = the
  * Windows default). The extension opens them on its next connect, and when

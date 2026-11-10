@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Adds a waypoint at the end of the route. Its label is the grid it was
  * typed as; a point picked on the map gets its ten-figure grid. With a
  * target it FOLLOWS him (FUNC(follow)): its position is wherever he is.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One module as one support-page row, in the neutral shape the page already
  * reads - see addons/support/README.md for the contract.
  *
@@ -9,8 +9,8 @@
  * THE SHAPE IS THE SUPPORT CORE'S BECAUSE THE PAGE IS ALREADY WRITTEN. A CAS
  * provider that invented its own row would have needed a second renderer
  * beside the first, and the two would have drifted the first time a column
- * moved. The guns column is artillery's and stays empty here, exactly as
- * ALiVE's own air rows leave it.
+ * moved. The guns column is artillery's and stays empty here, as every air
+ * row leaves it.
  *
  * ORDNANCE IS THE AIRFRAME'S OWN STORES. The column that carries a battery's
  * shell types carries this airframe's - GBU-12, Scalpel, the cannon belt, by
@@ -20,7 +20,7 @@
  * FUNC(task) for the index that comes back.
  *
  * THE ID CARRIES THE PROVIDER'S KIND. "cas:3" routes back to this addon and to
- * entity 3; ALiVE's ids are "alive:cas:0" and cannot collide.
+ * entity 3; support_air's are "air:3" and cannot collide.
  *
  * Arguments:
  * 0: The module logic <OBJECT>

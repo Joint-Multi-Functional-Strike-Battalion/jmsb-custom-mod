@@ -61,6 +61,12 @@
 // once until it works; a server that cannot sign us in (no address, key or
 // secret set) is asked again after ROOM_RETRY_SLOW_S.
 #define ROOM_ANSWER_S       15
+// Once the extension is connecting, it gives up itself after 15 s - after it
+// opened the audio devices - and reports the error. The tick waits longer than
+// that (2026-11-05: at 15 s a fresh connect overtook the failing one and its
+// error was lost), and says once that the voice server does not answer.
+#define ROOM_CONNECT_S      40
+#define NO_ANSWER_TEXT      "Voice: the voice server does not answer (address, port or firewall). Trying again."
 #define ROOM_RETRY_S        10
 #define ROOM_RETRY_SLOW_S   60
 #define DROP_BY_US          "ClientInitiated"
@@ -74,6 +80,22 @@
 #define NOT_SET_MARK        "not set"
 #define NOT_SET_TEXT        "the voice server's API key or secret is not set (the server's JMSB_LIVEKIT_KEY / JMSB_LIVEKIT_SECRET, or CBA: JMSB - Voice (Built-in))"
 #define NO_URL_TEXT         "the voice server's address is not set (CBA: JMSB - Voice (Built-in))"
+
+// --- WHICH VOICE SERVER (2026-11-01): LiveKit or Mumble ------------------------
+// The voice core's one setting (jmfsb_voice_defaultSystem, user 2026-11-01):
+// LiveKit and Mumble are themselves; Automatic is Mumble when its address is
+// set, else LiveKit when its address is set, else none - the game VON then
+// carries the mission (FUNC(srvServerKind), 2026-11-05). The
+// extension runs both, picked by the address it is given: ws/wss for LiveKit,
+// MUMBLE_URL_FORMAT for Mumble - his UID as the Mumble user name, the room as a
+// channel, the server's password as the token. The echo test on Mumble is the
+// server's own loopback (MUMBLE_ECHO_FORMAT).
+#define SERVER_LIVEKIT      "livekit"
+#define SERVER_MUMBLE       "mumble"
+#define SERVER_NONE         ""
+#define MUMBLE_URL_FORMAT   "mumble://%1@%2/%3"
+#define MUMBLE_ECHO_FORMAT  "mumble://%1@%2?echo"
+#define NO_MUMBLE_TEXT      "the Mumble server's address is not set (CBA: JMSB - Voice (Built-in))"
 #define NO_EXT_TEXT         "the voice extension is not loaded on the server"
 // THE MIX: every speaker's gain and ear, re-asked this often and sent to the
 // extension when the gain moved by GAIN_EPS or the ear by PAN_EPS (the ear

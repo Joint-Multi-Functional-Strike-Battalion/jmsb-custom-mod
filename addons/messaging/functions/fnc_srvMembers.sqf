@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who a mailbox delivers to right now. Membership is derived every time rather
  * than stored, because a player changes group mid-mission and a stored member
  * list would still be mailing their old squad an hour later.

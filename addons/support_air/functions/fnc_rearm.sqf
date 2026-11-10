@@ -1,10 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A synced aircraft down on its stand at the end of a sortie: shut down,
- * repaired, refuelled and re-armed, its landing pad cleared and its crew
- * made whole again (FUNC(restoreCrew)) - ready for the next order, the way a
- * Simplex transport is reset on RTB.
+ * repaired, refuelled and re-armed, its crew made whole again
+ * (FUNC(restoreCrew)) - ready for the next order, the way a Simplex transport
+ * is reset on RTB.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -27,8 +27,5 @@ _veh engineOn false;
 _veh setDamage 0;
 _veh setFuel 1;
 _veh setVehicleAmmo 1;
-
-private _pad = _veh getVariable [QGVAR(pad), objNull];
-if (!isNull _pad) then {deleteVehicle _pad};
 
 [_logic, _veh] call FUNC(restoreCrew);

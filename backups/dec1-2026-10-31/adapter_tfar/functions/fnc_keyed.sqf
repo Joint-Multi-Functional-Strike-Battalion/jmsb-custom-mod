@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, on the targeted event jmfsb_adapter_tfar_keyed: another player keyed
  * or released one of his TFAR sets on a net (sent by him, fnc_tangent). Kept
  * until his key-up, death or respawn (fnc_talking reads it).

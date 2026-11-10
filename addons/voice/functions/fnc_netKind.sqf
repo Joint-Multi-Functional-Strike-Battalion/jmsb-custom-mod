@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The kind of a voice net, from its id: PAC plan nets by the plan (short
  * range "team", long range "c2", air-to-ground "a2g"), the rest by their
  * ids.

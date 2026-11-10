@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: draws one intel product on every screen of the side it is for, by
  * remoteExec to FUNC(renderProduct), which takes it only from the server
  * (review S7). The side filter stays on the receiving client.

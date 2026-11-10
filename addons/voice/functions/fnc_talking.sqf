@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who the local player hears talking right now, and on which of his nets -
  * himself included while he transmits. Updated every frame and on every
  * pushed key event (fnc_talkSync): others from the speakers' own key events,

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The MEDIC app's patient list: every man in the player's group, worst first -
  * cardiac arrest and heavy bleeding (massive haemorrhage comes first in MARCH,
  * and either one is what turns the tile to alert), then unconscious, then
@@ -12,22 +12,29 @@
  * accent edge; a wounded man's state is set in accent text and a dead man is
  * dropped back to dim - the same grammar the squad table uses.
  *
+ * THE STATE COLOUR IS A BLOCK, NOT A HAIRLINE (user, 2026-11-01: "the color on
+ * the medical app on the left for state needs to be bigger"): the row's full
+ * height, STATE_BLOCK_PX wide, the columns moved over to clear it.
+ *
+ * THE TABS ON TOP: SQUAD (the player's group) and NEARBY (every man within
+ * NEARBY_RANGE from another squad - the casualty a medic kneels next to, or a
+ * training patient). The caller picks the units; the list is the same.
+ *
  * Arguments:
  * 0: Body to fill <CONTROL>
+ * 1: The men to list <ARRAY>
+ * 2: The NEARBY tab is up <BOOL> (optional, default false)
  *
  * Return Value:
  * None
  *
  * Example:
- * [_body] call jmfsb_medic_fnc_appList
+ * [_body, units group player] call jmfsb_medic_fnc_appList
  *
  * Public: No
  */
 
-// The state bar down a row's left edge, in screen pixels.
-#define EDGE_PX 4
-
-params [["_body", controlNull, [controlNull]]];
+params [["_body", controlNull, [controlNull]], ["_units", [], [[]]], ["_nearby", false, [false]]];
 
 if (isNull _body) exitWith {};
 
@@ -43,12 +50,14 @@ private _rowH = ROW_H * EGVAR(tacpad,textScale) * EGVAR(tacpad,uiScale) * HOST_H
 (ctrlPosition _body) params ["", "", "_w", "_h"];
 private _pad = PAD * HOST_W;
 private _padY = PAD * HOST_H;
+// The state block's width, and where the columns start: past it and its gap.
+private _blockW = STATE_BLOCK_PX * pixelW;
+private _left = _blockW + STATE_BLOCK_GAP_PX * pixelW;
 
 // ------------------------------------------------------- measure and sort ----
 // The sort key is numbers only - urgency, state, blood left, roster index - so
 // it never has to compare two units; the index takes the man back out. A heavy
 // bleeder ranks with cardiac arrest (patientState never calls a dead man one).
-private _units = units group player;
 private _states = _units apply {[_x] call FUNC(patientState)};
 private _keys = [];
 {
@@ -64,14 +73,16 @@ _keys sort true;
 
 private _hurt = {(_x # 0) in [STATE_ARREST, STATE_UNCON, STATE_WOUNDED]} count _states;
 
-// ---------------------------------------------------------------- header ----
-[_body, [_pad, _padY, _w * 0.5, _rowH], "PATIENTS", _muted, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
+// ------------------------------------------------------------------ tabs ----
 [
-    _body, [_w * 0.5, _padY, _w * 0.5 - _pad, _rowH],
-    format ["%1 HURT / %2 IN SQUAD", _hurt, count _units], [_muted, _accentText] select (_hurt > 0), TEXT_BODY, true, "right"
-] call EFUNC(tacpad,drawText);
+    _body, [0, 0, _w, _rowH], MEDIC_TABS, [TAB_SQUAD, TAB_NEARBY] select _nearby, QGVAR(tab), APP_ID,
+    format ["%1 HURT / %2 %3", _hurt, count _units, ["IN SQUAD", format ["WITHIN %1 M", NEARBY_RANGE]] select _nearby]
+] call EFUNC(tacpad_apps,appPageTabs);
 
 private _y = _padY + _rowH;
+if (_units isEqualTo []) then {
+    [_body, [_pad, _y, _w - 2 * _pad, _rowH], ["NOBODY IN THE SQUAD", format ["NOBODY FROM ANOTHER SQUAD WITHIN %1 M", NEARBY_RANGE]] select _nearby, _muted, TEXT_BODY, true, "left"] call EFUNC(tacpad,drawText);
+};
 
 // Column edges as fractions of the width, so the header and every row are laid
 // out from one list and cannot disagree about where a column starts.
@@ -95,7 +106,7 @@ private _fnc_cell = {
     params ["_index", "_text", "_colour", "_rowY", ["_size", TEXT_BODY], ["_bold", false]];
     (_cols # _index) params ["", "_at", "_align"];
     private _next = (_cols param [_index + 1, ["", 1]]) # 1;
-    [_body, [_pad + _at * (_w - 2 * _pad), _rowY, (_next - _at) * (_w - 2 * _pad) - _pad, _rowH], _text, _colour, _size, _bold, _align] call EFUNC(tacpad,drawText);
+    [_body, [_left + _at * (_w - _left - _pad), _rowY, (_next - _at) * (_w - _left - _pad) - _pad, _rowH], _text, _colour, _size, _bold, _align] call EFUNC(tacpad,drawText);
 };
 
 {
@@ -135,7 +146,7 @@ private _hidden = 0;
     if (_fill isNotEqualTo []) then {
         [_body, [0, _y, _w, _rowH], _fill] call EFUNC(tacpad,drawFill);
     };
-    [_body, [0, _y, EDGE_PX * pixelW, _rowH], _edge] call EFUNC(tacpad,drawFill);
+    [_body, [0, _y, _blockW, _rowH], _edge] call EFUNC(tacpad,drawFill);
 
     private _alive = _state isNotEqualTo STATE_DEAD;
     private _volume = _unit getVariable [ACEV_BLOOD_VOLUME, BLOOD_VOLUME_FULL];

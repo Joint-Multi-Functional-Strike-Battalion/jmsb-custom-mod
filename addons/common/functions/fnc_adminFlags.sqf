@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: sets every player's public admin flag (QGVAR(isAdmin)) from the
  * server's own decision (FUNC(adminCheck)). The flag is for screens and
  * client-side gates only - who sees the console, the (ADMIN) chat tag. A client

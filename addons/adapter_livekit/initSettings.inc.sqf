@@ -8,6 +8,28 @@
 // JMSB_LIVEKIT_SECRET (the server egg's variables) - the extension reads them
 // there when the settings are empty.
 
+// WHICH VOICE SERVER: JMSB - Voice > Voice system (jmfsb_voice_defaultSystem,
+// the one setting that picks the voice - user, 2026-11-01). Mumble is the
+// default.
+
+// MUMBLE: its address and password. The password is no secret from the
+// players - each needs it to connect - so a setting is its place.
+[
+    QGVAR(mumbleAddress), "EDITBOX",
+    ["Mumble server address", "host:port of the Mumble server (Mumble's port is 64738). Used when the voice server type is Mumble."],
+    ["JMSB - Voice (Built-in)", "Voice server (Mumble)"],
+    "",
+    1
+] call CBA_fnc_addSetting;
+
+[
+    QGVAR(mumblePassword), "EDITBOX",
+    ["Mumble server password", "The Mumble server's password (its serverpassword), empty when it has none. Every player receives it to connect."],
+    ["JMSB - Voice (Built-in)", "Voice server (Mumble)"],
+    "",
+    1
+] call CBA_fnc_addSetting;
+
 [
     QGVAR(url), "EDITBOX",
     ["Voice server address", "The LiveKit server players join, with the egg's main port (7880): ws URL, or wss with the node's name when the egg's Encryption (TLS) is on. Empty: no echo test."],

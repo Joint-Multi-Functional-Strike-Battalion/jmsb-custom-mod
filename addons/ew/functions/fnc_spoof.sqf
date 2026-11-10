@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: one man's GPS against the spoofers (DESIGN_EW "GPS spoof"). Inside
  * an enemy spoofer's field - or while his net is spoofed by a hack
  * (FUNC(spoofNode)) - an unprotected GPS is walked off its true position,

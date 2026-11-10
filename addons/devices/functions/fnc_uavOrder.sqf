@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An order to a drone's AI - the DRONES board's ORBIT, GO TO, RTB and LASE.
  * Waypoints and the designator are the crew's, and a UAV's crew is usually
  * the server's (a hand-thrown one its launcher's), so an order given anywhere

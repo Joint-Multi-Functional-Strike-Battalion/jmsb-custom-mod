@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Infantry guarding one battery.
  *
  * They stand OFF the hardware, not on it - a ring out from the radar rather
@@ -50,7 +50,10 @@ if (_groups isEqualTo []) exitWith {0};
     // ALiVE's runtime profiler are deleted by it, and a site whose guards
     // vanished is the same empty site the user photographed. They stay live
     // and say so to ALiVE rather than only to the log.
-    {[_x] call EFUNC(adapter_alive,profileIgnore)} forEach _live;
+    // Guarded: without ALiVE there is nobody to tell (user, 2026-11-02).
+    if (!isNil QEFUNC(adapter_alive,profileIgnore)) then {
+        {[_x] call EFUNC(adapter_alive,profileIgnore)} forEach _live;
+    };
 
     INFO_2("%1 security group(s) on the battery at %2",count _live,mapGridPosition _pos);
 }, [_groups, _side, _pos]] call CBA_fnc_execNextFrame;

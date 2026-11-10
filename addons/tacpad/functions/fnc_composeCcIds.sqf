@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The CC line, turned into mailbox ids.
  *
  * THE LINE IS NAMES, THE SEND IS IDS. The player types "@HQ, @REAPER, @SGT DOE"
@@ -13,6 +13,10 @@
  * unrecognised string as a shared mailbox name, so a typo would file the report
  * in a net that does not exist and nobody would ever see it - the CC would look
  * like it worked. An id typed or pasted in full is honoured as it stands.
+ *
+ * A SUPPORT ASSET'S CALL SIGN IS A NAME TOO (2026-11-01): one the @ mention did
+ * not take off the line - "@HOG" last on it with a HOG 2 also listed - is its
+ * box, "B:SUPPORT:<assetId>", when no net, squad or man has the name.
  *
  * Arguments:
  * 0: The CC line as typed <STRING>
@@ -32,6 +36,7 @@ private _tokens = ((_text splitString ",") apply {trim _x}) select {_x isNotEqua
 if (_tokens isEqualTo []) exitWith {[]};
 
 private _targets = [] call FUNC(composeTargets);
+private _assets = ([false, ""] call FUNC(composeToSupport)) select 2;
 private _ids = [];
 
 {
@@ -50,7 +55,11 @@ private _ids = [];
 
     private _up = toUpper _token;
     private _at = _targets findIf {(_x # 1) isEqualTo _up};
-    if (_at < 0) then {continue};
+    if (_at < 0) then {
+        private _asset = _assets findIf {toUpper (_x # 1) isEqualTo _up};
+        if (_asset >= 0) then {_ids pushBackUnique ((_assets # _asset) # 0)};
+        continue;
+    };
 
     _ids pushBackUnique ((_targets # _at) # 0);
 } forEach _tokens;

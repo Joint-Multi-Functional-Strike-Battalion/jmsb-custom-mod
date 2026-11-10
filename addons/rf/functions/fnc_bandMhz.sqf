@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_bandMhz: a band's frequency ranges in MHz (RF_BAND_MHZ), on every
  * machine - for a screen that draws where on the band a frequency sits.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an RTO (or admin) makes a net (by remoteExec from FUNC(netAdd); the
  * caller must be the sender, jmfsb_common_fnc_senderIs). The right is
  * checked here, not trusted from the client - FUNC(canFlash), the same test

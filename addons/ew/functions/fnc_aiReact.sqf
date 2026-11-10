@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the enemy AI answers a fix its side's ES made (DESIGN_EW "Both
  * ways: AI EW", "On a fix"), by the enemy AI EW skill setting:
  *

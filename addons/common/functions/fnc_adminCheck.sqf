@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether a connected machine is an admin, from the server's own
  * records only (review S1/S2, R2). Never a flag or list a client can write:
  * - the server's own machine (the host);

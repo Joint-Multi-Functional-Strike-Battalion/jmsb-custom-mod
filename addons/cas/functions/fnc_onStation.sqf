@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A loitering drone is on station: the man who called it gets the gunner's
  * seat if he is ISR, everyone else on the side is told (see XEH_postInit,
  * THE HANDOVER).

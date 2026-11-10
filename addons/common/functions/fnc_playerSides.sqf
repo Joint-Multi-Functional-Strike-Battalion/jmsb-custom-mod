@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which sides the players are on.
  *
  * THE ENEMY SYSTEMS NEED TO KNOW WHO IS NOT THE ENEMY. JMSB's threat systems

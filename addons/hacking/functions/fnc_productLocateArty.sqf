@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE ARTILLERY: the nearest hostile battery, on the shrinking ladder.
  *
  * Fuzzed rather than exact, and shrinking per hack against the SAME battery -
@@ -25,9 +25,9 @@
 
 params [["_pos", [], [[]]], ["_side", sideUnknown, [sideUnknown]]];
 
-if (isNil "jmfsb_adapter_alive_fnc_artyTargets") exitWith {false};
+if (isNil QEFUNC(adapter_alive,artyTargets)) exitWith {false};
 
-private _pool = ([sideUnknown] call jmfsb_adapter_alive_fnc_artyTargets) select {
+private _pool = ([sideUnknown] call EFUNC(adapter_alive,artyTargets)) select {
     (_x select 2) getFriend _side < 0.6
 };
 

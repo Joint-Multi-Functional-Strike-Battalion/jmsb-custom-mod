@@ -30,8 +30,10 @@ into the rows of docs/DESIGN_TABLET.md ("Layout", in design px of a 1364 x 1000
 screen), by `fnc_tabletRows`:
 
 - **Device bar** (34) - TAC//APP, the time, `GRID <easting> <northing>`,
-  callsign · group on the left; the device right-aligned beside ESC CLOSES,
-  which is in the accent. The vehicle tablet's device reads
+  callsign · group on the left; the device, then MENU and PAC, right-aligned
+  beside ESC CLOSES - MENU, PAC and ESC CLOSES in the accent. PAC opens the
+  PAC app (user, 2026-11-01), so the tablet's tile row has no PAC tile; it
+  shows where the PAC app is loaded. The vehicle tablet's device reads
   `VEHICLE · <callsign>` (`fnc_vehicleName`: the vehicle's variable name, else
   its crew's group when that is not the player's, else the class name).
 - **Notification line** (30) - the unseen count as a solid accent cell
@@ -45,14 +47,18 @@ screen), by `fnc_tabletRows`:
   panel itself is not built on the tablet.
 - **Map area** (the rest) - the map control, and the shell's host. Panels and
   apps lay out inside it, so an app opens over the map and the rows stay.
-- **Net row** (48) - one square cell per voice net the player is on, from
-  `fnc_overlayNets` (the voice API's `jmfsb_voice_fnc_netState`), the same
-  nets the walking view shows; each cell is a button that makes its net
+- **Net row** (48) - one page of four net buttons (see Net buttons below),
+  from `fnc_overlayNets` (the voice API's `jmfsb_voice_fnc_netState`), the
+  same page the walking view shows, a `< 2/3 >` pager left of GLOBAL; each cell is a button that makes its net
   active (user, 2026-10-31). A dark (ink) row: idle cells ink with light
-  labels, the active net filled with the ground, a muted net's name dim, the
+  labels, the active net filled with the ground, a muted net's name dim and
+  the cell struck through by a red diagonal (user, 2026-11-01), the
   ear (L / B / R) as a small tag. Outline green when the net is reachable, red
   when it is not (never hidden); a ringing call with no call net yet is a RING
-  cell in the alert colour.
+  cell in the alert colour. A grey **R** at a cell's left end marks a
+  receive-only net: EMCON 3 (SILENT) on any of the player's sets, read soft off
+  `jmfsb_ew_mine` (`fnc_emconLevel`), on every radio net (not VEH); never
+  without `jmfsb_ew`.
 - **Who is talking** - a dark chip at the top of the map area, right of the
   rail (`fnc_tabletTalk`, from `fnc_overlayTalker`, as on the walking view):
   the member's number and name, `on <NET>` and the net's ear; RINGING and the
@@ -154,10 +160,10 @@ is a CBA keybind in the JMSB category, rebindable in Configure Addons:
 
 | Numpad | Keybind | Walking view | Tablet open |
 |---|---|---|---|
-| 1 - 6 | Select net 1-6 | that net is the active net | the same |
-| Ctrl + 1 - 6 | Mute net 1-6 | mute / unmute that net | the same |
+| 1 - 4 | Select net 1-4 | that chip of the net page shown is the active net (5-9 unbound; bound, net buttons 5-9 across the pages) | the same |
+| Ctrl + 1 - 4 | Mute net 1-4 | mute / unmute that chip's net | the same |
 | Alt + 1 - 4 | Device button F1-F4 | the button's setting - ear / quick add, mute, map zoom in, map zoom out by default; the RADIO app's soft keys while it is open | the frame's F1-F4: the app each is set to |
-| 0 / . | Device button left / right | active net left / right (quick-add cursor; the RADIO app's cursor) | scroll the open screen up / down; with nothing to scroll, active net left / right |
+| 0 / . | Device button left / right | net page left / right (`fnc_netPageStep`; quick-add cursor; the RADIO app's cursor) | the call window's corner, else the live tiles' page, else scroll the open screen up / down; the net row turns its pages with its own < > buttons |
 | 7 | Voice activation | on / off | the same |
 | 8 | Open Tablet | opens the tablet; in a drone's seat, releases the drone | closes it |
 | 9 | Troops In Contact (`jmfsb_tacpad_apps_ticKey`) | answers a ringing call, else sends TIC | the same |
@@ -179,6 +185,12 @@ every key, numpad digits included.
   (`jmfsb_devices_keyF1`..`F4`, in Addon Options or on the tablet, SETTINGS >
   DEVICE KEYS), the arrows turn the live tiles' page, or with one page scroll the open screen (`fnc_softKey`; user, 2026-10-31). The
   keyboard's own arrows and F1-F4 are not taken any more.
+- **The bind is on hover** (user, 2026-11-01: "way too small, put the F1 F2
+  etc back, then the keybind on hover"): the frame's printed F1-F4 and arrows
+  show, and each key's tooltip names its CBA bind as RADIO > Nets > KEYS
+  writes it (`fnc_keyLabel`) - NUM 6 by default, the new key after a rebind,
+  the next time the tablet opens. The four app settings read
+  "Device key 1 opens" .. 4.
 - The **map** is placed with `ctrlMapSetPosition`, not `ctrlSetPosition`: the
   control is declared 0 x 0, and a map moved with `ctrlSetPosition` keeps its
   declared viewport, so a centre put on it lands off the middle.
@@ -217,11 +229,18 @@ docs/DESIGN_PHONE_WALKING.md, DESIGN_SIDE_DEVICES.md):
   available, declined, dropped, bumped, ended; the FLASH priority warning
   outranks a live call). Hidden otherwise; notifications pop up top right only.
 - **Map** - centred on the player every frame at **Phone map zoom**, his own
-  icon, BFT's member icons, 25 m / 50 m rings. Over it on the phone: the
+  icon, BFT's member icons, 25 m / 50 m rings, and Point Man's route
+  (`jmfsb_pointman_fnc_attach`, hung by `fnc_overlayOpen`; 2026-11-01):
+  numbered dots and legs, and while navigating the leg from you to the next
+  waypoint in the accent - with a PM cell (waypoint, distance, bearing) at
+  the front of the status row. The side's **drones**, a circle and the
+  callsign in the scheme's accent (`fnc_overlayDrawDrones`): the DRONES
+  board's fleet (`jmfsb_tacpad_apps_fnc_appDronesData`), re-read every 2 s by
+  the tick (`fnc_overlayDrones`), named as on the FLEET board. Over it on the phone: the
   **squad list** top left (`<N> <NAME>`, number in team colour from
   `jmfsb_bft_fnc_memberNumber`; flags TX red / VOX magenta from the voice
   API's talking list (`fnc_voiceTalkers`; a net of kind `direct` is VOX),
-  `+` wounded, `··` no RF link) and the **talking box** top right: the last
+  `+` wounded, `··` no RF link, a yellow star your buddy - `jmfsb_bft_fnc_buddyOf`) and the **talking box** top right: the last
   speaker's number and name, `on <NET>` and the net's ear, held four seconds;
   RINGING and the caller while a call rings.
   On a side device the chip is top left and the squad list sits under the map
@@ -231,8 +250,26 @@ docs/DESIGN_PHONE_WALKING.md, DESIGN_SIDE_DEVICES.md):
   CALL while a call is live; a captured key's net is not built), never a
   frequency. Outline green when the net is reachable, red when not - a net
   out of reach is never hidden; the active net filled light; a muted net's
-  name dim; the ear (L / B / R) as a small tag at the cell's right; a RING
+  name dim; the ear (L / B / R) as a small tag at the cell's right; a grey R
+  at the cell's left on a receive-only net (EMCON 3, as on the tablet); a RING
   cell in the alert colour while a call rings. Two columns on a side device.
+- **Net buttons** (user, 2026-11-07) - the cells are one page of twelve net
+  buttons: QUICK 1-4, page 2, page 3 (`fnc_netButtons`). Each row shows one
+  page of four - numbered 1-4, the numpad keys of the page shown - and the
+  page marker `2/3` while more than one page has nets: at the phone row's
+  right end, in its own row under a side device's 2 x 2 cells, in the
+  tablet row's `< 2/3 >` pager (its arrows are buttons). The walking view's
+  arrows (numpad 0 / .) turn the page (`fnc_netPageStep`); pages with no
+  nets are skipped. The tablet's arrows stay on the live tiles.
+  - Which net sits on which button is the player's, set on the tablet's
+    RADIO app, NETS > BUTTONS (`fnc_netAssign`): `jmfsb_devices_netButtons`
+    in his profile, twelve net ids, `""` = AUTO. A set net sits on its button
+    while he is on it; every other net fills the AUTO buttons in order, quick
+    first. A set net he is not on leaves its button empty (dim) so the rest
+    keep their keys; left-over nets take those empty buttons only when every
+    AUTO button is taken.
+  - A ringing call's RING cell is always on the page shown: its first empty
+    cell, else its last cell while it rings.
 
 **Drawn on change, not on the tick** (code review R8). The layer's controls are
 made once; `fnc_overlayDraw` sets the status row, the call strip, the squad
@@ -283,12 +320,12 @@ that decides.
   view is up (`fnc_overlayButton`), and a voice key with nothing to act on
   falls through to the game. What each does is its setting
   (`jmfsb_devices_buttonF1`..`buttonRight`): the voice keys (accept call, ear
-  / quick add, mute the active net, decline / hang up, active net left /
+  / quick add, mute the active net, decline / hang up, net page left /
   right - `fnc_voiceAction`), the RADIO app, map zoom in / out, side device to
   the left / right edge, hide the walking view, open the tablet, or open the
   tablet on an app. Defaults (docs/DESIGN_VOICE.md): F1 accept a call, F2 ear
   for the active net (during a call: the quick-add list), F3 mute the active
-  net, F4 decline or hang up, left / right the active net. While the RADIO app
+  net, F4 decline or hang up, left / right the net page. While the RADIO app
   is open they are its soft keys and cursor whatever they are set to.
   Push-to-talk is the voice addon's and not offered.
 
@@ -298,8 +335,9 @@ Voice is Arma 3's own VON through `jmfsb_voice`'s API (docs/DESIGN_VOICE.md);
 this addon reads that API and names no radio mod. Every call into it is
 guarded: without the voice addon the net rows are empty, the flags never show
 and the voice keys fall through. When this machine cannot run the server's
-voice (`jmfsb_voice_system` "none") the net row reads VOICE UNAVAILABLE.
-TFAR and ACRE were removed on 2026-10-31 (DEC1).
+voice (`jmfsb_voice_system` "none") the net row reads VOICE UNAVAILABLE. On
+no net the tablet's row keeps its six cells, the first a dim NO NET
+(review 2026-11-01). TFAR and ACRE were removed on 2026-10-31 (DEC1).
 
 - **Quick add** (walking view, F2 during a call): a list on the notification
   line of the people of recent calls, then the player's group, then anyone in
@@ -382,10 +420,19 @@ layer), and its MANAGE has no member actions: the voice API has no call for
 them. Per-net beep volume is not on the devices. The tablet has no battery in
 the bar and no link dot on the rails. Map tools are `jmfsb_maptools`', on the tablet's screen
 through the MAP TOOLS strip. The vehicle tablet has no VEHICLE SET panel yet (VEHICLE STATUS shows
-the voice nets aboard but not gateway, power, relays or mast). FIRES has no provider and BATT has no model. Drones, jammers and
-targets are not marked on the walking map, and there is no buddy flag. The
+the voice nets aboard but not gateway, power, relays or mast). FIRES has no provider and BATT has no model. Targets are not marked
+on the walking map. The
 walking view, the numpad keys and the RADIO apps have not been run in game. The support-request dialog keeps its
 monitor-size geometry on both hosts.
+
+## Quick answers on numpad 6-9
+
+While a support asset asks this player something, the walking view shows it
+above the call strip (user, 2026-11-06). The first line is who asks, red when
+FLASH, and what. The second is each device key (F1-F4, numpad 6-9 by default)
+with its answer. Numpad 0 / . page when there are more than four answers. The
+strip stays until the answer comes back into the thread. The RADIO app keeps
+its keys while it is open. The data is jmfsb_tacpad's `askView`.
 
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
@@ -399,16 +446,17 @@ monitor-size geometry on both hosts.
 
 ## Ships
 
-4 weapon/item classes, 84 functions.
+4 weapon/item classes, 96 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
-| `jmfsb_devices_keyF1` | LIST | F1 key on the tablet opens |
-| `jmfsb_devices_keyF2` | LIST | F2 key on the tablet opens |
-| `jmfsb_devices_keyF3` | LIST | F3 key on the tablet opens |
-| `jmfsb_devices_keyF4` | LIST | F4 key on the tablet opens |
+| `jmfsb_devices_keyLayout` | LIST | Key layout |
+| `jmfsb_devices_keyF1` | LIST | Device key 1 opens |
+| `jmfsb_devices_keyF2` | LIST | Device key 2 opens |
+| `jmfsb_devices_keyF3` | LIST | Device key 3 opens |
+| `jmfsb_devices_keyF4` | LIST | Device key 4 opens |
 | `jmfsb_devices_tabletFill` | SLIDER | Tablet size |
 | `jmfsb_devices_phoneFill` | SLIDER | Phone size |
 | `jmfsb_devices_phoneZoom` | SLIDER | Phone map zoom |
@@ -425,7 +473,7 @@ monitor-size geometry on both hosts.
 
 ## Functions
 
-<details><summary>84</summary>
+<details><summary>96</summary>
 
 - `jmfsb_devices_fnc_appVehicle`
 - `jmfsb_devices_fnc_callCorner`
@@ -434,21 +482,33 @@ monitor-size geometry on both hosts.
 - `jmfsb_devices_fnc_close`
 - `jmfsb_devices_fnc_deviceClass`
 - `jmfsb_devices_fnc_deviceFacts`
+- `jmfsb_devices_fnc_emconLevel`
 - `jmfsb_devices_fnc_keyButtons`
+- `jmfsb_devices_fnc_keyDefault`
 - `jmfsb_devices_fnc_keyDown`
 - `jmfsb_devices_fnc_keyLabel`
+- `jmfsb_devices_fnc_keyOwned`
+- `jmfsb_devices_fnc_keybindFree`
 - `jmfsb_devices_fnc_layout`
+- `jmfsb_devices_fnc_netAssign`
+- `jmfsb_devices_fnc_netButtons`
+- `jmfsb_devices_fnc_netChip`
+- `jmfsb_devices_fnc_netEntries`
 - `jmfsb_devices_fnc_netMute`
 - `jmfsb_devices_fnc_netOutline`
+- `jmfsb_devices_fnc_netPageStep`
 - `jmfsb_devices_fnc_netSelect`
 - `jmfsb_devices_fnc_onLoad`
 - `jmfsb_devices_fnc_onUnload`
 - `jmfsb_devices_fnc_open`
+- `jmfsb_devices_fnc_overlayAsk`
 - `jmfsb_devices_fnc_overlayButton`
 - `jmfsb_devices_fnc_overlayClose`
 - `jmfsb_devices_fnc_overlayDevice`
 - `jmfsb_devices_fnc_overlayDraw`
+- `jmfsb_devices_fnc_overlayDrawDrones`
 - `jmfsb_devices_fnc_overlayDrawRings`
+- `jmfsb_devices_fnc_overlayDrones`
 - `jmfsb_devices_fnc_overlayFollow`
 - `jmfsb_devices_fnc_overlayGrid`
 - `jmfsb_devices_fnc_overlayHidden`

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The gear, directly under the message reader. One cell, one job: open the
  * settings app.
  *

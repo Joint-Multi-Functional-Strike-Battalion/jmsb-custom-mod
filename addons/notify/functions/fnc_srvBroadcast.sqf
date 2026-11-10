@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a client asks to post a notification to other players
  * (FUNC(broadcast) on a client - the admin panel's messages). Posted only when
  * the sender is an admin by the server's records or a headless client

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Narrows the player list to what was typed in the box above it.
  *
  * The filter is a plain substring, case-insensitive, matched against the name -

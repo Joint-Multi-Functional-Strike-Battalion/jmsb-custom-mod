@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ACE > Jammer > Disable: kneel at the terminal for the disable time, then
  * the server ends its zone for good (FUNC(disableSite)). Walking off or
  * being interrupted cancels it; the site goes on jamming.

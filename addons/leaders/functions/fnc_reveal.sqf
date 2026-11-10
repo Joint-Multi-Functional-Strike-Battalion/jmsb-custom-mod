@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The interrogation pays out: ONE other leader's current safe house, exactly.
  *
  * The only moment the chain gives a position rather than a circle - and it is

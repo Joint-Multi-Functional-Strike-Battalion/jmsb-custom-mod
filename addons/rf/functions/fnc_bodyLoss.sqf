@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The loss at one end of a link from how the set is carried: prone, or a
  * handheld inside a vehicle. A node whose object is the vehicle itself (a
  * vehicle set with its own mast) or a prop pays nothing.

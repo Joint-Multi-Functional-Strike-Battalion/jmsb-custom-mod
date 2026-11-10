@@ -60,7 +60,7 @@ class GVAR(tablet) {
         // shown, on screen, and invisible).
         // Declared, not ctrlCreate'd: the engine hosts
         // a map control properly only when it is part of the display's own
-        // definition - jmfsb_tacpad_apps' support dialog learned that the hard
+        // definition - the old TAC//SUPPORT dialog learned that the hard
         // way. It is sized to the screen rectangle at open, so the bezel is
         // never under it.
         class Map: RscMapControl {

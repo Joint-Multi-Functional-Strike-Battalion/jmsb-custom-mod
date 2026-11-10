@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everything filed in one net, as ONE conversation in time order.
  *
  * A NET IS A CONVERSATION, NOT A FOLDER. It was a filter: picking HQ narrowed a

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Records that this operator has just broken into a net, so the next one costs
  * more - see FUNC(netFailChance).
  *

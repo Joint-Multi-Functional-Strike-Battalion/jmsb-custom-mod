@@ -1,8 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The addressee picker, drawn into the compose pane: every net, squad and man
- * this message can be sent to, one per row.
+ * this message can be sent to, one per row - and the support assets, in a
+ * SUPPORT group of their own (2026-11-01, FUNC(composeToSupportDraw)).
  *
  * THE RAIL IS THE SELECTOR, THIS IS THE REST. Pressing a net on the left rail
  * retargets an open message - see the rail handler in FUNC(readerDraw) - and that
@@ -68,15 +69,28 @@ private _listW = _bodyW - _scrollW - _pad;
 
 private _targets = [] call FUNC(composeTargets);
 
-if (_targets isEqualTo []) exitWith {
+// THE SUPPORT ASSETS, IN THEIR OWN GROUP (user, 2026-11-01: "make the cas units
+// selectable as message receivers"; docs/DESIGN_SUPPORT_MESSAGING.md 6.1) -
+// under the nets, squads and men, for a man the Support tasking tag lets task
+// them. A card that goes to support - `cas` - opens the picker on that group,
+// narrowed to its type, so it comes first. See FUNC(composeToSupport).
+([] call FUNC(composeToSupport)) params ["_supShow", "_supFirst", "_supRows"];
+
+if (_targets isEqualTo [] && !_supShow) exitWith {
     [_body, [0, 0, _listW, _rowH], "NOTHING TO ADDRESS - NO NETS AND NOBODY ON", _dim, TEXT_TITLE] call FUNC(drawText);
+};
+
+private _ry = 0;
+if (_supShow && _supFirst) then {
+    _ry = [_body, _ry, _listW, true, _supRows] call FUNC(composeToSupportDraw);
+    [_body, [0, _ry, _listW, RULE_THICK * pixelH], _line] call FUNC(drawFill);
+    _ry = _ry + _rowH * 0.5;
 };
 
 {
     _x params ["_id", "_label"];
 
     private _on = GVAR(composeTo) isEqualTo _id;
-    private _ry = _forEachIndex * _rowH;
 
     if (_on) then {
         [_body, [0, _ry, _listW, _rowH], _accent] call FUNC(drawFill);
@@ -106,4 +120,10 @@ if (_targets isEqualTo []) exitWith {
         {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
     }] call FUNC(drawHit);
     _hit setVariable [QGVAR(toBox), _id];
+    _ry = _ry + _rowH;
 } forEach _targets;
+
+if (_supShow && !_supFirst) then {
+    _ry = _ry + _rowH * 0.5;
+    [_body, _ry, _listW, false, _supRows] call FUNC(composeToSupportDraw);
+};

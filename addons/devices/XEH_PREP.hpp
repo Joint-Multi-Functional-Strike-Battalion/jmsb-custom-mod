@@ -60,11 +60,17 @@ PREP(overlaySetShown);
 PREP(overlayTick);
 PREP(overlayDraw);
 PREP(overlayDrawRings);
+// Drone marks on its map: the fleet re-read on the tick, drawn each frame.
+PREP(overlayDrones);
+PREP(overlayDrawDrones);
 PREP(overlayFollow);
 PREP(overlayNets);
 PREP(overlayRf);
+// The player's EMCON off jmfsb_ew's slice, for the receive-only R.
+PREP(emconLevel);
 PREP(overlaySquad);
 PREP(overlayTalker);
+PREP(overlayAsk);
 // The ways in and the player's choices: the key, the edge a side device sits
 // on, the six buttons printed on the frame (by keybind - the layer takes no
 // mouse), and the rows the tablet's SETTINGS shows for all of it.
@@ -98,6 +104,15 @@ PREP(uavHome);
 PREP(overlayGrid);
 PREP(netOutline);
 PREP(netSelect);
+// The twelve net buttons, three pages of four (user, 2026-11-07).
+PREP(netEntries);
+PREP(netButtons);
+PREP(netChip);
+PREP(netPageStep);
+PREP(netAssign);
+PREP(keybindFree);
+PREP(keyDefault);
+PREP(keyOwned);
 PREP(channelText);
 PREP(deviceFacts);
 PREP(overlayStatus);

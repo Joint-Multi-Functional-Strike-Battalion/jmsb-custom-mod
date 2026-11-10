@@ -237,7 +237,9 @@ missionNamespace setVariable [QGVAR(lastMarkerCount), _index];
 // Drawn faded, unnamed, from that picture - a tracker that showed only the
 // spawned quarter of the army was lying by omission.
 private _vIndex = 0;
-if (GVAR(showVirtual) && !_gpsDenied && {!isNil "jmfsb_adapter_alive_fnc_virtualFriendlies"}) then {
+// ALiVE's picture only: without ALiVE nobody is simulated off-map, so there is
+// nothing to draw and the layer is simply empty (user, 2026-11-02).
+if (GVAR(showVirtual) && !_gpsDenied && {!isNil QEFUNC(adapter_alive,virtualFriendlies)}) then {
     private _prefix = switch (_playerSide) do {
         case west: {"b"};
         case east: {"o"};
@@ -260,7 +262,7 @@ if (GVAR(showVirtual) && !_gpsDenied && {!isNil "jmfsb_adapter_alive_fnc_virtual
         _m setMarkerColorLocal ([_playerSide, true] call BIS_fnc_sideColor);
         _m setMarkerAlphaLocal 0.4;
         _m setMarkerTextLocal "";
-    } forEach ([_playerSide] call jmfsb_adapter_alive_fnc_virtualFriendlies);
+    } forEach ([_playerSide] call EFUNC(adapter_alive,virtualFriendlies));
 };
 private _vPrev = missionNamespace getVariable [QGVAR(lastVirtualCount), 0];
 for "_i" from _vIndex to (_vPrev - 1) do {

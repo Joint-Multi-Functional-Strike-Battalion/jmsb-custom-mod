@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What this asset is doing, as one token, and whether it can take an order -
  * the ONE answer the row, the "available" code and the order all read, so a
  * row that reads idle is never refused.
@@ -10,8 +10,14 @@
  * because it read WAITING would make the second order impossible. Its row
  * still shows what it is doing (not "idle"), so RTB stays armed.
  *
- * SPENT IS A STATE, NOT A DISAPPEARANCE. A module out of sorties, drops,
- * squads or airframes stays on the page and says EXPENDED.
+ * VIRTUAL IS READY (user, 2026-11-02: "all support aircraft needs to be
+ * virtual till tasked"): a class module with no airframe up is IDLE and takes
+ * the order - the airframe is made over the module then. A CAS aircraft out
+ * ON STATION takes a reposition from there.
+ *
+ * NO AIRFRAME LEFT (user, 2026-11-02: "make sure there is a respawn count for
+ * each support, default no respawns"): EXPENDED - and the row leaves the
+ * SUPPORT list (FUNC(assets)); a card to its box answers WHY_NO_AIRFRAME.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -37,29 +43,17 @@ private _status = _logic getVariable [QGVAR(status), STATUS_IDLE];
 private _synced = _logic getVariable [QGVAR(synced), objNull];
 private _hadSynced = _logic getVariable [QGVAR(hadSynced), !isNull _synced];
 
-// GONE FOR GOOD: Respawn Delay -1, or the last airframe a transport had.
-if (_logic getVariable [QGVAR(dead), false]) exitWith {[false, STATUS_EXPENDED, format ["%1 has lost its aircraft", _callsign]]};
+// GONE FOR GOOD: the last airframe it had (FUNC(replace)).
+if (_logic getVariable [QGVAR(dead), false]) exitWith {[false, STATUS_EXPENDED, format ["%1 has no airframe left", _callsign]]};
 
 // A synced aircraft is the asset: while it is a wreck, the asset waits for
-// its replacement (FUNC(respawn)) - or is gone, when there will be none.
+// its replacement (FUNC(respawn)).
 private _respawnAt = _logic getVariable [QGVAR(respawnAt), 0];
 private _fnc_replacing = {
     private _left = ceil (_respawnAt - CBA_missionTime);
     [false, STATUS_REPLACING, [format ["%1 is waiting for a replacement aircraft", _callsign], format ["%1 has a replacement aircraft in %2s", _callsign, _left]] select (_left > 0)]
 };
-if (_hadSynced && {!alive _synced}) exitWith {
-    if ((_logic getVariable [QGVAR(respawnDelay), RESPAWN_NEVER]) < 0) exitWith {[false, STATUS_EXPENDED, format ["%1 has lost its aircraft", _callsign]]};
-    call _fnc_replacing
-};
-
-if ((_logic getVariable [QGVAR(left), -1]) isEqualTo 0 && _status isEqualTo STATUS_IDLE) exitWith {
-    [false, STATUS_EXPENDED, format ["%1 is spent", _callsign]]
-};
-
-private _airframes = _logic getVariable [QGVAR(airframes), 0];
-if (_airframes > 0 && {(_logic getVariable [QGVAR(lost), 0]) >= _airframes}) exitWith {
-    [false, STATUS_EXPENDED, format ["%1 has no airframes left", _callsign]]
-};
+if (_hadSynced && {!alive _synced}) exitWith {call _fnc_replacing};
 
 // A QRF that can never fly is spent from the start, not idle: otherwise the
 // row reads idle and every task on it is refused.
@@ -76,12 +70,14 @@ if (_status isNotEqualTo STATUS_IDLE) exitWith {
     if (_kind isEqualTo KIND_TRANSPORT) exitWith {[true, _status, ""]};
     // ON STATION A CAS AIRCRAFT CAN BE MOVED: a new SAD or LOITER repositions
     // the orbit, the way Simplex's loiter takes a second confirm
-    // (FUNC(casOrder)).
-    if (_kind isEqualTo KIND_CAS && _status isEqualTo "on station") exitWith {[true, _status, ""]};
+    // (FUNC(casOrder)) - and a class aircraft on station takes a board's
+    // ATTACK RUN from there (user, 2026-11-02).
+    if (_status isEqualTo STATUS_ON_STATION) exitWith {[true, _status, ""]};
     [false, _status, format ["%1 is already on a task", _callsign]]
 };
 
-// A class aircraft lost: the next one is ready when the respawn delay is up.
+// Its airframe lost: the next one is made at the first tasking after the
+// respawn delay (user, 2026-11-02).
 if (CBA_missionTime < _respawnAt) exitWith {call _fnc_replacing};
 
 private _readyAt = _logic getVariable [QGVAR(readyAt), 0];

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who holds this drone: the player linked to it through FUNC(uavControl) - the
  * drone's public jmfsb_devices_uavOperator, while that man is alive and still
  * in the game - else a vanilla UAV terminal still connected to it (a mission or

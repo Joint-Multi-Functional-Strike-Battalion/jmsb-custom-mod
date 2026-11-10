@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, each DF tick: moves the GPS of the AI men the spoof engine has to
  * keep (players are FUNC(publish)'s, every tick):
  *

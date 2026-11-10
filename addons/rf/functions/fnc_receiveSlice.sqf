@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A client takes the slice the server pushed (public variable handler on
  * jmfsb_rf_slice) and indexes it for jmfsb_rf_fnc_link and jmfsb_rf_fnc_reach.
  * For every node and net whose links differ from the slice before,

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: ends a call that has run out of people - fewer than two members
  * and ringing together, or a live call down to one member.
  *

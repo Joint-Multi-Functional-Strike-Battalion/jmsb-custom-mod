@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Moves every standing leader to another safe house - IN A CAR, along the
  * roads, not on foot across country.
  *

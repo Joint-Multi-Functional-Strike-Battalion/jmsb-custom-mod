@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Holds one game channel's voice off while a refused PTT 2-4 key is down
  * (FUNC(applyOpen)), so the engine's Push To Talk, which sends on the current
  * channel, sends nothing; CH_NONE gives back the one held. Its chat is left

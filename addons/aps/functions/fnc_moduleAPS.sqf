@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the module and arms active protection. PLACING THE MODULE IS THE
  * ENABLE - with no module this system does nothing at all.
  *

@@ -48,6 +48,12 @@ debug surface (review R1: it was a CBA event any player could raise to print
 the enemy's drone picture in everyone's chat). A drone's sighting goes
 straight into jmfsb_reaction's roll, not through a CBA event.
 
+**A dive ends in one burst and nothing else.** The swarm's impact drones and the
+FPVs Drongo's Drone Tweaks flies are deleted, crew and all, where the warhead
+goes or where they die, and the warhead is fused by script. A Switchblade is a
+Greyhawk's weight of airframe; a wreck of one keeping its dive speed is a second
+weapon nobody fired.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires

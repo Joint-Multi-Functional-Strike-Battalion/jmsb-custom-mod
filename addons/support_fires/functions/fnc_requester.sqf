@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: who sent the order now running, if he may task this asset at all
  * (review S6). The requester is the sending machine's own player
  * (EFUNC(common,sender)), never a unit from the arguments; the asset must be

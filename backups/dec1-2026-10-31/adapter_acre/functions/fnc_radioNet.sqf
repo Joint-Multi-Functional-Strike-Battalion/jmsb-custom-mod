@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The net an ACRE radio is on: the label of its current channel in the PAC
  * plan's ACRE tier for its base class (jmfsbFR_radio_sr/mr/lrRadios and
  * their Channels rows [channel, freq, label] - what jmfsb_gear_fnc_setupRadios

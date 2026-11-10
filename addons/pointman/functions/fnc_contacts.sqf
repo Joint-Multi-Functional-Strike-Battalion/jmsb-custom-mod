@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who FOLLOW can walk to: the BFT picture's friendlies
  * (jmfsb_bft_fnc_friendlies; the player's own group without BFT), nearest
  * first, each with the label the row shows - his member number and name,

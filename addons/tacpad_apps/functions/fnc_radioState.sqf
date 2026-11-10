@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The local player's active voice net, as a line short enough for a table
  * column - the squad table's RADIO, the target card, the HUD's fallback.
  *

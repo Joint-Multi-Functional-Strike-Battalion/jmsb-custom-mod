@@ -1,13 +1,13 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A tick square with its label, the RADIO board's one way of ticking a thing
  * (a squad or a man for a custom net; user, 2026-10-22: "allow rtos to add
  * custom channels"): filled ink when ticked, an ink outline when not, and dim
  * when the tick is not this cell's to change - a man on a net through his
  * squad is ticked by the squad's cell, not his own. The whole cell is the
  * press, so a thumb need not find the square. The square is kept square on
- * the screen the way the support checklist's box is.
+ * the screen, measured in screen pixels.
  *
  * Arguments:
  * 0: Body <CONTROL>
@@ -49,8 +49,12 @@ private _style = switch (true) do {
     case (_ticked): {CHIP_INK_FILL};
     default {CHIP_OUTLINE};
 };
+// A SQUAD OR A MAN IS A NAME: untracked, the chip as wide as its word and
+// never wider than its cell (tablet review 2026-11-01, 2.3 / 3.10: the
+// tracked "B A N S H E E 1 - 1 V A N I L L A" overflowed a fixed chip).
 private _chipH = _h * CHIP_H_K;
-[_body, [_x + _pad * 0.5, _y + (_h - _chipH) * 0.5], _chipH, _label, _style, _w - _pad] call EFUNC(tacpad,drawChip);
+private _chipW = ([_label, TEXT_LABEL, false] call EFUNC(tacpad,chipWidth)) min (_w - _pad);
+[_body, [_x + _pad * 0.5, _y + (_h - _chipH) * 0.5], _chipH, _label, _style, _chipW, TEXT_LABEL, false] call EFUNC(tacpad,drawChip);
 
 if (_dimmed || {_onPress isEqualTo {}}) exitWith {controlNull};
 

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One line of text, in one of the system's type roles.
  *
  * Every panel used to build its own <t> tag with format, which is how five
@@ -27,7 +27,8 @@
  * 4: Size, as a multiple of the body size <NUMBER> (optional, default 1)
  * 5: Bold <BOOL> (optional, default false)
  * 6: Alignment - "left", "right" or "center" <STRING> (optional, default "left")
- * 7: Track the letters, and uppercase them <BOOL> (optional, default false)
+ * 7: Track the letters, and uppercase them <BOOL> (optional, default false) -
+ *    a line longer than TRACK_MAX_CHARS is uppercased and not spaced (FUNC(retext))
  * 8: Font - "" for the label role (the condensed sans), FONT_MONO for a value
  *    (numbers, grids, times, callsigns), or a font name <STRING> (optional, default "")
  *

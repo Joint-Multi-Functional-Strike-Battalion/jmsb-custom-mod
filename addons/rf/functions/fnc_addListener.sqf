@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE TRANSMISSION-LISTENER HOOK. EW's intercept and DF register here; RF
  * never knows what they do. Once per server tick each listener is called with
  * every emitting node:

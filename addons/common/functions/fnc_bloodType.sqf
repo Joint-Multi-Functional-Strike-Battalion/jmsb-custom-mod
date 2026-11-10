@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A unit's blood type - "O+", "AB-" and the six between - as a string.
  *
  * Nothing in ACE medical knows a blood type, so the unit's is DEALT once and

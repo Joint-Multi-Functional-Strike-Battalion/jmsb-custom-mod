@@ -1,5 +1,8 @@
 // Templates - built on every machine in preInit, never sent over the wire.
 PREP(registerTemplate);
+// The cards the mod carries - the mod's own card always wins (2026-11-02).
+PREP(builtinCards);
+PREP(registerBuiltins);
 PREP(template);
 PREP(templateIds);
 PREP(fieldKeys);
@@ -9,7 +12,15 @@ PREP(fieldKeys);
 // rather than being written twice.
 PREP(validate);
 PREP(subject);
+// A grid field as a position - the thread's anchor on the server, the
+// composer's autofills on the client (report-card review, 2026-11-02).
+PREP(fieldPos);
 PREP(render);
+// A field as printed, a FRAGO's changed lines, a thread's current order
+// (docs/DESIGN_MESSAGE_TEMPLATES.md, 2026-11-09).
+PREP(fieldText);
+PREP(fragoLines);
+PREP(currentOrder);
 PREP(notify);
 PREP(netLevel);
 PREP(squadNets);
@@ -60,6 +71,12 @@ PREP(srvClaim);
 PREP(srvSweep);
 PREP(srvForward);
 PREP(srvTic);
+// Server hook: run after a message is filed (srvSubmit) - how the support
+// core answers its threads without this addon knowing it (2026-11-01).
+PREP(onFiled);
+// Server hook: rules on a card filed into an open thread (srvThreadFor) - a
+// support asset's re-task and its own states (2026-11-02).
+PREP(onThreadCard);
 
 // Audience tags. tagMatch is the one rule and both ends use it - the server to
 // find who a tag reaches, a client to know the tag named them.

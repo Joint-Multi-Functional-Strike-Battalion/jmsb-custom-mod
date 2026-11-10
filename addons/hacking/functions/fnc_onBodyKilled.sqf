@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A man died. Decide, once, whether his body is worth searching.
  *
  * WHAT A BODY YIELDS DEPENDS ON WHOSE WAR HE WAS FIGHTING, and that comes

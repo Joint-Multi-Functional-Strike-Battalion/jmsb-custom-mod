@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens the notices log - the docked reader's LOG view, the page back through
  * every notification that scrolled past (FUNC(panelReader)) - from anywhere:
  * SETTINGS > NETS & ALERTS, the MSG tile's long press and the full reader's

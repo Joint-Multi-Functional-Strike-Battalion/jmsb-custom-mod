@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * EW SCANNER, full size: everything the hand-held hears, on one page.
  *
  * ONE PAGE, NOT THREE. The archived device suite split the same reading across a

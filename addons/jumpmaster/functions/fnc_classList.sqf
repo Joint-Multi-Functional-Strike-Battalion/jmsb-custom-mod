@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A comma-separated setting as a list of class names, trimmed, blanks dropped.
  *
  * Arguments:

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes one order from the support page and either sends it to the server or
  * says why not - the "task" code of provider "fires".
  *

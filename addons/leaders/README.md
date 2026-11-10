@@ -21,6 +21,14 @@ point instead of a circle, and it costs a live prisoner rather than a hack.
 Killing or capturing one cuts the asymmetric pool by the slider, and the state
 survives a restart.
 
+**Without ALiVE (2026-11-02)** the placed module stands for the asymmetric
+commander: the chain belongs to the mission's enemy - or to the side of a man
+synchronised to the module, whose faction the leaders then wear (else the one
+that side's men on the map wear). Safe houses and pops are in the map's own
+towns, inside the module's TAOR field or the `jmfsb_taor_<side>` markers when
+set. Nothing to persist into, so a restart brings all three back. Built, not
+seen in game.
+
     #jmfsbleaders    who is left, where, and in what state
 
 Admins only, on a dedicated server too; the answer goes to the admin who typed
@@ -47,7 +55,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 `jmfsb_moduleLeaders`, category jmfsb_modules
 
-Placing this module turns on leader chain. Without it, the system is off.<br>Pool Cut Per Leader (%) - How much of the asymmetric commander's force pool dies with each leader Rotate Every (sec) - How often a leader moves to another safe house Trap Chance (%) - Chance a watched safe house is trapped with mortars Internet Pops - How many rugged-server props are placed for players to find and pull leads from
+Placing this module turns on leader chain. Without it, the system is off.<br>Without ALiVE: the mission's enemy is the insurgent side (or the side of a man synchronised to this module, whose faction the leaders wear), safe houses are in the map's towns, inside TAOR Markers or jmfsb_taor_west / _east / _guer markers when set.<br>Pool Cut Per Leader (%) - How much of the asymmetric commander's force pool dies with each leader Rotate Every (sec) - How often a leader moves to another safe house Trap Chance (%) - Chance a watched safe house is trapped with mortars Internet Pops - How many rugged-server props are placed for players to find and pull leads from
 
 <details><summary>5 attributes</summary>
 

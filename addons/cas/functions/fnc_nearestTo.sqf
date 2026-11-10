@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The nearest of a list to a position.
  *
  * WRITTEN OUT RATHER THAN SORTED, because BIS_fnc_sortBy runs its comparison

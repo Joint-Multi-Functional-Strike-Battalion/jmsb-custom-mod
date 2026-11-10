@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The module logic behind an asset id "fires:<n>".
  *
  * Arguments:

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: every armed alarm off the roster (the Clear Scanner Alarms key, the
  * hack.alarm clear command). Reached by remoteExec from a client with a live
  * player, or called on the server (review S7). Each waiter finds its id gone

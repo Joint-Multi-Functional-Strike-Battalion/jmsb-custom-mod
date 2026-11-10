@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: registers code to run when an ALiVE commander takes an objective
  * (FUNC(eventListener), OPCOM_CAPTURE).
  *

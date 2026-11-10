@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The call's picture as a window floating over the screen (user, 2026-10-28:
  * "on tablet and phone have it over top"): the other man on the player's live
  * call, his face or his view, whichever he sends

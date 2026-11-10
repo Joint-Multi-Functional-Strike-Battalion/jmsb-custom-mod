@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * NETS OVER FREQUENCIES, read back: which net each channel of a TFAR set
  * carries. A channel's frequency is looked up in the net table
  * (fnc_netTable); a channel whose frequency names no net falls back to the

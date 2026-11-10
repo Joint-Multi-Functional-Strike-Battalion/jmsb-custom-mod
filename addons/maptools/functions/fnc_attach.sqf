@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hangs the map tools on one map control: the drawing and the three mouse
  * events the tools read. Works on any map control - the vanilla map's, and the
  * tablet's screen, which jmfsb_devices declares at the same idc on purpose.
@@ -12,6 +12,10 @@
  * The display it sits on stops the tool when it unloads - the tablet's dialog
  * closing is the tablet's map closing. The vanilla map never unloads; its
  * close is the Map mission event in XEH_postInit.
+ *
+ * And the double-click (user, 2026-11-01): on a device's map it places a
+ * marker (FUNC(mapDblClick)); the vanilla map's stays the game's own. The
+ * marker card goes with the display it stands on.
  *
  * Arguments:
  * 0: Map control <CONTROL>
@@ -35,9 +39,14 @@ _map ctrlAddEventHandler ["Draw", {_this call FUNC(draw)}];
 _map ctrlAddEventHandler ["MouseButtonDown", {_this call FUNC(mouseDown)}];
 _map ctrlAddEventHandler ["MouseButtonUp", {_this call FUNC(mouseUp)}];
 _map ctrlAddEventHandler ["MouseMoving", {_this call FUNC(mouseMove)}];
+_map ctrlAddEventHandler ["MouseButtonDblClick", {_this call FUNC(mapDblClick)}];
 
 private _display = ctrlParent _map;
 if (!isNull _display && {!(_display getVariable [QGVAR(unloadWired), false])}) then {
     _display setVariable [QGVAR(unloadWired), true];
-    _display displayAddEventHandler ["Unload", {[] call FUNC(stop)}];
+    _display displayAddEventHandler ["Unload", {
+        params ["_display"];
+        [] call FUNC(stop);
+        [_display] call FUNC(markerCardClose);
+    }];
 };

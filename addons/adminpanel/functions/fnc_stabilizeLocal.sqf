@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * STABILIZE's work (FUNC(stabilize)). Sent to the server, which checks the
  * sender is an admin by its own records and names him the admin, then sends
  * it on to the machine where the patient's medical state is local; that

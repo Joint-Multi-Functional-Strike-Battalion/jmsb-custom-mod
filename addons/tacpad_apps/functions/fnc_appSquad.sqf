@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SQUAD STATUS, full size, to the design: the section as a table on the left and
  * the summary, the dispersion and your own ACE report down a rail on the right.
  *
@@ -29,6 +29,11 @@
  * and the platoon view is how a leader reads the lot at once - so the old
  * SEND TEAM ACE REPORT button, and the ace template behind it, were a second
  * copy of a state the screen already carries live. Both are gone.
+ *
+ * A MAN SELECTED OPENS HIS MEMBER PAGE down the rail (FUNC(appSquadMember),
+ * DESIGN_TABLET_APPS.md SQUAD): state, wounds, blood, ammo, radio, link and
+ * distance, SHOW ON MAP and CALL. Each row starts with his BFT mark and number
+ * (FUNC(squadIcon)) and carries his LINK on DATA (FUNC(squadLink)).
  *
  * Arguments (app handler):
  * 0: Map display <DISPLAY>
@@ -104,7 +109,7 @@ if (_platoon) then {
 // Every man is measured HERE, before anything is drawn, so a folded squad still
 // counts in the rail totals, still feeds the ammunition average and can still
 // put its casualty on the CASEVAC button. Drawing is what a header toggles;
-// counting is not. Each section grows its rows - [unit, out, health, hurt] -
+// counting is not. Each section grows its rows - [unit, out, status words, state] -
 // and a one-line summary for its header.
 private _alive = 0;
 private _wia = 0;
@@ -115,6 +120,9 @@ private _ammoCount = 0;
 private _worst = objNull;
 private _worstUrgent = false;
 private _units = [];
+// The selected man's [status, trouble, down] for the MEMBER page; [] when the
+// selection is nobody on this screen.
+private _selectedRow = [];
 
 // EACH MAN'S SKILLS, ONCE PER REDRAW. Off the roster TAC//PAC publishes -
 // uid -> "MED JFO" - so a leader sees who the medic is without asking. An AI
@@ -172,7 +180,21 @@ if (!isNil "jmfsb_pac_fnc_lookup") then {
             _ammoCount = _ammoCount + 1;
         };
 
-        _rows pushBack [_unit, _out, _health, _hurt];
+        // The words are worked out here, not in the draw, so the MEMBER page
+        // says exactly what the man's row says - a folded or scrolled-off row
+        // included.
+        (switch (true) do {
+            case (!alive _unit): {["KIA", "dead"]};
+            case (_out): {["UNRESPONSIVE - no vitals", "out"]};
+            case (_hurt): {[format ["WIA - %1%2 remaining", _health, "%"], "hurt"]};
+            default {["Effective", "ok"]};
+        }) params ["_status", "_state"];
+
+        if (_unit isEqualTo GVAR(squadSelected)) then {
+            _selectedRow = [_status, _state in ["out", "hurt", "dead"], _state in ["out", "dead"]];
+        };
+
+        _rows pushBack [_unit, _out, _status, _state];
     } forEach _members;
 
     _units append _members;
@@ -210,17 +232,26 @@ if (!isNil "jmfsb_pac_fnc_lookup") then {
 // SKILLS IS THE WIDE ONE (user, 2026-09-05: "make wider so all these skills
 // show") - nine three-letter codes on one line. ROLE is two letters and gives
 // up the width; STATUS keeps enough for "WIA - 85% remaining".
+//
+// THE BFT MARK AND LINK (DESIGN_TABLET_APPS.md SQUAD: "BFT member icon and
+// number ... link"). The mark is the map's member icon with his number in it
+// (FUNC(squadIcon)), so "3" on the roster is "3" on the map; LINK is his reach
+// on DATA (FUNC(squadLink)), a swatch and a figure. GRID and RADIO gave up the
+// width; SKILLS kept its own.
 private _cols = [
-    ["CALLSIGN", 0.000, "left"],
-    ["ROLE", 0.150, "left"],
-    ["SKILLS", 0.205, "left"],
+    ["#", 0.000, "center"],
+    ["CALLSIGN", 0.035, "left"],
+    ["ROLE", 0.170, "left"],
+    ["SKILLS", 0.210, "left"],
     ["STATUS", 0.420, "left"],
-    ["ACE", 0.560, "left"],
-    ["GRID", 0.710, "left"],
-    ["RADIO", 0.815, "left"],
-    ["RANGE", 0.925, "right"]
+    ["ACE", 0.555, "left"],
+    ["GRID", 0.700, "left"],
+    ["RADIO", 0.790, "left"],
+    ["LINK", 0.865, "left"],
+    ["RANGE", 0.935, "right"]
 ];
 private _aceCol = _cols findIf {(_x # 0) isEqualTo "ACE"};
+private _linkCol = _cols findIf {(_x # 0) isEqualTo "LINK"};
 
 {
     _x params ["_label", "_at", "_align"];
@@ -306,20 +337,13 @@ private _hidden = 0;
     if (!_open) then {continue};
 
     {
-        _x params ["_unit", "_out", "_health", "_hurt"];
+        _x params ["_unit", "_out", "_status", "_state"];
         private _y = _row * _rowH + RULE_THICK * pixelH;
         if (_y + _rowH > _limitY) then {
             _hidden = _hidden + 1;
             _row = _row + 1;
             continue;
         };
-
-        (switch (true) do {
-            case (!alive _unit): {[ICON_KIA, "KIA", "dead"]};
-            case (_out): {[ICON_UNCON, "UNRESPONSIVE - no vitals", "out"]};
-            case (_hurt): {[ICON_WIA, format ["WIA - %1%2 remaining", _health, "%"], "hurt"]};
-            default {[ICON_OK, "Effective", "ok"]};
-        }) params ["_icon", "_status", "_state"];
 
         // A row that needs answering is filled, a row that is merely wounded is
         // washed, and a man off the net is dropped back. The design spends its one
@@ -352,15 +376,25 @@ private _hidden = 0;
 
         private _self = _unit isEqualTo player;
 
-        [0, format ["%1 %2", [rank _unit] call EFUNC(tacpad,rankShort), name _unit], _rowInk, _y, TEXT_TITLE] call _fnc_cell;
-        [1, [_unit] call EFUNC(tacpad,roleShort), ([_mute, _ground] select (_state == "out")), _y, TEXT_BODY] call _fnc_cell;
+        // The BFT mark, centred in its column - faded for a man down or dead,
+        // as the map fades him.
+        private _markH = _rowH * SQUAD_ICON_ROW_K;
+        private _markW = _markH * pixelW / pixelH;
+        [
+            _body,
+            [_pad + ((_cols # 1 # 1) * _tw - _pad - _markW) * 0.5, _y + (_rowH - _markH) * 0.5, _markH],
+            _unit, _state in ["out", "dead"]
+        ] call FUNC(squadIcon);
+
+        [1, format ["%1 %2", [rank _unit] call EFUNC(tacpad,rankShort), name _unit], _rowInk, _y, TEXT_TITLE] call _fnc_cell;
+        [2, [_unit] call EFUNC(tacpad,roleShort), ([_mute, _ground] select (_state == "out")), _y, TEXT_BODY] call _fnc_cell;
         // SKILLS, EACH IN ITS OWN COLOUR - medical green, leadership yellow,
         // the rest as the unit's skills config says (user, 2026-09-05). Drawn
         // one code at a time, stepping by the measured width, stopping at the
         // column's edge. On an accent-filled row the colours would not read,
         // so those stay ground.
-        private _skillX = _pad + (_cols # 2 # 1) * _tw;
-        private _skillEnd = (_cols # 3 # 1) * _tw;
+        private _skillX = _pad + (_cols # 3 # 1) * _tw;
+        private _skillEnd = (_cols # 4 # 1) * _tw;
         private _skillInk = [_mute, _ground] select (_state == "out");
         {
             _x params ["_ab", "_sid"];
@@ -369,7 +403,7 @@ private _hidden = 0;
             private _t = [_body, [_skillX, _y, _skillEnd - _skillX, _rowH], _ab, _c, TEXT_LABEL, false] call EFUNC(tacpad,drawText);
             _skillX = _skillX + (ctrlTextWidth _t) + _pad * 0.5;
         } forEach (_skillsOf getOrDefault [getPlayerUID _unit, []]);
-        [3, _status, _statusInk, _y, TEXT_TITLE] call _fnc_cell;
+        [4, _status, _statusInk, _y, TEXT_TITLE] call _fnc_cell;
 
         // ACE, three letters each with the swatch that man last reported. Drawn
         // rather than written out, because three colours read in one glance and
@@ -406,23 +440,47 @@ private _hidden = 0;
             [_body, [_cx + _swatchH * pixelW / pixelH + _pad * 0.4, _y, _tw * 0.04, _rowH], _x, _rowInk, TEXT_LABEL, true] call EFUNC(tacpad,drawText);
         } forEach ["A", "C", "E"];
 
-        [5, [mapGridPosition _unit, "-"] select (!alive _unit), _rowInk, _y, TEXT_TITLE] call _fnc_cell;
+        [6, [mapGridPosition _unit, "-"] select (!alive _unit), _rowInk, _y, TEXT_TITLE] call _fnc_cell;
 
-        // Column 6 - RADIO. It was 5, the GRID column, so the channel was drawn
-        // through the grid ("text seems to be overlapping", user, 2026-09-05).
+        // Column 7 - RADIO. It once shared the GRID column's index, so the
+        // channel was drawn through the grid ("text seems to be overlapping",
+        // user, 2026-09-05).
         private _radio = _unit getVariable [QGVAR(radio), ""];
         [
-            6,
+            7,
             [_radio, "NO SET"] select (_radio == ""),
             ([_mute, _ground] select (_state == "out")),
             _y, TEXT_BODY
         ] call _fnc_cell;
 
-        [7, [format ["%1 M", round (player distance _unit)], "-"] select _self, ([_mute, _ground] select (_state == "out")), _y, TEXT_TITLE] call _fnc_cell;
+        // LINK - his reach on DATA as a swatch in the RADIO app's quality bands
+        // and the figure beside it; NONE is no route, "-" is not known (an AI,
+        // yourself, no RF) and gets no swatch.
+        private _quality = [_unit] call FUNC(squadLink);
+        if (_quality >= 0) then {
+            private _swatchH = _rowH * 0.42;
+            private _lx = _pad + (_cols # _linkCol # 1) * _tw;
+            private _swatch = switch (true) do {
+                case (_quality >= QUALITY_GOOD): {["swatchGreen"] call EFUNC(tacpad,theme)};
+                case (_quality >= QUALITY_FAIR): {["swatchYellow"] call EFUNC(tacpad,theme)};
+                default {_accent};
+            };
+            [_body, [_lx, _y + (_rowH - _swatchH) * 0.5, _swatchH * pixelW / pixelH, _swatchH], _swatch] call EFUNC(tacpad,drawFill);
+            [
+                _body, [_lx + _swatchH * pixelW / pixelH + _pad * 0.4, _y, ((_cols # (_linkCol + 1) # 1) - (_cols # _linkCol # 1)) * _tw - _swatchH * pixelW / pixelH - _pad, _rowH],
+                [format ["%1%2", round (_quality * PERCENT), "%"], "NONE"] select (_quality isEqualTo 0),
+                ([_mute, _ground] select (_state == "out")), TEXT_BODY
+            ] call EFUNC(tacpad,drawText);
+        } else {
+            [_linkCol, "-", ([_mute, _ground] select (_state == "out")), _y, TEXT_BODY] call _fnc_cell;
+        };
+
+        [9, [format ["%1 M", round (player distance _unit)], "-"] select _self, ([_mute, _ground] select (_state == "out")), _y, TEXT_TITLE] call _fnc_cell;
 
         [_body, [0, _y + _rowH - RULE_THIN * pixelH, _tw, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 
-        // Pressing a man SELECTS him - for MESSAGE and CALL in the foot. It used
+        // Pressing a man SELECTS him - for MESSAGE in the foot, and his MEMBER
+        // page on the rail (FUNC(appSquadMember)), which carries CALL. It used
         // to try to centre the map on him as well, which never worked under the
         // app frame and was never wanted (user, 2026-09-05: "does not centre
         // the map, had never planned for it to centre, so remove").
@@ -486,25 +544,9 @@ if (!isNull _selected && {_selected in _units} && {isPlayer _selected}) then {
         ["", "", false, format ["P:%1", getPlayerUID _to]] call EFUNC(tacpad,composeOpen);
     }] call EFUNC(tacpad,drawHit);
 
-    // CALL HIM (user, 2026-10-21: "change tune to a call function"). Rings him
-    // through FUNC(radioDial) - a new call, or into the live one you own - so
-    // the roster and the RADIO app cannot disagree about what a press rings.
-    // Voice says why when it cannot (no route, busy, not the owner).
-    if (!isNil QEFUNC(voice,call)) then {
-        private _callX = _msgX + _msgW + _pad;
-        private _callW = _tw * 0.11;
-
-        [_body, [_callX, _footY, _callW, _footH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
-        [_body, [_callX + _pad, _footY, _callW - 2 * _pad, _footH], "CALL", _ink, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
-
-        [_body, [_callX, _footY, _callW, _footH], {
-            private _to = GVAR(squadSelected);
-            if (isNull _to) exitWith {};
-
-            [[_to]] call FUNC(radioDial);
-            {["squad"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
-        }] call EFUNC(tacpad,drawHit);
-    };
+    // CALL HIM (user, 2026-10-21: "change tune to a call function") is on his
+    // MEMBER page now (DESIGN_TABLET_APPS.md SQUAD), beside SHOW ON MAP - one
+    // CALL on the screen, not two.
 };
 
 // The hint gives its slot to the overflow count when there is one - a screen
@@ -523,6 +565,14 @@ if (_hidden > 0) then {
 private _rx = _tw + RULE_THICK * pixelW + _pad;
 private _rw = _railW - 2 * _pad;
 private _ry = 0;
+
+// A MAN SELECTED IS HIS MEMBER PAGE (DESIGN_TABLET_APPS.md SQUAD), down the
+// rail in STRENGTH's place; its BACK clears the selection and STRENGTH, the
+// dispersion and MY ACE REPORT come back.
+if (_selectedRow isNotEqualTo []) exitWith {
+    _selectedRow params ["_selStatus", "_selHot", "_selDown"];
+    [_body, [_rx, _ry, _rw, _h], _selected, _selStatus, _selHot, _selDown] call FUNC(appSquadMember);
+};
 
 [_body, [_rx, _ry, _rw * 0.5, _rowH], ["STRENGTH", "PLATOON"] select _platoon, _mute, TEXT_BODY, true, "left", true] call EFUNC(tacpad,drawText);
 [
@@ -556,7 +606,7 @@ private _statH = _rowH * 2.4;
     ["UNRESPONSIVE", _uncon, _uncon > 0],
     // Already a string, so the tile must not str() it again - that is what put
     // quotation marks round the number on screen.
-    ["AMMO AVG", format ["%1%2", [round (_ammoSum / (1 max _ammoCount)), 0] select (_ammoCount == 0), "%"], _ammoCount > 0 && {_ammoSum / (1 max _ammoCount) < 35}],
+    ["AMMO AVG", format ["%1%2", [round (_ammoSum / (1 max _ammoCount)), 0] select (_ammoCount == 0), "%"], _ammoCount > 0 && {_ammoSum / (1 max _ammoCount) < SQUAD_AMMO_LOW}],
     ["KIA", _kia, _kia > 0]
 ];
 _ry = _ry + 2 * _statH + _padY;

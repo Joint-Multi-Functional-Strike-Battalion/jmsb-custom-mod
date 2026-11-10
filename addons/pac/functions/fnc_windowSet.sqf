@@ -8,7 +8,7 @@ Description:
 
     A WINDOW IS ONE ROW, APPEND-ONLY:
 
-        [id, name, startedAt, endedAt, source, kind]
+        [id, name, startedAt, endedAt, source, kind, serverId]
 
     source is "manual" for these; FUNC(windowCurrent) also answers windows
     that come from the config's opWindows and from the current OPORD, but
@@ -27,6 +27,10 @@ Description:
     FUNC(promotionPoints) count operations as ops; training has its own
     promotion weights; special counts for nothing. A row from before kinds
     has no 6th element and reads as an operation.
+
+    THE SERVER BOUNDS THE KIND (2026-11-07): operation only on the ops server,
+    a training server's operation becomes training, dev is always special.
+    serverId is the server that started it; FUNC(boot) restores only its own.
 
     STOP IS A FORCED SAVE, per the handoff: the window closing is one of the
     moments where losing the last thirty seconds would actually cost.
@@ -47,6 +51,15 @@ Author:
 params [["_caller", objNull, [objNull]], ["_mode", "", [""]], ["_name", "", [""]], ["_kind", "operation", [""]]];
 
 if !(_kind in ["operation", "training", "special"]) then {_kind = "operation"};
+
+// THE SERVER BOUNDS THE KIND: only the ops server holds operations; a training
+// server's operation is training; everything on dev is special.
+private _server = GVAR(settings) getOrDefault ["serverId", PAC_SERVER_DEV];
+switch (_server) do {
+    case PAC_SERVER_OPS: {};
+    case PAC_SERVER_TRAINING: {if (_kind isEqualTo "operation") then {_kind = "training"}};
+    default {_kind = "special"};
+};
 
 if (!isServer) exitWith {""};
 if (isNull _caller || {!([_caller] call FUNC(isAdminCaller))}) exitWith {
@@ -74,7 +87,7 @@ switch (_mode) do {
         _id = "w" + ((_now splitString "-: ") joinString "");
         if (_name isEqualTo "") then {_name = "Op window " + _now};
 
-        GVAR(windows) pushBack [_id, _name, _now, "", "manual", _kind];
+        GVAR(windows) pushBack [_id, _name, _now, "", "manual", _kind, _server];
         GVAR(windowOpen) = _id;
         INFO_4("%1 started %4 window %2 (%3)",name _caller,_name,_id,_kind);
         [getPlayerUID _caller, name _caller, "window", "", format ["started %3 window '%1' (%2)", _name, _id, _kind]] call FUNC(logAction);

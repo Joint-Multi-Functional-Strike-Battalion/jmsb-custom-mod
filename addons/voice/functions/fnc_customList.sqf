@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RTO nets the server has published (user, 2026-10-22: "allow rtos to
  * add custom channels"), as the RADIO app lists them. A copy: the caller may
  * do what it likes with it.

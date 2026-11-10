@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The server's answer to FUNC(roomJoin): the voice server's address and a
  * token, or why not. The extension connects with them; the room is live on
  * its "connected" callback. A refusal (settings not set, no extension on the
@@ -52,4 +52,5 @@ if (!_ran) exitWith {
     [FUNC(roomJoin), [], ROOM_RETRY_S] call CBA_fnc_waitAndExecute;
 };
 GVAR(since) = CBA_missionTime;
+GVAR(waitS) = ROOM_CONNECT_S;
 TRACE_1("connecting",_url);

@@ -1,0 +1,67 @@
+# THE VOICE DLL, BUILT FROM THE PUBLIC SOURCE AND SIGNED (2026-11-01).
+# SignPath Foundation signs open-source builds for free, but only builds made
+# here, by GitHub Actions, from this repository - that is how it knows the file
+# came from the source (extensions/jmsb_voice/README.md, "Code signing policy").
+#
+# Build: every push that touches the extension, or by hand (Actions > Run).
+# Sign:  only once the repository variable SIGNPATH_ORGANIZATION_ID and the
+#        secret SIGNPATH_API_TOKEN are set (after SignPath approves the
+#        project); until then the unsigned build is the artifact.
+# The signed jmsb_voice_x64.dll is copied to the mod root, its hash put in
+# tools/dlls.sha256, and it goes to BattlEye (docs/SIGNING.md).
+
+name: jmsb_voice DLL
+
+on:
+  push:
+    paths:
+      - "extensions/jmsb_voice/**"
+      - ".github/workflows/jmsb_voice.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        working-directory: extensions/jmsb_voice
+        run: cargo build --release --locked
+
+      - name: Name it as the mod ships it
+        shell: pwsh
+        run: |
+          Copy-Item extensions/jmsb_voice/target/release/jmsb_voice.dll jmsb_voice_x64.dll
+          (Get-FileHash jmsb_voice_x64.dll -Algorithm SHA256).Hash
+
+      - name: Upload the unsigned build
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmsb_voice_x64-unsigned
+          path: jmsb_voice_x64.dll
+          if-no-files-found: error
+
+      - name: Sign with SignPath
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+
+      - name: Upload the signed build
+        if: ${{ vars.SIGNPATH_ORGANIZATION_ID != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmsb_voice_x64-signed
+          path: signed/jmsb_voice_x64.dll
+          if-no-files-found: error

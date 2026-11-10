@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Switches a Drone40 variant between relay, decoy, jammer and off - whatever
  * round it came from. Server-authoritative: anywhere else the call is sent to
  * the server (remoteExecCall, see below) and answers true for "sent". There the

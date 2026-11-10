@@ -1,12 +1,12 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One static-line jumper out of the door, and his descent handed to
  * FUNC(chuteTick).
  *
  * OUT BEHIND THE AIRCRAFT, NOT THROUGH IT. He is taken out of his seat and
  * put just behind and below the tail, a metre or two either side, with the
- * aircraft's own velocity - the way the drop crates leave - so he never meets
+ * aircraft's own velocity - the way airdropped loads leave - so he never meets
  * the airframe on the way down. The line pulls his round canopy
  * STATIC_OPEN_DELAY after exit.
  *

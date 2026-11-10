@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Calls the jmsb_voice extension. The one place callExtension is used for it.
  *
  * Arguments:

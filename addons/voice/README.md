@@ -14,7 +14,9 @@ VON command nor the extension. NOT RUN IN GAME.
 select the default"). **TFAR and ACRE were removed on 2026-10-31 (DEC1)**:
 no radio-mod choice, no external-radio mode. The CBA setting **JMSB - Voice >
 Voice system** (`jmfsb_voice_defaultSystem`, server-forced, read at mission
-start) is Automatic, Voice server (LiveKit) or Game VON (fallback); a server
+start) is Automatic, Mumble, LiveKit or Game VON (fallback) - the one
+setting that picks the voice (user, 2026-11-01); Mumble and LiveKit are both
+`jmfsb_adapter_livekit` (system `"livekit"`), Automatic is Mumble; a server
 or profile that still holds `"tfar"` or `"acre"` gets Automatic, with a
 warning. Decided by `fnc_selectSystem`: the automatic answer in preInit, from
 the LiveKit adapter's announcement, and the setting's at
@@ -32,8 +34,9 @@ event `jmfsb_voice_systemReady` [system] (the server's start for
 
 - `jmfsb_voice_system` - `"livekit"` (`jmfsb_adapter_livekit` loaded and its
   extension answering), `"von"` or `"none"` (above: no adapter, no nets).
-  Automatic: LiveKit, else game VON. Game VON by choice runs whatever is
-  loaded; LiveKit chosen but not loaded falls back to Automatic (a warning).
+  Automatic: the voice server, else game VON. Game VON by choice runs
+  whatever is loaded; Mumble or LiveKit chosen but not loaded falls back to
+  Automatic (a warning).
 - `jmfsb_voice_active` - true for `"livekit"` and `"von"`: a game-voice
   system is running, the core's own nets, calls and cut-offs with it.
 
@@ -87,7 +90,7 @@ that is not LiveKit's, else `"von"`.
 | `callAccept` / `callDecline` / `hangUp` | `[callId]` | nothing |
 | `callBack` | `[unit]` | nothing |
 | `calls` | `[]` | `[[callId, state "ringing"/"live"/"outgoing", members, priority, startedAt, owner], ...]` - owner is who started the call (or who it passed to) |
-| `callSlots` | `[]` | `[[slot 1..8, callId or "", membersCount], ...]` (server-wide) |
+| `callSlots` | `[]` | `[[slot 1..n, callId or "", membersCount, live], ...]` (server-wide): slots 1-8 under game VON; on the voice server up to the highest slot a call holds, never fewer than 8 |
 | `callbacks` | `[]` | `[[fromUnit, toUnit, requestedAt, state "waiting"/"held"], ...]` for the local player |
 | `contacts` | `[]` | `[[unit, name, callsign, roleTags, reachable, inCall], ...]`; tags from `"SL"`, `"RTO"` (by `isRto`), `"MEDIC"`, `"HQ"` |
 | `isRto` | `[unit]` | bool: he holds the RTO job - the one RTO test (see The RTO job); answers whether or not voice is active |
@@ -123,7 +126,7 @@ Times (`startedAt`, `requestedAt`) are `CBA_missionTime`.
 | his squad's plan TEAM net (`sr`), else `TEAM <side> <callsign>` | team | 3 Group | same id | his group, if he carries a set |
 | his squad's plan long range net (`lr`: a VON c2 net or `LR n`), else `C2` | c2 | the C2 custom channel | same id | everyone with a set |
 | pilots: his squad's plan air-to-ground net (`a2g`), else the plan's first a2g net, else `A2G`; ground: his squad's plan a2g net, else `A2G` only when the plan has no a2g net at all | a2g | the A2G custom channel | same id | pilots and copilots by seat, the ground squads the plan lists (see A2G is pilots) |
-| `CALL 1`-`CALL 8` | call | one custom channel per call | DATA | the call's members and ringing |
+| `CALL 1`-`CALL 8` (VON); `CALL 1`-`CALL n` on the voice server | call | one custom channel per call | DATA | the call's members and ringing |
 | an RTO net, named by its maker | custom | its own custom channel, kept for the mission | same id | the squads and players the RTO put on it (see RTO nets) |
 | `VEH` | veh | 4 Vehicle | none | crew (not cargo) of a land vehicle, aircraft or boat |
 | `DIRECT` | direct | 5 Direct | none | everyone |
@@ -257,7 +260,17 @@ keys (Group, Vehicle, Direct) send on that channel whatever the active net is.
 
 ## Calls
 
-- One custom channel per call, up to 8 people, 8 calls at once.
+- Up to 8 people a call, under every system - a design rule
+  (docs/DESIGN_VOICE.md "Calls", SPEC_TACNET `calls.size_max`), not a
+  channel count.
+- **How many calls at once is the adapter's** (`srvSlot`). Game VON: one
+  custom channel per call, so 8 slots (C2 and A2G take two of the ten).
+  **On the voice server (Mumble or LiveKit) there is no limit** (user,
+  2026-11-01: "on the radio calls tab there should be no limit to the # of
+  calls"): with every slot taken, an adapter whose `channelUse` hook counts
+  nothing (`[]`) and whose `reserve` hook grants `CALL <n+1>` gets one more
+  slot. Slots are never taken back; a freed one is reused first. An adapter
+  without `reserve` keeps the 8.
 - **Dial** (`call`): needs reach on DATA. The client refuses with nobody
   reachable; the server re-checks every callee, refuses those out of reach
   (no route) and those in another call (busy), and rings the rest. A ringing
@@ -268,7 +281,8 @@ keys (Group, Vehicle, Direct) send on that channel whatever the active net is.
   anyone answered ends the dial.
 - **Drops:** a member of a live call with no DATA route to any other member
   for longer than the drop time (setting, 10 s) is dropped.
-- **FLASH:** with every slot taken, a FLASH call from the RTO (`isRto`) or an admin marks
+- **FLASH:** with every slot taken (game VON only: the voice server always
+  has one), a FLASH call from the RTO (`isRto`) or an admin marks
   the oldest ROUTINE call; its members hear the priority warning for the bump
   warning time (setting, 3 s), then it ends and the FLASH dial is made again.
 - **Callback** (`callBack`): held by the server. Expires after 15 min
@@ -349,7 +363,7 @@ ids. Under `"none"` there are none.
 
 ## Ships
 
-100 functions.
+101 functions.
 
 ## CBA settings
 
@@ -372,7 +386,7 @@ ids. Under `"none"` there are none.
 
 ## Functions
 
-<details><summary>100</summary>
+<details><summary>101</summary>
 
 - `jmfsb_voice_fnc_a2gNet`
 - `jmfsb_voice_fnc_activeNet`
@@ -466,6 +480,7 @@ ids. Under `"none"` there are none.
 - `jmfsb_voice_fnc_srvNetPublish`
 - `jmfsb_voice_fnc_srvNetRemove`
 - `jmfsb_voice_fnc_srvPublish`
+- `jmfsb_voice_fnc_srvSlot`
 - `jmfsb_voice_fnc_srvStart`
 - `jmfsb_voice_fnc_stepActive`
 - `jmfsb_voice_fnc_talkSync`

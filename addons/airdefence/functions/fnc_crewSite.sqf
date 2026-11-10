@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Crews a site's hardware, keeps it out of ALiVE and announces it to adsite.
  *
  * Shared by FUNC(buildBattery) and FUNC(moduleAABase) - the one way a piece of
@@ -89,8 +89,13 @@ private _grp = createGroup [_side, true];
     // and their groups, so any OTHER ALiVE pass over the map leaves the site
     // alone too; without it, "it stays live" was a claim nothing had actually
     // told ALiVE about.
-    {[_x] call EFUNC(adapter_alive,profileIgnore)} forEach _live;
-    [_grp] call EFUNC(adapter_alive,profileIgnore);
+    // Guarded (user, 2026-11-02: "works with or without"): an AA Base
+    // module builds through here with no ALiVE loaded, and there is then
+    // nobody to tell.
+    if (!isNil QEFUNC(adapter_alive,profileIgnore)) then {
+        {[_x] call EFUNC(adapter_alive,profileIgnore)} forEach _live;
+        [_grp] call EFUNC(adapter_alive,profileIgnore);
+    };
 
     INFO_2("battery up for %1 at %2",_side,mapGridPosition _pos);
     // jmfsb_adsite files its pieces into one alarm area as intercept units. A

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Turns the live tiles' page by a step - the device arrows' job on the
  * tablet (user, 2026-10-31: "the arrows on the tablet should move the live
  * tiles"; jmfsb_devices_fnc_softKey). The band is drawn again next frame

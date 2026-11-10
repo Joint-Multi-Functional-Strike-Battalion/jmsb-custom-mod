@@ -6,7 +6,7 @@ bags that ax_vanillaocp re-skins to OCP kept, the mod's own radio bags in.
     python tools/pac_backpacks_ocp.py            dry run: what would change
     python tools/pac_backpacks_ocp.py --apply    write, each document saved first
 
-Touches JMSB.arsenal and JMSB.arsenal.testing only (the two common versions). Three base-game bags with no
+Touches JMSB.arsenal only (the common version). Three base-game bags with no
 replacement in the mod are deliberately LEFT IN - the two UAV bags and the steerable parachute - and are
 listed in KEEP_FUNCTIONAL; delete them from that list to drop them too.
 Backups: D:/Git/_jmsb_db_backup_<date>/<id>_before_backpacks.json.
@@ -20,7 +20,7 @@ import sys
 from pymongo import MongoClient
 
 DB = "jmsb"
-DOCS = ["JMSB.arsenal", "JMSB.arsenal.testing"]
+DOCS = ["JMSB.arsenal"]
 KEEP_FUNCTIONAL = ["B_UAV_01_backpack_F", "B_UAV_06_backpack_F", "B_Parachute"]
 REMOVE = [
     "B_AA_01_Weapon_grn_F",

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tier a vehicle is fitted to: its faction's, from the tier table, with
  * the module's and the setting's overrides on top, and the default tier
  * for a faction nobody has placed.

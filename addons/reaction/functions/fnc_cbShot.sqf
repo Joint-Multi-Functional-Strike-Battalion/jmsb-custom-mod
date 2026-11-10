@@ -1,12 +1,12 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: one shot (or one fire mission) from a PLAYER'S artillery, counted
  * towards the enemy's counter-battery fix (user, 2026-10-25: "lets add it back,
  * but we need an exception not to counter-battery AI arty", then "player side
  * virtual are the exception"). Only a player-crewed gun firing calls this (the
  * client hook in XEH_postInit) - so AI artillery and the players' virtual
- * TAC//SUPPORT batteries never reach it.
+ * support batteries never reach it.
  *
  * The enemy's radar needs cbShots rounds from one source inside cbWindow
  * seconds to fix it. Then cbChance is rolled once; a hit has the enemy answer

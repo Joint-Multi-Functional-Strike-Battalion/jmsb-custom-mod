@@ -1,9 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Mutes or unmutes the net whose chip carries this number (user, 2026-10-25:
  * "Ctrl and press 1-6 make a toggle mute"). The same numbering as
- * FUNC(netSelect); the active net does not change.
+ * FUNC(netSelect) (FUNC(netChip): 1-4 the chips of the page shown); the
+ * active net does not change.
  *
  * Arguments:
  * 0: Chip number, 1 based <NUMBER>
@@ -21,7 +22,7 @@ params [["_number", 0, [0]]];
 
 if (isNil QEFUNC(voice,setMute) || {isNil QEFUNC(voice,netState)}) exitWith {false};
 
-private _entry = ([] call FUNC(overlayNets)) param [_number - 1, []];
+private _entry = [_number] call FUNC(netChip);
 _entry params ["", "", "", ["_netId", "", [""]], "", "", "", ["_kind", "", [""]]];
 if (_netId isEqualTo "" || _kind isEqualTo NET_KIND_RING) exitWith {false};
 

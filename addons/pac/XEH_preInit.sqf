@@ -147,6 +147,12 @@ GVAR(svcOwed) = 0;
 GVAR(storeReady) = false;
 GVAR(bootQueue) = [];
 
+// FUNC(storeSync): a database write running, another round asked for, and the
+// next round to push without merging (after a restore or a sample remove).
+GVAR(syncBusy) = false;
+GVAR(syncAgain) = false;
+GVAR(syncReplace) = false;
+
 // What FUNC(rosterTotals) last worked out on the heartbeat, for FUNC(publish):
 // uid -> [minutes, joins], and the promotion-due rows. archiveSent is the
 // opordArchive as last published, so an unchanged one is not sent again.

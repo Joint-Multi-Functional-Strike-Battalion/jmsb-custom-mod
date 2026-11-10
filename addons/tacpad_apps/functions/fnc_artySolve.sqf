@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The ARTY calculator's firing solutions, one row per charge the gun carries
  * (user, 2026-10-25: "a good arty calculator that works with ACE built in").
  *

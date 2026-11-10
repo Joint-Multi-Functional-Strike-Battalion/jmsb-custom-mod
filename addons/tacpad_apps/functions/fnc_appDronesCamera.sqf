@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The FEED's picture: a camera on the picked drone's gunner optic, rendered to
  * a texture (DRONES_FEED_RTT) that the FEED panel's picture shows inside the
  * app. One feed per machine. While the drone lases, the HUD's target line is

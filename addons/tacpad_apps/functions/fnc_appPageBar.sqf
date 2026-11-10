@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A quality bar with its number beside it: RF's 0..1 link quality (or any
  * other 0..1 share). The fill is the swatch for the band it falls in - green
  * GOOD, yellow FAIR, the accent below - and -1 (RF's "does not know") is an
@@ -12,6 +12,8 @@
  * 2: Value 0..1, or QUALITY_UNKNOWN <NUMBER>
  * 3: Text beside the bar, "" for the value to two places <STRING> (optional, default "")
  * 4: Higher is worse - the colours run the other way (risk) <BOOL> (optional, default false)
+ * 5: Drawn on an ink fill - a selected row - so the track is the dim ink and
+ *    the number the ground <BOOL> (optional, default false)
  *
  * Return Value:
  * None
@@ -27,13 +29,15 @@ params [
     ["_rect", [0, 0, 0, 0], [[]], 4],
     ["_value", QUALITY_UNKNOWN, [0]],
     ["_text", "", [""]],
-    ["_inverse", false, [false]]
+    ["_inverse", false, [false]],
+    ["_onInk", false, [false]]
 ];
 
 if (isNull _body) exitWith {};
 
 _rect params ["_left", "_top", "_w", "_h"];
 
+private _ground = ["ground"] call EFUNC(tacpad,theme);
 private _ink = ["ink"] call EFUNC(tacpad,theme);
 private _line = ["line"] call EFUNC(tacpad,theme);
 private _dim = ["dim"] call EFUNC(tacpad,theme);
@@ -51,7 +55,9 @@ private _trackW = _w * 0.55;
 private _trackH = _h * 0.35;
 private _trackY = _top + (_h - _trackH) * 0.5;
 
-[_body, [_left, _trackY, _trackW, _trackH], _line] call EFUNC(tacpad,drawFill);
+// On a selected row's ink fill the hairline track would vanish (review
+// 2026-11-01, DESIGN_TABLET_REVIEW 3.3: the selected row is the ink fill).
+[_body, [_left, _trackY, _trackW, _trackH], [_line, _dim] select _onInk] call EFUNC(tacpad,drawFill);
 if (_known && _v > 0) then {
     [_body, [_left, _trackY, _trackW * _v, _trackH], _colour] call EFUNC(tacpad,drawFill);
 };
@@ -59,4 +65,4 @@ if (_known && _v > 0) then {
 if (_text isEqualTo "") then {
     _text = if (_known) then {_v toFixed 2} else {"--"};
 };
-[_body, [_left + _trackW + PAD * HOST_W, _top, _w - _trackW - PAD * HOST_W, _h], _text, ([_dim, _ink] select _known), TEXT_LABEL, false] call EFUNC(tacpad,drawText);
+[_body, [_left + _trackW + PAD * HOST_W, _top, _w - _trackW - PAD * HOST_W, _h], _text, [[_dim, _ink] select _known, _ground] select _onInk, TEXT_LABEL, false] call EFUNC(tacpad,drawText);

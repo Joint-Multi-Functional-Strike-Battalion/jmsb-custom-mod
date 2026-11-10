@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds one AA base inside a module's area: the radar at the centre, SAM
  * launchers on an outer ring, AA guns on an inner ring as point defence, and
  * guards standing off the lot.

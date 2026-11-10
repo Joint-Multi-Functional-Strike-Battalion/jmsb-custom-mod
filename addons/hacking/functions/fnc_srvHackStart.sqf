@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a hack started on a tablet (FUNC(tabletAction), by remoteExec). The
  * server checks the sender may hack that device (FUNC(srvMayHack)) and starts
  * its own clock on it, so a completion can be held to the kind's time

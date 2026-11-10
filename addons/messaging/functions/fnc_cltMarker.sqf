@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws or removes a message's map marker on this client. Local markers rather
  * than global ones, so a contact report marks the map of the side that sent it
  * and nobody else's.

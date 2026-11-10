@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A recall (the support page's RTB), on the server, reached by remoteExec
  * from FUNC(task). Only the sender may recall, and only his own side's
  * asset that is on a mission (FUNC(requester), FUNC(check); review S6) - no

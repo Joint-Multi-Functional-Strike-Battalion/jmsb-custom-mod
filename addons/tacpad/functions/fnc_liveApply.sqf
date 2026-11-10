@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A live screen's tick (code review R8): when its shape is the one it was built
  * with (FUNC(liveStore)) and every control is still there, the new values go
  * into those controls - words and colours only, nothing deleted, nothing

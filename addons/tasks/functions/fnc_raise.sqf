@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Raises a task condition event (a name listed in a CfgTasks class's
  * conditionEvents* arrays): every task waiting on it counts it once.
  *

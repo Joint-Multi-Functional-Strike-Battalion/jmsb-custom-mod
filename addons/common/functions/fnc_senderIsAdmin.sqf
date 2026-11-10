@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the remote-executed call now running may do an admin's work
  * (review S1-S5, R2). This machine's own calls and calls from the server
  * pass. On the server, a client's call passes when the server itself counts

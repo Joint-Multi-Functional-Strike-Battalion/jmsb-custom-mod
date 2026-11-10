@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A player's nets AS THE SERVER HAS THEM: the radio nets of his RF fill from
  * the published roster, and every CALL he is on or ringing on from the
  * published call table. Nothing of this machine's own reading of his group,

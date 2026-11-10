@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A talk key went down or up (initKeybinds.inc.sqf): PTT 1-4 (held in press
  * order, the last pressed wins) or TALK LOCAL. The mic follows (FUNC(mic));
  * the voice core reads which net is keyed through the "ptt" hook

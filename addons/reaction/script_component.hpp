@@ -36,6 +36,11 @@
 #define REACT_SPOTTED_TICK     30
 #define REACT_SPOTTED_RANGE    300
 #define REACT_SPOTTED_COOLDOWN 300
+// Without ALiVE (user, 2026-11-02): how well a hostile side must know a man
+// (knowsAbout, 0-4) before he is told it has his position, and below which a
+// side counts as hostile.
+#define REACT_SPOTTED_KNOWS    3
+#define REACT_HOSTILE_BELOW    0.6
 #define REACT_FLAG_MULT     3
 #define REACT_FLAG_DECAY    300
 

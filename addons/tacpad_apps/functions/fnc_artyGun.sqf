@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The gun the ARTY calculator solves for: the artillery piece the player is
  * in, else the nearest one within the player's ARTY gun range setting (the
  * crew standing at a mortar with the tablet out). An artillery piece is any

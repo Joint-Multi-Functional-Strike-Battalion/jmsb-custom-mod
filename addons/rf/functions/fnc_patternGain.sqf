@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_patternGain: what an antenna's pattern does toward a point. Omni
  * (RF_PATTERN_OMNI) reaches every way and adds nothing; a sector
  * (RF_PATTERN_SECTOR) reaches only inside its lobe - so many degrees wide

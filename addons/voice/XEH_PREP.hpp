@@ -92,6 +92,7 @@ PREP(srvNetMembers);
 PREP(srvNetPublish);
 PREP(srvNetRemove);
 PREP(srvPublish);
+PREP(srvSlot);
 PREP(srvStart);
 PREP(stepActive);
 PREP(talkSync);

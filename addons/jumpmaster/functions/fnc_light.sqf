@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The light, on the machine a man is local to: whether he may exit himself
  * from now, and - for the player himself - the word on the notify rail. An
  * AI's light sets his flag and says nothing.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Creates a net or changes one (server). A net that does not exist yet is
  * made with one key per side (west, east, independent, civilian), generated
  * here once - every set of a side holds its side's key unless it was

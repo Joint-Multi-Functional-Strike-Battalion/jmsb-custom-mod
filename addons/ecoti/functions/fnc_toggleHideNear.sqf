@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The hide-close-boxes key: flips the player's own hideNear setting, so no
  * box is drawn inside hideNearDistance (FUNC(updateCandidates)).
  *

@@ -1,34 +1,36 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The readiness check (user, 2026-10-30: "team members must have a halo
- * mask, and parachute"): every living man of the player's group, whether he
- * wears a mask of the setting's classes (HALO and HAHO only - a static line
- * needs none) and carries a parachute of the setting's classes.
+ * mask, and parachute"): how many of the stick carry no parachute of the
+ * setting's classes, and - HALO and HAHO only, a static line needs none - how
+ * many wear no mask of the setting's. Asked by the server at the JUMP
+ * REQUEST's receipt (FUNC(srvThread), 2026-11-02): either above 0 is the
+ * CANTCO's reason ("2 MEN WITHOUT A PARACHUTE").
  *
  * Arguments:
- * 0: Jump type <STRING>
+ * 0: The stick <ARRAY of OBJECTs>
+ * 1: Jump type <STRING>
  *
  * Return Value:
- * 0: Rows, [unit, name, mask ok, chute ok] each <ARRAY>
- * 1: Everyone ready, and there is someone <BOOL>
- * 2: How many are not <NUMBER>
+ * 0: Men without a parachute <NUMBER>
+ * 1: Men without a mask <NUMBER>
  *
  * Example:
- * (["HALO"] call jmfsb_jumpmaster_fnc_ready) params ["_rows", "_ready", "_missing"]
+ * ([units group player, "HALO"] call jmfsb_jumpmaster_fnc_ready) params ["_noChute", "_noMask"]
  *
  * Public: No
  */
 
-params [["_type", TYPE_HALO, [""]]];
+params [["_men", [], [[]]], ["_type", TYPE_HALO, [""]]];
 
 private _masks = [GVAR(maskClasses)] call FUNC(classList);
 private _chutes = [GVAR(chuteClasses)] call FUNC(classList);
-private _needMask = _type in FREEFALL_TYPES;
 
-private _rows = ((units group (call CBA_fnc_currentUnit)) select {alive _x}) apply {
-    [_x, name _x, !_needMask || {(goggles _x) in _masks}, (backpack _x) in _chutes]
+private _noChute = {!((backpack _x) in _chutes)} count _men;
+private _noMask = 0;
+if (_type in FREEFALL_TYPES) then {
+    _noMask = {!((goggles _x) in _masks)} count _men;
 };
-private _missing = {!(_x select 2) || {!(_x select 3)}} count _rows;
 
-[_rows, _rows isNotEqualTo [] && _missing isEqualTo 0, _missing]
+[_noChute, _noMask]

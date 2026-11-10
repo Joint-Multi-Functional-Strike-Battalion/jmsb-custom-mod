@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the local player's sets as RF nodes (rf_register), with the
  * fill - his TEAM net, his C2-kind net, his A2G-kind net when he is on one
  * (FUNC(a2gNet): pilots by seat, the ground as the plan lists them) and DATA.

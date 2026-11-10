@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One line of admin readout for a group: what it is, whether it is transmitting,
  * how it is drawn, and the nets it is on. Everything an admin needs to answer
  * "why can I not see them" without opening a single menu.

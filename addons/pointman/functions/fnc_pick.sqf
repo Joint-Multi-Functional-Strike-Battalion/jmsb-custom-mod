@@ -1,10 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * PICK ON MAP: waypoints pressed onto the host map, in order, one after
  * another (user, 2026-10-30: "an add to keep adding waypoints"). The page
  * closes and the map is claimed through the tacpad (EGVAR(tacpad,appMapClaim))
- * the way TAC//SUPPORT and the drones' GO TO claim it, so the presses are this
+ * the way the drones' GO TO claims it, so the presses are this
  * app's and the map tools stand aside. Left adds a waypoint, right ends and
  * brings the page back; it ends itself when the map closes, another app
  * opens, or nothing is pressed for PM_PICK_S.

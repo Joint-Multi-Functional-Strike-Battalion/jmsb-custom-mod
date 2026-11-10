@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws one row inside a panel body: an optional swatch, a label, an optional
  * value - right-aligned at the far edge, or left-aligned in a value column
  * when the caller sets one - and a hairline under it.

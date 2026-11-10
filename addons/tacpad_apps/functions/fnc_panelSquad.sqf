@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The squad rail: one row per man, a health swatch, and the number that swatch
  * is standing for. Under them, the way into the full roster, and the legend that
  * says what the four colours mean.
@@ -29,6 +29,12 @@
  * Public: No
  */
 
+// The rows the tablet's rail has room for whatever the section's size (user,
+// 2026-11-01): a full squad, so the rail does not change shape as men join.
+#define SQUAD_MIN_ROWS 8
+// The scrolling group's bar, in pixels: the vanilla map's rail keeps clear of it.
+#define SQUAD_SCROLL_W 14
+
 params [["_body", controlNull, [controlNull]], ["_id", "", [""]]];
 
 if (isNull _body) exitWith {};
@@ -50,11 +56,7 @@ private _alive = {alive _x} count _units;
 private _iconH = _rowH * 0.62;
 private _iconW = _iconH * pixelW / pixelH;
 
-// The body is a scrolling controls group and its bar sits inside the right edge.
-// Content that runs to _w runs underneath it.
-private _scrollW = 14 * pixelW;
-
-// THE RAIL KEEPS THE HEIGHT IT WAS PLACED AT, like the reader, and the legend
+// ON THE VANILLA MAP THE RAIL KEEPS THE HEIGHT IT WAS PLACED AT, like the reader, and the legend
 // and REFRESH are pinned to the foot of it. Both other answers were wrong and
 // both were shipped: sized to sixteen rows it ran off the bottom of the screen
 // and sat on the chat overlay, and sized to the men actually in it a four-man
@@ -70,7 +72,41 @@ private _smallText = [TEXT_LABEL, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx);
 private _figureText = [TEXT_TITLE, TEXT_UP_PX] call EFUNC(tacpad,textPx);
 private _refreshH = ([_rowText] call EFUNC(tacpad,textH)) + 2 * _padY;
 private _footH = _legendH + _refreshH + _padY * 3;
+
+// ON THE TABLET THE RAIL IS AS TALL AS ITS MEN (review 2026-11-01, item 3.2:
+// "SQUAD panel is full height with one man in it"). The rows needed, the
+// legend and REFRESH, never more than its fixed place (TABLET_PLACES) allows -
+// measured off that place, not off the body, which is the last fit's height
+// and would never let a man who joins have his row. The tablet's rail has a
+// fixed place and nothing under it to keep still, which is what the vanilla
+// map's docked rail keeps its placed height for (below).
+private _fitted = HOST_DEVICE;
+if (_fitted) then {
+    private _entry = (missionNamespace getVariable [QEGVAR(tacpad,open), createHashMap]) getOrDefault [_id, []];
+    _entry params [["_group", controlNull], "", ["_fr", []]];
+    if (isNull _group || _fr isEqualTo []) exitWith {_fitted = false};
+    // The frame round the body - border, title bar, rule - is what the group
+    // has that the body has not, whatever height either is now.
+    private _chromeH = ((ctrlPosition _group) # 3) - _bodyH;
+    private _placedBodyH = (_fr # 3) * HOST_H - _chromeH;
+    private _shown = (count _units) min ROSTER_MAX;
+    private _moreRow = parseNumber ((count _units) > _shown);
+    // A FULL SQUAD'S ROOM AT THE LEAST (user, 2026-11-01: "make there be a
+    // minimum starting size"). One man no longer gets a rail an inch tall;
+    // past SQUAD_MIN_ROWS it grows a row per man.
+    // Two pads of air over the foot, not one: the row count below is a floor
+    // of this height over a row, and a floor of exactly N rows can land a
+    // hair under N.
+    _bodyH = (((_shown + _moreRow) max SQUAD_MIN_ROWS) * _rowH + 2 * _padY + _footH) min _placedBodyH;
+};
 private _footY = _bodyH - _footH;
+
+// The body is a scrolling controls group and its bar sits inside the right edge.
+// Content that runs to _w runs underneath it. NOT ON THE TABLET (user,
+// 2026-11-01: "players do not need to have to use a scroll on this window"):
+// the rail is as tall as its men and nothing is drawn past its foot, so the
+// group never has anything to scroll and the rows take the full width.
+private _scrollW = [SQUAD_SCROLL_W * pixelW, 0] select _fitted;
 
 // What fits above the foot. Nothing is drawn under the pinned buttons - a name
 // hidden behind a legend is worse than a name that is not drawn at all, and the
@@ -200,5 +236,9 @@ private _refreshY = _legendY + _legendH + _padY * 0.5;
     {["squad"] call EFUNC(tacpad,rebuild)} call CBA_fnc_execNextFrame;
 }] call EFUNC(tacpad,drawHit);
 
-// NO fit. The rail is a docked rail and keeps its placed height - the same
-// rule the reader beside it follows.
+// NO fit ON THE VANILLA MAP. The rail is a docked rail and keeps its placed
+// height - the same rule the reader beside it follows. On the tablet it closes
+// up to what it drew (see _fitted above).
+if (_fitted) then {
+    [_id, 0, _bodyH / HOST_H] call EFUNC(tacpad,fit);
+};

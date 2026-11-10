@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every machine, joiners too: a supply crate (FUNC(doSupplyCrate)) can be
  * dragged and carried. ACE's setters have local effect, so the server sends
  * this to every machine by remoteExec, JIP-tied to the crate (review L3);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a unit may open the panel - FOR SCREENS ONLY (review S1, 2026-10-31).
  * Everything here can be written by a client: the flag, the published list,
  * the switch. No server door reads this any more; the server decides from its

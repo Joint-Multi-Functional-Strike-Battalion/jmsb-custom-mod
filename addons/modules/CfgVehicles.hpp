@@ -273,4 +273,25 @@ class CfgVehicles {
             };
         };
     };
+
+    // TRAINING: ALiVE stands up paused, and nothing jmfsb starts on ALiVE
+    // starts, until an admin types #jmfsbalivestart. Placed = held; no
+    // attributes. Does nothing without ALiVE.
+    class GVAR(holdAlive): Module_F {
+        scope = 2;
+        displayName = "JMSB - Hold ALiVE";
+        author = QAUTHOR;
+        vehicleClass = "Modules";
+        category = QPREFIX;
+        function = QFUNC(moduleHoldAlive);
+        functionPriority = 1;
+        isGlobal = 0;
+        isTriggerActivated = 0;
+        isDisposable = 1;
+        is3DEN = 0;
+
+        class ModuleDescription: ModuleDescription {
+            description = "Training: ALiVE starts paused. An admin types #jmfsbalivestart in chat to start it.";
+        };
+    };
 };

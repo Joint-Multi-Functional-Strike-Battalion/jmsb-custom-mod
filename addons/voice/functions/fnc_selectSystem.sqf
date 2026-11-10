@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Decides which system carries the voice (jmfsb_voice_system: "livekit" or
  * "von", "none" when the server's cannot run here; jmfsb_voice_active: a
  * game-voice system is running - the core's own nets, calls and cut-offs)
@@ -9,8 +9,10 @@
  * system's adapter in use (FUNC(applyAdapter)).
  *
  * THE VOICE SERVER IS THE VOICE (user, 2026-10-31: "livekit was to be the
- * VON", "no in-game VON"). Automatic is LiveKit when its extension is here,
- * else the game's VON - the fallback for a machine without the extension. A
+ * VON", "no in-game VON"). Automatic is the voice server when its extension is
+ * here, else the game's VON - the fallback for a machine without the
+ * extension. Mumble and LiveKit are both system "livekit" (one adapter, one
+ * extension; which server is adapter_livekit's to read from the setting). A
  * system chosen but not loaded falls back to Automatic, with a warning; Game
  * VON by choice runs whatever is loaded. TFAR and ACRE were removed (DEC1,
  * 2026-10-31): a server or profile that still holds "tfar" or "acre" gets
@@ -25,7 +27,7 @@
  * (the jmfsb_voice_systemReady event).
  *
  * Arguments:
- * 0: Choice: "auto", "livekit", "von" or "none" <STRING> (default: "auto")
+ * 0: Choice: "auto", "mumble", "livekit", "von" or "none" <STRING> (default: "auto")
  *
  * Return Value:
  * The system chosen <STRING>
@@ -45,8 +47,9 @@ switch (true) do {
     // the server's system cannot run here (FUNC(followServer))
     case (_choice isEqualTo SYSTEM_NONE): {_system = SYSTEM_NONE};
     case (_choice isEqualTo SYSTEM_VON): {_system = SYSTEM_VON};
-    case (_choice isEqualTo SYSTEM_LIVEKIT && {_choice in GVAR(loaded)}): {_system = _choice};
-    case (_choice isEqualTo SYSTEM_LIVEKIT): {
+    // Mumble and LiveKit are both the voice server's adapter
+    case (_choice in [SYSTEM_LIVEKIT, SYSTEM_MUMBLE] && {SYSTEM_LIVEKIT in GVAR(loaded)}): {_system = SYSTEM_LIVEKIT};
+    case (_choice in [SYSTEM_LIVEKIT, SYSTEM_MUMBLE]): {
         WARNING_2("voice: %1 chosen but not loaded - Automatic: %2 carries the voice",_choice,_auto);
     };
     // DEC1: a stored "tfar" / "acre" (or anything else unknown) is Automatic

@@ -76,3 +76,10 @@ PREP(onAlert);
 PREP(bloodType);
 // The artillery teams of a side, off the ORBAT squad kind (user, 2026-10-25).
 PREP(artyGroups);
+// Running with or without ALiVE (user, 2026-11-02): the one "is it loaded"
+// test, and the mission's own answers where the adapter is not there to ask.
+PREP(aliveLoaded);
+PREP(groundFor);
+PREP(settlements);
+PREP(sideFaction);
+PREP(hostileCommander);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "ptt", client, every frame: is the local player keying, and on
  * which net. Every PTT input is read with inputAction: a per-channel key
  * (All, Side, Command, Group, Vehicle, Direct) sends on its own channel,

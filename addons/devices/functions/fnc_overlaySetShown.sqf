@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets whether the walking view is shown and keeps that in the player's
  * profile, so a man who hid his device finds it hidden in the next mission
  * too (docs/DESIGN_PHONE_WALKING.md, "State saved per profile").

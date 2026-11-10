@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is the player looking through a Vector right now? On foot, in the optics
  * view, with a Vector-family rangefinder (the unit's [JMSB] Vector Designator,
  * or any other ACE Vector) raised. The clip-on then reaches out to the Vector

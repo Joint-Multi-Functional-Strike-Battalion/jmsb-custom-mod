@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a man is a CLS or a medic - who the MEDIC tile and app are for.
  *
  * THE PAC SKILLS DECIDE. TAC//PAC publishes the abbreviations of the skills a

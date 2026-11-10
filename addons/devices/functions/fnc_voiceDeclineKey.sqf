@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The decline key - Ctrl + numpad 6 in the numpad standard (user, 2026-10-24:
  * the F-keys no longer answer or decline). Closes the quick-add list if it is
  * open; else declines the call that is ringing.

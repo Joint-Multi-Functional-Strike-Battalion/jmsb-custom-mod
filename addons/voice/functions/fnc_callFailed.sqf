@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the server says a call, or part of one, failed: no route on DATA,
  * busy (in another call, or no free slot), no answer, declined, bumped by a
  * FLASH call, dropped with no route, or refused. Notified, the busy tone, and

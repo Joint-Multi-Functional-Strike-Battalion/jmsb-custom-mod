@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: one alarm off the roster, by id (review S7). Reached by remoteExec
  * from a client with a live player, or called on the server. The roster is
  * the section's, so anyone on it may delete; the waiter finds its id gone

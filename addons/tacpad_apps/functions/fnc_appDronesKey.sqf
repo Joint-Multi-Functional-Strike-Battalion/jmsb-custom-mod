@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the DRONES board's rows say, as one string. The board redraws only when
  * this changes; continuous values (quality, battery) are stepped to tenths so
  * a drone burning fuel does not rebuild the buttons under a press every two

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One incoming round against one vehicle's launchers - Drongo's engagement,
  * kept whole (SCHEDULED, it sleeps): a beat to see the round is really
  * coming in, the approach angle (a top-attack dive is immune), the round's

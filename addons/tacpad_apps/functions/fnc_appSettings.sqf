@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The settings app, built to the design: a section rail down the left, the
  * chosen section's controls in the pane beside it.
  *
@@ -79,6 +79,7 @@ private _navH = _rowH * 1.4;
     _hit setVariable [QGVAR(section), _key];
 } forEach (([
     ["scheme", "COLOUR SCHEME"],
+    ["display", "DISPLAY"],
     ["panels", "PANELS"],
     ["tiles", "LIVE TILES"],
     ["nets", "NETS & ALERTS"],
@@ -435,6 +436,50 @@ if (_section == "size") exitWith {
 private _fnc_onOff = {["OFF", "ON"] select _this};
 
 private _rows = switch (_section) do {
+    // DISPLAY (DESIGN_TABLET_APPS.md SETTINGS: "mode (native / tablet) ... HUD
+    // tiles, where notifications go"): three settings that already exist,
+    // each its owner's - the shell's display mode, the HUD's two switches and
+    // the notification stack's corner. A row whose addon is not loaded is not
+    // offered. Changing the mode takes the suite down and rebuilds it on the
+    // other host (jmfsb_tacpad's displayMode_changed), so this screen closes.
+    case "display": {
+        private _list = [
+            [
+                "DISPLAY MODE - CLOSES THIS SCREEN",
+                toUpper EGVAR(tacpad,displayMode),
+                {[QEGVAR(tacpad,displayMode), DISPLAY_MODE_IDS, 1] call FUNC(settingCycle)},
+                {},
+                [QEGVAR(tacpad,displayMode)] call FUNC(settingLocked)
+            ]
+        ];
+        if (!isNil QEGVAR(hud,enabled)) then {
+            _list pushBack [
+                "HUD READOUTS",
+                EGVAR(hud,enabled) call _fnc_onOff,
+                {[QEGVAR(hud,enabled), !EGVAR(hud,enabled)] call FUNC(setSetting)},
+                {},
+                [QEGVAR(hud,enabled)] call FUNC(settingLocked)
+            ];
+            _list pushBack [
+                "HUD IN TABLET MODE",
+                EGVAR(hud,showInTablet) call _fnc_onOff,
+                {[QEGVAR(hud,showInTablet), !EGVAR(hud,showInTablet)] call FUNC(setSetting)},
+                {},
+                [QEGVAR(hud,showInTablet)] call FUNC(settingLocked)
+            ];
+        };
+        if (!isNil QEGVAR(notify,corner)) then {
+            _list pushBack [
+                "NOTIFICATIONS CORNER",
+                NOTIFY_CORNER_NAMES param [(NOTIFY_CORNER_IDS find EGVAR(notify,corner)) max 0, ""],
+                {[QEGVAR(notify,corner), NOTIFY_CORNER_IDS, 1] call FUNC(settingCycle)},
+                {[QEGVAR(notify,corner), NOTIFY_CORNER_IDS, -1] call FUNC(settingCycle)},
+                [QEGVAR(notify,corner)] call FUNC(settingLocked),
+                ["<", ">"]
+            ];
+        };
+        _list
+    };
     case "panels": {
         [
             ["SHOW SQUAD LIST", GVAR(show_squad) call _fnc_onOff, {

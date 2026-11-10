@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every net a set of this kind can carry, with the frequency it is carried on:
  * the plan's nets of that kind (fnc_planNets) and any other net this player
  * has had loaded by a fill (fnc_fill). The reverse of fnc_netFrequency - what

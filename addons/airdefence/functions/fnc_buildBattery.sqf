@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds one battery: a radar, and launchers set back from it.
  *
  * Everything is crewed and PROFILED. An uncrewed static is scenery - a SAM

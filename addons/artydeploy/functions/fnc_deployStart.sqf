@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The driver's DEPLOY: an ACE progress bar for the deploy time (CBA setting,
  * 60 s by default), the vehicle held still and the driver in his seat; done,
  * the server swaps the baseplate for the gun (FUNC(deploy)). Moving or

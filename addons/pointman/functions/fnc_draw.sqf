@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The route on a map, every frame it is drawn (FUNC(attach)): a numbered dot
  * at each waypoint and each leg measured, in ink, the way the map tools draw
  * a route; the waypoint being walked to and the leg to it from where the GPS

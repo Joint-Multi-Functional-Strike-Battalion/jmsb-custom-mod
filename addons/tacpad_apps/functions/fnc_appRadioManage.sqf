@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - MANAGE (docs/DESIGN_VOICE.md): leaders, RTO and admin only, by the
  * permission table (RADIO_RIGHTS, the player's place from FUNC(radioRole)).
  *
@@ -11,8 +11,9 @@
  *            is the Arma group) and a CALL net's are the call's; each with
  *            whether the voice contacts have him in reach.
  *   WHO CAN  the permission table, the player's own column marked.
- * NOT BUILT, said so in words and given no buttons (the voice addon's README,
- * "Not built"): members of C2 / A2G, keys, PACE alternates, temp nets,
+ * Not built, given no buttons and not named on the screen - the voice addon's
+ * README, "Not built", says it (tablet review 2026-11-01, 2.1): members of
+ * C2 / A2G, keys, PACE alternates, temp nets,
  * patches, listen-only, rekey, force PACE, order EMCON, signal plan load and
  * export. (No RTO pull-in: the call's owner invites - user, 2026-10-20.) MANAGE rights themselves are
  * not enforced by the voice addon; the role gate here only decides what the
@@ -67,14 +68,23 @@ private _colWords = ["TL", "SL", "RTO", "ADMIN"];
 {
     [_body, [_wl + _ww * (_colsAt select _forEachIndex), _wt, _ww * 0.08, _rowH], _x, ([_muted, _accent] select (_x isEqualTo _role)), TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
 } forEach _colWords;
+// EVERY CELL MARKED (tablet review 2026-11-01, 3.10): an ink square where the
+// role may (RADIO_ROLES order, FUNC(radioRole)'s scale), a dash where it may
+// not. The check mark it drew is not in the tacpad's fonts, so the table read
+// as empty - and an empty matrix reads as broken.
+private _markW = WHO_CAN_MARK_PX * pixelW;
+private _markH = WHO_CAN_MARK_PX * pixelH;
 {
     _x params ["_what", "_need"];
     private _ry = _wt + (_forEachIndex + 1) * _rowH * 1.1;
-    [_body, [_wl + _pad, _ry, _ww * 0.6, _rowH], _what, _ink, TEXT_LABEL] call EFUNC(tacpad,drawText);
+    [_body, [_wl + _pad, _ry, _ww * 0.6, _rowH], _what, _ink, TEXT_BODY] call EFUNC(tacpad,drawText);
     private _needRank = RADIO_ROLES find _need;
     {
+        private _cx = _wl + _ww * (_colsAt select _forEachIndex);
         if ((RADIO_ROLES find _x) >= _needRank) then {
-            [_body, [_wl + _ww * (_colsAt select _forEachIndex), _ry, _ww * 0.08, _rowH], CHECK_MARK, _ink, TEXT_LABEL] call EFUNC(tacpad,drawText);
+            [_body, [_cx, _ry + (_rowH - _markH) * 0.5, _markW, _markH], _ink] call EFUNC(tacpad,drawFill);
+        } else {
+            [_body, [_cx, _ry, _ww * 0.08, _rowH], WHO_CAN_NO, _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
         };
     } forEach _colWords;
 } forEach RADIO_RIGHTS;
@@ -86,9 +96,12 @@ if !(["TL"] call _fnc_may) exitWith {
 
 // -------------------------------------------------------------- NETS ----
 private _netsOn = (_ctx get "netState") select {(_x param [2, ""]) isNotEqualTo VOICE_KIND_DIRECT};
+// NOTHING PICKED UNTIL THE PLAYER PICKS (tablet review 2026-11-01, 3.10): the
+// first net was picked for him, so MEMBERS never said what it is for. A pick
+// whose net he has left is dropped.
 private _pick = uiNamespace getVariable [QGVAR(radioPick), ""];
 if ((_netsOn findIf {(_x select 0) isEqualTo _pick}) < 0) then {
-    _pick = (_netsOn param [0, []]) param [0, ""];
+    _pick = "";
 };
 
 ([_body, [_x0, _y0, _leftW, _topH], "NETS", format ["%1 ON", count _netsOn]] call FUNC(appPagePanel)) params ["_nl", "_nt", "_nw"];
@@ -115,7 +128,7 @@ private _step = _rowH * 1.3;
         ["NO ROUTE", ["OK", "LIVE"] select (_kind isEqualTo VOICE_KIND_CALL)] select _reach
     ];
     {
-        [_body, [_nl + _pad + (_cols select _forEachIndex) * (_nw - 2 * _pad), _cy, _nw * 0.2, _rowH], _x, ([_ink, _accent] select (_forEachIndex isEqualTo 4 && !_reach)), TEXT_LABEL, _forEachIndex isEqualTo 0] call EFUNC(tacpad,drawText);
+        [_body, [_nl + _pad + (_cols select _forEachIndex) * (_nw - 2 * _pad), _cy, _nw * 0.2, _rowH], _x, ([_ink, _accent] select (_forEachIndex isEqualTo 4 && !_reach)), TEXT_BODY, _forEachIndex isEqualTo 0] call EFUNC(tacpad,drawText);
     } forEach _cells;
     private _hit = [_body, [_nl, _ry, _nw, _step], {
         params ["_ctrl"];
@@ -126,8 +139,9 @@ private _step = _rowH * 1.3;
 } forEach _netsOn;
 
 // THE RTO's NETS, under the plan's (user, 2026-10-22: "allow rtos to add
-// custom channels"): listed with REMOVE, and the ADD NET form. Keys, PACE
-// alternates, patches and signal plan load / export are still not built.
+// custom channels"): listed with REMOVE, and the ADD NET form. What is not
+// there yet (keys, PACE alternates, patches, signal plan load / export) is the
+// voice addon's README's to say, not the screen's (tablet review 2026-11-01).
 private _btnY = _nt + _rowH * 1.1 + (count _netsOn) * _step + _padY;
 [_body, [_nl + _pad, _btnY, _nw - 2 * _pad, _y0 + _topH - _btnY - _padY], _ctx] call FUNC(radioCustomPanel);
 
@@ -145,8 +159,14 @@ private _members = switch (_pickKind) do {
 };
 private _known = _pickKind in [VOICE_KIND_TEAM, VOICE_KIND_CALL];
 
-([_body, [_rightX, _y0, _rightW, _topH], format ["%1 %2 MEMBERS", toUpper _pickLabel, MIDDOT_TEXT], "SELECTED"] call FUNC(appPagePanel)) params ["_ml", "_mt", "_mw"];
-if (_pickName isEqualTo "") exitWith {};
+// The net's name is the panel's right label, untracked; the tracked title is
+// the short word (tablet review 2026-11-01, 2.3).
+([_body, [_rightX, _y0, _rightW, _topH], "MEMBERS", toUpper _pickLabel] call FUNC(appPagePanel)) params ["_ml", "_mt", "_mw"];
+// THE EMPTY STATE (tablet review 2026-11-01, 3.10): say what the pane is for.
+if (_pickName isEqualTo "") exitWith {
+    private _hint = ["Pick a net on the left to see and edit its members.", "You are on no net to pick."] select (_netsOn isEqualTo []);
+    [_body, [_ml + _pad, _mt + _rowH * 0.5, _mw - 2 * _pad, _rowH], _hint, _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
+};
 
 // An RTO net's members are the RTO's to set, here (FUNC(radioMembersPanel)).
 if (_pickKind isEqualTo VOICE_KIND_CUSTOM) exitWith {
@@ -160,7 +180,7 @@ private _reachOf = createHashMap;
 } forEach (_ctx get "contacts");
 
 if (!_known) then {
-    [_body, [_ml + _pad, _mt + _rowH * 0.5, _mw - 2 * _pad, _rowH * 2], "Not built: the voice API does not list this net's members yet. TEAM and CALL members are listed.", _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
+    [_body, [_ml + _pad, _mt + _rowH * 0.5, _mw - 2 * _pad, _rowH * 2], "This net's members are not listed here. TEAM, CALL and RTO nets list theirs.", _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
 } else {
     [_body, [_ml + _pad, _mt, _mw * 0.6, _rowH], "MEMBER", _muted, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
     [_body, [_ml + _mw * 0.62, _mt, _mw * 0.3, _rowH], "ROUTE", _muted, TEXT_LABEL, true, "left", true] call EFUNC(tacpad,drawText);
@@ -169,13 +189,13 @@ if (!_known) then {
         private _ry = _mt + (_forEachIndex + 1) * _rowH * 1.1;
         private _self = _x isEqualTo _me;
         private _reach = _self || {_reachOf getOrDefault [hashValue _x, false]};
-        [_body, [_ml + _pad, _ry, _mw * 0.6, _rowH], toUpper name _x, _ink, TEXT_LABEL, _self] call EFUNC(tacpad,drawText);
-        [_body, [_ml + _mw * 0.62, _ry, _mw * 0.3, _rowH], ["NO ROUTE", "REACH"] select _reach, ([_accent, _ink] select _reach), TEXT_LABEL, true] call EFUNC(tacpad,drawText);
+        [_body, [_ml + _pad, _ry, _mw * 0.6, _rowH], toUpper name _x, _ink, TEXT_BODY, _self] call EFUNC(tacpad,drawText);
+        [_body, [_ml + _mw * 0.62, _ry, _mw * 0.3, _rowH], ["NO ROUTE", "REACH"] select _reach, ([_accent, _ink] select _reach), TEXT_BODY, true] call EFUNC(tacpad,drawText);
     } forEach ((_members select {!isNull _x}) select [0, _fits]);
 };
 
 private _actY = _y0 + _topH - _rowH * 2.5;
 [
     _body, [_ml + _pad, _actY, _mw - 2 * _pad, _rowH * 2],
-    "NOT BUILT: listen-only, rekey, force PACE, order EMCON. The call's owner adds people on CALLS; an RTO net's people are set here once it is picked.", _muted, TEXT_LABEL
+    "The call's owner adds people on CALLS; an RTO net's people are set here once it is picked.", _muted, TEXT_LABEL
 ] call EFUNC(tacpad,drawText);

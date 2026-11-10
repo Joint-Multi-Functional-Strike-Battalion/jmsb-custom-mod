@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every POLL_S: this player's TFAR sets as RF nodes. A set's node is
  * registered (rf_register) when it appears or its object, profile or fill
  * changes, its state (on, active and monitor net, tx) is sent (rf_setState)

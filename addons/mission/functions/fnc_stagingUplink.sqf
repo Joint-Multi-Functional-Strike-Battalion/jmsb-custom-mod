@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE STAGING ZONE'S SATELLITE UPLINK (user, 2026-10-20: "can we assume a
  * staging zone ... as a sat uplink"). Puts up, or takes down, the radio base
  * station at a staging zone's centre (jmfsb_pac_fnc_baseStation): it relays

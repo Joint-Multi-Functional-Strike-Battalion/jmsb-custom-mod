@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends a message. This is the only entry point a caller needs: it validates
  * locally so the player is told what is wrong before anything leaves the
  * machine, then hands it to the server, which validates again and decides.
@@ -50,20 +50,25 @@ params [
     ["_pin", [], [[]]]
 ];
 
-if (!GVAR(enabled)) exitWith {[false, "messaging is disabled"]};
 if (isNull player) exitWith {[false, "no player"]};
 
-([_templateId, _payload] call FUNC(validate)) params ["_ok", "_why"];
-if (!_ok) exitWith {
-    [_templateId, _why, "high"] call FUNC(notify);
-    [false, _why]
-};
-
-if (_addressees isEqualTo [] && _threadId == "") exitWith {
-    private _reason = "no addressee";
-    [_templateId, _reason, "high"] call FUNC(notify);
+// NOT SENT IS SAID AND LOGGED (user, 2026-11-02: "arty never replied"). A send
+// refused here never reaches the server, so the server's RPT has nothing; the
+// composer said why on its status line alone. Every refusal below is a
+// NOT SENT popup upper right and one INFO line: the card and the reason.
+private _fnc_notSent = {
+    params ["_reason"];
+    INFO_2("not sent '%1' - %2",_templateId,_reason);
+    [NOT_SENT_TITLE, _reason, "high"] call FUNC(notify);
     [false, _reason]
 };
+
+if (!GVAR(enabled)) exitWith {["messaging is disabled"] call _fnc_notSent};
+
+([_templateId, _payload] call FUNC(validate)) params ["_ok", "_why"];
+if (!_ok) exitWith {[_why] call _fnc_notSent};
+
+if (_addressees isEqualTo [] && _threadId == "") exitWith {["no addressee"] call _fnc_notSent};
 
 // THE EW GATE. The spectrum gets an opinion about the data link: inside a
 // jammer's core nothing leaves this set, and inside its falloff the send goes
@@ -73,11 +78,7 @@ if (_addressees isEqualTo [] && _threadId == "") exitWith {
 // way a jammed radio still crackles; going quiet on receive would be
 // indistinguishable from the engine being broken.
 ([] call FUNC(linkState)) params ["_link", "_factor"];
-if (_link >= 2) exitWith {
-    private _reason = "link denied - your position is jammed";
-    [_templateId, _reason, "high"] call FUNC(notify);
-    [false, _reason]
-};
+if (_link >= 2) exitWith {["link denied - your position is jammed"] call _fnc_notSent};
 
 // The nonce is what makes a double-click harmless: the server keeps the ones it
 // has seen and drops a repeat, so a laggy send button cannot file two CASEVACs.
@@ -106,5 +107,9 @@ if (_link isEqualTo 1) then {
     // it under that machine's player (review S7).
     _event remoteExecCall [QFUNC(srvSubmit), SERVER_OWNER];
 };
+
+// Where it went, for the RPT (2026-11-02): a card filed on a net rather than
+// to an asset's box is answered by nobody, and this is the line that says so.
+INFO_3("sent '%1' to %2 (thread '%3')",_templateId,_addressees,_threadId);
 
 [true, ""]

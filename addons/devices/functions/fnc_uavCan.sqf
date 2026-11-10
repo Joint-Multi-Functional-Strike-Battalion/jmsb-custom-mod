@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * May this unit link to and fly this drone? The test the vanilla terminal's
  * isUAVConnectable used to be, now that there is no terminal (user,
  * 2026-10-20: the vanilla UAV terminal is out of the arsenal). FUNC(uavControl)

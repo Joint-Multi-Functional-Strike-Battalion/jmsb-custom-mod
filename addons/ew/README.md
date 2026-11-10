@@ -166,9 +166,10 @@ far each is heard (`fnc_exposure`: a -115 dBm, 3 dBi receiver without the key).
 
 App `ew` (`jmfsb_tacpad_fnc_registerApp`), opened from the EW tile (a tile
 provider, like MEDIC): OVERVIEW, ES (spectrum rise per band, track table, tap
-to show on map), EA, EP. The map layer draws the side's fresh DF lines with
-their error wedge, fixes with their error circle and label, and the side's own
-jammers, on the vanilla map and the device host's map. Everything is drawn
+to show on map), EA, EP. The map layer draws fixes with their error circle and
+label, and the side's own jammers, on the vanilla map and the device host's
+map - no DF bearing lines (user, 2026-11-01: "remove them"; the cuts stay in
+the ES tab). Everything is drawn
 from the man's slice (`jmfsb_ew_slice`, sent with `publicVariableClient` on
 change - see `fnc_publish` for the layout).
 

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Adds people to a call the local player is in (+ ADD, group adds, F2 quick
  * add). They ring until they accept. People out of reach on DATA or busy are
  * skipped (and he is told); the adds stop at 8 in the call.

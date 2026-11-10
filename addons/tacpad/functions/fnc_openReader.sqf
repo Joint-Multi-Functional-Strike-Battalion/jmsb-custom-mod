@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens the full-size TAC//MSG reader - the design's option 1a, three panes:
  * nets and roster down the left, the traffic list beside it, the opened thread
  * filling the rest.
@@ -110,6 +110,7 @@ GVAR(readerThread) = "";
 GVAR(readerTab) = "all";
 GVAR(readerFilter) = "";
 GVAR(readerMarkers) = false;
+GVAR(readerAdjust) = [];
 
 // A reader opened cold is never mid-message. FUNC(composeOpen) turns compose
 // back on after this returns, which is why the order matters.

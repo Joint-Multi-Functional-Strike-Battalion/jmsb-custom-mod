@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the pack finished - AI still on the gun is put off it and the gun
  * goes. A player still on it stops the pack. A gun that was destroyed, or left more than PACK_RANGE metres
  * away, is simply forgotten so the carrier can deploy again.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The channel the player's mic should sit on when no talk key is held.
  *
  * Push to talk (the default): the active net, as it always was - his Push To

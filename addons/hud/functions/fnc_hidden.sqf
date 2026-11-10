@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the HUD should be off the screen right now.
  *
  * ONE PREDICATE, ASKED FROM THREE PLACES - the per-frame show/hide, the draw

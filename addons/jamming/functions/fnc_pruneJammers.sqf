@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server PFH: drop dead and hacked emitters from the jammer list, clean up their
  * debug markers, and re-broadcast. A zone dies with its emitter - destroyed OR
  * hacked, either one - which is what lets players silence a zone either loudly

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the system's adapter in use (jmfsb_voice_adapter / _adapterId) from
  * the ones registered (FUNC(registerAdapter)): under LiveKit the one of that
  * id; under game VON the last registered that is not LiveKit's, else "von";

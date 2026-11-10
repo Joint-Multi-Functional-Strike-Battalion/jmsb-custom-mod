@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TROOPS IN CONTACT - the send itself, with nothing drawn.
  *
  * LIFTED OUT OF FUNC(panelTic) SO THERE CAN BE A KEY. The whole send used to
@@ -70,15 +70,17 @@ if (_at isEqualTo []) exitWith {
     ["No GPS fix - send the TIC from the card with your grid"] call _fnc_no
 };
 
-// The deck's own report, with the two required lines answered from what the
-// game knows. ENEMY is what a man would say into a radio before he has looked
-// properly, and it is the line the follow-up card exists to replace.
+// The deck's own report, its location answered from what the game knows.
+// ENEMY is what a man would say into a radio before he has looked properly,
+// and it is the line the follow-up card exists to replace. INTENTIONS is the
+// card's plain text line (the TIC card stays quick and simple, user
+// 2026-11-02: "most of the time only the button will be pressed").
 ([
     "tic",
     [
         ["Location.A", _at],
         ["Enemy.A", "CONTACT - DETAILS TO FOLLOW"],
-        ["Intentions.A", "Returning fire"]
+        ["Intentions.A", "RETURNING FIRE"]
     ],
     [format ["B:%1", _nets # 0]]
 ] call EFUNC(messaging,submit)) params ["_ok", "_why"];

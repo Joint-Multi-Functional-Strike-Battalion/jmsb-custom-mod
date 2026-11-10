@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The ACM Evacuation Zone module. PLACING IT IS THE ENABLE.
  *
  * On the server, every "Check Every" seconds (6 by default), any AI inside the module's area is

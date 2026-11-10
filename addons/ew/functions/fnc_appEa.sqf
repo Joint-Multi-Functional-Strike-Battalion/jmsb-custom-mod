@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The EW app's EA tab (DESIGN_EW "EA") as a jammer CONTROL PANEL (user,
  * 2026-10-21: "I was hoping for an RF page like this" - a ground-jammer
  * panel). Two columns:
@@ -109,9 +109,11 @@ private _fnc_send = {
     params ["_ctrl"];
     [player, [_ctrl getVariable [QGVAR(data), []]]] call FUNC(jamSet);
 };
+// A section label: tracked only when it is a short one (review 2026-11-01,
+// 2.3) - "DECOYS - 1 OF 2 OUT" carries figures, and figures are never spaced.
 private _fnc_label = {
     params ["_x0", "_y0", "_cw", "_text"];
-    [_body, [_x0, _y0, _cw, _rowH], _text, _muted, PANEL_LABEL_SIZE, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_x0, _y0, _cw, _rowH], _text, _muted, PANEL_LABEL_SIZE, true, "left", count _text <= PANEL_TRACK_MAX] call EFUNC(tacpad,drawText);
 };
 
 private _leftW = _w * PANEL_LEFT_W;
@@ -141,11 +143,14 @@ private _stateColour = switch (true) do {
 [_body, [_lx, _atY, _lw, _rowH * PANEL_STATE_ROWS], [_stateText, format ["%1  %2", _devId, _stateText]] select (_hasJammer && _devId isNotEqualTo ""), _stateColour, PANEL_STATE_SIZE, true] call EFUNC(tacpad,drawText);
 _atY = _atY + _rowH * PANEL_STATE_ROWS;
 
+// NO JAMMER IS SAID ONCE, HERE, with the one thing to do about it (review
+// 2026-11-01, DESIGN_TABLET_REVIEW 3.5: it was said in the title, the network
+// line and the footer).
 if (!_hasJammer) then {
-    [_body, [_lx, _atY, _lw, _rowH], "CREW A VEHICLE WITH AN EW JAMMER MODULE IN ITS CARGO", _muted, PANEL_NOTE_SIZE] call EFUNC(tacpad,drawText);
+    [_body, [_lx, _atY, _lw, _rowH], "Crew a vehicle with an EW jammer module in its cargo", _muted, PANEL_NOTE_SIZE] call EFUNC(tacpad,drawText);
     _atY = _atY + _rowH * PANEL_ROW_STEP;
 } else {
-    [_body, [_lx, _atY, _lw, _rowH], format ["%1 - %2", toUpper _mode, _what], _accentText, PANEL_SUB_SIZE, true, "left", true] call EFUNC(tacpad,drawText);
+    [_body, [_lx, _atY, _lw, _rowH], format ["%1 - %2", toUpper _mode, _what], _accentText, PANEL_SUB_SIZE, true] call EFUNC(tacpad,drawText);
     _atY = _atY + _rowH * PANEL_ROW_STEP;
 
     // One setting row: its label left, its cells right - or, stacked, the
@@ -175,7 +180,7 @@ if (!_hasJammer) then {
             _cx = _cx + _unit * _weight;
             if (_change isEqualType "") then {
                 [_body, _pos, [_dim, _ink] select _selected, RULE_THIN] call EFUNC(tacpad,drawFrame);
-                [_body, _pos, _text, [_dim, _ink] select _selected, PANEL_SUB_SIZE, true, "center", true] call EFUNC(tacpad,drawText);
+                [_body, _pos, _text, [_dim, _ink] select _selected, PANEL_SUB_SIZE, true, "center"] call EFUNC(tacpad,drawText);
                 continue;
             };
             [_body, _pos, _text, _selected, _fnc_send, _change, _enabled] call FUNC(appButton);
@@ -275,7 +280,7 @@ if (!_hasJammer) then {
     // green to put it on.
     private _txPos = [_lx, _atY, _lw - _pad, _rowH * PANEL_TX_ROWS];
     [_body, _txPos, [_green, COLOUR_TX_ON] select _on] call EFUNC(tacpad,drawFill);
-    [_body, _txPos, ["SWITCH TRANSMITTER ON", "SWITCH TRANSMITTER OFF"] select _on, COLOUR_ON_SIGNAL, PANEL_TX_SIZE, true, "center", true] call EFUNC(tacpad,drawText);
+    [_body, _txPos, ["SWITCH TRANSMITTER ON", "SWITCH TRANSMITTER OFF"] select _on, COLOUR_ON_SIGNAL, PANEL_TX_SIZE, true, "center"] call EFUNC(tacpad,drawText);
     private _hit = [_body, _txPos, _fnc_send] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(data), ["on", !_on]];
     _atY = _atY + _rowH * (PANEL_TX_ROWS + PANEL_ROW_AIR);
@@ -308,14 +313,16 @@ _atY = _atY + _rowH * PANEL_ROW_STEP;
 // --- NETWORK: the side's other jammers by ID, at the foot of the column ----
 private _onCount = {_x param [2, false]} count _sideJams;
 private _others = _sideJams select {(_x param [3, ""]) isNotEqualTo _devId || !_hasJammer};
-private _network = if (_sideJams isEqualTo []) then {"NETWORK - NO JAMMER ON THE SIDE"} else {
-    format ["NETWORK - %1 ON THE SIDE, %2 ON AIR%3", count _sideJams, _onCount,
+// With no jammer on the side there is no line: "no jammer" is the title's
+// to say (review 2026-11-01, 3.5).
+if (_sideJams isNotEqualTo []) then {
+    private _network = format ["NETWORK - %1 ON THE SIDE, %2 ON AIR%3", count _sideJams, _onCount,
         [": " + (((_others select [0, NETWORK_SHOWN]) apply {
             _x params [["_at", [0, 0]], ["_m", ""], ["_o", false], ["_id", ""]];
             format ["%1 %2 %3", _id, toUpper _m, ["STBY", "ON"] select _o]
-        }) joinString " / "), ""] select (_others isEqualTo [])]
+        }) joinString " / "), ""] select (_others isEqualTo [])];
+    [_body, [_lx, (_atY max (_bottom - _rowH * PANEL_FOOT_ROWS)), _lw, _rowH * PANEL_FOOT_ROWS], _network, _muted, PANEL_NOTE_SIZE, true] call EFUNC(tacpad,drawText);
 };
-[_body, [_lx, (_atY max (_bottom - _rowH * PANEL_FOOT_ROWS)), _lw, _rowH * PANEL_FOOT_ROWS], _network, _muted, PANEL_NOTE_SIZE, true] call EFUNC(tacpad,drawText);
 
 // ============================================================= RIGHT ====
 _atY = _top;
@@ -324,8 +331,10 @@ _atY = _atY + _rowH;
 
 // THE GRAPH: a bar per band, its height the rise above the floor, a tick at
 // the MHz of each emitter heard on it (his tuned frequency in red), the band
-// and its MHz under it; the legend to its right.
-private _graphW = _rightW * (1 - PANEL_LEGEND_W);
+// and its MHz under it; the legend in one row under it. The whole width of
+// the column and twice the height it had (review 2026-11-01, 3.5) - the
+// legend beside it took a third of the width for four words.
+private _graphW = _rightW;
 private _graphH = _rowH * PANEL_GRAPH_ROWS;
 private _barsH = _graphH - _rowH * 3;
 [_body, [_rightX, _atY, _graphW, _graphH], _line, RULE_THIN] call EFUNC(tacpad,drawFrame);
@@ -376,15 +385,16 @@ private _fnc_frac = {
     [_body, [_rightX + _forEachIndex * _slotW, _baseY + _rowH, _slotW, _rowH], _span, _muted, PANEL_NOTE_SIZE, false, "center"] call EFUNC(tacpad,drawText);
 } forEach _spectrum;
 
-private _legendX = _rightX + _graphW + _pad;
-private _legendW = _rightW - _graphW - _pad;
+private _legendW = _rightW / PANEL_LEGEND_ITEMS;
+private _legendY = _atY + _graphH + _padY;
+private _swatchW = _rowH * PANEL_SWATCH * pixelW / pixelH;
 {
     _x params ["_colour", "_text"];
-    private _ly = _atY + _rowH * (_forEachIndex + 1);
-    [_body, [_legendX, _ly + _rowH * PANEL_SWATCH_INSET, _rowH * PANEL_SWATCH, _rowH * PANEL_SWATCH], _colour] call EFUNC(tacpad,drawFill);
-    [_body, [_legendX + _rowH, _ly, _legendW - _rowH, _rowH], _text, _ink, PANEL_NOTE_SIZE, true, "left", true] call EFUNC(tacpad,drawText);
+    private _lx0 = _rightX + _forEachIndex * _legendW;
+    [_body, [_lx0, _legendY + _rowH * PANEL_SWATCH_INSET, _swatchW, _rowH * PANEL_SWATCH], _colour] call EFUNC(tacpad,drawFill);
+    [_body, [_lx0 + _swatchW + _pad, _legendY, _legendW - _swatchW - _pad, _rowH], _text, _ink, PANEL_NOTE_SIZE, true] call EFUNC(tacpad,drawText);
 } forEach [[COLOUR_TX_ON, "YOUR JAMMER"], [_accent, "EMITTER HEARD"], [_green, "CLEAR"], [_ink, "EMITTER MHZ"]];
-_atY = _atY + _graphH + _padY * 2;
+_atY = _legendY + _rowH + _padY * 2;
 
 // --- DETECTED: the side's ES tracks, strongest first -----------------------
 [_rightX, _atY, _rightW, format ["DETECTED - %1 TRACK%2", count _tracks, ["S", ""] select (count _tracks == 1)]] call _fnc_label;
@@ -466,11 +476,9 @@ if (_hasJammer) then {
         case (_heat >= HEAT_HOT): {["HOT", _accentText]};
         default {["NORMAL", _ink]};
     };
-    private _fnc_kv = {
-        params ["_x0", "_y0", "_k", "_v", ["_colour", _ink]];
-        [_body, [_x0, _y0, _halfW * PANEL_KEY_W, _rowH], _k, _muted, PANEL_NOTE_SIZE, true, "left", true] call EFUNC(tacpad,drawText);
-        [_body, [_x0 + _halfW * PANEL_KEY_W, _y0, _halfW * (1 - PANEL_KEY_W), _rowH], _v, _colour, PANEL_ROW_SIZE, true] call EFUNC(tacpad,drawText);
-    };
+    // Each block is the suite's key/value list (EFUNC(tacpad_apps,kvRow);
+    // review 2026-11-01, 2.4): the value right after its key, not at a fixed
+    // share of the half. A third field is the value's colour.
     private _left = [
         ["VEHICLE", toUpper getText (configOf objectParent player >> "displayName")],
         ["OUTPUT", format ["%1 W - %2 DBM", round _watts, _dBm]],
@@ -485,15 +493,9 @@ if (_hasJammer) then {
         ["NET", _net, [_ink, _accentText] select (_netW < 0)],
         ["COOLING", _cooling select 0, _cooling select 1]
     ];
-    {
-        (_x + [_ink]) params ["_k", "_v", "_c"];
-        [_rightX, _atY + _forEachIndex * _rowH, _k, _v, _c] call _fnc_kv;
-    } forEach _left;
-    {
-        (_x + [_ink]) params ["_k", "_v", "_c"];
-        [_px, _atY + _forEachIndex * _rowH, _k, _v, _c] call _fnc_kv;
-    } forEach _right;
-    _atY = _atY + _rowH * ((count _left) max (count _right));
+    private _leftH = [_body, [_rightX, _atY, _halfW], _left, 1] call EFUNC(tacpad_apps,kvRow);
+    private _rightH = [_body, [_px, _atY, _halfW], _right, 1] call EFUNC(tacpad_apps,kvRow);
+    _atY = _atY + (_leftH max _rightH);
 
     // A bar the width of the column: its key, the track, the fill, the value.
     private _fnc_bar = {
@@ -550,10 +552,14 @@ if (_alerts isNotEqualTo [] && {_atY + _rowH * 2 < _bottom - _rowH}) then {
 };
 
 // --- FOOTER ----------------------------------------------------------------
-private _footer = switch (true) do {
-    case (!_hasJammer): {"NO JAMMER IN YOUR KIT"};
-    case (_mode in [MODE_GPS, MODE_SPOOF]): {format ["%1 - COVERAGE %2 M - %3 - %4 DBM", _devId, round _radius, toUpper _mode, _dBm]};
-    default {format ["%1 - %2 - %3 - %4 DBM - %5%6 DUTY", _devId, toUpper _mode, _what, _dBm, round ((DUTY_STEPS param [_duty, 1]) * PERCENT), "%"]};
+// Only with a jammer: without one the title has said so (review 2026-11-01,
+// 3.5). Its device id and figures are never letter-tracked (2.3).
+if (_hasJammer) then {
+    private _footer = if (_mode in [MODE_GPS, MODE_SPOOF]) then {
+        format ["%1 - COVERAGE %2 M - %3 - %4 DBM", _devId, round _radius, toUpper _mode, _dBm]
+    } else {
+        format ["%1 - %2 - %3 - %4 DBM - %5%6 DUTY", _devId, toUpper _mode, _what, _dBm, round ((DUTY_STEPS param [_duty, 1]) * PERCENT), "%"]
+    };
+    [_body, [_rightX, (_atY max (_bottom - _rowH)), _rightW, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
+    [_body, [_rightX, (_atY max (_bottom - _rowH)), _rightW, _rowH], _footer, _muted, PANEL_NOTE_SIZE, true, "right"] call EFUNC(tacpad,drawText);
 };
-[_body, [_rightX, (_atY max (_bottom - _rowH)), _rightW, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
-[_body, [_rightX, (_atY max (_bottom - _rowH)), _rightW, _rowH], _footer, _muted, PANEL_NOTE_SIZE, true, "right", true] call EFUNC(tacpad,drawText);

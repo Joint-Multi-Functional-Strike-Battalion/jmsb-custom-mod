@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Runs on the building player's machine (from the Establish Patrol Base action).
  * Any player may build. Validates, prompts for a base name, then asks the server
  * to build it.

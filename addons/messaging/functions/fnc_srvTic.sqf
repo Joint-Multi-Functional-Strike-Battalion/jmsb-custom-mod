@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TROOPS IN CONTACT. Carried over from the cTab template of the same name.
  *
  * A TIC was never really a message - it was an alarm somebody typed into a

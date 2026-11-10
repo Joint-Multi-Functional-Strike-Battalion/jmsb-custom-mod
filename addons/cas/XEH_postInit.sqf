@@ -14,6 +14,16 @@
     ["available", FUNC(assetAvailable)],
     ["preview", FUNC(preview)],
     ["overlay", FUNC(overlay)],
+    ["reach", FUNC(reach)],
+    // The asset's thread (2026-11-01): the core calls these on the server for
+    // a card filed to a drone's box and for the issuer's follow-ups.
+    ["side", FUNC(side)],
+    ["thread", FUNC(srvThread)],
+    ["reply", FUNC(threadReply)],
+    // STATUS answered by the core (2026-11-09): the drone and its run.
+    ["status", FUNC(status)],
+    // The root cards it takes inside a thread already open (2026-11-02).
+    ["threadCards", THREAD_CARDS],
     ["types", SUPPORT_TYPES]
 ]] call EFUNC(support,registerProvider);
 
@@ -41,3 +51,18 @@
 // (review S7). They were CBA events: any client could put a false "inbound" or
 // "in hot" on a side's screens, name any drone and himself as the caller, or
 // drop another player's drone link.
+
+// WHAT HAPPENS TO A DRONE IS SAID IN ITS THREAD (user, 2026-11-05: "needs
+// messaging to notify of events like that"): the drone's own hit watch
+// (FUNC(spawnDrone)) raises the support core's aircraft event; its owner
+// module's thread gets the line as a MESSAGE from the asset.
+if (isServer) then {
+    [QEGVAR(support,aircraftEvent), {
+        params [["_veh", objNull, [objNull]], ["_line", "", [""]], ["_flash", false, [false]]];
+        private _logic = _veh getVariable [QGVAR(owner), objNull];
+        if (isNull _logic || _line isEqualTo "") exitWith {};
+        private _threadId = _logic getVariable [QGVAR(thread), ""];
+        if (_threadId isEqualTo "") exitWith {};
+        [format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id), -1]], _threadId, _line, _flash, _logic getVariable [QGVAR(callsign), "CAS"]] call EFUNC(support,threadEvent);
+    }] call CBA_fnc_addEventHandler;
+};

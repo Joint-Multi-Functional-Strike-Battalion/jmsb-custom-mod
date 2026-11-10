@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The transparent button that makes a drawn thing pressable, laid over the top
  * of it and carrying the handler.
  *

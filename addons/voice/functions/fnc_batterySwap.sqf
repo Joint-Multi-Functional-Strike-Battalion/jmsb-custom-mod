@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SWAP BATTERY (the RADIO app, user 2026-10-30): one spare out of the
  * player's kit (FUNC(batterySpares)) and a full battery into his handheld
  * (jmfsb_rf_fnc_batterySwap on his radio-slot node). No spare, nothing

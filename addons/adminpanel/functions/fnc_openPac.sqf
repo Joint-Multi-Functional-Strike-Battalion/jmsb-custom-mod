@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The console's TAC//PAC button. On the vanilla map TAC//PAC opens over the
  * console as it always has, and closing it lands back on the console.
  *

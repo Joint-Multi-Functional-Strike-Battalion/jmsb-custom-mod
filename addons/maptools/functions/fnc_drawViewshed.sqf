@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The viewshed's cells, as two filled triangle lists - what the point sees in
  * the accent, what it does not in the ink - plus its outer edge and, while it
  * is still filling, how far through it is.

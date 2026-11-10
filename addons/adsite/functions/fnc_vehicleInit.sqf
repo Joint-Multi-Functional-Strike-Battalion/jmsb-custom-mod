@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A LandVehicle or Ship has been created (class InitPost, every machine). Asked
  * ONCE per vehicle, never again: is it air defence (FUNC(profile), cached per
  * class - anything that is not costs one lookup)?

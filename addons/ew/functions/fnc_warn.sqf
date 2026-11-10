@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a threat warning to one player (DESIGN_EW "Threat warning": time,
  * detail and what to do). Kept on the server for his slice - the OVERVIEW
  * tab lists the recent ones - and raised on his machine at once, where

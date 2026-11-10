@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: takes a marked spot's baseplate away without deploying - the driver
  * changed his mind, or wants to move.
  *

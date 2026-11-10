@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "leave", server: takes a unit off the custom channel of a net
  * (radioChannelRemove). Built-in channels need nothing (a TEAM net is left
  * by leaving the group).

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "setEar", client: the ear a net plays in - TFAR's stereo setting
  * of the channel that carries it (the set's active or additional channel:
  * TFAR_fnc_setSwStereo / setAdditionalSwStereo, setLrStereo /

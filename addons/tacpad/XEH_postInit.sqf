@@ -84,7 +84,7 @@ if (!isNil QEFUNC(messaging,onReject)) then {
         // half-written report to explain a refusal of the last one is worse than
         // the refusal.
         if (!GVAR(composeOn) && {GVAR(composePending) isNotEqualTo []}) then {
-            GVAR(composePending) params ["_thread", "_template", "_values", "_grids", "_to", ["_cc", ""], ["_pin", []]];
+            GVAR(composePending) params ["_thread", "_template", "_values", "_grids", "_to", ["_cc", ""], ["_pin", []], ["_frago", []]];
             GVAR(composeThread) = _thread;
             GVAR(composeTemplate) = _template;
             GVAR(composeValues) = _values;
@@ -92,6 +92,7 @@ if (!isNil QEFUNC(messaging,onReject)) then {
             GVAR(composeTo) = _to;
             GVAR(composeCc) = _cc;
             GVAR(composePin) = _pin;
+            GVAR(composeFrago) = _frago;
             GVAR(composeOn) = true;
         };
 
@@ -144,6 +145,25 @@ if (!isNil QEFUNC(messaging,onReceive)) then {
         if ((getPlayerUID player) in (_message getOrDefault ["readBy", []])) exitWith {};
         [[_entry, _message]] call FUNC(readerFlash);
     }] call EFUNC(messaging,onReceive);
+
+    // AFTER CONTACT, A SITREP (user, 2026-11-02: "after contact a sitrep should
+    // be sent"). His own TIC coming back filed starts the watch for the contact
+    // ending; his SITREP, the thread closing or a new TIC from his group move
+    // it on - off the traffic that arrives and the quiet index updates, never
+    // a poll (FUNC(contactTraffic)).
+    [{
+        params [["_message", createHashMap, [createHashMap]]];
+        [_message] call FUNC(contactTraffic);
+    }] call EFUNC(messaging,onReceive);
+    [QEGVAR(messaging,indexRefreshed), {[] call FUNC(contactTraffic)}] call CBA_fnc_addEventHandler;
+
+    // QUICK ANSWERS ON THE WALKING VIEW (user, 2026-11-06): what an asset asks
+    // him, what settles it, and the requests he is the crew for
+    // (FUNC(askTraffic)). A quiet index update can close a thread he only
+    // reads (an observer's): the list is pruned on the next draw
+    // (FUNC(askList)), and the strip redraws now.
+    [{_this call FUNC(askTraffic)}] call EFUNC(messaging,onReceive);
+    [QEGVAR(messaging,indexRefreshed), {[] call FUNC(askChanged)}] call CBA_fnc_addEventHandler;
 };
 
 // A scheme change repaints what is already on screen. Judging a colour you

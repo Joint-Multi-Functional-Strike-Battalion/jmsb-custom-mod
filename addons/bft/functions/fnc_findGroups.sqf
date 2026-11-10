@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Resolves the group token an admin typed into actual groups. One token, never
  * quoted: chat arguments are split on spaces and a call sign like "B Alpha 1-1"
  * would not survive being one, so the token is matched as a case-insensitive

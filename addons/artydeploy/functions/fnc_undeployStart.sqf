@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The driver's PACK: an ACE progress bar for the same time as the deploy, the
  * vehicle held still; done, the server takes the gun away (FUNC(undeploy)).
  *

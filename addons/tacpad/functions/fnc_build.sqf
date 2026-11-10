@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds one panel on the map display: outline, ground, header, title, meta,
  * body - then hands the body to the panel's own builder and never looks inside
  * it.

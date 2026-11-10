@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who the call's picture shows (FUNC(callFeed)), and what his camera sends:
  * on the player's live call, the other man talking on it now, else the one
  * shown last, else the first other member. What he sends is his own choice

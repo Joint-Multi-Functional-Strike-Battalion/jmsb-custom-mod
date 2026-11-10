@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: gives the server's admin list (jmfsb_common_fnc_adminSource) the
  * Steam ids in TAC//PAC's admins section, as the server holds it - after boot
  * and whenever the section or the whole structure changes (review S1/S5). The

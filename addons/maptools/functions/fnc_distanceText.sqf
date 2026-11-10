@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A distance in metres under a kilometre, in kilometres to two places above.
  *
  * Arguments:

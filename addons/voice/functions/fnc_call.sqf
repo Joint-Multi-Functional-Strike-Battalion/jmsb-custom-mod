@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Dials a call. CALL NEEDS REACH ON DATA: with nobody reachable it is refused
  * here ("" and a notify, CALL BACK offered); the server re-checks each callee
  * and tells the caller who had no route or was busy. The rest ring. FLASH

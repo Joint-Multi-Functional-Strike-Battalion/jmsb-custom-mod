@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A run is tasked: the side is told it is inbound - what the man on the radio
  * hears. The run is flown on the server and every word of it is said here, so
  * a strike is not a thing that silently happens somewhere.

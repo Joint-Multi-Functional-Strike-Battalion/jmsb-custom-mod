@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_register: puts a node in the registry, or updates it. Idempotent by id -
  * an adapter registers again whenever the set's object, profile or fill
  * changes (respawn, new radio, plan arrived), and the node keeps its state.

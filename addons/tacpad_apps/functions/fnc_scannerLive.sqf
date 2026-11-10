@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the EW SCANNER page's live lines say now, and the shape that decides
  * which lines there are (code review R8). FUNC(appScanner) builds the page
  * from these; its tick writes the next values into the same lines in place

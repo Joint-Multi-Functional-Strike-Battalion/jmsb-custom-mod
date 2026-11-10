@@ -4,7 +4,8 @@ Function: jmfsb_pac_fnc_rosterTotals
 
 Description:
     Works out the numbers FUNC(publish) sends that need the whole session
-    list: each player's attendance [minutes, joins] (GVAR(rosterTotals)) and
+    list: each player's attendance [minutes, joins] on the ops server, then
+    the same for training and dev (GVAR(rosterTotals)), and
     who is due a promotion (GVAR(promotable)). Server only.
 
     ON THE HEARTBEAT, NOT ON EVERY PUBLISH. The sessions are never trimmed and
@@ -33,14 +34,19 @@ Author:
 
 if (!isServer) exitWith {false};
 
+// [opsMinutes, opsJoins, trainingMinutes, trainingJoins, devMinutes, devJoins]:
+// the first pair is the player's time - ops only - and stays where every
+// reader of [minutes, joins] looks; the other servers are tracked after it.
+// A row from before server ids is ops.
 private _totals = createHashMap;
 {
     _x params ["_uid", "", "_joined", "_seen", "_left"];
+    private _at = 2 * ((PAC_SERVERS find (_x param [PAC_ROW_SERVER, PAC_SERVER_OPS])) max 0);
     private _end = [_left, _seen] select (_left isEqualTo "");
     private _mins = (([_end] call FUNC(stampMinutes)) # 0) - (([_joined] call FUNC(stampMinutes)) # 0);
-    private _t = _totals getOrDefault [_uid, [0, 0]];
-    _t set [0, (_t # 0) + (_mins max 0)];
-    _t set [1, (_t # 1) + 1];
+    private _t = _totals getOrDefault [_uid, [0, 0, 0, 0, 0, 0]];
+    _t set [_at, (_t # _at) + (_mins max 0)];
+    _t set [_at + 1, (_t # (_at + 1)) + 1];
     _totals set [_uid, _t];
 } forEach GVAR(sessions);
 GVAR(rosterTotals) = _totals;

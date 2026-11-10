@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether an asset can put its fires on a point - the one range answer the
  * request (FUNC(task)), the server (FUNC(fireMission)) and the coordination
  * search (FUNC(partners)) all use, so none of them can disagree. The limits
@@ -33,5 +33,5 @@ if (_dist > _max) exitWith {format ["target beyond maximum range (%1)", [_max] c
 
 if ((_logic getVariable [QGVAR(type), ""]) isNotEqualTo TYPE_ARTY) exitWith {""};
 
-private _ball = [_dist, _logic getVariable [QGVAR(muzzleVelocity), VA_DEF_MV], _logic getVariable [QGVAR(highAngle), true]] call FUNC(ballistics);
+private _ball = [_dist, _logic getVariable [QGVAR(muzzleVelocity), VA_DEF_MV], _logic getVariable [QGVAR(highAngle), true], RISE(_origin,_target)] call FUNC(ballistics);
 ["no firing solution for that point", ""] select (_ball isNotEqualTo [])

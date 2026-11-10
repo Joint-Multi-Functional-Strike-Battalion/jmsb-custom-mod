@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes an asset's target marker off every map and out of the JIP queue
  * (FUNC(mark)).
  *

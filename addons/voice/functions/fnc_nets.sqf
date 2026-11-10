@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The voice nets a unit is on, in device order: TEAM, C2-kind, A2G-kind (the
  * radio nets his RF fill holds, from the server's roster), every CALL he is
  * live or ringing in, VEH while he is crew, DIRECT. voiceChannel is the

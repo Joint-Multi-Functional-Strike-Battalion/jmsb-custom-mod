@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every POLL_S: each ACRE radio this player carries becomes an RF
  * node (rf_register) with the profile its base class maps to, on DATA only,
  * and is unregistered when it is gone (RF does not grade ACRE voice: ACRE's

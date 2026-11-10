@@ -1,8 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * A QRF module's order, on the server: books one squad and launches it after
- * the response delay (FUNC(qrfLaunch)), or recalls the aircraft.
+ * Author: YonV
+ * A QRF module's order, on the server: launches the squad (FUNC(qrfLaunch))
+ * at once - its airframe made over the module with the squad aboard (user,
+ * 2026-11-02: virtual until tasked; the Response Delay is retired) - or
+ * recalls the aircraft. Squads are retired: one airframe, one squad a
+ * tasking; the respawn count says how many more after a loss.
  *
  * The QRF tasks declare no steppers: the static-line height is the module's.
  *
@@ -36,15 +39,14 @@ if !(_task in (_logic getVariable [QGVAR(allowed), []])) exitWith {
     [_logic, format ["does not fly %1", _task], "normal", _requester, false] call FUNC(say);
 };
 
-private _left = _logic getVariable [QGVAR(left), -1];
-if (_left > 0) then {_logic setVariable [QGVAR(left), _left - 1, true]};
 _logic setVariable [QGVAR(status), STATUS_LAUNCHING, true];
 _logic setVariable [QGVAR(plan), [[_pos, _task]], true];
 if ((_logic getVariable [QGVAR(cooldownTrigger), COOLDOWN_AT_END]) isEqualTo COOLDOWN_AT_START) then {
     _logic setVariable [QGVAR(readyAt), CBA_missionTime + (_logic getVariable [QGVAR(cooldown), 0]), true];
 };
 
-private _delay = _logic getVariable [QGVAR(spawnDelay), 90];
-[_logic, format ["copy %1 on %2 - wheels up in %3 sec", _task, mapGridPosition _pos, round _delay], "high", _requester] call FUNC(say);
+// VIRTUAL UNTIL TASKED (user, 2026-11-02): made now, on the next frame so the
+// WILCO is in the thread before WHEELS UP.
+[_logic, format ["copy %1 on %2 - wheels up", _task, mapGridPosition _pos], "high", _requester] call FUNC(say);
 
-[FUNC(qrfLaunch), [_logic, _task, _pos, _requester], _delay] call CBA_fnc_waitAndExecute;
+[FUNC(qrfLaunch), [_logic, _task, _pos, _requester]] call CBA_fnc_execNextFrame;

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Profiles near a position - the virtual half of "who is around".
  *
  * Thin wrap of ALiVE's own spatial query so no feature addon has to name an

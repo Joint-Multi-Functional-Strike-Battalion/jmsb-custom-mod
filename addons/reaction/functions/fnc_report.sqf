@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a client reports that its own player was noticed - a detectable
  * key-up (FUNC(onTransmit)) or a hack that failed on his tablet (jmfsb_hacking)
  * - and it goes through the one detection roll (FUNC(roll)).

@@ -89,7 +89,7 @@
 #define TABLET_TEXT_NET 0.7
 // The device bar's columns and the notification line's two edge columns, as
 // fractions of the row's width: brand | facts | clock | facts | device | MENU
-// | ESC CLOSES, and count | newest | time.
+// | PAC | ESC CLOSES, and count | newest | time.
 #define TABLET_BAR_BRAND_W 0.09
 #define TABLET_BAR_ESC_W 0.09
 // The bar's right block - the device's name, with room for the battery - sits
@@ -102,6 +102,12 @@
 #define TABLET_BAR_MENU_W 0.05
 #define TABLET_BAR_MENU "MENU"
 #define TABLET_MENU_APP "menu"
+// PAC (user, 2026-11-01: "make pac a button between menu and esc closes, move
+// uav and menu left"): the word, a hotspot, between MENU and ESC CLOSES; it
+// opens the PAC app, and the tablet's tile row no longer carries the PAC tile.
+#define TABLET_BAR_PAC_W 0.035
+#define TABLET_BAR_PAC "PAC"
+#define TABLET_PAC_APP "pac"
 // The clock stands in the middle of the bar (user, 2026-10-30: "move time to
 // center"); the facts split either side of it.
 #define TABLET_BAR_CLOCK_W 0.08
@@ -389,6 +395,19 @@
 // over the map: there is no status row or notification line any more (user,
 // 2026-10-21).
 #define IDC_OVERLAY_CALL 8985
+// THE QUICK-ANSWER STRIP (user, 2026-11-06: "the choice should be displayed on
+// the phone till answered"): what a support asset asks, and its answers on the
+// device keys F1-F4 (numpad 6-9), over the map above the call strip, while a
+// question waits (jmfsb_tacpad_fnc_askView). Two lines: the question, then
+// the keys.
+#define IDC_OVERLAY_ASK 8984
+#define ASK_STRIP_LINES 2
+#define ASK_KEY_LABELS ["F1", "F2", "F3", "F4"]
+#define ASK_PAGE_LABELS ["left", "right"]
+// jmfsb_tacpad's ASK_MODE_CREW: a crew's list of questions to ask, headed by
+// the requester it goes to.
+#define ASK_VIEW_CREW "crew"
+#define ASK_CREW_HEAD "ASK %1"
 // THE STATUS ROW (back 2026-10-21: "more like your old top bar ... minus" the
 // notification line): NET (the custom channels still available, %; user: "no
 // net number", "reverse the % to available"), MESH, JAM, GPS (the grid),
@@ -405,13 +424,18 @@
 #define IDC_OVERLAY_SQUAD 8986
 #define IDC_OVERLAY_SQUAD2 8987
 #define IDC_OVERLAY_TALK 8988
-// One cell per voice net the player is on (TEAM, C2, A2G, VEH, CALL, a held
-// key's net) - eight at most. Each net cell is three controls: the outline
-// under, the label inset over it, and the small ear tag (L / B / R).
-#define OVERLAY_NET_CELLS 8
+// One cell per net button on the page shown (NET_PAGE_SIZE, below). Each net
+// cell is the outline under, the label inset over it, the small ear tag
+// (L / B / R), the receive-only R and the mute strike. The page marker
+// ("2/3") is one more control.
+#define OVERLAY_NET_CELLS NET_PAGE_SIZE
+#define IDC_OVERLAY_NETPAGE 8989
 #define IDC_OVERLAY_NET(n) (8990 + (n))
 #define IDC_OVERLAY_NETEDGE(n) (9000 + (n))
 #define IDC_OVERLAY_NETRX(n) (9010 + (n))
+#define IDC_OVERLAY_NETMUTE(n) (9020 + (n))
+// The receive-only R at the cell's left end (the ear tag has its right end).
+#define IDC_OVERLAY_NETRO(n) (9040 + (n))
 
 // The phone's size is the player's (jmfsb_devices_phoneFill); the side devices' too.
 // Air between the body and the edge of the safe zone it sits against.
@@ -438,30 +462,50 @@
 #define PHONE_LIST_W 210
 #define SIDE_DESIGN_W 600
 #define SIDE_DESIGN_H 1000
-#define SIDE_ROW_SQUAD 90
 #define SIDE_ROW_NETS 120
 #define SIDE_ROW_STATUS 70
 #define SIDE_NET_CELL_H 32
 // Nets on a portrait screen: two columns (2 x 3 in the design).
 #define NET_COLS_PORTRAIT 2
-// THE NET ROW (notes, 2026-10-30): six equal cells across the full width
-// whatever the count, an empty one a dim outline; the cells this many screen
-// pixels tall on the tablet, the phone and a portrait screen; the tablet's
-// legend, in a tooltip over the row.
-#define NET_ROW_CELLS 6
-// The phone's one row holds four, not six (user, 2026-10-31: "on the phone
-// change radio chips to 4"): each cell wider, its name whole.
-#define NET_ROW_CELLS_PHONE 4
+// THE NET BUTTONS (user, 2026-11-07: "additional voip chips ... 4 quick
+// access and then 2 pages of 4 additional"; 2026-11-08: "only 8 radio chips
+// now"): eight buttons in two pages of four, page 1 the QUICK ACCESS page. Every net row - phone, side devices,
+// tablet - shows ONE page of four equal cells (an empty one a dim outline)
+// and, while more than one page has nets, the page marker "<page>/<pages>"
+// (FUNC(netButtons), FUNC(overlayNets)). Numpad 1-4 act on the page shown.
+// Which net sits on which button is the player's, set on the tablet's RADIO
+// app, NETS > BUTTONS (FUNC(netAssign)), kept in his profile as an array of
+// NET_BUTTONS net ids, NET_BUTTON_AUTO for a button the nets he is on fill in
+// order. The page marker's room at the phone row's right end and the
+// tablet's pager (< 2/3 >) left of GLOBAL, in design units; a portrait
+// screen gives the marker a row of its own under its 2 x 2 cells.
+#define NET_PAGE_SIZE 4
+#define NET_PAGES 2
+#define NET_BUTTONS (NET_PAGE_SIZE * NET_PAGES)
+#define NET_BUTTON_AUTO ""
+#define NET_PAGE_MARK "%1/%2"
+#define NET_PAGE_MARK_W 70
+#define NET_PAGE_MARK_ROWS 1
+#define TABLET_NET_PAGER_W 150
+// The pager's arrows each take this share of its width; the marker the rest.
+#define TABLET_NET_PAGER_ARROW_K 0.3
+#define NET_PAGE_PREV_TEXT "<"
+#define NET_PAGE_NEXT_TEXT ">"
+// The cells this many screen pixels tall on the tablet, the phone and a
+// portrait screen; the tablet's legend, in a tooltip over the row.
 #define NET_CELL_PX_TABLET 40
 #define NET_CELL_PX_PHONE 38
 #define NET_CELL_PX_PORTRAIT 34
-#define TABLET_NET_LEGEND "Press a net to make it active - numpad 1-5 select a net - Ctrl + 1-5 mute it"
+#define TABLET_NET_LEGEND "Press a net to make it active - the net keys select the chips (F layout: Shift + F1-F8, Ctrl to mute; numpad layout: 1-4 on the page shown, Ctrl to mute) - < > turn the net pages"
 // The GLOBAL cell is the game VON's Global channel: only while that is the
 // voice system (the fallback; LiveKit is the voice, 2026-10-31).
 #define VOICE_SYSTEM_VON "von"
 // The net row with no game voice here (jmfsb_voice_system "none": the
 // server's voice cannot run on this machine).
 #define TEXT_VOICE_UNAVAILABLE "VOICE UNAVAILABLE"
+// The tablet's net row on no net (review 2026-11-01, item 2.6): the row as
+// usual, its first cell dim and reading this.
+#define TEXT_NO_NET "NO NET"
 // STATUS CELLS PER ROW, left to right then down, the cells of a row equal
 // shares of the content's width. The phone's seven in one row ran into each
 // other (user, 2026-10-30: "way too close together"): two rows now, four
@@ -472,17 +516,12 @@
 #define STATUS_LAYOUT_PORTRAIT [3, 3, 3]
 // THE DEVICE CLASSES (notes, 2026-10-30: "rows switch on class, not device
 // name"): CfgJmfsbDevices deviceClass, FUNC(deviceClass). The walking view's
-// squad list and talking box sit on a wash of the ground this opaque; a
-// portrait screen's map is this share of its height.
+// squad list and talking box sit on a wash of the ground this opaque.
 #define DEVICE_CLASS_FULL "full"
 #define DEVICE_CLASS_LANDSCAPE "landscape"
 #define DEVICE_CLASS_PORTRAIT "portrait"
 #define OVERLAY_WASH_ALPHA 0.85
-#define OVERLAY_MAP_PORTRAIT_K 0.44
-// Squad list below the map on a portrait screen: two columns of three.
-#define SQUAD_ROWS_PORTRAIT 3
-#define SQUAD_COLS_PORTRAIT 2
-// Rows over the map on the phone, at most.
+// Squad rows over the map, at most, on every walking-view device.
 #define SQUAD_ROWS_LANDSCAPE 10
 // Gutter, type and line height, and the who-is-talking chip's width, in
 // design units.
@@ -505,20 +544,15 @@
 #define GRID_DIGIT_NAMES ["8 figures", "10 figures"]
 #define GRID_AXIS_FULL 5
 // THE WALKING VIEW'S READABILITY (user, 2026-10-21: the side devices "are
-// hard to read"). A portrait screen's rows sit inside the screen hole by this
-// share of the hole's shorter side, the same number of pixels on all four
-// sides, the ground showing round them as the screen's border, clear of the
-// corner bumpers (user, 2026-10-21: "corners touching the frame"; 18 design
-// units was 8.7 px). Text is raised to at least this fraction of the safe
+// hard to read"). Text is raised to at least this fraction of the safe
 // zone's height, at most this many times the design's own size, and never so
 // far that the map keeps less than this share of the screen. A cell's text
 // never outgrows this share of its height.
-#define OVERLAY_INSET 0.05
-// THE PHONE'S BORDER IS ONE PIXEL (user, 2026-10-30: "the border should be
-// 1px, give the rest of the space back to the screen"; it was 0.05 of the
-// hole's shorter side at the sides, 13 px on a 260 px screen, and 0.02 top
-// and bottom). The rows stand this many screen pixels in from the hole on
-// all four sides. The frame's corner guards still lie over the screen's
+// THE BORDER IS ONE PIXEL on every walking-view device (user, 2026-10-30, the
+// phone: "the border should be 1px, give the rest of the space back to the
+// screen"; 2026-11-09, the side devices: "there is too much border" - they
+// had 0.05 of the hole's shorter side). The rows stand this many screen
+// pixels in from the hole on all four sides. The frame's corner guards still lie over the screen's
 // corners (tools/gen_devices.py, the rubber kept); the cells' text is
 // centred, so it stays clear of the lobes.
 #define OVERLAY_BORDER_PX 1
@@ -545,16 +579,29 @@
 #define NET_QUALITY_GOOD 0.5
 // The tag in front of a net cell while the player talks on it (red cell).
 #define NET_TX_TAG "TX"
+// RECEIVE ONLY (DESIGN_PHONE_WALKING "Net row": "small grey R"): a grey R at
+// the cell's LEFT end - the right end is the ear tag, which can read R too.
+// Read soft off jmfsb_ew's client slice (jmfsb_ew_mine, jmfsb_ew_fnc_publish):
+// his sets sit at EW_SLICE_NODES, each set's EMCON level at EW_NODE_EMCON.
+// From EMCON 3 (SILENT, "RECEIVE ONLY" on the EW app's EP tab) on any set,
+// voice closes every radio net of his (jmfsb_voice_fnc_blockLevel), so every
+// radio net reads R; VEH and DIRECT are not radio and never do.
+#define NET_RX_TAG "R"
+#define EW_SLICE_NODES 2
+#define EW_NODE_EMCON 2
+#define EMCON_RECEIVE_ONLY 3
 // The leaders' GLOBAL button on the tablet's net row: its width in design
 // units, and its label off / on.
 #define TABLET_NET_GLOBAL_W 120
 #define GLOBAL_LABEL_OFF "GLOBAL"
 #define GLOBAL_LABEL_ON "ON GLOBAL"
-// SELECT NET 1-9 keybinds (user, 2026-10-21): the first five on numpad 1-5
-// (user, 2026-10-30: "1-5 are radio nets"), the rest unbound by default -
-// numpad 6-9 are the device keys.
-#define NET_SELECT_KEYS 9
-#define NET_SELECT_DEFAULTS [DIK_NUMPAD1, DIK_NUMPAD2, DIK_NUMPAD3, DIK_NUMPAD4, DIK_NUMPAD5]
+// SELECT NET 1-8 keybinds (user, 2026-10-21; eight since 2026-11-08). The
+// F-row layout: Shift + F1-F8, each net button 1-8 straight, and the chips
+// numbered 1-8 to match. The numpad layout: the first four on numpad 1-4
+// (2026-11-07, "1-4 radio chip select"), the chips of the page shown; 5-8
+// unbound by default, bound by the player net buttons 5-8 (FUNC(netChip)).
+#define NET_SELECT_KEYS 8
+#define NET_SELECT_DEFAULTS [DIK_NUMPAD1, DIK_NUMPAD2, DIK_NUMPAD3, DIK_NUMPAD4]
 
 // Status icon states.
 #define STATE_OFF 0
@@ -563,6 +610,9 @@
 #define STATE_ALERT 3
 // Percent of jamming at which the JAM cell turns red.
 #define JAM_ALERT_PCT 50
+// The DRONES cell's words by the scanner's level 0 / 1 / 2 - the DRONES
+// tile's own words (user, 2026-11-01).
+#define DRONE_STATE_WORDS ["CLR", "WARN", "ALERT"]
 // Percent of the custom channels still free at or below which NET warns.
 #define CHANNEL_WARN_PCT 20
 #define PERCENT 100
@@ -668,12 +718,24 @@
 #define HTML_VOX "#d933d9"
 #define HTML_DIM "#a9a9a2"
 #define HTML_TEXT "#f3f2f2"
+// The buddy star in the squad list, the colour bft draws it on the map.
+#define HTML_BUDDY "#fcd936"
 
 // The range rings on the map, in metres, and the blank texture their labels
 // ride on.
 #define RING_RADII [25, 50]
 #define RING_TEXT_SIZE 0.03
 #define BLANK_ICON "#(argb,8,8,3)color(0,0,0,0)"
+
+// DRONE MARKS on the walking view's map (DESIGN_PHONE_WALKING "Map": "drones
+// (circle + callsign)"): the DRONES board's fleet (jmfsb_tacpad_apps_fnc_
+// appDronesData), re-read this often (s) by FUNC(overlayTick), not per frame.
+// The circle is the mil_circle marker's own texture, this many pixels across,
+// the callsign at the rings' text size, both in the scheme's accent.
+#define DRONE_MARK_PERIOD 2
+#define DRONE_MARK_MARKER "mil_circle"
+#define DRONE_MARK_PX 20
+#define DRONE_MARK_TEXT_SIZE RING_TEXT_SIZE
 
 // Displays the view hides under: ACE arsenal, the vanilla arsenal and the
 // vanilla spectator (the latter two keep themselves in uiNamespace by class).
@@ -694,8 +756,8 @@
 // in postInit and settings are declared before that. An id that is not
 // registered in a given mission opens nothing. VEHICLE STATUS opens only on
 // the vehicle tablet (FUNC(onLoad) registers it there alone).
-#define SOFT_KEY_IDS ["", "comms", "squad", "radio", "weather", "timer", "drones", "jam", "scanner", "hack", "intel", "support", "settings", VEHICLE_APP, "medic"]
-#define SOFT_KEY_NAMES ["None", "TAC//MSG", "Squad", "Radio", "Weather", "Timer", "Drones", "Jamming", "Scanner", "Hack", "Intel", "Support", "Settings", "Vehicle status (vehicle tablet only)", "Medic (CLS and Medic only)"]
+#define SOFT_KEY_IDS ["", "comms", "squad", "radio", "weather", "timer", "drones", "jam", "scanner", "hack", "intel", "settings", VEHICLE_APP, "medic"]
+#define SOFT_KEY_NAMES ["None", "TAC//MSG", "Squad", "Radio", "Weather", "Timer", "Drones", "Jamming", "Scanner", "Hack", "Intel", "Settings", "Vehicle status (vehicle tablet only)", "Medic (CLS and Medic only)"]
 
 // THE WALKING VIEW'S SIX FRAME BUTTONS - F1-F4, LEFT, RIGHT, as printed on the
 // phone and side frames (CfgJmfsbDevices keys[] order). The layer is a title
@@ -705,11 +767,13 @@
 // (FUNC(overlayButton)). The same keybinds are the tablet frame's keys while
 // the tablet is open (FUNC(keyDown)).
 #define BUTTON_LABELS ["F1", "F2", "F3", "F4", "left", "right"]
-#define BUTTON_KEYS [DIK_NUMPAD6, DIK_NUMPAD7, DIK_NUMPAD8, DIK_NUMPAD9, DIK_NUMPAD0, DIK_DECIMAL]
-// What the on-screen hints call the six buttons: the numpad keys they are on
-// (notes, 2026-10-30: "hints read 6 7 8 9, not F1-F4"). BUTTON_LABELS stay
-// the keybind and setting ids.
-#define BUTTON_HINTS ["6", "7", "8", "9", "0", "."]
+#define BUTTON_KEYS [DIK_NUMPAD5, DIK_NUMPAD6, DIK_NUMPAD7, DIK_NUMPAD8, DIK_NUMPAD0, DIK_DECIMAL]
+// What the tablet frame's LEFT / RIGHT keys do, for their tooltips (FUNC(softKey)).
+#define TABLET_ARROW_TIPS ["Live tiles' page left (one page: scroll up)", "Live tiles' page right (one page: scroll down)"]
+// BUTTON_LABELS stay the keybind and setting ids. What the frame's tooltips
+// call each button's key is the key it is bound to, read at open
+// (FUNC(keyLabel)); the fixed BUTTON_HINTS digits went with review
+// 2026-11-01, item 2.5 - a rebind made them wrong.
 // A PROFILE KEEPS THE FIRST DEFAULT IT SAW (user, 2026-10-31, the CONTROLS
 // screenshot: Device button F1-F4 still on numpad 1-4, where the nets are,
 // Open Tablet with no key). CBA writes a keybind's default into the profile
@@ -721,21 +785,27 @@
 #define CBA_KEYBIND_REGISTRY "cba_keybinding_registry_v3"
 #define KEYBIND_NO_MODS [false, false, false]
 #define KEYBIND_MIGRATIONS [ \
-    [QGVAR(button_F1), [[DIK_NUMPAD1, KEYBIND_NO_MODS]], [DIK_NUMPAD6, KEYBIND_NO_MODS]], \
-    [QGVAR(button_F2), [[DIK_NUMPAD2, KEYBIND_NO_MODS]], [DIK_NUMPAD7, KEYBIND_NO_MODS]], \
-    [QGVAR(button_F3), [[DIK_NUMPAD3, KEYBIND_NO_MODS]], [DIK_NUMPAD8, KEYBIND_NO_MODS]], \
-    [QGVAR(button_F4), [[DIK_NUMPAD4, KEYBIND_NO_MODS]], [DIK_NUMPAD9, KEYBIND_NO_MODS]], \
-    [QGVAR(tabletKey), [[DIK_NUMPAD5, KEYBIND_NO_MODS], [DIK_NUMPAD8, KEYBIND_NO_MODS], [DIK_HOME, [false, true, false]]], [DIK_NUMPADENTER, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F1), [[DIK_NUMPAD1, KEYBIND_NO_MODS], [DIK_NUMPAD6, KEYBIND_NO_MODS]], [DIK_NUMPAD5, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F2), [[DIK_NUMPAD2, KEYBIND_NO_MODS], [DIK_NUMPAD7, KEYBIND_NO_MODS]], [DIK_NUMPAD6, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F3), [[DIK_NUMPAD3, KEYBIND_NO_MODS], [DIK_NUMPAD8, KEYBIND_NO_MODS]], [DIK_NUMPAD7, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F4), [[DIK_NUMPAD4, KEYBIND_NO_MODS], [DIK_NUMPAD9, KEYBIND_NO_MODS]], [DIK_NUMPAD8, KEYBIND_NO_MODS]], \
+    [QGVAR(tabletKey), [[DIK_NUMPAD5, KEYBIND_NO_MODS], [DIK_NUMPAD8, KEYBIND_NO_MODS], [DIK_HOME, [false, true, false]], [DIK_NUMPADENTER, KEYBIND_NO_MODS]], [KEY_NONE, KEYBIND_NO_MODS]], \
+    [QGVAR(netSelect_5), [[DIK_NUMPAD5, KEYBIND_NO_MODS]], [KEY_NONE, KEYBIND_NO_MODS]], \
+    [QGVAR(netMute_5), [[DIK_NUMPAD5, [false, true, false]]], [KEY_NONE, KEYBIND_NO_MODS]], \
     [QGVAR(netSelect_6), [[DIK_NUMPAD6, KEYBIND_NO_MODS]], [KEY_NONE, KEYBIND_NO_MODS]] \
 ]
-// THE NUMPAD STANDARD (user, 2026-10-30: "1-5 are radio nets, 6 7 8 9 are
-// F1-F4, - is TIC, 0 and . are the arrows, / = no do not answer, * = yes or
-// answer"; it replaces 2026-10-25's 1-6 nets / 7 8 9 functions).
-//   1-5  pick net 1-5 (the chip number)   Ctrl + 1-5 mute / unmute that net
-//   6 7 8 9  device F1-F4 (the walking view's jobs, the tablet frame's apps)
+// THE NUMPAD STANDARD (2026-11-07, docs/DESIGN_WATCH_HUD.json, replacing
+// 2026-10-30's 1-5 nets / 6-9 F1-F4; "- is TIC, 0 and . are the arrows, / = no
+// do not answer, * = yes or answer" stand).
+//   1-4  pick net 1-4 (the chip number)   Ctrl + 1-4 mute / unmute that net
+//   5 6 7 8  device F1-F4 (the walking view's jobs, the tablet frame's apps;
+//            while a watch profile is on: report, cycle, all off, squad view)
+//   9  the ACTION key - context action on what you look at (jmfsb_watch)
 //   0  .  device arrows left / right
 //   * answer / hang up (yes)   / decline (no)   - TROOPS IN CONTACT
-//   + voice activation on/off   Enter open / close the tablet
+//   + voice activation on/off
+// NUMPAD ENTER IS NEVER OURS (user, 2026-11-01: "numpad enter can not be a
+// tablet button or any button we use"): the tablet key has no default.
 // No default key, each rebindable: talk local (hold), radio volume, the
 // RADIO app on the phone, its tabs, PTT 2-4, open channel NET / LOCAL,
 // the call camera. The sign of it is "numpad" in tools/gen_signs.py.
@@ -748,6 +818,13 @@
 #define BUTTON_MODS_F [false, false, false]
 #define BUTTON_MODS_ARROW [false, false, false]
 #define BUTTON_F_COUNT 4
+// THE ARROW KEYS ARE THE DEVICE'S (user, 2026-11-08): another addon's
+// keybind still on its default and on the key these buttons have is taken
+// off (FUNC(keybindFree)) once every addon has registered, this long after
+// postInit. CBA's live keybind table.
+#define KEYBIND_FREE_BUTTONS ["left", "right"]
+#define KEYBIND_FREE_DELAY 1
+#define CBA_KEYBIND_ACTIONS "cba_keybinding_actions"
 #define NET_SELECT_MODS [false, false, false]
 // Ctrl + the net's number mutes / unmutes it (user, 2026-10-25).
 #define NET_MUTE_MODS [false, true, false]
@@ -758,18 +835,54 @@
 // The call camera FACE / VIEW (user, 2026-10-28): no default key, the numpad
 // is full.
 #define KEY_CALL_CAM KEY_NONE
-// The rest of the numpad block: the tablet on Enter, the RADIO app on the
+// The rest of the numpad block: the tablet unbound (never Enter), the RADIO app on the
 // carried device and its previous / next tab unbound. - is TROOPS IN
 // CONTACT, which is jmfsb_tacpad_apps' own keybind.
 // The incoming-call notification's accent (user, 2026-10-24).
 #define RING_NOTIFY_COLOUR [0.9, 0.6, 0.2, 1]
-#define KEY_TABLET DIK_NUMPADENTER
+#define KEY_TABLET KEY_NONE
 #define KEY_RADIO_APP KEY_NONE
 #define KEY_TAB_PREV KEY_NONE
 #define KEY_TAB_NEXT KEY_NONE
+// THE KEY LAYOUT (user, 2026-11-08, "1st JMSB device keys: F-row layout";
+// "make f11 Voice activate"): the F row by default, so laptop and tenkeyless
+// players have every key; the numpad standard above is the setting's other
+// choice (GVAR(keyLayout), FUNC(keyDefault)). F12 is Steam's screenshot key,
+// so the row stops at F11. No AI to command (user: "its all
+// players"), so the engine's F1-F10 squad selection is never wanted:
+//
+//        F1 - F4      F5  F6   F7   F8   F9      F10   F11
+//   -    device F1-F4  <   >   yes  no   action  TIC   voice activate
+//   Shift + F1-F8 select net 1-8     Ctrl + F1-F8 mute net 1-8
+//
+// Each entry: the action, its F-row default, its numpad default, as
+// [key, [shift, ctrl, alt]]. Select / mute net come from KEY_LAYOUT_NETS_F
+// and NET_SELECT_DEFAULTS.
+#define KEY_LAYOUT_F "fkeys"
+#define KEY_LAYOUT_NUMPAD "numpad"
+#define KEY_LAYOUT_IDS [KEY_LAYOUT_F, KEY_LAYOUT_NUMPAD]
+#define KEY_LAYOUT_NAMES ["F keys (F1-F11)", "Numpad"]
+#define KEY_MODS_SHIFT [true, false, false]
+#define KEY_LAYOUT_TABLE [ \
+    [QGVAR(button_F1), [DIK_F1, KEYBIND_NO_MODS], [DIK_NUMPAD5, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F2), [DIK_F2, KEYBIND_NO_MODS], [DIK_NUMPAD6, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F3), [DIK_F3, KEYBIND_NO_MODS], [DIK_NUMPAD7, KEYBIND_NO_MODS]], \
+    [QGVAR(button_F4), [DIK_F4, KEYBIND_NO_MODS], [DIK_NUMPAD8, KEYBIND_NO_MODS]], \
+    [QGVAR(button_left), [DIK_F5, KEYBIND_NO_MODS], [DIK_NUMPAD0, KEYBIND_NO_MODS]], \
+    [QGVAR(button_right), [DIK_F6, KEYBIND_NO_MODS], [DIK_DECIMAL, KEYBIND_NO_MODS]], \
+    [QGVAR(answerKey), [DIK_F7, KEYBIND_NO_MODS], [KEY_ANSWER, KEYBIND_NO_MODS]], \
+    [QGVAR(declineKey), [DIK_F8, KEYBIND_NO_MODS], [KEY_DECLINE, KEYBIND_NO_MODS]], \
+    [QEGVAR(watch,action), [DIK_F9, KEYBIND_NO_MODS], [DIK_NUMPAD9, KEYBIND_NO_MODS]], \
+    [QEGVAR(tacpad_apps,ticKey), [DIK_F10, KEYBIND_NO_MODS], [DIK_SUBTRACT, KEYBIND_NO_MODS]], \
+    [QGVAR(vadKey), [DIK_F11, KEYBIND_NO_MODS], [KEY_VAD, KEYBIND_NO_MODS]] \
+]
+#define KEY_LAYOUT_NETS_F [DIK_F1, DIK_F2, DIK_F3, DIK_F4, DIK_F5, DIK_F6, DIK_F7, DIK_F8]
+// The F-row layout's backstop: the command bar hidden (shownHUD's "group"
+// entry) and the AI's radio sentences off.
+#define HUD_GROUP_BAR 6
 // What a button can do. First the voice keys of docs/DESIGN_VOICE.md, which
 // are the defaults - F1 accept a call, F2 ear / quick add, F3 mute, F4 decline
-// / hang up, the arrows the active net (FUNC(voiceAction)) - and the RADIO
+// / hang up, the arrows the net page (FUNC(voiceAction)) - and the RADIO
 // app; then the walking view's own actions, and the tablet - on an app when
 // the id carries the prefix.
 #define BUTTON_NONE ""
@@ -788,8 +901,8 @@
 #define BUTTON_HIDE "hide"
 #define BUTTON_TABLET "tablet"
 #define BUTTON_APP_PREFIX "app:"
-#define BUTTON_IDS [BUTTON_NONE, BUTTON_CALL_ACCEPT, BUTTON_EAR_QUICK, BUTTON_MUTE, BUTTON_DECLINE, BUTTON_NET_PREV, BUTTON_NET_NEXT, BUTTON_RADIO_APP, BUTTON_ZOOM_IN, BUTTON_ZOOM_OUT, BUTTON_EDGE_LEFT, BUTTON_EDGE_RIGHT, BUTTON_HIDE, BUTTON_TABLET, "app:comms", "app:squad", "app:radio", "app:weather", "app:timer", "app:drones", "app:jam", "app:scanner", "app:hack", "app:intel", "app:support", "app:settings", "app:medic", "app:pointman", "app:jumpmaster"]
-#define BUTTON_NAMES ["None", "Accept call (quick add: add)", "Ear for the active net (in a call: quick add)", "Mute the active net", "Decline or hang up (quick add: close)", "Active net left (quick add: previous)", "Active net right (quick add: next)", "RADIO app on this device", "Map zoom in", "Map zoom out", "Side device to the left edge", "Side device to the right edge", "Hide the walking view", "Open the tablet", "Tablet on TAC//MSG", "Tablet on Squad", "Tablet on Radio", "Tablet on Weather", "Tablet on Timer", "Tablet on Drones", "Tablet on Jamming", "Tablet on Scanner", "Tablet on Hack", "Tablet on Intel", "Tablet on Support", "Tablet on Settings", "Tablet on Medic (CLS and Medic only)", "Tablet on Point Man", "Tablet on Jumpmaster (squad leaders)"]
+#define BUTTON_IDS [BUTTON_NONE, BUTTON_CALL_ACCEPT, BUTTON_EAR_QUICK, BUTTON_MUTE, BUTTON_DECLINE, BUTTON_NET_PREV, BUTTON_NET_NEXT, BUTTON_RADIO_APP, BUTTON_ZOOM_IN, BUTTON_ZOOM_OUT, BUTTON_EDGE_LEFT, BUTTON_EDGE_RIGHT, BUTTON_HIDE, BUTTON_TABLET, "app:comms", "app:squad", "app:radio", "app:weather", "app:timer", "app:drones", "app:jam", "app:scanner", "app:hack", "app:intel", "app:settings", "app:medic", "app:pointman"]
+#define BUTTON_NAMES ["None", "Accept call (quick add: add)", "Ear for the active net (in a call: quick add)", "Mute the active net", "Decline or hang up (quick add: close)", "Net page left (quick add: previous)", "Net page right (quick add: next)", "RADIO app on this device", "Map zoom in", "Map zoom out", "Side device to the left edge", "Side device to the right edge", "Hide the walking view", "Open the tablet", "Tablet on TAC//MSG", "Tablet on Squad", "Tablet on Radio", "Tablet on Weather", "Tablet on Timer", "Tablet on Drones", "Tablet on Jamming", "Tablet on Scanner", "Tablet on Hack", "Tablet on Intel", "Tablet on Settings", "Tablet on Medic (CLS and Medic only)", "Tablet on Point Man"]
 
 // A side device's edges; the first is where it sits for a new profile.
 #define EDGES ["right", "left"]

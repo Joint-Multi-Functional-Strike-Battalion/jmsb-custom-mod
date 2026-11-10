@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes a vehicle an AD unit on the server, or moves it to a new alarm area.
  * Called on its creation (FUNC(vehicleInit)), by a Site module
  * (FUNC(moduleSite)) and for a jmfsb_airdefence battery (batteryUp). A unit

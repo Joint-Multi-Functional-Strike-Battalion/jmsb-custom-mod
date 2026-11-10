@@ -1,35 +1,31 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Server: the jump aircraft in the air at the start of the run - the setting's
- * class, or the side's own - pointed down the path at altitude and at speed,
- * crewed by the squad's side, careless and locked, left alone by LAMBS and
- * ALiVE. Everything about where it goes is FUNC(srvTick)'s.
+ * Author: YonV
+ * Server: a jump aircraft in the air - a side's own at the start of the run,
+ * a module's over the module when it is tasked (FUNC(airUp)) - pointed on its
+ * heading at altitude and at speed, crewed by the squad's side, careless and
+ * locked, left alone by LAMBS and ALiVE. Everything about where it goes is
+ * FUNC(srvTick)'s and FUNC(airTick)'s.
  *
  * Arguments:
- * 0: The leader <OBJECT>
- * 1: Where it appears, [x, y] <ARRAY>
- * 2: Heading <NUMBER>
- * 3: Altitude over the ground, m <NUMBER>
+ * 0: The squad's side <SIDE>
+ * 1: Aircraft class <STRING>
+ * 2: Where it appears, [x, y] <ARRAY>
+ * 3: Heading <NUMBER>
+ * 4: Altitude over the ground, m <NUMBER>
  *
  * Return Value:
  * The aircraft, objNull when it could not be made <OBJECT>
  *
  * Example:
- * [player, [1000, 2000], 90, 6000] call jmfsb_jumpmaster_fnc_spawnAircraft
+ * [west, "B_T_VTOL_01_infantry_F", [1000, 2000], 90, 6000] call jmfsb_jumpmaster_fnc_spawnAircraft
  *
  * Public: No
  */
 
-params [["_leader", objNull, [objNull]], ["_start", [], [[]]], ["_dir", 0, [0]], ["_alt", 150, [0]]];
+params [["_side", west, [west]], ["_cls", "", [""]], ["_start", [], [[]]], ["_dir", 0, [0]], ["_alt", 150, [0]]];
 
-if (isNull _leader || {count _start < 2}) exitWith {objNull};
-
-private _side = side group _leader;
-private _cls = trim GVAR(aircraft);
-if (_cls isEqualTo "") then {
-    _cls = DEFAULT_AIRCRAFT select (([west, east, independent] find _side) max 0);
-};
+if (count _start < 2) exitWith {objNull};
 if (!isClass (configFile >> "CfgVehicles" >> _cls)) exitWith {
     WARNING_1("jump aircraft '%1' is not a class on this server",_cls);
     objNull
@@ -39,13 +35,9 @@ private _at = [_start select 0, _start select 1, _alt];
 private _veh = createVehicle [_cls, _at, [], 0, "FLY"];
 if (isNull _veh) exitWith {objNull};
 
-_veh setDir _dir;
-_veh setPosATL _at;
-_veh setVectorUp [0, 0, 1];
-if (_veh isKindOf "Plane") then {
-    _veh setVelocityModelSpace [0, PLANE_START_SPEED * getNumber (configFile >> "CfgVehicles" >> _cls >> "maxSpeed") / 3.6, 0];
-};
-_veh flyInHeight _alt;
+// Engines on and flying, clear of any other aircraft (user, 2026-11-02:
+// the support core's spawnAirborne).
+[_veh, _at, _alt, _dir] call EFUNC(support,spawnAirborne);
 
 private _grp = createGroup [_side, true];
 _grp createVehicleCrew _veh;

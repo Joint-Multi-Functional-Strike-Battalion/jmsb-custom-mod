@@ -56,7 +56,7 @@ Differences from the phone:
 - Map is taller than wide, so it shows more ground ahead and behind. Same 50 m radius across the width.
 - Squad list moves below the map, 2 columns. Same `<N> <NAME>` and flags.
 - Who is talking chip: top left of the map.
-- Nets in a 2-column grid, only nets you are on. Numpad 0 / . move the active net.
+- Nets in a 2-column grid, only nets you are on: one page of four net buttons (2 x 2), the page marker ("2/3") in a row under them. Numpad 0 / . turn the net page.
 
 ## Keys on the body
 

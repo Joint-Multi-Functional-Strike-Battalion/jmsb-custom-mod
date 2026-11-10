@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The vehicle tablet's left rail, ON BOARD (docs/DESIGN_TABLET.md, "Vehicle
  * tablet"): everyone in the vehicle the tablet was opened from, commander
  * first, passengers last - drawn as the squad rail draws a man (its medical

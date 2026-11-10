@@ -76,6 +76,8 @@ class CfgVehicles {
             description[] = {
                 "Placing this module turns on leader chain. Without it, the system is off.",
                 "",
+                "Without ALiVE: the mission's enemy is the insurgent side (or the side of a man synchronised to this module, whose faction the leaders wear), safe houses are in the map's towns, inside TAOR Markers or jmfsb_taor_west / _east / _guer markers when set.",
+                "",
                 "Pool Cut Per Leader (%) - How much of the asymmetric commander's force pool dies with each leader",
                 "Rotate Every (sec) - How often a leader moves to another safe house",
                 "Trap Chance (%) - Chance a watched safe house is trapped with mortars",

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: takes the base station off a site (FUNC(baseStation)) - out of RF,
  * out of the registry, and its helper object deleted when the site was a
  * position. Called by the owner (a staging zone removed, a patrol base

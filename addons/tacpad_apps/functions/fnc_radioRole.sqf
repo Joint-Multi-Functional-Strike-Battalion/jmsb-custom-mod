@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The local player's place in the voice permission table (DESIGN_VOICE.md,
  * MANAGE): "ADMIN", "RTO", "SL", "TL", or "" for everyone else. RADIO_ROLES is
  * the order; an action is open to a role at or above the one RADIO_RIGHTS names.

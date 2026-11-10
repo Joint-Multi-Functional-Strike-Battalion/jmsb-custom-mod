@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The MEDIC app's patient page: the four monitored numbers, the status lines
  * and the body, for one man. BACK returns to the list; SHOW ON MAP closes the
  * app over him (FUNC(showOnMap)).

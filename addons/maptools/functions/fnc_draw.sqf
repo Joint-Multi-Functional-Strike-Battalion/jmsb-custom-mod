@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tools' Draw handler, every frame on every map they are attached to.
  * Everything is drawn from world positions, so a ruler laid on the tablet is
  * the same ruler on the paper map.
@@ -112,6 +112,19 @@ if (GVAR(losFrom) isNotEqualTo []) then {
 };
 
 [_map, _accent, _size] call FUNC(drawProtractor);
+
+// THE MARKER CARD'S POINT: the picked icon in the picked colour, size and
+// direction (2026-11-02), as the game's dialog shows its marker while it is
+// open. Dropped when the card has gone without closing itself - its display
+// went first.
+if (GVAR(cardPreview) isNotEqualTo []) then {
+    if (isNull (uiNamespace getVariable [QGVAR(card), controlNull])) then {
+        GVAR(cardPreview) = [];
+    } else {
+        GVAR(cardPreview) params ["_at", "_icon", "_colour", ["_scale", CARD_SIZE_NORMAL], ["_dir", 0]];
+        _map drawIcon [_icon, _colour, _at, CARD_PREVIEW_PX * _scale, CARD_PREVIEW_PX * _scale, _dir];
+    };
+};
 
 // The cursor's own readout. GRID is the ten digits under it; MARK previews the
 // grid its marker will carry.

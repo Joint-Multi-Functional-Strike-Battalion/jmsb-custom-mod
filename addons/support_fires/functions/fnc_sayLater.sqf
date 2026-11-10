@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Has an asset say something on its side's notify rail after a delay - SHOT,
  * SPLASH, the next volley, ready for tasking - unless the mission it belongs
  * to has moved on by then (its token no longer the logic's).

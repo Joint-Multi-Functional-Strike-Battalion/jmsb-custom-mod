@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the RADIO board shows, as one string: the voice API's nets, calls, slots,
  * callbacks and contacts, the minute a live call has run, and the board's own
  * picks. The board redraws only when this changes - a rebuild deletes the

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One of the mod's CBA keybinds as the player has it bound, for a line that
  * tells him which key to press: modifiers, then the key's own name - "NUM 9",
  * "CTRL+NUM 4"; UNBOUND when he cleared it, -- when there is no such bind.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE ZONES AS RF NOISE. Registered with jmfsb_rf_fnc_addNoiseSource on the
  * server; RF calls it for every receiver it prices, per net, every tick.
  *

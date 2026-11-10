@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The C2-kind net of a unit, carried on the C2 channel (VON Custom 1): his
  * net of the PAC plan (his squad's, or under the VON comm plan the first c2
  * row naming his squad, role or a skill of his), else the default plan's C2.

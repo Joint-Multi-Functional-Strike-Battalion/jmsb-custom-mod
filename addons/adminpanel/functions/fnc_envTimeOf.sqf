@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A TIME / WEATHER quick button: puts dawn (sunrise), noon, dusk (sunset) or
  * midnight in the hour and minute combos. Only the combos - SET TIME applies.
  * Where the sun does not rise or set today, dawn and dusk give noon.

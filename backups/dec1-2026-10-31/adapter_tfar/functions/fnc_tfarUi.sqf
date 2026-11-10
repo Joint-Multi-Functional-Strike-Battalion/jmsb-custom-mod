@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TFAR'S RADIO UI OFF (setting "Hide TFAR's radio UI"): the radio UI is ours -
  * the HUD's RADIO widget and the tablet's net row and RADIO app.
  *

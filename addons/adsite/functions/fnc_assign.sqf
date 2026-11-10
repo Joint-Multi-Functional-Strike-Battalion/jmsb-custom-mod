@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Gives open threats to free AD units - one unit per threat; a miss reopens it
  * for another (FUNC(resolve)). Server only, from FUNC(tick).
  *

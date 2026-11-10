@@ -3,6 +3,7 @@
 //! the extension uses.
 //!
 //!   voicetest --url ws://HOST:7880 --key KEY --secret SECRET [--room R] [--name N]
+//!   voicetest --url mumble://HOST:64738 [--password P] [--echo] [--room R] [--name N]
 //!             [--open] [--tone] [--quiet] [--stats]
 //!
 //! Enter toggles the microphone (push-to-talk as a toggle); --open starts it
@@ -23,22 +24,51 @@ fn arg(args: &[String], name: &str) -> Option<String> {
     args.iter().position(|a| a == name).and_then(|i| args.get(i + 1)).cloned()
 }
 
+/// --log: the extension's own log lines (what the DLL writes to its log
+/// file in game) on stderr, from this crate only.
+struct StderrLog;
+
+impl log::Log for StderrLog {
+    fn enabled(&self, m: &log::Metadata) -> bool {
+        m.level() <= log::Level::Info && m.target().starts_with("jmsb_voice")
+    }
+    fn log(&self, r: &log::Record) {
+        if self.enabled(r.metadata()) {
+            eprintln!("  log {} {}: {}", r.level(), r.target(), r.args());
+        }
+    }
+    fn flush(&self) {}
+}
+
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
-    let (Some(url), Some(key), Some(secret)) = (arg(&args, "--url"), arg(&args, "--key"), arg(&args, "--secret")) else {
+    if args.iter().any(|a| a == "--log") && log::set_boxed_logger(Box::new(StderrLog)).is_ok() {
+        log::set_max_level(log::LevelFilter::Info);
+    }
+    let usage = || {
         eprintln!("usage: voicetest --url ws://HOST:7880 --key KEY --secret SECRET [--room R] [--name N] [--open]");
+        eprintln!("       voicetest --url mumble://HOST:64738 [--password P] [--echo] [--room R] [--name N] [--open]");
         std::process::exit(2);
     };
+    let Some(url) = arg(&args, "--url") else { usage() };
     let room = arg(&args, "--room").unwrap_or_else(|| "jmsb-test".to_owned());
     let name = arg(&args, "--name")
         .or_else(|| std::env::var("COMPUTERNAME").ok())
         .unwrap_or_else(|| "tester".to_owned());
-    let jwt = match token::mint(&key, &secret, &room, &name, &name) {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("token: {e}");
-            std::process::exit(1);
+    // Mumble: the name and room go in the address, the token is the
+    // server's password; --echo uses the server's loopback.
+    let (url, jwt) = if let Some(server) = url.strip_prefix("mumble://") {
+        let echo = if args.iter().any(|a| a == "--echo") { "?echo" } else { "" };
+        (format!("mumble://{name}@{server}/{room}{echo}"), arg(&args, "--password").unwrap_or_default())
+    } else {
+        let (Some(key), Some(secret)) = (arg(&args, "--key"), arg(&args, "--secret")) else { usage() };
+        match token::mint(&key, &secret, &room, &name, &name) {
+            Ok(t) => (url, t),
+            Err(e) => {
+                eprintln!("token: {e}");
+                std::process::exit(1);
+            }
         }
     };
 

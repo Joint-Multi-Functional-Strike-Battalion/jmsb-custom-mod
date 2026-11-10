@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every logistics hub LOGCOM runs supply from, as a hunt pool.
  *
  * ALiVE's supply network is ALIVE_ML_supplyNetwork (mil_logistics

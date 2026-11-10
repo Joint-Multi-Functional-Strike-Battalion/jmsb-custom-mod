@@ -68,8 +68,22 @@ GVAR(aliveZoneIds) = [];
 
 // The adapter's whenReady runs it now when ready already, and once only - not
 // the ready CBA event any client could raise again (review R1).
+//
+// Without ALiVE there are no objectives to patrol (user, 2026-11-02): said
+// once when the opt-in is on, and Drone Patrol Zone modules fly as they do
+// with it. The same branch when ALiVE is loaded with no commanders ("same as
+// not loaded"): the adapter's fallback, once it gives up.
+private _without = {
+    [{
+        if (GVAR(aliveZones)) then {
+            ["UAS objective zones", "off - Drone Patrol Zone modules only"] call EFUNC(common,aliveLoaded);
+        };
+    }] call EFUNC(common,runAfterSettingsInit);
+};
 if (!isNil QEFUNC(adapter_alive,whenReady)) then {
-    [{ [] call FUNC(zonesFromAlive) }] call EFUNC(adapter_alive,whenReady);
+    [{ [] call FUNC(zonesFromAlive) }, [], _without] call EFUNC(adapter_alive,whenReady);
+} else {
+    call _without;
 };
 
 // The report is the #jmfsb uas admin command (top of this file).

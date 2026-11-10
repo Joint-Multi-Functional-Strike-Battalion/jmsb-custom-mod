@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: what an asset says - shot, splash, rounds complete, on station,
  * lost - sent to its side by remoteExec (FUNC(sayLocal)), which a client takes
  * only from the server (review S7: it was a global CBA event, so any client

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Banks every carried intel item into this drop - the drop's ACE action.
  * Carried intel is worth nothing until it is in a case.
  *

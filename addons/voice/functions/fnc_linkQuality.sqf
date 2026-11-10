@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the raw RF link quality from a speaker to the local player on a
  * voice net, from the local slice - the best link between any of the
  * player's nodes and any of the speaker's, on the RF net that carries the

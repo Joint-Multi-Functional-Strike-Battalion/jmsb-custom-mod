@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE CAMP: the enemy's camps and outposts, on the shrinking circle ladder.
  *
  * A camp is where the men who are not on the objective are. ALiVE's placement
@@ -23,14 +23,14 @@
 
 params [["_pos", [], [[]]], ["_side", sideUnknown, [sideUnknown]]];
 
-if (isNil "jmfsb_adapter_alive_fnc_camps") exitWith {false};
+if (isNil QEFUNC(adapter_alive,camps)) exitWith {false};
 
 private _pool = [];
 {
     _x params ["_id", "_at", "", "_cside"];
     if (_cside isEqualTo sideUnknown || {_cside getFriend _side >= 0.6}) then {continue};
     _pool pushBack [_id, _at, _cside];
-} forEach (call jmfsb_adapter_alive_fnc_camps);
+} forEach (call EFUNC(adapter_alive,camps));
 
 if (isNil QGVAR(campLock)) then { GVAR(campLock) = createHashMap };
 [_pool, _pos, _side, GVAR(campLock), "camp", "CAMP"] call FUNC(ladderCircle)

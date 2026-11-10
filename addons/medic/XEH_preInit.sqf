@@ -26,6 +26,10 @@ GVAR(keepPatient) = false;
 // set in FUNC(app)) - a control in the mission namespace cannot be serialised.
 GVAR(pfh) = -1;
 
+// The MIST opened on each patient from the watch HUD - [time, triage then],
+// by hashValue - for its age and the stale warning (FUNC(watchAlerts)).
+GVAR(mistSent) = createHashMap;
+
 // THE MEDIC TILE, offered to tacpad_apps' band. It answers no tile unless the
 // player is a CLS or a medic (FUNC(tile)). That skill check is its gate, not
 // the role: role tiles[] lists written before this tile existed never name it,

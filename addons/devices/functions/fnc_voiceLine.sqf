@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the walking view's call strip (over the map's bottom left) says about
  * calls, when it has something to say (docs/DESIGN_VOICE.md, the phone and side images):
  *
@@ -16,7 +16,7 @@
  * A LIVE CALL IS QUIET HERE (notes, 2026-10-30: the strip only while a key
  * press is wanted): its clock is the talking box's (FUNC(overlayTalker)).
  * Otherwise "" and the strip is hidden. The keys named are as bound (the
- * device keys numpad 6-9, answer * and decline / by default).
+ * device keys numpad 5-8, answer * and decline / by default).
  *
  * Arguments:
  * None

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * COPY, under the return box: the whole return, every line, onto the
  * clipboard (user, 2026-09-05: "add a copy button to copy the return"). A
  * value you can only read off a listbox is a value you end up retyping.

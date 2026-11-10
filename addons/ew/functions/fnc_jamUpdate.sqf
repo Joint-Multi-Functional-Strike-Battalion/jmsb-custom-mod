@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: works out whether a jammer is ON THE AIR ("tx") and keeps what
  * follows from it in step. Switched on is not enough - it transmits only
  * while its battery is not flat, it is not in thermal cutout (both kept on the

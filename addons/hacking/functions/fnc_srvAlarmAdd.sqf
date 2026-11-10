@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a client arms a scanner alarm (FUNC(alarmArm), FUNC(scannerAlarm),
  * by remoteExec). The setter's name is the sender's own player, never one
  * from the request (review S7); a machine with no live player is refused.

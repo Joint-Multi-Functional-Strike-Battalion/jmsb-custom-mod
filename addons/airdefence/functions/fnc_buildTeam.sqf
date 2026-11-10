@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds one MANPAD team and profiles it.
  *
  * The men are the asymmetric commander's own - drawn from its faction, so they
@@ -93,7 +93,10 @@ _grp setCombatMode "YELLOW";
     // NOT PROFILED - see the note in FUNC(buildBattery). ALiVE's runtime
     // profiler deletes what it is handed, so a MANPAD team offered to it was
     // a team that stopped existing.
-    [_grp] call EFUNC(adapter_alive,profileIgnore);
+    // Guarded: without ALiVE there is nobody to tell (user, 2026-11-02).
+    if (!isNil QEFUNC(adapter_alive,profileIgnore)) then {
+        [_grp] call EFUNC(adapter_alive,profileIgnore);
+    };
 
     INFO_2("MANPAD team up for %1 at %2",_side,mapGridPosition _pos);
 }, [_grp, _side, _pos]] call CBA_fnc_execNextFrame;

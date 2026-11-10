@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, every AUTO_CHECK_S: AUTO-ENGAGE. A jammer on OPERATION AUTO
  * transmits only while something it can hit is in its reach (the reach
  * setting, or its GPS / spoof radius):

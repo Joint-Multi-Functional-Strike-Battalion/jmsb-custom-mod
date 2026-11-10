@@ -37,7 +37,7 @@ class CfgVehicles {
     class Land_Pod_Heli_Transport_04_fuel_F;
     class Land_Pod_Heli_Transport_04_medevac_F;
     class Land_Pod_Heli_Transport_04_repair_F;
-    class O_AAA_System_01_F;
+    class B_AAA_System_01_F;
     class O_APC_Tracked_02_AA_F;
     class O_APC_Tracked_02_cannon_F;
     class O_Boat_Armed_01_hmg_F;
@@ -85,10 +85,9 @@ class CfgVehicles {
     class O_Plane_Fighter_02_F;
     class O_Plane_Fighter_02_Stealth_F;
     class O_Quadbike_01_F;
-    class O_Quadbike_ALIVE;
     class O_Radar_System_02_F;
-    class O_SAM_System_01_F;
-    class O_SAM_System_02_F;
+    class B_SAM_System_01_F;
+    class B_SAM_System_02_F;
     class O_SAM_System_04_F;
     class O_SDV_01_F;
     class O_Sharpshooter_F;
@@ -250,7 +249,7 @@ class CfgVehicles {
         faction = QUOTE(ADDON);
         crew = QGVAR(O_crew_F);
     };
-    class GVAR(O_AAA_System_01_F): O_AAA_System_01_F {
+    class GVAR(O_AAA_System_01_F): B_AAA_System_01_F {
         scope = 2;
         scopeCurator = 2;
         author = QAUTHOR;
@@ -925,7 +924,7 @@ class CfgVehicles {
             "\A3\Soft_F\Quadbike_01\Data\Quadbike_01_wheel_OPFOR_CO.paa"
         };
     };
-    class GVAR(O_Quadbike_ALIVE): O_Quadbike_ALIVE {
+    class GVAR(O_Quadbike_ALIVE): O_Quadbike_01_F {
         scope = 2;
         scopeCurator = 2;
         author = QAUTHOR;
@@ -959,7 +958,7 @@ class CfgVehicles {
         magazines[] = {"FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_b_16Rnd_9x21_Mk424_AP_t3","FA_b_16Rnd_9x21_Mk424_AP_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","SmokeShell","SmokeShell"};
         respawnMagazines[] = {"FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_b_16Rnd_9x21_Mk424_AP_t3","FA_b_16Rnd_9x21_Mk424_AP_t3","FA_o_30Rnd_762x39_7N47_CT_t3","FA_o_30Rnd_762x39_7N47_CT_t3","SmokeShell","SmokeShell"};
     };
-    class GVAR(O_SAM_System_01_F): O_SAM_System_01_F {
+    class GVAR(O_SAM_System_01_F): B_SAM_System_01_F {
         scope = 2;
         scopeCurator = 2;
         author = QAUTHOR;
@@ -968,7 +967,7 @@ class CfgVehicles {
         faction = QUOTE(ADDON);
         crew = QGVAR(O_soldier_F);
     };
-    class GVAR(O_SAM_System_02_F): O_SAM_System_02_F {
+    class GVAR(O_SAM_System_02_F): B_SAM_System_02_F {
         scope = 2;
         scopeCurator = 2;
         author = QAUTHOR;

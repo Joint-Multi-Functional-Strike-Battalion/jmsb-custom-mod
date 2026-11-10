@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a man banks his intel at a drop (FUNC(depositIntel), by
  * remoteExec). THE ONLY PLACE THE COUNTER MOVES. Nothing in the request is
  * believed (review S7): the man is the sender's own unit, the drop must be a
@@ -72,6 +72,8 @@ while {_banked >= GVAR(perHint)} do {
 };
 localNamespace setVariable [QGVAR(banked), _banked];
 missionNamespace setVariable [QGVAR(banked), _banked, true];
-if (!isNil "jmfsb_adapter_alive_fnc_setData") then {
-    [QGVAR(banked), _banked] call jmfsb_adapter_alive_fnc_setData;
+// Not kept with ALiVE loaded but no commanders, once the adapter has given up
+// (user, 2026-11-02: "same as not loaded") - nothing reads it back then.
+if (!isNil QEFUNC(adapter_alive,setData) && {[] call EFUNC(common,aliveLoaded)}) then {
+    [QGVAR(banked), _banked] call EFUNC(adapter_alive,setData);
 };

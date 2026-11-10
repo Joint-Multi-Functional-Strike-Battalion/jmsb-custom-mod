@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, every TICK_S: each deployed drone40 variant is
  *
  *   gone    when it is deleted (picked up) or dead - FUNC(remove);

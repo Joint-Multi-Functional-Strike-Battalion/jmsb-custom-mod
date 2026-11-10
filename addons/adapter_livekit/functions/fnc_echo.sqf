@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts or ends the player's echo test: a call to the voice server's echo
  * bot, which plays back what he says (docs/DESIGN_VOICE_LIVEKIT.md "Echo
  * test"). Starting asks the server for a token to his own room, echo-<UID>

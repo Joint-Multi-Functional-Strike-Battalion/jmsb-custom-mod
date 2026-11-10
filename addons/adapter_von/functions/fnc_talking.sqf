@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "talking", client, every frame (and on each pushed key event):
  * which other players are talking, on which net. A speaker who pushed his
  * key-down (fnc_keyed) talks on that net until his key-up, whatever

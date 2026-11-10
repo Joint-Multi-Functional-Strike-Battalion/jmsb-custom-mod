@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server-only. Drops patrol-base kit objects on the ground, ready for a player to
  * build a base. Used by the Zeus module.
  *

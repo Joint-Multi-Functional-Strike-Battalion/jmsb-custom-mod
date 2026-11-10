@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a map back on the player. Momentary, not a tool: it moves the map and
  * leaves whatever tool is running exactly as it was.
  *

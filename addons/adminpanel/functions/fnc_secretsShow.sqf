@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The server's answer to the SECRETS dialog (jmfsb_common_fnc_secretStatus,
  * review R4): per row SET and the last four characters, or NOT SET. Taken only
  * from the server.

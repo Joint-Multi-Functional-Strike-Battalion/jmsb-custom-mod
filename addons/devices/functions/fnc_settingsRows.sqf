@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The rows of the tablet's SETTINGS > DEVICES and SETTINGS > DEVICE KEYS
  * sections - everything about the phone and side devices a player changes,
  * since they carry no ACE menu of their own (user, 2026-10-20). Registered
@@ -107,8 +107,8 @@ if (_section isEqualTo "devkeys") exitWith {
         private _label = BUTTON_LABELS select _forEachIndex;
         _rows pushBack ([format ["WALKING %1 (%2)", toUpper _label, [format ["%1_%2", QGVAR(button), _label]] call _fnc_bound], _x, BUTTON_IDS, BUTTON_NAMES] call _fnc_list);
     } forEach [QGVAR(buttonF1), QGVAR(buttonF2), QGVAR(buttonF3), QGVAR(buttonF4), QGVAR(buttonLeft), QGVAR(buttonRight)];
-    _rows pushBack ["TABLET ARROWS", "ACTIVE NET LEFT / RIGHT", {}];
-    // SELECT NET N: the number on each net chip is its key.
+    _rows pushBack ["TABLET ARROWS", "LIVE TILES' PAGE (NET ROW: < >)", {}];
+    // SELECT NET N: the number on each net chip of the page shown is its key.
     for "_i" from 1 to NET_SELECT_KEYS do {
         _rows pushBack [format ["SELECT NET %1", _i], [format ["%1_%2", QGVAR(netSelect), _i]] call _fnc_bound, {}];
     };

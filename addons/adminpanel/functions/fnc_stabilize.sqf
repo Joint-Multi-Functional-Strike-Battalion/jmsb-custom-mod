@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * STABILIZE (user, 2026-10-31: "a stable button above wake up, this
  * stabilizes the patient to the requirements of ACM for conversion"): the
  * selected man is brought to what ACM's casualty conversion asks of the

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Plays one sound file on this machine only. Both ears: playSoundUI. One
  * ear: a local playSound3D placed EAR_OFFSET_M to that side of the camera,
  * so the engine pans it. The file is an addon path with no leading

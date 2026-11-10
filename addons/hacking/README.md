@@ -99,7 +99,7 @@ server, which takes it only from the machine that owned him and decides once.
 
 ## Ships
 
-2 unit classes, 4 weapon/item classes, 75 functions.
+2 unit classes, 4 weapon/item classes, 70 functions.
 
 ## Eden modules
 
@@ -140,7 +140,7 @@ Puts an intel package on a device. Hacking that device hands over a share of it.
 
 ## Functions
 
-<details><summary>75</summary>
+<details><summary>70</summary>
 
 - `jmfsb_hacking_fnc_alarmAdd`
 - `jmfsb_hacking_fnc_alarmArm`
@@ -191,12 +191,7 @@ Puts an intel package on a device. Hacking that device hands over a share of it.
 - `jmfsb_hacking_fnc_rfReached`
 - `jmfsb_hacking_fnc_scanDevices`
 - `jmfsb_hacking_fnc_scannerAlarm`
-- `jmfsb_hacking_fnc_scannerClose`
-- `jmfsb_hacking_fnc_scannerLayout`
 - `jmfsb_hacking_fnc_scannerRead`
-- `jmfsb_hacking_fnc_scannerTick`
-- `jmfsb_hacking_fnc_scannerTimer`
-- `jmfsb_hacking_fnc_scannerToggle`
 - `jmfsb_hacking_fnc_searchBody`
 - `jmfsb_hacking_fnc_selectTarget`
 - `jmfsb_hacking_fnc_sendProduct`

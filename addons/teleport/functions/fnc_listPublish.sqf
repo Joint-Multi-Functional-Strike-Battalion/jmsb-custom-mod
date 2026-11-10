@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: publishes a copy of the point list for the menus. The server's own
  * list lives in localNamespace, which is not networked, and server code reads
  * only that (review S7): any client can publicVariable over the public copy,

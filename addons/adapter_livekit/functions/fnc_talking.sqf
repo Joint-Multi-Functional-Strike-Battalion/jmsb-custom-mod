@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hook "talking": who is talking on which net, every frame - the speakers
  * who pushed their key (FUNC(keyed)) and have not released it, while they
  * live. Local voice keys no net and is not listed.

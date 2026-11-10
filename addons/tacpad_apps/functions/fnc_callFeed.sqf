@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The call's picture: a camera on the other man on the player's live call
  * (FUNC(callFeedUnit)), rendered to a texture (CALL_FEED_RTT) that the call
  * window floating over the tablet and the walking view shows

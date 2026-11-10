@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A device's class - full, landscape or portrait (notes, 2026-10-30: "one
  * shell, three device classes; rows switch on class, not device name"). Read
  * off CfgJmfsbDevices (deviceClass, written by tools/gen_devices.py); a

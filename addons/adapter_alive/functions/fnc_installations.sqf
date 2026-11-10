@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The asymmetric commander's installations - the physical network the intel
  * economy points at (new.md section 5).
  *

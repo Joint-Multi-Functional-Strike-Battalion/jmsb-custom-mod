@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Repaints every open panel from the current theme. Changing the scheme while
  * the map is open takes effect on the next tick rather than the next time the
  * map is opened, which is the difference between a colour setting you can judge

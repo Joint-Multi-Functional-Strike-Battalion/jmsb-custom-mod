@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Carrying a packed drop case, and on your feet to put it down?
  *
  * Arguments:

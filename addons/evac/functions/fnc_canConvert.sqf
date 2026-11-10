@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Gate for the medic "Evacuate (Reinforce)" action. True only when the
  * target is a downed (ACE-unconscious) living player that hasn't already
  * been evacuated, and - if the Medics Only setting is on - the caller is an

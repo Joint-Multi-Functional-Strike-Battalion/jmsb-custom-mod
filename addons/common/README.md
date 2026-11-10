@@ -85,6 +85,27 @@ count instead.
 modules hold factions where this mod's modules hold side names, and telling
 whose ground is whose starts there.
 
+**With or without ALiVE (2026-11-02).** `aliveLoaded` is the one test and
+writes `<feature>: ALiVE not loaded - <what instead>` to the RPT once per
+feature. ALiVE is loaded when ALiVE's own main PBOs are - every CfgPatches
+class in `PATCHES_ALIVE` (`ALiVE_main`, `ALiVE_x_lib`, script_component.hpp;
+user: "use the alive main pbo names") - and the adapter's class with them, so
+a yes means the adapter's functions exist. ALiVE loaded with no commanders is
+not loaded (user: "same as not loaded"): once the adapter gives up on them
+(`jmfsb_adapter_alive_absent`) `aliveLoaded` says no, and its line reads
+`ALiVE loaded with no commanders - treated as not loaded`. With ALiVE the next
+four are ALiVE's answers unchanged; without it - or once ALiVE is declared
+absent - they are the mission's own:
+
+| Function | With ALiVE | Without ALiVE |
+|---|---|---|
+| `groundFor` | the adapter's `taorFor` | area markers named `jmfsb_taor_west` / `_east` / `_guer` (anything may follow), `jmfsb_black_<side>` kept out |
+| `settlements` | ALiVE's settlement clusters | the map's capital, city and village locations |
+| `hostileCommander` | the first ALiVE commander hostile to a side | the mission's enemy (`enemySide`) when hostile, no control type |
+| `sideFaction` | - | the most common faction among a side's AI, or a named unit's |
+
+`taorGate` reads `groundFor`, so the pre-spawn gate holds without ALiVE too.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -93,7 +114,7 @@ whose ground is whose starts there.
 
 ## Ships
 
-71 functions.
+76 functions.
 
 ## CBA settings
 
@@ -105,7 +126,7 @@ whose ground is whose starts there.
 
 ## Functions
 
-<details><summary>71</summary>
+<details><summary>76</summary>
 
 - `jmfsb_common_fnc_addDebugCommand`
 - `jmfsb_common_fnc_addItem`
@@ -116,6 +137,7 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_adminFlags`
 - `jmfsb_common_fnc_adminSource`
 - `jmfsb_common_fnc_alert`
+- `jmfsb_common_fnc_aliveLoaded`
 - `jmfsb_common_fnc_artyGroups`
 - `jmfsb_common_fnc_bloodType`
 - `jmfsb_common_fnc_conditionalPFEH`
@@ -137,6 +159,8 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_findSite`
 - `jmfsb_common_fnc_fireBarrage`
 - `jmfsb_common_fnc_fromServer`
+- `jmfsb_common_fnc_groundFor`
+- `jmfsb_common_fnc_hostileCommander`
 - `jmfsb_common_fnc_hudMove`
 - `jmfsb_common_fnc_hudPos`
 - `jmfsb_common_fnc_hudSetPos`
@@ -172,6 +196,8 @@ whose ground is whose starts there.
 - `jmfsb_common_fnc_senderIsAdmin`
 - `jmfsb_common_fnc_setCtrlHeightToText`
 - `jmfsb_common_fnc_setDatalink`
+- `jmfsb_common_fnc_settlements`
+- `jmfsb_common_fnc_sideFaction`
 - `jmfsb_common_fnc_sideFromText`
 - `jmfsb_common_fnc_sideOfFaction`
 - `jmfsb_common_fnc_sideToText`

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A fresh net key: a random hex string. Keys are compared, never decoded;
  * holding the same key is what lets two sets decode each other.
  *

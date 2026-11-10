@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The sets this player has, read from TFAR: the active short-range radio, a
  * long-range backpack, and the long-range rack of the vehicle seat he is in
  * (TFAR offers that only to crew seats). Man packs are TFAR's to have (user,

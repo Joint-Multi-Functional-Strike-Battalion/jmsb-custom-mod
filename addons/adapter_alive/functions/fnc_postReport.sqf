@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Files a report with ALiVE's C2ISTAR as a spotrep or a sitrep, with a
  * companion map marker. Silently does nothing when ALiVE, or the C2ISTAR
  * module that owns those systems, is not there.

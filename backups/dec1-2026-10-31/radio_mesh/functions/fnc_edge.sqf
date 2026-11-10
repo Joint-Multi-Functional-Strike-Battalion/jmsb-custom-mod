@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One leg of a path: the signal one radio would receive from another, by
  * ACRE's own propagation model (acre_sys_signal_fnc_getSignalCore - terrain,
  * antennas, the lot), cached for a few seconds so a busy net does not ask the

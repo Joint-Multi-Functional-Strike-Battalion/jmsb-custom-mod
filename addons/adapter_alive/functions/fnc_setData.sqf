@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Writes a jmfsb value to ALiVE's persistence store. See FUNC(getData).
  *
  * Arguments:

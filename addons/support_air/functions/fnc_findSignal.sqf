@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The landing signal a transport is looking for round its LZ: the nearest
  * smoke, IR strobe or flare of the kind the requester asked for (any of them
  * for ANY) inside SIGNAL_RADIUS of the point. Simplex has the requester

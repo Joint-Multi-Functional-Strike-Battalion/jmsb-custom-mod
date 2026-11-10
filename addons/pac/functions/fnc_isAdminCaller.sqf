@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the door check of every PAC admin request (review S5). The caller
  * a request names must be the machine that sent it (a client could pass a
  * real admin's unit), and that machine an admin by the server's own records

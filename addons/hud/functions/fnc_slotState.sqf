@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What a slot can show, and what it is showing.
  *
  * THE LIST IS THE SAME FOR BOTH SLOTS, and OFF is on it. That is the vanilla

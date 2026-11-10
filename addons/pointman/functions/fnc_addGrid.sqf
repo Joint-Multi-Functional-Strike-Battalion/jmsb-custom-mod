@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Adds a waypoint from a typed grid - 6, 8 or 10 figures, spaces allowed
  * (jmfsb_maptools_fnc_gridToPos). A grid that is not on this map is refused
  * and said so.

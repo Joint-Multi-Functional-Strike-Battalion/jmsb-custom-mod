@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Any man's GPS as the network carries it - what a BFT dot of him is drawn
  * from. The local player is FUNC(gpsState) (his slice, metre-exact, and his
  * own denial). Anyone else is what the server hung on him: his spoof state

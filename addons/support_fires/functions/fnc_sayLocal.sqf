@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the observer hears, on his notify rail: sent by the server
  * (FUNC(say)) by remoteExec and taken only from it (review S7).
  *

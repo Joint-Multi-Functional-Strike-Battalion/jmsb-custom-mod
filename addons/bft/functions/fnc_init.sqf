@@ -42,3 +42,4 @@ if (!GVAR(loopRunning)) then {
 };
 
 [] call FUNC(settingsAdd);
+[] call FUNC(buddyAdd);

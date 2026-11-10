@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The call's window over the tablet (FUNC(callWindow)), in the corner the
  * player stepped it to with the device arrows (FUNC(callCorner); bottom left
  * until he does). Drawn on the row tick and after every app draw

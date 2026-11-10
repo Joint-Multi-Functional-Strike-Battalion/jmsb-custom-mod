@@ -121,7 +121,7 @@ class CfgVehicles {
             class heClass: Edit {
                 property = QGVAR(virtualHeClass);
                 displayName = "HE Shell Class";
-                tooltip = "CfgAmmo class of the high-explosive round. BLANK: the battery has no HE.";
+                tooltip = "CfgAmmo class of the high-explosive round, or the gun's magazine class (it fires the magazine's ammo). BLANK: the battery has no HE.";
                 typeName = "STRING";
                 defaultValue = "'Sh_155mm_AMOS'";
                 expression = QUOTE(_this setVariable [ARR_2('heClass',_value)]);
@@ -137,7 +137,7 @@ class CfgVehicles {
             class smokeClass: Edit {
                 property = QGVAR(virtualSmokeClass);
                 displayName = "Smoke Shell Class";
-                tooltip = "CfgAmmo class of the smoke round. BLANK: no smoke.";
+                tooltip = "CfgAmmo class of the smoke round, or a magazine class. BLANK: no smoke.";
                 typeName = "STRING";
                 defaultValue = "'Smoke_120mm_AMOS_White'";
                 expression = QUOTE(_this setVariable [ARR_2('smokeClass',_value)]);
@@ -153,7 +153,7 @@ class CfgVehicles {
             class illumClass: Edit {
                 property = QGVAR(virtualIllumClass);
                 displayName = "Illumination Class";
-                tooltip = "CfgAmmo class of the flare an illumination round releases over the target. BLANK: no illumination.";
+                tooltip = "CfgAmmo class of the flare an illumination round releases over the target, or a magazine class. BLANK: no illumination.";
                 typeName = "STRING";
                 defaultValue = "'F_40mm_White_Illumination'";
                 expression = QUOTE(_this setVariable [ARR_2('illumClass',_value)]);
@@ -169,7 +169,7 @@ class CfgVehicles {
             class clusterClass: Edit {
                 property = QGVAR(virtualClusterClass);
                 displayName = "Cluster Shell Class";
-                tooltip = "Optional. CfgAmmo class of a cluster round, for example Cluster_155mm_AMOS. BLANK: no cluster.";
+                tooltip = "Optional. CfgAmmo class of a cluster round, for example Cluster_155mm_AMOS, or a magazine class (2Rnd_155mm_Mo_Cluster). BLANK: no cluster.";
                 typeName = "STRING";
                 defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('clusterClass',_value)]);
@@ -185,7 +185,7 @@ class CfgVehicles {
             class guidedClass: Edit {
                 property = QGVAR(virtualGuidedClass);
                 displayName = "Guided Shell Class";
-                tooltip = "Optional. CfgAmmo class of a guided round, for example Sh_155mm_AMOS_LG (seeks a laser spot) or Sh_155mm_AMOS_guided (seeks armour). BLANK: no guided.";
+                tooltip = "Optional. CfgAmmo class of a guided round, for example Sh_155mm_AMOS_LG (seeks a laser spot) or Sh_155mm_AMOS_guided (seeks armour), or a magazine class. BLANK: no guided.";
                 typeName = "STRING";
                 defaultValue = "''";
                 expression = QUOTE(_this setVariable [ARR_2('guidedClass',_value)]);
@@ -217,10 +217,20 @@ class CfgVehicles {
             class dispersion: Edit {
                 property = QGVAR(virtualDispersion);
                 displayName = "Dispersion (m)";
-                tooltip = "Each round's own error radius around its aim point, on top of the sheaf the support page asks for. Guns are not rifles.";
+                tooltip = "Each round's own error around its aim point, on top of the sheaf or target shape: an ellipse along the line of fire - this much in range, 0.4 of it in deflection. Guns are not rifles.";
                 typeName = "NUMBER";
                 defaultValue = QUOTE(VA_DEF_DISPERSION);
                 expression = QUOTE(_this setVariable [ARR_2('dispersion',_value)]);
+            };
+            // AIMING ERROR REMOVED BY ADJUSTING (user, 2026-11-02, from the
+            // Tun Firesupport review).
+            class aimError: Edit {
+                property = QGVAR(virtualAimError);
+                displayName = "Aiming Error (m)";
+                tooltip = "How far a mission's first salvo may land off the point, all its rounds together (range error; 0.4 of it in deflection). Each ADJUST the observer calls halves it, and so does the fire for effect after them; under the Dispersion it is gone. 0: every salvo on the point.";
+                typeName = "NUMBER";
+                defaultValue = QUOTE(VA_DEF_AIM_ERROR);
+                expression = QUOTE(_this setVariable [ARR_2('aimError',_value)]);
             };
             // THE TIME OF FLIGHT IS WORKED OUT, NOT TYPED. A vacuum arc from the
             // module to the target gives both the time the rounds take and the
@@ -257,7 +267,7 @@ class CfgVehicles {
             class cooldown: Edit {
                 property = QGVAR(virtualCooldown);
                 displayName = "Cooldown (sec)";
-                tooltip = "Time after the last round lands before the battery can be tasked again. Also the wait between REPEAT volleys.";
+                tooltip = "Time after the last round lands before the battery can be tasked again. Paid once per mission, after its last volley - never between volleys.";
                 typeName = "NUMBER";
                 defaultValue = QUOTE(VA_DEF_COOLDOWN);
                 expression = QUOTE(_this setVariable [ARR_2('cooldown',_value)]);
@@ -291,7 +301,7 @@ class CfgVehicles {
             class sheafTypes: Edit {
                 property = QGVAR(virtualSheafTypes);
                 displayName = "Sheaf Types";
-                tooltip = "The sheaf types the support page offers, separated by commas: CONVERGED (each round at random inside the sheaf), PARALLEL (guns side by side across the line of fire), BOX (rounds spread over the square), CREEPING (each gun's rounds walk away along the line of fire).";
+                tooltip = "The sheaf types the support page offers, separated by commas: CONVERGED (each round at random inside the sheaf), PARALLEL (guns side by side across the line of fire), BOX (rounds spread over the square), CREEPING (each gun's rounds walk away along the line of fire). A call for fire's TARGET SHAPE needs one: AREA CONVERGED or BOX, LINEAR PARALLEL, CREEPING CREEPING.";
                 typeName = "STRING";
                 defaultValue = "'CONVERGED, PARALLEL, BOX, CREEPING'";
                 expression = QUOTE(_this setVariable [ARR_2('sheafTypes',_value)]);
@@ -323,7 +333,7 @@ class CfgVehicles {
             class maxRepeat: Edit {
                 property = QGVAR(virtualMaxRepeat);
                 displayName = "Max Repeats";
-                tooltip = "Most extra volleys one fire mission may ask for - the top of the REPEAT stepper. Each repeat fires once the volley before has landed and the cooldown has passed. 0: no REPEAT stepper.";
+                tooltip = "Most extra volleys one fire mission may ask for - the top of the REPEAT stepper. Volleys follow on the guns' own rhythm: each gun's next round one reload plus the interval after its last, no pause between volleys. 0: no REPEAT stepper.";
                 typeName = "NUMBER";
                 defaultValue = QUOTE(VA_DEF_MAX_REPEAT);
                 expression = QUOTE(_this setVariable [ARR_2('maxRepeat',_value)]);
@@ -336,6 +346,32 @@ class CfgVehicles {
                 defaultValue = QUOTE(VA_DEF_COORDINATION);
                 expression = QUOTE(_this setVariable [ARR_2('coordination',_value)]);
             };
+            // A CALL FOR FIRE'S TARGET SHAPE AND METHOD OF FIRE, AND ITS
+            // RECORDED TARGETS (user, 2026-11-02).
+            class sheafMax: Edit {
+                property = QGVAR(virtualSheafMax);
+                displayName = "Max Sheaf Length (m)";
+                tooltip = "The longest sheaf: the top of the support page's SHEAF stepper, of a call for fire's AREA radius, and of its LINEAR target's or CREEPING barrage's length. 25 to 1000.";
+                typeName = "NUMBER";
+                defaultValue = QUOTE(SHEAF_MAX);
+                expression = QUOTE(_this setVariable [ARR_2('sheafMax',_value)]);
+            };
+            class maxContinuous: Edit {
+                property = QGVAR(virtualMaxContinuous);
+                displayName = "Max Continuous Fire (min)";
+                tooltip = "Longest CONTINUOUS FOR n MIN a call for fire may ask: each gun fires a round every reload plus the interval for that long - illumination kept over a target. 0: no continuous fire.";
+                typeName = "NUMBER";
+                defaultValue = QUOTE(VA_DEF_MAX_CONTINUOUS);
+                expression = QUOTE(_this setVariable [ARR_2('maxContinuous',_value)]);
+            };
+            class targetPrefix: Edit {
+                property = QGVAR(virtualTargetPrefix);
+                displayName = "Target Prefix";
+                tooltip = "Two letters the battery's recorded targets are named with: RECORD AS TARGET names the point AB1001, AB1002 ... and marks it on the map for the side. An Eden marker named with them and four figures (AB1001) is a pre-planned target - fire on it by name. BLANK: the callsign's first two letters, stepped on if another battery has them.";
+                typeName = "STRING";
+                defaultValue = "''";
+                expression = QUOTE(_this setVariable [ARR_2('targetPrefix',_value)]);
+            };
         };
 
         class ModuleDescription: ModuleDescription {
@@ -346,9 +382,10 @@ class CfgVehicles {
                 "",
                 "Callsign - What the support page calls it",
                 "Guns - Tubes in the battery",
-                "HE, Smoke, Illumination, Cluster, Guided - Shell class and rounds of each; 0 none, -1 unlimited",
+                "HE, Smoke, Illumination, Cluster, Guided - Shell or magazine class and rounds of each; 0 none, -1 unlimited",
                 "Minimum / Maximum Range (m) - From this module",
-                "Dispersion (m) - Each round's own error",
+                "Dispersion (m) - Each round's own error, an ellipse along the line of fire",
+                "Aiming Error (m) - A mission's first salvo off the point; each adjust halves it",
                 "Muzzle Velocity (m/s) - Top charge; time-of-flight model",
                 "Trajectory - High or low angle",
                 "Reload (sec) - Between one gun's rounds",
@@ -357,7 +394,10 @@ class CfgVehicles {
                 "Response Time Min / Max (sec) - Random wait before the first round",
                 "Sheaf Types - Which the support page offers",
                 "Max Rounds Per Gun, Max Interval, Max Delay, Max Repeats - Stepper limits; 0 hides a stepper",
-                "Coordination Distance (m) - Batteries this close may fire together; 0 never"
+                "Coordination Distance (m) - Batteries this close may fire together; 0 never",
+                "Max Sheaf Length (m) - Longest sheaf, area radius, linear target or creeping walk",
+                "Max Continuous Fire (min) - Longest CONTINUOUS FOR n MIN; 0 none",
+                "Target Prefix - Two letters for recorded targets (AB1001); blank from the callsign"
             };
         };
     };

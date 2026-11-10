@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Radar-and-launcher batteries for one conventional commander.
  *
  * OPEN GROUND, AND ONLY OPEN GROUND. A radar in a wood sees nothing and a

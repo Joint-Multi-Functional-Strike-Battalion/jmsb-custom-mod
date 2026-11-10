@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ACE > Jammer > Hack: puts this terminal on the HACK board as the selected
  * device (jmfsb_hacking_fnc_selectTarget) and opens the board - on the tablet
  * where there is one, else on the map - so the hack runs there with its own

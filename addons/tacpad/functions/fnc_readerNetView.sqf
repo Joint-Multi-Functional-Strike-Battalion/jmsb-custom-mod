@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A NET, AS ONE CONVERSATION. Everything filed to this net in the order it was
  * said, with the composer under it addressed to the same net.
  *
@@ -62,53 +62,71 @@ private _dim = ["dim"] call FUNC(theme);
 private _net = GVAR(readerNet);
 private _title = [_net, "ALL NETS"] select (_net isEqualTo "ALL");
 
+// NOTHING ON THE NET, NOTHING IN THIS PANE (tablet review 2026-11-01, 3.1):
+// the list says "No traffic on <net>"; a second empty state here, beside it,
+// read as two answers to one question. Only a fetch still running is said.
+if (_stream isEqualTo []) exitWith {
+    if (_pending > 0) then {
+        [_root, [_dx + _pad, _h * 0.4, _dw - 2 * _pad, _rowH], "FETCHING...", _dim, TEXT_TITLE, true, "center"] call FUNC(drawText);
+    };
+};
+
 private _y = _padY;
 // The title stops short of the CLOSE button FUNC(readerDraw) puts in the
 // pane's top-right corner (user, 2026-09-05).
 [_root, [_dx + _pad, _y, _dw - _dw * 0.15 - 3 * _pad, _rowH * 1.2], toUpper _title, _ink, TEXT_TITLE, true] call FUNC(drawText);
 _y = _y + _rowH * 1.3;
 
+// A count is a value, untracked, and singular at one (tablet review
+// 2026-11-01, 2.3 / 2.7).
+private _fnc_messages = {
+    params ["_n"];
+    format ["%1 MESSAGE%2", _n, ["S", ""] select (_n isEqualTo 1)]
+};
 [
     _root, [_dx + _pad, _y, _dw - 2 * _pad, _rowH],
     if (_pending > 0) then {
-        format ["%1 MESSAGE(S) - FETCHING %2 MORE", count _stream, _pending]
+        format ["%1 - FETCHING %2 MORE", [count _stream] call _fnc_messages, _pending]
     } else {
-        format ["%1 MESSAGE(S)", count _stream]
+        [count _stream] call _fnc_messages
     },
-    _mute, TEXT_LABEL, true, "left", true
+    _mute, TEXT_LABEL, true
 ] call FUNC(drawText);
 _y = _y + _rowH;
 
 [_root, [_dx + _pad, _y, _dw - 2 * _pad, RULE_THICK * pixelH], _ink] call FUNC(drawFill);
 _y = _y + _padY;
 
-// The composer keeps the bottom of the pane whatever the traffic does, so the
-// place you type is not somewhere that moves.
-private _quickRows = 1;
-private _composerH = _rowH + _quickRows * (_btnH + _padY) + 2 * (_btnH + _padY) + _padY;
-private _floor = _h - _composerH;
-
-if (_stream isEqualTo []) exitWith {
-    [
-        _root, [_dx + _pad, _h * 0.4, _dw - 2 * _pad, _rowH],
-        ["NOTHING ON THIS NET", "FETCHING..."] select (_pending > 0),
-        _dim, TEXT_TITLE, true, "center"
-    ] call FUNC(drawText);
-
-    // NOTHING TO ANSWER, so a quick phrase opens a thread - which is the only
-    // time it should. See FUNC(readerComposer).
-    [[_dx, _dw], _floor] call FUNC(readerComposer);
-};
-
 // WHAT A QUICK PHRASE ANSWERS: the newest thread on the net, which is the one at
 // the bottom of the pane the player is looking at. The stream is already sorted
 // oldest first - see EFUNC(messaging,netStream) - so it is the last row.
 private _replyTo = "";
+private _replyThread = createHashMap;
 {
     _x params ["", ["_t", createHashMap]];
     private _id = _t getOrDefault ["id", ""];
-    if (_id isEqualType "" && _id isNotEqualTo "") then {_replyTo = _id};
+    if (_id isEqualType "" && _id isNotEqualTo "") then {
+        _replyTo = _id;
+        _replyThread = _t;
+    };
 } forEach _stream;
+
+// THE QUICK REPLIES ANSWER THAT THREAD, AND ONLY WITH WHAT IT TAKES (tablet
+// review 2026-11-01, 3.1) - the opened thread's rule (FUNC(readerQuick)). ALL
+// is a view with no send target, so it has no composer at all; a net with no
+// thread to answer has none either - NEW, at the top of the list, starts one.
+// FUNC(threadLegal) (2026-11-02): none once it is over, never the asset's
+// words to a player.
+private _legal = [];
+if (_replyTo isNotEqualTo "") then {
+    _legal = [_replyTo, _replyThread] call FUNC(threadLegal);
+};
+private _composer = _net isNotEqualTo "ALL" && _legal isNotEqualTo [];
+
+// The composer keeps the bottom of the pane whatever the traffic does, so the
+// place you type is not somewhere that moves: its header and one row of tiles.
+private _composerH = [0, _rowH + _btnH + 2 * _padY] select _composer;
+private _floor = _h - _composerH;
 
 // NEWEST LAST, AND THE NEWEST IS WHAT FITS. A conversation is read at its
 // bottom; when there is more than the pane holds it is the OLD end that goes,
@@ -176,10 +194,12 @@ private _myUid = getPlayerUID player;
     private _status = toUpper (_thread getOrDefault ["status", ""]);
     if (_status isNotEqualTo "" && _status isNotEqualTo "OPEN") then {_tags pushBack _status};
 
+    // The sender's call sign and his tags: names, so untracked (tablet review
+    // 2026-11-01, 2.3).
     [
         _root, [_tx, _y, _tw, _rowH * 0.8],
         format ["%1  %2", toUpper (_msg getOrDefault ["fromCallsign", "?"]), _tags joinString "  "],
-        ([_mute, _accent] select _urgent), TEXT_LABEL, true, _align, true
+        ([_mute, _accent] select _urgent), TEXT_LABEL, true, _align
     ] call FUNC(drawText);
     // THE SENDER'S LINE IS A BUTTON: press it to write to that player alone
     // (user, 2026-10-24: "click on a player to send them a message").
@@ -217,4 +237,6 @@ private _myUid = getPlayerUID player;
     _y = _y + _lineH;
 } forEach _shown;
 
-[[_dx, _dw], _floor, _replyTo] call FUNC(readerComposer);
+if (_composer) then {
+    [[_dx, _dw], _floor, _replyTo, _legal] call FUNC(readerComposer);
+};

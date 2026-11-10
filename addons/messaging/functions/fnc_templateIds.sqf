@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Lists template ids in registration order, optionally filtered by what they
  * can be used for. Registration order is kept because the templates file is
  * ordered the way the JMSB smart-card deck is, and a UI that sorted them

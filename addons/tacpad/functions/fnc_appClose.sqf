@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Closes whatever app is open on the map, from anywhere.
  *
  * THE ONE TEARDOWN. There used to be several - the frame's own CLOSE, the

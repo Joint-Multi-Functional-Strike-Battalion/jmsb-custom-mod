@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Mutes or unmutes a net for the local player: its speakers are set to
  * volume 0 for him while they talk on it (VON has no per-channel volume).
  * Nothing while no game-voice system runs (system "none").

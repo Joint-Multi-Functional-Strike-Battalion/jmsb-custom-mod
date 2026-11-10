@@ -7,6 +7,8 @@ ships with, which a mission or the forced list below can override.
 
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
+| Mumble server address | EDITBOX | JMSB - Voice (Built-in) > Voice server (Mumble) | `""` | host:port of the Mumble server (Mumble's port is 64738). Used when the voice server type is Mumble. |
+| Mumble server password | EDITBOX | JMSB - Voice (Built-in) > Voice server (Mumble) | `""` | The Mumble server's password (its serverpassword), empty when it has none. Every player receives it to connect. |
 | Voice server address | EDITBOX | JMSB - Voice (Built-in) > Voice server (LiveKit) | `""` | The LiveKit server players join, with the egg's main port (7880): ws URL, or wss with the node's name when the egg's Encryption (TLS) is on. Empty: no |
 | API key | EDITBOX | JMSB - Voice (Built-in) > Voice server (LiveKit) | `""` | Leave EMPTY: set JMSB_LIVEKIT_KEY in the Arma server's environment (the server egg's variable) instead. The voice server's API key (the voice egg's LI |
 | Microphone | EDITBOX | JMSB - Voice (Built-in) > Voice server (LiveKit) | `""` | Part of the microphone's name as Windows lists it (e.g. Headset). Empty: Windows' default. Your machine's names are in your RPT at mission start, afte |
@@ -119,7 +121,7 @@ ships with, which a mission or the forced list below can override.
 | Member markers | LIST | JMSB - Tablet & Map > BFT | `[[0, 1, 2], ["Off", "Own squad", "All tr` | Individual marks for the men inside tracked groups, coloured by fire team. Own squad: your group's members. All tracked: every same-side tracked group |
 | Member voice rings | CHECKBOX | JMSB - Tablet & Map > BFT | `true` | A ring round a member's mark while he talks: red on a radio net, magenta in direct voice. Needs game voice (jmfsb_voice). |
 | Hide own group marker | CHECKBOX | JMSB - Tablet & Map > BFT | `true` | Your own group's marker is not drawn on your map - it sits on top of you and hides the ground. Everyone else on the net still sees it, and your own me |
-| Show virtual friendlies | CHECKBOX | JMSB - Tablet & Map > BFT | `true` | Friendly groups ALiVE is simulating off-map are drawn faded, from the commander's own picture. Nothing about them is secret to their side. |
+| Show virtual friendlies | CHECKBOX | JMSB - Tablet & Map > BFT | `true` | Friendly groups ALiVE is simulating off-map are drawn faded, from the commander's own picture. Nothing about them is secret to their side. Needs ALiVE |
 | Update delay | SLIDER | JMSB - Tablet & Map > BFT | `[1, 60, 5, 0]` | Delay between group marker updates. |
 | Marker shape | LIST | JMSB - Tablet & Map > BFT | `[["a", "b", "o", "n"], ["Automatic", "Bl` | Warning! Taking this off automatic will also affect enemy groups. |
 | Position: tracking mode | LIST | JMSB - Tablet & Map > BFT | `[["leader", "weightedAverage"], ["Leader` | The way a group's position is calculated. |
@@ -142,6 +144,12 @@ ships with, which a mission or the forced list below can override.
 | Disable BackpackOnChest | CHECKBOX | JMSB - Gear & Vision > Backpack On Chest | `false` | Prohibit BackpackOnChest features |
 | Force Walking | CHECKBOX | JMSB - Gear & Vision > Backpack On Chest | `true` | Player is forced to walk when backpack is on chest |
 
+## C2 (`c2`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| HUD: C2 measures | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Draw phase lines, boundaries, routes, objectives and points in the world (AiTR goggles). LOAs and no-fire areas always draw. |
+
 ## Chat (`chat`)
 
 | Setting | Type | Category | Default | What it does |
@@ -160,10 +168,11 @@ ships with, which a mission or the forced list below can override.
 
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
-| F1 key on the tablet opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 1]` | SOFT_KEY_HELP |
-| F2 key on the tablet opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 2]` | SOFT_KEY_HELP |
-| F3 key on the tablet opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 3]` | SOFT_KEY_HELP |
-| F4 key on the tablet opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 12]` | SOFT_KEY_HELP |
+| Key layout | LIST | JMSB - Tablet & Map > Devices | `[KEY_LAYOUT_IDS, KEY_LAYOUT_NAMES, 0]` | The default keys for the device. F keys: device F1-F4 on F1-F4, < > on F5 F6, answer F7, decline F8, action F9, troops in contact F10, voice activatio |
+| Device key 1 opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 1]` | SOFT_KEY_HELP |
+| Device key 2 opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 2]` | SOFT_KEY_HELP |
+| Device key 3 opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 3]` | SOFT_KEY_HELP |
+| Device key 4 opens | LIST | JMSB - Tablet & Map > Devices | `[SOFT_KEY_IDS, SOFT_KEY_NAMES, 11]` | SOFT_KEY_HELP |
 | Tablet size | SLIDER | JMSB - Tablet & Map > Devices | `[0.5, 1, 1, 2, true]` | How much of the monitor the tablet fills when it is open. 1 is as large as the screen allows; smaller leaves the world visible around it. |
 | Phone size | SLIDER | JMSB - Tablet & Map > Devices | `[PHONE_FILL_MIN, PHONE_FILL_MAX, PHONE_F` | How tall the phone's walking view is, as a fraction of the screen's height. The frame keeps its shape; this only scales it. |
 | Phone map zoom | SLIDER | JMSB - Tablet & Map > Devices | `[0.005, 0.1, 0.015, 3, false]` | How far the phone and side devices' map is zoomed in. Smaller is closer. The map always stays centred on you. |
@@ -203,6 +212,7 @@ ships with, which a mission or the forced list below can override.
 | Same side colour | COLOR | JMSB - Gear & Vision > AiTR (ECOTI) | `[0.2, 0.9, 0.3]` | Another faction on your side or a friendly one, and vehicles they crew. |
 | Armed colour | COLOR | JMSB - Gear & Vision > AiTR (ECOTI) | `[1, 0.3, 0.25]` | Anyone hostile to your side, a civilian carrying a weapon, and vehicles they crew. Unarmed civilians are white; empty vehicles, animals and anyone of  |
 | AiTR labels | CHECKBOX | JMSB - Gear & Vision > AiTR (ECOTI) | `true` | Under each box, what it is, one thing about it and its range - PERSON \| ARMED \| 240 m. |
+| AiTR LZ / DZ highlight | CHECKBOX | JMSB - Gear & Vision > AiTR (ECOTI) | `true` | The landing and drop zones of your side's open support requests, ringed on the ground with what they are, the asset and their range - LZ \| PICKUP \|  |
 
 ## Equipment (`equipment`)
 
@@ -358,16 +368,15 @@ ships with, which a mission or the forced list below can override.
 
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
-| HALO / HAHO altitude | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[1000, 10000, 6000, 0]` | How high the aircraft flies a HALO or HAHO run, metres over the ground. 6000 by default, above the reach of the game's air defences. |
-| Static line altitude | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[100, 500, 150, 0]` | How high the aircraft flies a static-line run, metres over the ground: the lowest a round canopy opens from without injury, plus 50 m. The line pulls  |
+| HALO / HAHO altitude | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[ALT_FREEFALL_MIN, ALT_FREEFALL_MAX, ALT` | How high a side's own jump aircraft flies a HALO or HAHO run, metres over the ground - a side with no JMSB - Jump Aircraft module. 6000 by default, ab |
+| Static line altitude | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[ALT_STATIC_MIN, ALT_STATIC_MAX, ALT_STA` | How high a side's own jump aircraft flies a static-line run, metres over the ground - a side with no JMSB - Jump Aircraft module: the lowest a round c |
 | HALO pull altitude | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[150, 2000, 300, 0]` | Metres over the ground a HALO stick is expected to pull at: the wind drift is worked out from there down, and the phone's ALT readout turns amber ther |
-| Wind drift factor | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[0, 2, 1, 1]` | How much of the wind a canopy drifts with, for the LAND point on the map and SHIFT PATH FOR WIND. 1 is the wind as it blows; 0 turns the drift off. |
-| HALO masks | EDITBOX | JMSB - Mission & Admin > Jumpmaster | `"G_AirPurifyingRespirator_01_F,G_AirPuri` | Comma-separated. The goggles-slot items that count as an oxygen mask: a HALO or HAHO jumper without one is not ready. |
-| Parachutes | EDITBOX | JMSB - Mission & Admin > Jumpmaster | `"B_Parachute,ACE_NonSteerableParachute"` | Comma-separated. The backpacks that count as a parachute: a jumper without one is not ready. |
-| Passes by default | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[PASSES_MIN, PASSES_MAX, 1, 0]` | How many passes over the drop zone a jump is planned with until the leader changes it on the page. The stick is split evenly across them, in squad ord |
-| Exit by default | LIST | JMSB - Mission & Admin > Jumpmaster | `[[EXIT_AUTO, EXIT_MANUAL], ["Automatic a` | How the stick leaves the aircraft until the leader changes it on the page: automatically at the green light, one man every 0.7 s, or each man exits hi |
-| Jump aircraft | EDITBOX | JMSB - Mission & Admin > Jumpmaster | `""` | The aircraft class the squad is put in. Empty: the side's own cargo aircraft (the Blackfish for BLUFOR and independents, the Xi'an for OPFOR). |
-| In the aircraft | LIST | JMSB - Mission & Admin > Jumpmaster | `[[BAY_SEATS, BAY_STAND], ["Seats", "Stan` | Seats: everyone in a cargo seat. Standing: everyone on his feet in the bay, fixed to the hull in two files - the engine does not carry a walking man i |
+| Wind drift factor | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[0, 2, 1, 1]` | How much of the wind a canopy drifts with: the jump aircraft shifts its run upwind by the drift, so the stick lands on the green light asked for. 1 is |
+| HALO masks | EDITBOX | JMSB - Mission & Admin > Jumpmaster | `"G_AirPurifyingRespirator_01_F,G_AirPuri` | Comma-separated. The goggles-slot items that count as an oxygen mask: a HALO or HAHO jumper without one is not ready, and the jump aircraft answers CA |
+| Parachutes | EDITBOX | JMSB - Mission & Admin > Jumpmaster | `"B_Parachute,ACE_NonSteerableParachute"` | Comma-separated. The backpacks that count as a parachute: a jumper without one is not ready, and the jump aircraft answers CANTCO. |
+| Passes by default | SLIDER | JMSB - Mission & Admin > Jumpmaster | `[PASSES_MIN, PASSES_MAX, 1, 0]` | How many passes over the drop zone a side's own jump aircraft flies a JUMP REQUEST with no PASSES - a side with no JMSB - Jump Aircraft module. The st |
+| Exit by default | LIST | JMSB - Mission & Admin > Jumpmaster | `[[EXIT_AUTO, EXIT_MANUAL], ["Automatic a` | How the stick leaves a side's own jump aircraft when a JUMP REQUEST ticks no EXIT - a side with no JMSB - Jump Aircraft module: automatically at the g |
+| In the aircraft | LIST | JMSB - Mission & Admin > Jumpmaster | `[[BAY_SEATS, BAY_STAND], ["Seats", "Stan` | Where the stick rides in a side's own jump aircraft - a side with no JMSB - Jump Aircraft module. Seats: everyone in a cargo seat. Standing: everyone  |
 
 ## Main Menu (`main_menu`)
 
@@ -394,7 +403,8 @@ ships with, which a mission or the forced list below can override.
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
 | Bearing units | LIST | JMSB - Tablet & Map > Map Tools | `[["deg", "mil", "both"], ["Degrees", "Mi` | How the ruler, protractor and route give a bearing: degrees, NATO mils (6400 to the circle), or both. |
-| Share marks with group | CHECKBOX | JMSB - Tablet & Map > Map Tools | `false` | MARK drops a marker with grid and time. Off keeps it on your map only; on puts it on the group channel. |
+| Share marks with group | CHECKBOX | JMSB - Tablet & Map > Map Tools | `false` | MARK opens the marker card with grid and time as its text. Off starts it on your map only; on, on the group channel. The card's channel row changes it |
+| Map marker system | LIST | JMSB - Tablet & Map > Map Tools | `[MARKERS_VALUES, MARKERS_LABELS, 0]` | What a double-click on the tablet's map and a MAP TOOLS MARK press open. Built-in: the marker card (icon, colour, text, channel). ACE: ACE's marker di |
 | Viewshed radius | SLIDER | JMSB - Tablet & Map > Map Tools | `[VS_RADIUS_MIN, VS_RADIUS_MAX, VS_RADIUS` | How far, in metres, VIEWSHED works out line of sight from the clicked point. |
 | Viewshed resolution | SLIDER | JMSB - Tablet & Map > Map Tools | `[VS_CELL_MIN, VS_CELL_MAX, VS_CELL_DEFAU` | The size, in metres, of one VIEWSHED cell. Smaller is finer and slower to fill. A viewshed draws at most 4000 cells: past that, at a wide radius, the  |
 | Range ring spacing | SLIDER | JMSB - Tablet & Map > Map Tools | `[RING_STEP_MIN, RING_STEP_MAX, RING_STEP` | Metres between the RINGS tool's rings. |
@@ -432,7 +442,7 @@ ships with, which a mission or the forced list below can override.
 | TIC drops a map marker | CHECKBOX | JMSB - Tablet & Map > Messaging | `true` | Marks the contact grid for the sender's side. |
 | TIC marker type | EDITBOX | JMSB - Tablet & Map > Messaging | `"loc_Attack"` | CfgMarkers class for the marker a TIC drops. loc_Attack is the crossed-swords task icon - a contact is an event, not a unit symbol, and o_inf put a re |
 | TIC marker colour | EDITBOX | JMSB - Tablet & Map > Messaging | `"ColorRed"` | CfgMarkerColors class for the marker a TIC drops. |
-| Post reports to ALiVE | CHECKBOX | JMSB - Tablet & Map > Messaging | `true` | A template marked reportable - CONTACTREP and SITREP - is also filed with ALiVE's C2ISTAR as a spotrep or sitrep, with a companion map marker. Silentl |
+| Post reports to ALiVE | CHECKBOX | JMSB - Tablet & Map > Messaging | `true` | A template marked reportable - CONTACTREP and SITREP - is also filed with ALiVE's C2ISTAR as a spotrep or sitrep, with a companion map marker. Needs A |
 | ALiVE report locality | LIST | JMSB - Tablet & Map > Messaging | `[["GLOBAL", "SIDE", "GROUP"], ["Everyone` | Who an ALiVE-posted report and its marker are visible to. |
 | SITREP marker type | EDITBOX | JMSB - Tablet & Map > Messaging | `"b_inf"` | CfgMarkers class for the marker that accompanies an ALiVE-posted SITREP. |
 | Seed test traffic | CHECKBOX | JMSB - Tablet & Map > Messaging | `false` | Posts three sample threads - a FLASH CASEVAC, a SITREP and a CONTACTREP - shortly after you join, so the reader has something in it. For testing the U |
@@ -634,7 +644,7 @@ ships with, which a mission or the forced list below can override.
 
 | Setting | Type | Category | Default | What it does |
 |---|---|---|---|---|
-| Voice system | LIST | CATEGORY_VOICE > System | `[SYSTEM_CHOICES, SYSTEM_CHOICE_NAMES, DE` | Which system carries the voice. Automatic: the voice server (LiveKit, through the mod's voice extension), else the game's own VON. Game VON is the fal |
+| Voice system | LIST | CATEGORY_VOICE > System | `[SYSTEM_CHOICES, SYSTEM_CHOICE_NAMES, DE` | Which system carries the voice. Automatic: Mumble when its address is set (through the mod's voice extension - no Mumble app needed), else LiveKit whe |
 | Spare batteries | EDITBOX | CATEGORY_VON > Batteries | `"jmfsb_mpu5_battery"` | Comma-separated. The items that are a spare radio battery: SWAP BATTERY on the RADIO app takes one out of your kit and puts a full battery in the hand |
 | Grace time (sec) | SLIDER | CATEGORY_VON > Mesh | `[0, 10, DEFAULT_GRACE_S, 1]` | How long a speaker whose route drops is still heard at his last quality before he is muted. |
 | Ring time (sec) | SLIDER | CATEGORY_VON > Calls | `[5, 60, DEFAULT_RING_S, 0]` | How long a call rings before it counts as no answer (and a callback is offered). |
@@ -648,6 +658,24 @@ ships with, which a mission or the forced list below can override.
 | Pitch per net | CHECKBOX | CATEGORY_VON > Sounds | `true` | C2 low, TEAM mid, A2G high, CALL two-tone, so the net is known before the voice starts. |
 | Static by quality | CHECKBOX | CATEGORY_VON > Sounds | `true` | Static under a radio speaker, louder as his link quality falls. |
 | RTO nets at once | SLIDER | CATEGORY_VON > Calls | `[0, CUSTOM_NETS_MAX_CAP, DEFAULT_CUSTOM_` | How many nets RTOs may have made at one time. Each takes one of the game's ten custom voice channels for the rest of the mission - C2 and A2G hold two |
+
+## Watch (`watch`)
+
+| Setting | Type | Category | Default | What it does |
+|---|---|---|---|---|
+| Prompt mode | LIST | JMFSB_CATEGORY > Watch HUD | `[["full", "reduced"], ["Full", "Reduced"` | FULL: key hints with words and the context prompt ('9: ADD TO MEDICAL'). REDUCED: key numbers only, no prompt. |
+| Shrink at distance | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Beyond 15 m a world panel shrinks to a tag: slot number, state colour, one value. |
+| Auto-clear | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | A watched target that dies, or is lost past 300 m for a minute, comes off. Pinned slots stay. |
+| Share time | SLIDER | JMFSB_CATEGORY > Watch HUD | `[5, 120, 20, 0]` | SHARE on a contact nobody has in sight shows it to every friendly within 2 km for this many seconds. |
+| Drop lost contacts after | SLIDER | JMFSB_CATEGORY > Watch HUD | `[1, 30, 5, 0]` | Minutes a contact nobody has in sight is kept before it is forgotten. |
+| Engineer detect range | SLIDER | JMFSB_CATEGORY > Watch HUD | `[5, 50, 15, 0]` | Metres within which an engineer sees mines and explosives without a detector. |
+| Squad view time | SLIDER | JMFSB_CATEGORY > Watch HUD | `[5, 120, 30, 0]` | Seconds the squad view stays up after F4 (team leads and ATLs). |
+| HUD: Medical | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Draw it in the world (AiTR goggles). Off hides it for you only. |
+| HUD: Team lead | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Draw it in the world (AiTR goggles). Off hides it for you only. |
+| HUD: Engineer | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Draw it in the world (AiTR goggles). Off hides it for you only. |
+| HUD: Recon contacts | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Draw it in the world (AiTR goggles). Off hides it for you only. |
+| HUD: JFO impact areas | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `true` | Draw it in the world (AiTR goggles). Off hides it for you only. |
+| Self aid | CHECKBOX | JMFSB_CATEGORY > Watch HUD | `false` | Your own bleeding, pain, consciousness and tourniquets on the device panel. |
 
 ## Forced by `cba_settings`
 

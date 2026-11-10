@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Fits one of this addon's dialogs - the console, the message box, TIME /
  * WEATHER - to the tablet's screen when the tacpad is hosted on a device that
  * is open, instead of the whole monitor (user, 2026-10-20: "all apps need to

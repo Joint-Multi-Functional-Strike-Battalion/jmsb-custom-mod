@@ -42,10 +42,17 @@ setting, then the value entered in game, then the environment.
 Every build before 2026-10-31 sent the old values to every player: change the
 LiveKit key and secret and the database password.
 
-**The database extension on a Windows server.** The release ships only the
-Linux `ghostd_pacdb_x64.so`. A Windows server, or a Windows host with
-`sync = "service"`, copies `ghostd_pacdb_x64.dll` from the repo root into the
-mod folder by hand (docs/SIGNING.md).
+**Mumble or LiveKit** (2026-11-01): JMSB - Voice > Voice system picks the
+voice - Automatic (Mumble), Mumble, LiveKit or Game VON. For Mumble set the
+Mumble server's address
+(`host:port`) and password under Voice server (Mumble). The password is a
+setting on purpose: every player needs it to connect. Host it with the
+pelican-eggs `mumble-voice` egg, which lets each mission make its own room.
+Players install nothing.
+
+**The database extension.** The release ships both: `ghostd_pacdb_x64.dll`
+for a Windows server or host, `ghostd_pacdb_x64.so` for a Linux server
+(since 2026-11-01; before, the .dll was copied in by hand).
 
 **A mission with a `CfgRemoteExec` whitelist** (mode 1) must allow what the
 mod sends. The mod ships none: a mode-1 list in a mod would block ALiVE's and
@@ -68,10 +75,13 @@ Clients to the server:
 - voice: `jmfsb_voice_fnc_srvCall`, `srvAdd`, `srvAnswer`, `srvLeave`,
   `srvCallback`, `srvNetAdd`, `srvNetMembers`, `srvNetRemove`;
   `jmfsb_adapter_livekit_fnc_srvRoomToken`, `srvEchoToken`
-- support: `jmfsb_support_fnc_bookCooldown`, `jmfsb_support_air_fnc_order`,
+- support: `jmfsb_support_fnc_bookCooldown`, `srvCallsign`, `jmfsb_support_air_fnc_order`,
+  `jmfsb_support_air_fnc_srvAllIn` (the ACE ALL IN),
+  `jmfsb_support_logistics_fnc_order`,
   `jmfsb_support_fires_fnc_request`, `jmfsb_support_fires_fnc_abort`,
   `jmfsb_cas_fnc_request`, `jmfsb_cas_fnc_abort`,
   `jmfsb_artydeploy_fnc_preDeploy`, `deploy`, `undeploy`, `clearSpot`
+- `jmfsb_ecoti_fnc_markSet` (the AiTR building mark: a player's key, a Zeus's dialog)
 - `jmfsb_evac_fnc_evacServer`; `jmfsb_hacking_fnc_srvHackStart`,
   `srvHackComplete`, `srvDeposit`, `onBodyKilled`
 - messaging: `jmfsb_messaging_fnc_srvSubmit`, `srvRequestIndex`,
@@ -87,8 +97,7 @@ Clients to the server:
   `jmfsb_friendly_fire_fnc_log`; `jmfsb_drone40_fnc_deploy`;
   `jmfsb_medic_fnc_srvMeasure`; `jmfsb_pointing_fnc_srvPoint`;
   `jmfsb_logistics_fnc_doSupplyCrate`
-- `jmfsb_jumpmaster_fnc_srvLaunch`, `srvAbort`; `jmfsb_adapter_alive_fnc_probe`,
-  `srvRequestATO`; `jmfsb_adapter_von_fnc_testChannel`;
+- `jmfsb_adapter_alive_fnc_probe`; `jmfsb_adapter_von_fnc_testChannel`;
   `jmfsb_back_to_game_fnc_handleConnected`
 - `jmfsb_hacking_fnc_srvAlarmAdd`, `srvAlarmDelete`, `srvAlarmsClear`;
   `jmfsb_init_fnc_srvAttendance`; `jmfsb_curator_fnc_editableAdd`
@@ -113,21 +122,26 @@ The server to clients:
 - every `jmfsb_pac_fnc_*Recv` the PAC page uses
 - `jmfsb_support_air_fnc_putOut`, `jump`; `jmfsb_respawn_fnc_enable`,
   `disable`, `adjustTimeLocal`; `jmfsb_cas_fnc_onStation`;
-  `jmfsb_support_fires_fnc_sayLocal`, `markLocal` (JIP), `unmarkLocal`;
+  `jmfsb_support_fires_fnc_sayLocal`, `markLocal` (JIP), `unmarkLocal`,
+  `targetLocal` (JIP), `cueLocal`;
   `jmfsb_init_fnc_attendance`; `jmfsb_hacking_fnc_renderProduct`,
   `pickResult`, `rfReached`, `alarmRing`; `jmfsb_messaging_fnc_cltCacheClear`
 - `jmfsb_common_fnc_onAlert`; `jmfsb_cas_fnc_inbound`, `release`,
-  `offStation`; `jmfsb_jumpmaster_fnc_jump`, `board`, `light`, `say`;
-  `jmfsb_support_air_fnc_sayLocal`; `jmfsb_adsite_fnc_fire`, `kill`;
+  `offStation`; `jmfsb_jumpmaster_fnc_jump`, `board`, `light`;
+  `jmfsb_support_air_fnc_sayLocal`, `jmfsb_support_logistics_fnc_sayLocal`;
+  `jmfsb_adsite_fnc_fire`, `kill`;
   `jmfsb_back_to_game_fnc_handleTeleport`
 - `jmfsb_spectator_fnc_start`, `stop`, `reloadLocal`; `jmfsb_ew_fnc_aiAlert`,
-  `onThreat`; `jmfsb_support_fnc_ackLocal`; `jmfsb_adapter_von_fnc_testResult`;
-  `jmfsb_equipment_fnc_show3DMarker`; `jmfsb_safestart_fnc_lowerWeapon`;
+  `onThreat`; `jmfsb_support_fnc_ackLocal`, `alertLocal` (1 MIN OUT), `zonesLocal` (JIP);
+  `jmfsb_tacpad_fnc_askLocal` (the observer's numpad 6-9 question);
+  `jmfsb_adapter_von_fnc_testResult`; `jmfsb_equipment_fnc_show3DMarker`; `jmfsb_safestart_fnc_lowerWeapon`;
   `jmfsb_logistics_fnc_crateDraggable`; `jmfsb_medic_fnc_measureLocal`;
   `jmfsb_pointing_fnc_pointed`
 - never `jmfsb_messaging_fnc_onReject` or `onReceive`, nor the hooks
   `jmfsb_adapter_alive_fnc_whenReady`, `onCapture`, `jmfsb_common_fnc_onBarrage`,
-  `jmfsb_support_fnc_onAck`, `jmfsb_tasks_fnc_onEvent` (local only)
+  `jmfsb_support_fnc_onAck`, `jmfsb_tasks_fnc_onEvent` (local only), nor the
+  server-only `jmfsb_messaging_fnc_onFiled`, `jmfsb_support_fnc_state`,
+  `srvFiled`, `srvReply`, `zones`, `zonesHold`, `zonesPublish`
 
 Engine commands some features send: `moveInCargo`, `moveOut`,
 `deleteVehicle`, `hint`, `setRank`.

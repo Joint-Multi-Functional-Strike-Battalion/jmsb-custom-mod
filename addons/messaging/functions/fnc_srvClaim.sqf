@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Claims a task thread. First come, first served and never taken back by
  * somebody else - two medics both answering the same CASEVAC is the failure
  * this exists to stop, and a claim that anyone can steal does not stop it.

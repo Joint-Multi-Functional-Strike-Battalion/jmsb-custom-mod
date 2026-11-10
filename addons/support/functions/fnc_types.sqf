@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The asset types TAC//SUPPORT lists in its ASSET group, merged from every
  * provider's "types" declaration:
  *

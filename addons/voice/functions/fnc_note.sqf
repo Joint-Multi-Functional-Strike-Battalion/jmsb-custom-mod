@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: a short word from the server about a callback (FUNC(srvCallback),
  * FUNC(srvCallbacks)), shown in the upper-right notification. Sent by
  * remoteExec and taken only from the server or this machine

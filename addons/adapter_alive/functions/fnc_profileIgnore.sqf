@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Marks a vehicle or a group - and everything inside it - as ALiVE's to leave
  * alone.
  *

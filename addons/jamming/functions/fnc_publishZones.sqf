@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends the zone registry to every client. ONCE PER BATCH, never per zone.
  *
  * The registry is one fat array and clients need all of it, so publishing is

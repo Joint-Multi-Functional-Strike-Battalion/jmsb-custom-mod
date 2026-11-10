@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "talking", client: the other players talking on a radio now
  * whose net is one of his radios' nets (fnc_heard keeps them from ACRE's
  * remote speaking events). Whether he really hears them is ACRE's signal

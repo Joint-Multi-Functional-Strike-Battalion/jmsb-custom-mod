@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Spoofs a broken net's GPS (DESIGN_EW "Hacking: SPOOF") - the hacking
  * addon's SPOOF action lands here when the hack completes. Every man of the
  * group walks off his true position through the same engine as a spoofer's

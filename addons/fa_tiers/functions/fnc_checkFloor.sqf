@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Checks every tier 2 round against the base game round it descends from, and
  * reports any that came out weaker.
  *

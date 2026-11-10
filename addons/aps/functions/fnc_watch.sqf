@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One fitted vehicle's watch, every APS_TICK on the server: the launchers
  * look for incoming rounds and hand each new one to fnc_intercept; the
  * emitter looks for a threat every APS_RF_TICK and fires fnc_burst; a

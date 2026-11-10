@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether a player may make a FLASH call that bumps a ROUTINE one -
  * the RTO (FUNC(isRto), the one RTO test: the RTO console is a player job,
  * user 2026-10-20) or a logged-in admin. The permission table's "C2 / A2G,

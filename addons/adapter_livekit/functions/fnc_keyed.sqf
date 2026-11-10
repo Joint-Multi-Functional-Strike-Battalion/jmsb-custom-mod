@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hook "keyed": a remote speaker pushed or released his key on a net (the
  * voice core's jmfsb_voice_keyed event, sent to the net's audience). He is
  * counted as talking on that net until his key-up (FUNC(talking)), and his

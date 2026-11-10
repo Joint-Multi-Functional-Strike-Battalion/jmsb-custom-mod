@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The jam registry applied (client, every half second and on every new
  * source): expired sources dropped, GVAR(jammed) set while any remain, and a
  * cue at each edge - nothing here is player-triggered, so a silent comms

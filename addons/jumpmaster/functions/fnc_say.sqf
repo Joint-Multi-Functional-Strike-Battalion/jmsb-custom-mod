@@ -1,12 +1,14 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One line on the notify rail, titled JUMPMASTER. Nothing is said with no
  * text, without a screen, or without messaging.
  *
- * Called on this machine, or sent by the server (FUNC(srvLaunch),
- * FUNC(srvEnd)) by remoteExec and then taken only from the server (review
- * S7: it was the `tell` CBA event, which any client could raise).
+ * Called on this machine - by FUNC(light), which the server sends, and by a
+ * man's own FUNC(jump) - and taken only from the server's call or this
+ * machine's own (review S7: it was the `tell` CBA event, which any client
+ * could raise). What the leader is told goes in the run's thread since
+ * 2026-11-02 (FUNC(threadCard)).
  *
  * Arguments:
  * 0: Text <STRING>

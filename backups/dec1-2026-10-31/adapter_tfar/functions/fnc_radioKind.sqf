@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which of this player's nodes a TFAR radio is: the short-range set, the
  * long-range backpack, or the long-range rack of his vehicle - the "kind" in
  * the node id (NODE_ID_FORMAT), as fnc_radios names them.

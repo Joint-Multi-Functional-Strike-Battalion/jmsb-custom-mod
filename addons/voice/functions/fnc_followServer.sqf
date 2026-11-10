@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE SERVER PICKS THE VOICE SYSTEM FOR EVERYONE (2026-10-31,
  * PLAN_VOICE_EW_PLAY V1; RECOMMENDATIONS R13). Called at
  * CBA_settingsInitialized, after FUNC(selectSystem) has made this machine's
@@ -29,6 +29,14 @@
  */
 
 if (isServer) exitWith {
+    // A system the server cannot run for want of its server (the adapter's
+    // "serverReady" hook: no voice server address set) is the game VON for
+    // the whole mission, said once - not silence for everyone (2026-11-05).
+    private _ready = ((GVAR(adapters) getOrDefault [GVAR(system), createHashMap]) getOrDefault ["serverReady", {true}]);
+    if (GVAR(system) isNotEqualTo SYSTEM_VON && {!([] call _ready)}) then {
+        WARNING_1("voice: %1 has no voice server set (JMSB - Voice (Built-in)) - the game VON carries the voice",GVAR(system));
+        [SYSTEM_VON] call FUNC(selectSystem);
+    };
     GVAR(serverSystem) = GVAR(system);
     publicVariable QGVAR(serverSystem);
     [QGVAR(systemReady), [GVAR(system)]] call CBA_fnc_localEvent;

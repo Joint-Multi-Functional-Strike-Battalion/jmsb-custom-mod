@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Per net of the local player, its state for the device net rows and the
  * RADIO app. reachable false = the red outline (on the net, no route).
  * talkers includes the player himself while he transmits (quality 1).

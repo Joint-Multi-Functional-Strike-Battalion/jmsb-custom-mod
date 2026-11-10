@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Places the supply caches and starts the patrol and spotting ticks.
  *
  * Called by FUNC(moduleController) once ALiVE is up - never on its own. The

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE OPEN-SKY CHECK for a SAT terminal: one ray straight up from the antenna,
  * SKY_CHECK_M long. Anything it meets - a roof, a bridge, a hangar - blocks
  * the dish. The node's own object (and the vehicle a man sits in) is not in

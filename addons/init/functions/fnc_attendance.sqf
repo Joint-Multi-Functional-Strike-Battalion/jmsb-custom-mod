@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The server's answer to an attendance request (FUNC(srvAttendance)): the
  * names go into this machine's RPT and the player is told. Taken only from
  * the server (review S7: it was a CBA event any client could raise on every

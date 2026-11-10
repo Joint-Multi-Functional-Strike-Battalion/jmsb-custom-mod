@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The host opened. Builds every panel the player has switched on, then starts
  * the one refresh loop they all share.
  *

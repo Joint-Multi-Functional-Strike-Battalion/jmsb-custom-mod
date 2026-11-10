@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * May this player do this step of the deploy cycle on this carrier now? He
  * must be its driver - or, to pack a gun, its driver who has climbed out and
  * is near the gun - and it must be standing still.

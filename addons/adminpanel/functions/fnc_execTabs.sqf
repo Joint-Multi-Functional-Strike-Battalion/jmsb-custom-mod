@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Repaints the EXECUTE strip so the chosen machine is the filled one.
  *
  * Arguments:

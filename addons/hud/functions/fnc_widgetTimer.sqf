@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TIMER: the clock, the stopwatch, and the next alarm due.
  *
  * IT MEASURES NOTHING. The stopwatch is EFUNC(tacpad_apps,timerState)'s and the

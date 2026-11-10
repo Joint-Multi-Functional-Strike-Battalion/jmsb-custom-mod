@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Wipes everything the tools drew: ruler, protractor, route, rings, LOS,
  * viewshed (and the computation still filling it), and this client's own
  * local MARK markers.

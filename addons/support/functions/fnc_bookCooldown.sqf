@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: books a provider's cooldown in the core ledger and publishes it -
  * reached by remoteExec from FUNC(request) on the client that got the
  * accepted order. A cooldown has to hold for every player on the side, so

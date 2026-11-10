@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A battery's stock from the Virtual Artillery round attributes (HE, smoke,
  * illumination, cluster, guided: a class and a round count each), with the
  * module defaults for any it does not have - so a retired Artillery Battery
@@ -35,15 +35,24 @@ private _table = [
     ["GUIDED", "guided", "guidedClass", "", "guidedRounds", 0]
 ];
 
+// A MAGAZINE CLASS IS ACCEPTED TOO (user, 2026-11-02; a module that takes the
+// gun's magazines is Tun Firesupport's idea, by Tuntematon / Armafinland): it
+// fires the shell the magazine carries - its `ammo` - and the RPT says which.
+// A class that is neither is not carried, with an RPT line.
 {
     _x params ["_name", "_kind", "_clsVar", "_clsDef", "_rdsVar", "_rdsDef"];
-    private _cls = _logic getVariable [_clsVar, _clsDef];
+    private _cls = trim (_logic getVariable [_clsVar, _clsDef]);
     private _rounds = round (_logic getVariable [_rdsVar, _rdsDef]);
     if (_cls isNotEqualTo "" && _rounds isNotEqualTo 0) then {
+        if (!isClass (configFile >> "CfgAmmo" >> _cls) && {isClass (configFile >> "CfgMagazines" >> _cls)}) then {
+            private _ammo = getText (configFile >> "CfgMagazines" >> _cls >> "ammo");
+            INFO_4("Artillery '%1': %2 magazine '%3' fires '%4'",_callsign,_name,_cls,_ammo);
+            _cls = _ammo;
+        };
         if (isClass (configFile >> "CfgAmmo" >> _cls)) then {
             _stock pushBack [_name, -1 max _rounds, _cls, _kind];
         } else {
-            WARNING_3("Artillery '%1': %2 class '%3' is not a CfgAmmo class - that type is not carried",_callsign,_name,_cls);
+            WARNING_3("Artillery '%1': %2 class '%3' is neither a CfgAmmo nor a CfgMagazines class - that type is not carried",_callsign,_name,_cls);
         };
     };
 } forEach _table;

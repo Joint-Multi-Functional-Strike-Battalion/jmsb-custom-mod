@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Fires one engagement, on the machine where the gunner is local - the firing
  * commands take a local unit. Called directly by the server for its own AI,
  * or sent by the server by remoteExec for a headless client's crew, and then

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers code to run on this machine when a message arrives for this
  * player (FUNC(cltReceive)). For screens that react to traffic - the reader
  * redraws, TAC//MSG puts a FLASH banner up.

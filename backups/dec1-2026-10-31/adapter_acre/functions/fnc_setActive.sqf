@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "setActive", client: puts the radio on that net in his hand
  * (acre_api_fnc_setCurrentRadio), so ACRE's own push-to-talk keys it.
  *

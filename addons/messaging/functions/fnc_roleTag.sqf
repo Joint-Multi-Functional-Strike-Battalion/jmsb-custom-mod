@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A man's job, as the three or four letters a net calls him by.
  *
  * OFF ENGINE TRAITS, NOT OFF A MOD. Medic, engineer, EOD and UAV are traits the

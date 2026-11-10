@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An engagement's moment has come - the interceptor's flight time to the
  * threat has run out. Roll the intercept chance (the unit's Site override,
  * else the setting). A hit asks the machine that fired the round to delete it

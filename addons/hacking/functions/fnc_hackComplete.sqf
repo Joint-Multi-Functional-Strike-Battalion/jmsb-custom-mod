@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A hack finished on this tablet. What happens next depends on what was
  * hacked and, for towers and units, on the intel chosen before it started -
  * the pick is already made, so completion just cashes it in.

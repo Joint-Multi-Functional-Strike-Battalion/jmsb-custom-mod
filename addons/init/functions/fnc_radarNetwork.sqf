@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Put the listed vehicle classes on their side's sensor network.
  *
  * A SETTING, NOT A MISSION FILE (user, 2026-09-09: "Radar network needs to be

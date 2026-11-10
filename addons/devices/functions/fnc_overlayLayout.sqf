@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a walking-view device and its screen land on this monitor.
  *
  * THE SAME RULES AS FUNC(layout), AT A DIFFERENT SIZE AND PLACE. The body

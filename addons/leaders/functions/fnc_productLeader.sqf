@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TRACE NETWORK: a circle on a live leader's SAFE HOUSE - never on the man.
  *
  * If he has a rotation queued the circle points at where he is GOING, so

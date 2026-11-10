@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ACRE's custom signal function: the signal a receiver gets from a
  * transmitter, routed through the mesh when that is stronger than the direct
  * path.

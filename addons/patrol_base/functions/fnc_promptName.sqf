@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Pops a small text-entry dialog asking the player to name the patrol base.
  * Self-contained (built at runtime on RscDisplayEmpty - no config dialog class).
  *

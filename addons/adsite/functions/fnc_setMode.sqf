@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets one air defence vehicle's targeting mode - Off, Random, Closest threat
  * or Highest threat (ADS_MODES; FUNC(assign) says what each picks) - public, so
  * the server's assignment reads it. A blank mode steps to the next one, for

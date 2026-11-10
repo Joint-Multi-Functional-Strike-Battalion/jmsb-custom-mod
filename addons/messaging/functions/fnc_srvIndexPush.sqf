@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends a player every index row they are entitled to. Bodies are not included
  * and are fetched per thread when one is opened.
  *

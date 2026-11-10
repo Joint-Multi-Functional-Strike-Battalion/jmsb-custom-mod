@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server-only. Consumes the dropped kits (items + kit objects) within range and
  * builds a patrol base: a beacon, a named map marker (pencil task icon), an
  * Unbuild action, a radio base station on the beacon (setting "Patrol base

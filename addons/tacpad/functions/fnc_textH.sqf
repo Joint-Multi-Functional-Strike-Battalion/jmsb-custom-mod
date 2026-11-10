@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How tall one line of text is at a given size, in safe-zone Y units.
  *
  * A control that holds a label has to be sized off the label, not off a row

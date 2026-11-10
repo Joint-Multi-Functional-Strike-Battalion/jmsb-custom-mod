@@ -1,11 +1,12 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The mix tick (TICK_S): every player's gain and ear re-asked and sent on a
  * change, and whether he is received (FUNC(speaker)) - distance and bearing
  * move every moment, the rest arrives by hook. Speakers gone from the game
  * are forgotten (and no longer received). A join the server has not answered
- * within ROOM_ANSWER_S is asked again.
+ * within ROOM_ANSWER_S, or a connect the extension has not finished within
+ * ROOM_CONNECT_S, is asked again - the connect said once to the player.
  *
  * Arguments:
  * None
@@ -19,8 +20,12 @@
  * Public: No
  */
 
-if (GVAR(state) isEqualTo ROOM_JOINING && {CBA_missionTime - GVAR(since) > ROOM_ANSWER_S}) exitWith {
-    WARNING_1("voice server: no answer in %1 s - asking again",ROOM_ANSWER_S);
+if (GVAR(state) isEqualTo ROOM_JOINING && {CBA_missionTime - GVAR(since) > GVAR(waitS)}) exitWith {
+    WARNING_1("voice server: no answer in %1 s - asking again",GVAR(waitS));
+    if (GVAR(waitS) isEqualTo ROOM_CONNECT_S && !GVAR(toldError)) then {
+        GVAR(toldError) = true;
+        [VOICE_TITLE, NO_ANSWER_TEXT] call EFUNC(notify,notify);
+    };
     GVAR(state) = ROOM_IDLE;
     [] call FUNC(roomJoin);
 };

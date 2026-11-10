@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The answer key - numpad * in the numpad standard (user, 2026-10-30): in the
  * quick-add list, adds the one under the cursor; else answers the call that
  * is ringing (FUNC(voiceAnswer)); with nothing ringing, hangs up the call he

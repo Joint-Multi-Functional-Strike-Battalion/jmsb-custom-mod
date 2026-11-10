@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * InitPost of every drone40 variant of this addon. Only the machine that made
  * the drone acts: GX creates it where the round was fired, so there the
  * launcher is the local player (none on a dedicated server or a headless

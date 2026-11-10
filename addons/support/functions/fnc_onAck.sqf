@@ -1,8 +1,8 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers code to run on this machine when a delivery receipt arrives for
- * it (FUNC(ack), FUNC(ackLocal)) - TAC//SUPPORT's verdict row and notify rail.
+ * it (FUNC(ack), FUNC(ackLocal)) - jmfsb_tacpad_apps' line on the notify rail.
  *
  * Not a CBA event (review R1): any client can raise any CBA event on every
  * machine, so the jmfsb_support_ack event was a fake receipt anyone could put

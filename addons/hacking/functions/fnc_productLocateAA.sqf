@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE AA: every hostile air-defence piece, plotted exactly.
  *
  * Exact on purpose. Air defence is hunted to be UN-INTEGRATED (new.md
@@ -22,9 +22,9 @@
 
 params [["_pos", [], [[]]], ["_side", sideUnknown, [sideUnknown]]];
 
-if (isNil "jmfsb_adapter_alive_fnc_aaTargets") exitWith {false};
+if (isNil QEFUNC(adapter_alive,aaTargets)) exitWith {false};
 
-private _pool = (call jmfsb_adapter_alive_fnc_aaTargets) select {
+private _pool = (call EFUNC(adapter_alive,aaTargets)) select {
     (_x select 2) getFriend _side < 0.6
 };
 

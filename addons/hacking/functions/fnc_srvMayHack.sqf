@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: may this man hack this device as this kind, now - the server's own
  * answer to what the client's tablet already decided (review S7). Every fact
  * is read here: the operator's gate (FUNC(canHack)), his distance to the

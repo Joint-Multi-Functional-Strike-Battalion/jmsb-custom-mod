@@ -16,11 +16,27 @@
 // off this file to prove every setting has a reader, and a name built with
 // format is invisible to it. The same goes for the six walking-view buttons
 // at the foot of this file.
-#define SOFT_KEY_HELP "Which app this key, printed on the tablet frame, opens when you click it or press its device key (numpad 6 7 8 9 by default, Device button F1-F4 in Configure Addons). Pressing it again closes the app. The keyboard F1-F4 keys are not used."
+#define SOFT_KEY_HELP "Which app this key, printed on the tablet frame, opens when you click it or press its device key (F1-F4 by default, numpad 5-8 in the numpad layout; Device button F1-F4 in Configure Addons). Pressing it again closes the app."
 
+// THE KEY LAYOUT (user, 2026-11-08: "make the default the f keys but add a
+// setting to use numb pad as default"). Read in preInit, before any keybind
+// registers (FUNC(keyDefault)), so a change takes the next mission.
+[
+    QGVAR(keyLayout), "LIST",
+    ["Key layout", "The default keys for the device. F keys: device F1-F4 on F1-F4, < > on F5 F6, answer F7, decline F8, action F9, troops in contact F10, voice activation F11, Shift + F1-F8 select net 1-8, Ctrl + F1-F8 mute net 1-8. Numpad: the numpad standard (1-4 nets, 5-8 F1-F4, 9 action, 0 . arrows). Keys you set yourself in Configure Addons are kept. Takes effect at the next mission start."],
+    ["JMSB - Tablet & Map", "Devices"],
+    [KEY_LAYOUT_IDS, KEY_LAYOUT_NAMES, 0],
+    false,
+    {},
+    true
+] call CBA_fnc_addSetting;
+
+// THE LABELS NAME NO KEY (review 2026-11-01, item 2.5): "F1 key on the tablet
+// opens" named a key nobody presses - the device keys are numpad 6-9 and the
+// frame now prints whatever each is bound to. The setting names stay keyF1..F4.
 [
     QGVAR(keyF1), "LIST",
-    ["F1 key on the tablet opens", SOFT_KEY_HELP],
+    ["Device key 1 opens", SOFT_KEY_HELP],
     ["JMSB - Tablet & Map", "Devices"],
     [SOFT_KEY_IDS, SOFT_KEY_NAMES, 1],
     false
@@ -28,7 +44,7 @@
 
 [
     QGVAR(keyF2), "LIST",
-    ["F2 key on the tablet opens", SOFT_KEY_HELP],
+    ["Device key 2 opens", SOFT_KEY_HELP],
     ["JMSB - Tablet & Map", "Devices"],
     [SOFT_KEY_IDS, SOFT_KEY_NAMES, 2],
     false
@@ -36,7 +52,7 @@
 
 [
     QGVAR(keyF3), "LIST",
-    ["F3 key on the tablet opens", SOFT_KEY_HELP],
+    ["Device key 3 opens", SOFT_KEY_HELP],
     ["JMSB - Tablet & Map", "Devices"],
     [SOFT_KEY_IDS, SOFT_KEY_NAMES, 3],
     false
@@ -44,9 +60,9 @@
 
 [
     QGVAR(keyF4), "LIST",
-    ["F4 key on the tablet opens", SOFT_KEY_HELP],
+    ["Device key 4 opens", SOFT_KEY_HELP],
     ["JMSB - Tablet & Map", "Devices"],
-    [SOFT_KEY_IDS, SOFT_KEY_NAMES, 12],
+    [SOFT_KEY_IDS, SOFT_KEY_NAMES, 11],
     false
 ] call CBA_fnc_addSetting;
 
@@ -115,7 +131,7 @@
 // defaults (the numpad standard, user 2026-10-24: answering and hanging up
 // are numpad 6, so the F-keys no longer repeat them): F1 ear for the active
 // net / quick add in a call, F2 mute the active net, F3 map zoom in, F4 map
-// zoom out, the arrows the active net left / right. Each stays the player's to change, here or on
+// zoom out, the arrows the net page left / right. Each stays the player's to change, here or on
 // the tablet, SETTINGS > DEVICE KEYS. While the RADIO app is open on the
 // device they are its soft keys and cursor whatever they are set to.
 #define BUTTON_HELP "What this button printed on the phone and side device frames does on the walking view. Press it with its keybind (Configure Addons, Device button ...; numpad 1-4, 0 and . by default). While the RADIO app is open on the device the buttons are its soft keys and cursor instead."

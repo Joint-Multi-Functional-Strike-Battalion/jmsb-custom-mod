@@ -25,3 +25,12 @@
 // The kamikaze steering tick and the arm/impact fuse distance.
 #define AMB_KAM_STEP        0.1
 #define AMB_KAM_FUSE        10
+
+// The rest of the fuse - see FUNC(kamikazeRun): how many surface hits the look
+// ahead may return (the airframe's own crew come back first), under what
+// height over the terrain the airframe is on the ground, and inside how many
+// metres of the aim moving away from it counts as having arrived. The look
+// ahead itself is two steps' travel at the run's speed plus the fuse.
+#define AMB_KAM_SCAN_HITS   4
+#define AMB_KAM_DECK        1
+#define AMB_KAM_TERMINAL    50

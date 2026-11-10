@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * OUR PTT: a JMSB keybind (or the tablet's PTT, later) keys or releases a
  * TFAR tangent through TFAR's own key handlers - the same functions TFAR's
  * keybinds call (core/functions/events/keys/fnc_on*TangentPressed.sqf), so

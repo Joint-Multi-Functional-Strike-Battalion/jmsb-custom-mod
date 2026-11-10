@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RF profile a radio item or radio bag carries: the class's own
  * jmfsb_rf_profile config property (CfgWeapons first, then CfgVehicles for a
  * backpack). An item in the radio slot (simulation ItemRadio) with no property

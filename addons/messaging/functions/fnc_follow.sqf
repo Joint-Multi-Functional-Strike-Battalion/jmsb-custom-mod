@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Follows, mutes, or forgets one thread for THIS player.
  *
  * The per-thread override the handoff puts in the thread view: it beats the

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * FUNC(available) by asset id - the "available" code this addon hands the
  * support core, which asks it before dispatching anything but a recall.
  *

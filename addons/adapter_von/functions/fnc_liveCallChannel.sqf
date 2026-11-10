@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The VON channel of the call the player is in right now, live and accepted -
  * not one still ringing him, and not one he is dialling.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Shrinks a panel to the content it just drew.
  *
  * Panels used to be fixed-size boxes from their defaults, so a squad of one got

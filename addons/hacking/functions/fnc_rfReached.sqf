@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the server's answer to "what RF nodes can my set hear"
  * (FUNC(rfReach)), kept for the tacpad HACK board. Sent by the server to this
  * machine alone, by remoteExec; taken only from the server (review S7), so

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A UAV that faction actually flies - WHO comes from ALiVE, never from a
  * classname written here (new.md rule 2).
  *

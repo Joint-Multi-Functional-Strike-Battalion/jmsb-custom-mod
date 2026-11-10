@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How long an airframe takes to fly a route at one of the SPEED words - the
  * estimate the verdict before CONFIRM (FUNC(preview)) reads. The AI is taken
  * to hold ETA_SHARES of the class's top speed at each word; the route is

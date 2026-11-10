@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes one order from the support page and either flies it or says why not.
  *
  * THE SUPPORT CORE'S PROVIDER TASK SIGNATURE (addons/support/README.md):
@@ -38,9 +38,9 @@
  *    point, anything else is a strike on the point
  * 2: Target position <ARRAY> - the grid; terminal guidance may move it
  * 3: The support page's parameter array <ARRAY> - ingress POSITION at index 8,
- *    egress position at 9, [] for either meaning auto. Those two slots are past
- *    everything ALiVE's own tasking reads, so one array serves both kinds of
- *    asset and the page does not have to know which it is filling in.
+ *    egress position at 9, [] for either meaning auto. Those two slots mean the
+ *    same to support_air's CAS, so one array serves both kinds of asset and
+ *    the page does not have to know which it is filling in.
  *
  * Return Value:
  * 0: Accepted <BOOL>
@@ -55,8 +55,8 @@
 params [["_assetId", "", [""]], ["_task", "cas", [""]], ["_pos", [], [[]]], ["_prm", [], [[]]]];
 private _ingress = _prm param [8, []];
 private _egress = _prm param [9, []];
-// THE ORDNANCE CHOICE RIDES AT 10, past ALiVE's own slots and past the two
-// points, for the same reason those two do: one parameter array serves every
+// THE ORDNANCE CHOICE RIDES AT 10, past the two points, for the same reason
+// those two do: one parameter array serves every
 // kind of asset and the page fills in the slots its own row asked about. It is
 // an INDEX into the list this addon published on the row - the airframe's own
 // stores behind a leading AUTO - so the page never learns what it selects.

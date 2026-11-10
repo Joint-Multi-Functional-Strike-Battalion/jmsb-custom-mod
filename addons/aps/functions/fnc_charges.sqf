@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Charges left on a vehicle's launchers, both sides together.
  *
  * Arguments:

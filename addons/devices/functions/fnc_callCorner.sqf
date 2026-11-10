@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The device arrows while the call's window is over the tablet (user,
  * 2026-10-28: "tablet moved with arrows"): step it to the next corner of the
  * map area, clockwise on RIGHT, back on LEFT. The corner is kept in the

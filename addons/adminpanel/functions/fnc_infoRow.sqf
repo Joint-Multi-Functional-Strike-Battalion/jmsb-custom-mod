@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One label-and-value row, the way the rest of the suite draws them.
  *
  * The panel wrote "Name: YonV" into a plain text control, which is one colour,

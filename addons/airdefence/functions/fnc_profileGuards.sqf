@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hands an AA base's guard groups to ALiVE, once ALiVE can take them.
  *
  * Every jmfsb spawn is profiled - but only through the adapter, and only once
@@ -26,15 +26,20 @@ params [["_groups", [], [[]]]];
 private _live = _groups select {!isNull _x && {(units _x) isNotEqualTo []}};
 if (_live isEqualTo []) exitWith {};
 
-if (isNil QEFUNC(adapter_alive,profileGroup)) exitWith {
+// ALiVE loaded with no commanders is not loaded (user, 2026-11-02: "same as
+// not loaded"): once the adapter gives up, the guards stay live here too.
+if (isNil QEFUNC(adapter_alive,profileGroup) || {!([] call EFUNC(common,aliveLoaded))}) exitWith {
     INFO_1("AA base: no ALiVE adapter - %1 guard group(s) stay live",count _live);
 };
 
 if !(missionNamespace getVariable [QEGVAR(adapter_alive,ready), false]) exitWith {
     // One-shot: the adapter's ready hooks run once (review R1: no CBA event).
-    [{
+    // The same call either way: once ALiVE is up it profiles them, once the
+    // adapter gives up it takes the stay-live line above.
+    private _again = {
         [_this] call FUNC(profileGuards);
-    }, _live] call EFUNC(adapter_alive,whenReady);
+    };
+    [_again, _live, _again] call EFUNC(adapter_alive,whenReady);
     INFO_1("AA base: %1 guard group(s) wait for ALiVE before profiling",count _live);
 };
 

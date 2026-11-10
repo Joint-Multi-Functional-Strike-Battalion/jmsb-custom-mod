@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a client asks for dead players to be respawned now - the
  * off-server half of FUNC(forceRespawn) and the Zeus "Respawn" modules
  * (FUNC(addZeusModules)), by remoteExec (review S7). Taken only from an admin

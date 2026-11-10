@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The four numbers a medic monitors - heart rate, blood pressure, SpO2 and
  * respiration rate - each as what is on the screen and where it came from.
  *

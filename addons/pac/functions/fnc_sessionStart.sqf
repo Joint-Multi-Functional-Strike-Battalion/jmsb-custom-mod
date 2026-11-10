@@ -7,7 +7,10 @@ Description:
 
     A SESSION IS ONE ROW, APPEND-ONLY:
 
-        [uid, name, joinedAt, lastSeenAt, leftAt, windowId]
+        [uid, name, joinedAt, lastSeenAt, leftAt, windowId, serverId]
+
+    serverId is the server's: "ops", "training" or "dev" (PAC_SERVERS). Only
+    ops time counts toward a player's time; the others are tracked apart.
 
     joinedAt and lastSeenAt start equal; FUNC(sessionTick) moves lastSeenAt
     forward every PAC_HEARTBEAT seconds while the player is on, and
@@ -40,14 +43,16 @@ params [["_uid", "", [""]], ["_name", "", [""]]];
 if (!isServer || _uid isEqualTo "") exitWith {};
 
 private _now = [] call FUNC(stamp);
+private _server = GVAR(settings) getOrDefault ["serverId", PAC_SERVER_DEV];
 
+// Only this server's open row: the same man on another server is its own.
 {
-    if ((_x # 0) isEqualTo _uid && {(_x # 4) isEqualTo ""}) then {
+    if ((_x # 0) isEqualTo _uid && {(_x # 4) isEqualTo ""} && {(_x param [PAC_ROW_SERVER, _server]) isEqualTo _server}) then {
         _x set [4, _x # 3];
     };
 } forEach GVAR(sessions);
 
-GVAR(sessions) pushBack [_uid, _name, _now, _now, "", [] call FUNC(windowCurrent)];
+GVAR(sessions) pushBack [_uid, _name, _now, _now, "", [] call FUNC(windowCurrent), _server];
 
 // LOGON IS A PLAY-TIME COMMIT: forced past the debounce and sent to the
 // database, so the row is down the moment they are on (user, 2026-09-05:

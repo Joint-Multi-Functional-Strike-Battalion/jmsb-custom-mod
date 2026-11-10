@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: asks the server to remove one of the RTO nets
  * (FUNC(srvNetRemove)). Refused here only for what a client can tell.
  *

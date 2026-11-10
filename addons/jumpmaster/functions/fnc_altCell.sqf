@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE FREEFALL READOUT on the phone's status row (user, 2026-10-30:
  * "altitude and sink rate, so you know when to pull"): height over the
  * ground and the rate of fall while the player falls free - amber from the

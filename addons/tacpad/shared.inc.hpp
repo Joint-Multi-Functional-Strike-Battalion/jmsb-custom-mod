@@ -17,11 +17,8 @@
 // rescaled. Set by EFUNC(tacpad,setHost); read through these and nothing else.
 //
 // NOTHING IN THE SUITE NAMES safeZone* ANY MORE. A panel that did would draw
-// at monitor size inside a screen two thirds that wide. The one exception is
-// TAC//SUPPORT's dialog, which is a dialog of its own on the NATIVE host only
-// and keeps its safe-zone geometry there. On the tablet it opens no dialog: it
-// draws on the host display like every other app and picks on the host's own
-// map - see IDC_HOST_MAP.
+// at monitor size inside a screen two thirds that wide. An app that picks on
+// the map picks on the host's own - see IDC_HOST_MAP.
 //
 // THE HOST'S MAP. idc 51 on both hosts - the vanilla map's own control, and
 // the device dialog's screen (jmfsb_devices declares its map with the same
@@ -288,6 +285,9 @@
 // The thread list's filter box and the FLASH banner (FUNC(readerFlash)).
 #define IDC_RD_FILTER 8905
 #define IDC_RD_FLASH 8906
+// The composer's card body, the one scrolled group a redraw must not reset
+// (FUNC(readerDraw) keeps its scroll, FUNC(composeCard) puts it back).
+#define IDC_RD_CARD_BODY 8907
 
 // COMPOSING IS A STATE OF THE RIGHT PANE, NOT A WINDOW. It was a second dialog
 // over the top of the reader - so sending a report meant closing the traffic you

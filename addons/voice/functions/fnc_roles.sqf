@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Role tags of a unit, for contacts and group adds:
  * SL - he leads his group; RTO - he holds the RTO job (FUNC(isRto), the one
  * RTO test); MEDIC - medic trait or ACE medic class;

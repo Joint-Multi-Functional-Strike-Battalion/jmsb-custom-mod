@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one CAS module and puts the asset it describes on the board.
  *
  * MANY MODULES, AND THAT IS DELIBERATE. The enemy-drone module refuses a
@@ -12,6 +12,14 @@
  * WHOSE IT IS COMES FROM JMSB - Core, NOT FROM AN ATTRIBUTE (D59). Adding a
  * side field here would be a second place allegiance is typed, and the two
  * would disagree the first time a mission changed one of them.
+ *
+ * VIRTUAL UNTIL TASKED (user, 2026-11-02: "all support aircraft needs to be
+ * virtual till tasked, then they spawn in at alt over the support module
+ * location"): no drone is made here. The row reads READY; a tasking makes one
+ * over the module (FUNC(launch)). Its Respawns (0 by default) and Respawn
+ * Delay decide what follows a loss (FUNC(gone)) - they replace Airframes
+ * Available. The Response Delay is retired (2026-11-02): a mission that set it
+ * still loads, the value is not read.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -41,6 +49,14 @@ if (_logic in GVAR(entities)) exitWith {};
 // callsign and an airframe count into Eden and got the shipped defaults for
 // all three, silently. Read plain, publish prefixed - which is what the
 // enemy-drone module does and the reason it works.
+// THE SIDE IS READ ONCE, FROM THE SLOTS. A dedicated server that starts the
+// mission empty has none to read yet - so it waits for the first player, as
+// support_air's modules do.
+if ((call EFUNC(common,playerSides)) isEqualTo []) exitWith {
+    INFO_1("%1 waits for a player side before it goes on the board",_logic);
+    [{(call EFUNC(common,playerSides)) isNotEqualTo []}, FUNC(moduleController), _this] call CBA_fnc_waitUntilAndExecute;
+};
+
 private _cls = _logic getVariable ["droneClass", ""];
 private _side = (call EFUNC(common,playerSides)) param [0, west];
 
@@ -75,19 +91,21 @@ if (_callsign isEqualTo "") then {_callsign = "HAWK"};
 _logic setVariable [QGVAR(cls), _cls, true];
 _logic setVariable [QGVAR(callsign), toUpper _callsign, true];
 _logic setVariable [QGVAR(side), _side, true];
-_logic setVariable [QGVAR(airframes), 0 max (_logic getVariable ["airframes", 3]), true];
+// THE RESPAWN COUNT (user, 2026-11-02: "make sure there is a respawn count for
+// each support, default no respawns"): replacements left, and the wait for each.
+_logic setVariable [QGVAR(respawnsLeft), 0 max round (_logic getVariable ["respawns", MODULE_RESPAWNS]), true];
+_logic setVariable [QGVAR(respawnDelay), 0 max (_logic getVariable ["respawnDelay", MODULE_RESPAWN_DELAY]), true];
 _logic setVariable [QGVAR(spawnDistance), 500 max (_logic getVariable ["spawnDistance", 4000]), true];
-_logic setVariable [QGVAR(altitude), 50 max (_logic getVariable ["altitude", 700]), true];
 _logic setVariable [QGVAR(speed), 50 max (_logic getVariable ["speed", 400]), true];
-_logic setVariable [QGVAR(spawnDelay), 0 max (_logic getVariable ["spawnDelay", 30]), true];
 _logic setVariable [QGVAR(cooldown), 0 max (_logic getVariable ["cooldown", 300]), true];
 _logic setVariable [QGVAR(searchRadius), 0 max (_logic getVariable ["searchRadius", 300]), true];
 
 // Running state, published for the same reason: the support page reads status
 // off these rather than asking the server every redraw.
-_logic setVariable [QGVAR(lost), 0, true];
 _logic setVariable [QGVAR(readyAt), 0, true];
-_logic setVariable [QGVAR(status), "idle", true];
+_logic setVariable [QGVAR(respawnAt), 0, true];
+_logic setVariable [QGVAR(gone), false, true];
+_logic setVariable [QGVAR(status), STATUS_IDLE, true];
 _logic setVariable [QGVAR(vehicle), objNull, true];
 
 GVAR(entities) pushBack _logic;
@@ -98,4 +116,4 @@ _logic setVariable [QGVAR(id), count GVAR(entities) - 1, true];
 // clients get the last value.
 publicVariable QGVAR(entities);
 
-INFO_3("asset '%1' on the board for %2 flying %3",toUpper _callsign,_side,_cls);
+INFO_3("asset '%1' on the board for %2 flying %3 - virtual until tasked",toUpper _callsign,_side,_cls);

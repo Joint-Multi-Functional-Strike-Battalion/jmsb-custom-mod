@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts both slots on or off the screen to match FUNC(hidden).
  *
  * HIDDEN, NOT TORN DOWN. ctrlShow rather than ctrlDelete, for the reason the map

@@ -66,6 +66,16 @@ publicVariable QGVAR(bootStep);
 private _service = (GVAR(settings) getOrDefault ["sync", "off"]) isEqualTo "service";
 private _unit = GVAR(settings) getOrDefault ["unitId", ""];
 
+// WHICH SERVER THIS IS: ops, training or dev. Only ops time counts toward a
+// player's time; the other two are tracked apart. Anything else is dev, so a
+// mistyped id can never count time it should not.
+private _server = GVAR(settings) getOrDefault ["serverId", ""];
+if !(_server in PAC_SERVERS) then {
+    WARNING_2("serverId '%1' is not one of %2 - running as dev, time here does not count",_server,PAC_SERVERS);
+    _server = PAC_SERVER_DEV;
+    GVAR(settings) set ["serverId", _server];
+};
+
 private _fnc_counts = {
     format ["%1 rank(s), %2 skill(s), %3 award(s), %4 status(es), %5 role(s), %6 net(s), radio plan %7, %8 squad(s), %9 OPORD(s)",
         count (GVAR(structure) getOrDefault ["ranks", createHashMap]),
@@ -240,12 +250,14 @@ if (_service && GVAR(svcUp)) then {
 // are stale - nobody has been let in yet - so they close at their lastSeenAt.
 // An op window left open is NOT closed: an admin starts and stops windows, and
 // a restart mid-op should not end the op; the manual one is restored.
+// Only this server's rows (and rows from before server ids): the store is the
+// unit's, so another server's open sessions and window are its own business.
 {
-    if ((_x # 4) isEqualTo "") then {_x set [4, _x # 3]};
+    if ((_x # 4) isEqualTo "" && {(_x param [PAC_ROW_SERVER, _server]) isEqualTo _server}) then {_x set [4, _x # 3]};
 } forEach GVAR(sessions);
 GVAR(windowOpen) = "";
 {
-    if ((_x # 3) isEqualTo "" && {(_x # 4) isEqualTo "manual"}) then {GVAR(windowOpen) = _x # 0};
+    if ((_x # 3) isEqualTo "" && {(_x # 4) isEqualTo "manual"} && {(_x param [PAC_ROW_SERVER, _server]) isEqualTo _server}) then {GVAR(windowOpen) = _x # 0};
 } forEach GVAR(windows);
 
 // THEN WHO CONNECTED OR LEFT DURING THE BOOT, in order, and the gate opens -
@@ -275,6 +287,8 @@ if (_replayed > 0) then {
 private _wrote = [true, false] call FUNC(storeSave);
 [] call FUNC(rosterTotals);
 [] call FUNC(publish);
+// SIMPLE OR REAL WORLD TEMPLATES (2026-11-09), for every client's composer.
+[] call FUNC(templateFormPublish);
 
 // The structure and the settings go to every client once - JIP gets them with
 // the mission - so a client on a config-less mission has what the server has.

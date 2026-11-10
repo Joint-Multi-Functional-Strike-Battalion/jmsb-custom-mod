@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Net up / down (keybind): the active set of that kind moves to the next or
  * previous net of its fill, skipping channels that carry none - "cycle the
  * fill on the active radio" (SPEC_TACNET voice_tfrs keybinds).

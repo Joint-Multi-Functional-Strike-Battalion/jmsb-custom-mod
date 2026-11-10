@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the map should be putting trackers on, for the tab that is selected.
  *
  * ONE PLACE, because admp_fnc_updateMapMarkers walks this list to CREATE the

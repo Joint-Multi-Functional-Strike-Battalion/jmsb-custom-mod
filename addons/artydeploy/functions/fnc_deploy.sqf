@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the deploy finished - the baseplate goes and the carrier's gun (the
  * launcher or the mortar, FUNC(weaponClass)) stands where it was, facing the
  * way the vehicle faced when the spot was marked. The gun is remembered on the

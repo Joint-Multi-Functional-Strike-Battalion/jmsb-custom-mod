@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO: the active voice net and what is happening on it - game voice (VON)
  * through jmfsb_voice's API (docs/DESIGN_VOICE.md). Never a frequency.
  *

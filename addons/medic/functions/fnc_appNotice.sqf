@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The page the app shows when there is nothing to triage with: a headline in
  * the accent and one line under it saying why.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hides every panel while the map's diary or briefing pane is open, and brings
  * them back when it closes.
  *

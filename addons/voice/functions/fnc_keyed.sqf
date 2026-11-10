@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, event jmfsb_voice_keyed: a speaker who can be heard here keyed or
  * released his push-to-talk on a net (he sent it himself, fnc_transmit). The
  * adapter applies his volume for this listener at once (its "keyed" hook;

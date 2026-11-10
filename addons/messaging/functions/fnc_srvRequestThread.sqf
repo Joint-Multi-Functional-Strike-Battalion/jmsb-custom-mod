@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends one thread's bodies to a player who is entitled to them. A player who
  * is not gets an empty answer rather than an error: refusing loudly would
  * confirm the thread exists, which is itself worth knowing.

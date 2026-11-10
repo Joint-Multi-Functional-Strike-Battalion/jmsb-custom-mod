@@ -54,6 +54,13 @@ GVAR(marks) = [];
 // The frame an app last closed on. A press on the map that closed an app is
 // the app's, not a tool's - see FUNC(hasInput).
 GVAR(closedFrame) = -1;
+// And the time, for a double-click: its first press may have closed the app a
+// frame or two before the second - see FUNC(mapDblClick).
+GVAR(closedTime) = -1;
+
+// THE MARKER CARD's preview on the map: [point, icon, RGBA] while the card is
+// open, [] when not - see FUNC(markerCardDraw).
+GVAR(cardPreview) = [];
 
 // Where this terrain's grid squares fall, worked out on the first grid asked
 // for - see FUNC(gridCalibrate). [] until then.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: this player's ACRE radios as the voice API sees them (jmfsb_voice
  * reads these through its hooks, addons/voice/README.md):
  *

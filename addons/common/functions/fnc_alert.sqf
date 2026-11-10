@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Tells the players something a jmfsb system just did to them.
  *
  * THE PROBLEM THIS SOLVES. The drone fleet, the ambient artillery, the kamikaze

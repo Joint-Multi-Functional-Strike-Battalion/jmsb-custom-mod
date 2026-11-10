@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE DF TICK (server, CBA per-frame handler at the DF tick setting):
  *
  *   1. upkeep: drop jammers, decoys and emitters that are gone

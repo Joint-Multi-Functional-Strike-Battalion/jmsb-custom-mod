@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * HACK - LOG: what the current hack has done, oldest first (FUNC(appHackTrack)
  * writes it). A setback - out of range, aborted - reads in the accent.
  *

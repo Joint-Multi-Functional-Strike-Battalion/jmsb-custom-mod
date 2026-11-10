@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet's arrows scroll the screen (user, 2026-10-25: "would be nice if
  * they scrolled screens like notification logs"). LEFT (numpad 0) is up,
  * RIGHT (numpad .) is down, a page short of the visible height per press.

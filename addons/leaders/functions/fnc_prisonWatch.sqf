@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The capture play: a handcuffed leader DELIVERED to a jmfsb_prison* marker
  * is spent as captured - and talks.
  *

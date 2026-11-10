@@ -1,11 +1,12 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, every tick: THE SERVER HOLDS THE CALLBACKS. A request expires after
  * the callback expiry time; it waits while either person is in a call, and
  * is held (not dropped) while either is on EMCON 3. When both can reach each
- * other on DATA and a slot is free, both phones ring (a call with both
- * ringing) and the request is done.
+ * other on DATA and a slot is free (FUNC(srvSlot): always, on the voice
+ * server), both phones ring (a call with both ringing) and the request is
+ * done.
  *
  * Arguments:
  * None
@@ -39,7 +40,7 @@ private _keep = [];
         _keep pushBack [_from, _to, _at, CB_HELD];
         continue;
     };
-    private _slot = GVAR(slots) find "";
+    private _slot = [] call FUNC(srvSlot);
     if (_slot < 0 || {!([_from, _to] call FUNC(dataReach))}) then {
         _keep pushBack [_from, _to, _at, CB_WAITING];
         continue;

@@ -129,6 +129,14 @@ private _cats = [];
 if (!isNil "jmfsb_pac_structure") then {
     private _mp = +(jmfsb_pac_structure getOrDefault ["motorpool", createHashMap]);
 
+    // A PAD THAT NAMES ITS OWN MOTORPOOL (init arg 11, 2026-11-07) shows that
+    // one of the unit's pools - "air" at the airfield - not the mission's.
+    private _pool = _controller getVariable ["YMF_motorpool_pool", ""];
+    if (_pool isNotEqualTo "") then {
+        private _own = (jmfsb_pac_structure getOrDefault ["motorpoolVariants", createHashMap]) getOrDefault [_pool, createHashMap];
+        if (_own isEqualType createHashMap && {count _own > 0}) then {_mp = +_own};
+    };
+
     // AND THE SQUAD'S OWN POOL FROM THE DATABASE (2026-09-09), merged into the
     // common one before either is read - the same two sources the config path
     // above uses, from the other side. The variant is named exactly as the

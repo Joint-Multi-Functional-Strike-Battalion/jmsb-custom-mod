@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * GO TO GRID: pans the map to a typed grid at the zoom it is at - CENTRE,
  * but on a grid rather than on the player. A grid the map cannot read
  * (FUNC(gridToPos)) moves nothing.

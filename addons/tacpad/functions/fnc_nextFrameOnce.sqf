@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Runs a redraw next frame, once however many times it is asked for this
  * frame (code review R8: one redraw per frame). The first ask queues it
  * (CBA_fnc_execNextFrame) under its id; every further ask before it runs is

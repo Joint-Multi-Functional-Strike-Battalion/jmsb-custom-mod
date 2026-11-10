@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One leader, in a safe house.
  *
  * He is a real man, not a profile: the whole chain is about finding and
@@ -24,12 +24,15 @@ private _house = GVAR(houses) select _hi;
 private _spots = _house buildingPos -1;
 private _at = _spots param [floor random count _spots, getPosATL _house];
 
-// WHO from ALiVE: the asymmetric commander's own faction.
-private _faction = "";
-{
-    _x params ["_cside", "", "_cf"];
-    if (_cside isEqualTo GVAR(asymSide)) exitWith { _faction = _cf };
-} forEach (call jmfsb_adapter_alive_fnc_commanders);
+// WHO from ALiVE: the asymmetric commander's own faction. Without ALiVE, the
+// one FUNC(start) read off the mission (user, 2026-11-02).
+private _faction = GVAR(asymFaction);
+if (!isNil QEFUNC(adapter_alive,commanders) && {[] call EFUNC(common,aliveLoaded)}) then {
+    {
+        _x params ["_cside", "", "_cf"];
+        if (_cside isEqualTo GVAR(asymSide)) exitWith { _faction = _cf };
+    } forEach (call EFUNC(adapter_alive,commanders));
+};
 
 private _kinds = [];
 {

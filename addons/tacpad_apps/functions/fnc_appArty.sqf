@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ARTY - the artillery team's calculator (user, 2026-10-25: "a good arty
  * calculator that works with ACE built in"; reference: the ITC BCS). The gun
  * is the one the player crews or stands at (FUNC(artyGun)); the target is a

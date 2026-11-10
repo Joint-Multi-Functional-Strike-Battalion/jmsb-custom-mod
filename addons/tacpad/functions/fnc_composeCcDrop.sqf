@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The @ completions under the CC line, rebuilt on every keystroke.
  *
  * IT MUST NOT REDRAW THE PANE. Every other interaction on this screen ends in a
@@ -16,6 +16,13 @@
  *
  * NEWEST IN THE GROUP IS TOPMOST, which is why the list is created here rather
  * than reserved at draw time: it has to cover the rows it drops over.
+ *
+ * THE SUPPORT ASSETS ARE ON IT, FIRST (user, 2026-11-01: "I saw no way to
+ * message the support units; want to use an @[unit] to enable ai support
+ * units"): every asset the TO picker's SUPPORT group lists, of every type,
+ * call sign then type, state and ETA (FUNC(composeToSupportLine)). Picking
+ * one - or typing its call sign in full (FUNC(composeMentionTyped)) - is not a
+ * CC: it addresses the asset and opens its card (FUNC(composeMention)).
  *
  * Arguments:
  * 0: The CC edit <CONTROL>
@@ -45,36 +52,66 @@ private _old = _ctrl getVariable [QGVAR(ccList), controlNull];
 if (!isNull _old) then {ctrlDelete _old};
 _ctrl setVariable [QGVAR(ccList), controlNull];
 
+private _text = ctrlText _ctrl;
+private _targets = [] call FUNC(composeTargets);
+// The SUPPORT group's rows for every type - none when he may not task support.
+private _assets = ([false, ""] call FUNC(composeToSupport)) select 2;
+
+// AN ASSET NAMED IN FULL is taken as if picked, and the line redrawn.
+private _typed = [_text, _assets, _targets] call FUNC(composeMentionTyped);
+if (_typed isNotEqualTo []) exitWith {
+    _typed call FUNC(composeMention);
+};
+
 // The token being completed is the last one on the line, and only while it is
 // still an @ name - so a name already picked is not offered all over again on
 // every keystroke that follows it.
-private _pieces = (ctrlText _ctrl) splitString ",";
+private _pieces = _text splitString ",";
 if (_pieces isEqualTo []) exitWith {};
 
 private _last = trim (_pieces select -1);
 if ((_last select [0, 1]) isNotEqualTo "@") exitWith {};
 
 private _frag = toUpper (trim (_last select [1]));
+private _n = count _frag;
+
+([] call FUNC(theme)) params ["_ground", "_ink", "_accent"];
+private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 
 // PREFIX, NOT CONTAINS. A list that reorders itself as the middle of a word
 // starts matching is a list nobody can aim at. A bare @ matches everything,
 // which is how the line answers "who can I even send this to".
-private _matches = ([] call FUNC(composeTargets)) select {
-    ((_x # 1) select [0, count _frag]) isEqualTo _frag
+//
+// One shape for both kinds: [id, name, meta, meta colour, name colour, asset
+// row or []].
+private _matches = (_assets select {((toUpper (_x select 1)) select [0, _n]) isEqualTo _frag}) apply {
+    ([_x, false] call FUNC(composeToSupportLine)) params ["_name", "_meta"];
+    [_x select 0, _x select 1, _meta select 0, _meta select 1, _name select 1, _x]
 };
+{
+    _x params ["_id", "_label"];
+    if ((_label select [0, _n]) isNotEqualTo _frag) then {continue};
+
+    // WHAT KIND OF THING IT IS. REAPER is a squad, HQ is a mailbox, and a CC to
+    // the wrong one of two similar names goes to the wrong tablets.
+    private _kind = switch (_id select [0, 2]) do {
+        case "G:": {"SQUAD"};
+        case "P:": {"MAN"};
+        default {"NET"};
+    };
+    _matches pushBack [_id, _label, _kind, _mute, _ink, []];
+} forEach _targets;
 if (_matches isEqualTo []) exitWith {};
 
 // Six deep. A CC is a handful of names, and a drop that reaches the message box
 // hides the thing being written.
-if (count _matches > 6) then {_matches = _matches select [0, 6]};
+if (count _matches > CC_DROP_ROWS) then {_matches = _matches select [0, CC_DROP_ROWS]};
 
 private _drop = _ctrl getVariable [QGVAR(ccDrop), []];
 if (_drop isEqualTo []) exitWith {};
 
 _drop params ["_dx", "_dy", "_dw", "_rowH"];
 
-([] call FUNC(theme)) params ["_ground", "_ink", "_accent"];
-private _mute = [_ink # 0, _ink # 1, _ink # 2, 0.62];
 private _pad = PAD * HOST_W;
 
 // OPAQUE, whatever the player's map opacity is. The theme's ground carries that
@@ -92,19 +129,16 @@ _ctrl setVariable [QGVAR(ccList), _list];
 [_list, [0, 0, _dw, _listH], _accent, RULE_THIN] call FUNC(drawFrame);
 
 {
-    _x params ["_id", "_label"];
+    _x params ["", "_label", "_kind", "_kindColour", "_labelColour", "_asset"];
     private _ry = _forEachIndex * _rowH;
+    private _isAsset = _asset isNotEqualTo [];
+    private _nameW = _dw * ([CC_DROP_NAME_K, TO_SUPPORT_NAME_W] select _isAsset);
+    private _metaX = _nameW + _dw * CC_DROP_GAP_K;
 
-    // WHAT KIND OF THING IT IS. REAPER is a squad, HQ is a mailbox, and a CC to
-    // the wrong one of two similar names goes to the wrong tablets.
-    private _kind = switch (_id select [0, 2]) do {
-        case "G:": {"SQUAD"};
-        case "P:": {"MAN"};
-        default {"NET"};
-    };
-
-    [_list, [_pad, _ry, _dw * 0.68, _rowH], _label, _ink, TEXT_BODY] call FUNC(drawText);
-    [_list, [_dw * 0.7, _ry, _dw * 0.3 - _pad, _rowH], _kind, _mute, TEXT_LABEL, true, "right", true] call FUNC(drawText);
+    // A call sign and an asset's state line are a name and values: untracked
+    // (tablet review 2026-11-01, 2.3). NET, SQUAD and MAN are labels.
+    [_list, [_pad, _ry, _nameW - _pad, _rowH], _label, _labelColour, TEXT_BODY] call FUNC(drawText);
+    [_list, [_metaX, _ry, _dw - _metaX - _pad, _rowH], _kind, _kindColour, TEXT_LABEL, !_isAsset, "right", !_isAsset] call FUNC(drawText);
 
     private _hit = [_list, [0, _ry, _dw, _rowH], {
         params ["_row"];
@@ -122,6 +156,13 @@ _ctrl setVariable [QGVAR(ccList), _list];
 
         private _head = "";
         if (_at >= 0) then {_head = _text select [0, _at]};
+
+        // AN ASSET IS ADDRESSED, NOT COPIED: off the CC line, onto TO, and its
+        // card opened (FUNC(composeMention)), which redraws the pane.
+        private _picked = _row getVariable [QGVAR(ccAsset), []];
+        if (_picked isNotEqualTo []) exitWith {
+            [[_picked], _head] call FUNC(composeMention);
+        };
 
         // The trailing separator is the invitation to type the next one.
         private _newText = format ["%1@%2, ", _head, _row getVariable [QGVAR(ccPick), ""]];
@@ -143,4 +184,5 @@ _ctrl setVariable [QGVAR(ccList), _list];
     _hit setVariable [QGVAR(ccEdit), _ctrl];
     _hit setVariable [QGVAR(ccGroup), _list];
     _hit setVariable [QGVAR(ccPick), _label];
+    _hit setVariable [QGVAR(ccAsset), _asset];
 } forEach _matches;

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A drone that has actually SEEN somebody says so, down the same path a
  * failed hack takes (new.md section 1.3 - one reaction path, no special
  * case). The listener is the reaction ladder; until that exists this raise is

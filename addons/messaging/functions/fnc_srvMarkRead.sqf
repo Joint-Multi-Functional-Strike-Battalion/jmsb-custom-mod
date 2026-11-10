@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Marks every message in a thread read by this player. Nothing is broadcast:
  * an unread count is the reader's own business and telling twenty clients that
  * somebody opened a thread is twenty messages for no gain.

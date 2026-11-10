@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, by remoteExec from the admin console's SECRETS dialog: stores (or,
  * with "", clears) one secret in the server's own profile (code review R4,
  * 2026-10-31). The sender must be the logged-in admin (#login) or the host -

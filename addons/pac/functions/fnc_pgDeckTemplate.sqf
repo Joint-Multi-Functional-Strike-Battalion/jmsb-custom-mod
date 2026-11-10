@@ -4,7 +4,8 @@
     Author: YonV
     Description: One report-deck template - the website's
         ?page=template_edit: the card (id, title, short), its behaviour
-        (kind, priority, subject, anchor, transitions, sender, replies),
+        (kind, priority, subject, anchor, transitions, sender, replies,
+        danger close),
         and its lines as a table. A line opens on its own page; the fields
         of a line on theirs - the shape is three deep and each level gets a
         page rather than one screen that lies about the depth.
@@ -44,7 +45,8 @@ private _colW = (PAC_UI_W - 0.016) / 2;
     ["anchor", "Anchor  (a produced key)", "t", _opts getOrDefault ["anchor", ""]],
     ["transitionsTo", "Transitions to", "t", _opts getOrDefault ["transitionsTo", ""]],
     ["senderMustBe", "Sender must be", "t", _opts getOrDefault ["senderMustBe", ""]],
-    ["replyableWith", "Repliable with  (ids, comma separated)", "t", _reply]
+    ["replyableWith", "Repliable with  (ids, comma separated)", "t", _reply],
+    ["dangerClose", "Danger close  (m, 0 = none)", "n", _opts getOrDefault ["dangerClose", DECK_DANGER_CLOSE_NONE]]
 ], PAC_UI_TOP, PAC_UI_X, _colW] call FUNC(uiForm);
 
 private _lines = _rec getOrDefault ["lines", []];
@@ -84,6 +86,10 @@ private _btns = [
         private _reply = ((_f getOrDefault ["replyableWith", ""]) splitString ",") apply {trim _x};
         _reply = _reply select {_x isNotEqualTo ""};
         if (_reply isNotEqualTo []) then {_opts pushBack ["replyableWith", _reply]};
+        // A card's own danger-close threshold, metres (user, 2026-11-01, D8).
+        private _dangerClose = _f getOrDefault ["dangerClose", DECK_DANGER_CLOSE_NONE];
+        if !(_dangerClose isEqualType 0) then {_dangerClose = DECK_DANGER_CLOSE_NONE};
+        if (_dangerClose > DECK_DANGER_CLOSE_NONE) then {_opts pushBack ["dangerClose", _dangerClose]};
         private _rec = createHashMapFromArray [
             ["id", _id], ["title", trim (_f getOrDefault ["title", ""])], ["short", trim (_f getOrDefault ["short", ""])],
             ["lines", _was getOrDefault ["lines", []]], ["options", _opts]

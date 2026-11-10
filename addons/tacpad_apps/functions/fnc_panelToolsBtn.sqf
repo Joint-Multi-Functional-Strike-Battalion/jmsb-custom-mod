@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The TOOLS button: shows or hides the MAP TOOLS bar.
  *
  * MAP TOOLS IS TWO ROWS OF FOUR, and that is a lot of map to give up to

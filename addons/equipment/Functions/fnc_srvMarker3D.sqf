@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a Vector marker's in-world name (FUNC(placeTargetMarker), by
  * remoteExec). The name on it is the sender's own, he must hold a Vector, and
  * the point must be within its reach; then every client draws it

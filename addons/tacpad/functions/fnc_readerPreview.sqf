@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One message as one short line - the preview under a list row's subject and
  * on the FLASH banner. The answers the card was filled with, in order, without
  * the line headers; a reply with no fields (ROGER, WILCO) is its own title.

@@ -1,13 +1,16 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO, the board (docs/DESIGN_VOICE.md, "Tablet RADIO app"): game voice
  * (VON) as nets and calls, never as frequencies.
  *
  *   NETS    MY NETS (left): net, VON channel, link, ear L / B / R, mute,
- *           state, who is talking. SOUNDS and KEYS (right).
- *   CALLS   the group adds and search over VON CHANNEL SLOTS and CONTACTS
- *           (left); the LIVE CALL with recent contacts, and CALLBACKS (right).
+ *           state, who is talking. SOUNDS, KEYS and BUTTONS - which net
+ *           sits on which of the twelve net buttons - (right).
+ *   CALLS   the group adds and search over CALL SLOTS (game VON) or ALL
+ *           CALLS (the voice server: no limit to the number of calls, user
+ *           2026-11-01) and CONTACTS (left); the LIVE CALL with recent
+ *           contacts, and CALLBACKS (right).
  *   MANAGE  leaders, RTO and admin only: the nets, their members, WHO CAN.
  *
  * READS, IT DOES NOT COMPUTE. Everything comes from jmfsb_voice's API, read
@@ -38,6 +41,14 @@ params [["_display", displayNull, [displayNull]]];
 
 if (isNull _display) exitWith {};
 
+// THE CALLS LIST KEEPS ITS PLACE (FUNC(appRadioCalls), voice server): the
+// board is rebuilt on every change, so where the list was scrolled to is read
+// before the frame takes it down.
+private _callsList = uiNamespace getVariable [QGVAR(radioCallsList), controlNull];
+if (!isNull _callsList) then {
+    uiNamespace setVariable [QGVAR(radioCallsScroll), (ctrlScrollValues _callsList) select 0];
+};
+
 ([_display, "RADIO", PAGE_W, PAGE_H] call EFUNC(tacpad,appFrame)) params ["", "_body"];
 if (isNull _body) exitWith {};
 
@@ -50,11 +61,15 @@ private _voice = !isNil QEFUNC(voice,netState);
 // No game voice here: the server's system cannot run on this machine.
 private _unavailable = _voice && {!(missionNamespace getVariable [QEGVAR(voice,active), true])};
 private _me = call CBA_fnc_currentUnit;
+// Game VON counts its channels, so it has a fixed number of calls; the voice
+// server has none (user, 2026-11-01).
+private _von = (missionNamespace getVariable [QEGVAR(voice,system), ""]) isEqualTo VOICE_SYSTEM_VON;
 
 // ONE READ OF THE API PER DRAW, shared by every panel, so two panels on one
 // screen cannot show two different moments.
 private _ctx = createHashMapFromArray [
     ["voice", _voice],
+    ["von", _von],
     ["rowH", _rowH],
     ["netState", [[], [] call EFUNC(voice,netState)] select _voice],
     ["nets", [[], [_me] call EFUNC(voice,nets)] select _voice],
@@ -72,7 +87,15 @@ if ((RADIO_TABS findIf {(_x select 0) isEqualTo _tab}) < 0) then {_tab = "nets"}
 private _note = switch (true) do {
     case (!_voice): {"NO VOICE ADDON LOADED - NOTHING TO READ"};
     case (_unavailable): {TEXT_VOICE_UNAVAILABLE};
-    case (_tab isEqualTo "calls"): {format ["A CALL = ONE CUSTOM CHANNEL, UP TO %1", CALL_SIZE_MAX]};
+    // Calls at once and people a call, said apart (tablet review 2026-11-01,
+    // 3.9: "up to 8" over a strip of ten read as a count that did not match).
+    // No count of calls on the voice server: it has no limit (user, 2026-11-01).
+    case (_tab isEqualTo "calls"): {
+        [
+            format ["ANY NUMBER OF CALLS, UP TO %1 PEOPLE EACH", CALL_SIZE_MAX],
+            format ["%1 CALLS AT ONCE, UP TO %2 PEOPLE EACH", CALL_SLOTS, CALL_SIZE_MAX]
+        ] select _von
+    };
     case (_tab isEqualTo "manage"): {"LEADERS, RTO, ADMIN ONLY"};
     default {"VON - MESH SETS EACH SPEAKER'S VOLUME"};
 };
@@ -83,7 +106,7 @@ private _fullH = _h - _top - _padY;
 private _fullW = _w - 2 * _pad;
 
 if (!_voice) exitWith {
-    [_body, [_pad, _top, _fullW, _rowH], "Game voice runs through the voice addon (jmfsb_voice), which this mission does not load.", ["dim"] call EFUNC(tacpad,theme), TEXT_TITLE] call EFUNC(tacpad,drawText);
+    [_body, [_pad, _top, _fullW, _rowH], "Game voice needs the JMSB voice addon, which this mission does not load.", ["dim"] call EFUNC(tacpad,theme), TEXT_TITLE] call EFUNC(tacpad,drawText);
 };
 
 // VOICE UNAVAILABLE: no nets, calls or RTO nets on any tab.
@@ -105,10 +128,26 @@ switch (_tab) do {
         [_body, [_pad, _top, _fullW, _fullH], _ctx] call FUNC(appRadioManage);
     };
     default {
+        // AN ESSENTIAL KEY WITH NO BIND IS SAID AT THE TOP (tablet review
+        // 2026-11-01, 3.8) - TIC and PTT 1 read UNBOUND as ordinary rows of
+        // KEYS, under a sub-tab nobody opens in a firefight. Only a key whose
+        // action is registered and has no key; one whose addon is not loaded
+        // is not a missing bind.
+        private _unbound = RADIO_KEYS_ESSENTIAL select {
+            private _bind = [JMFSB_CATEGORY, _x select 1] call CBA_fnc_getKeybind;
+            !isNil "_bind" && {((_bind param [5, [0, []]]) param [0, 0]) <= RADIO_KEY_NONE}
+        };
+        private _accent = ["accent"] call EFUNC(tacpad,theme);
+        {
+            [_body, [_pad, _top, _fullW, _rowH], format ["%1 has no key %2 bind it in Configure Addons", _x select 0, MIDDOT_TEXT], _accent, TEXT_BODY, true] call EFUNC(tacpad,drawText);
+            _top = _top + _rowH * 1.2;
+        } forEach _unbound;
+        private _netsH = _h - _top - _padY;
+
         private _leftW = (_w - 3 * _pad) * PAGE_SPLIT_RADIO;
         private _rightX = _pad * 2 + _leftW;
-        [_body, [_pad, _top, _leftW, _fullH], _ctx] call FUNC(appRadioNets);
-        [_body, [_rightX, _top, _w - _rightX - _pad, _fullH], _ctx] call FUNC(appRadioSounds);
+        [_body, [_pad, _top, _leftW, _netsH], _ctx] call FUNC(appRadioNets);
+        [_body, [_rightX, _top, _w - _rightX - _pad, _netsH], _ctx] call FUNC(appRadioSounds);
     };
 };
 
@@ -134,7 +173,7 @@ uiNamespace setVariable [QGVAR(radioPFH), [{
 
     if !([] call EFUNC(tacpad,appIdle)) exitWith {};
     private _focus = focusedCtrl (HOST_DISPLAY);
-    if (!isNull _focus && {ctrlType _focus isEqualTo CT_EDIT}) exitWith {};
+    if (!isNull _focus && {ctrlType _focus in [CT_EDIT, CT_COMBO]}) exitWith {};
     if (([] call FUNC(appRadioKey)) isEqualTo (uiNamespace getVariable [QGVAR(radioSeen), ""])) exitWith {};
 
     ["radio"] call EFUNC(tacpad,openApp);

@@ -15,7 +15,13 @@ ADDON = false;
 //
 // Nothing in the mod reads it today - it is published for missions and for the
 // symmetry of that table.
-EGVAR(patches,usesAlive) = isClass (configFile >> "CfgPatches" >> "ALiVE_main");
+//
+// ALiVE'S OWN MAIN PBO NAMES (user, 2026-11-02: "use the alive main pbo
+// names"): the test is common's, off its PATCHES_ALIVE list, so this and every
+// feature's decision read the same names. Asked here, at preInit, it is the
+// mod's presence - the mission-long "no commanders" verdict comes later and
+// does not change this flag.
+EGVAR(patches,usesAlive) = [] call EFUNC(common,aliveLoaded);
 
 GVAR(ready) = false;
 GVAR(aaRegistered) = false;

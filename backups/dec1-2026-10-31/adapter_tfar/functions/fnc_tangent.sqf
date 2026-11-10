@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, on TFAR's OnBeforeTangent and OnTangent: a set is keyed or released.
  *
  *   before, down - the sending lever is set for the net being keyed (the

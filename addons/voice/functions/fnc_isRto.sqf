@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE RTO TEST - the one place that says whether a man holds the RTO job.
  * The RTO console (the RADIO app's MANAGE and the permission table's RTO
  * column) is a player job, not admins only (user, 2026-10-20), so everything

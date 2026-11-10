@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A medic finished a hand check on somebody: ask the patient's machine to take
  * the reading. Hooked to ACE's ace_treatmentSucceded, which fires on the
  * medic's own machine.

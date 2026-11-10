@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which of PTT 2-4 a net is on, for the RADIO app's PTT tag. With a net given
  * next: the RADIO app's PTT key steps the net to the next of PTT 2, 3, 4 and
  * none (FUNC(pttNet)). A key moved to this net leaves the net it had; the key

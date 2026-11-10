@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Closes the tablet if it is open. The dialog's onUnload does the rest - see
  * FUNC(onUnload) - so ESC and this are the same close.
  *

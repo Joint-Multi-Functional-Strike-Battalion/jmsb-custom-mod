@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE BATTERY of one node, once per tick (user, 2026-10-30: sets run down
  * over hours and get swapped or charged from a vehicle - a logistics reason
  * to go back to the trucks). A set with a battery of its own (profile

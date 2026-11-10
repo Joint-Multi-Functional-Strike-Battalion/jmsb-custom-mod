@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * HACK - the rows of NODES IN REACH: the intrusion suite's own device list
  * (jmfsb_hacking_devices, from its scan - towers, hostile drones, wrecks, enemy
  * nets) joined to what RF says the player's set can hear

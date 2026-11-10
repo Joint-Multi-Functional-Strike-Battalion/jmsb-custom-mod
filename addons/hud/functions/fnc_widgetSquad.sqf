@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SQUAD: one line when the section is whole, and the casualty list the moment it
  * is not.
  *

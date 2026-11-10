@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Books one run of a costly tick against its budget (code review R9,
  * 2026-10-31): the RF mesh and the APS watch report how long each run took,
  * and FUNC(perfReport) writes the minute's count, average, worst and the runs

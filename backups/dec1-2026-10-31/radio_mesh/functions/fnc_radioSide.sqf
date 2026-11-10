@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The side a radio belongs to - the side of the man carrying it, or of the
  * vehicle it is racked in. A relay only ever carries its own side's traffic.
  *

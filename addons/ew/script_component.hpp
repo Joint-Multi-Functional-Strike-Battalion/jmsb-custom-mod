@@ -82,9 +82,9 @@
 #define FIX_ERR_MAX_M       2000
 // Confidence from the fix falls to nothing at this error.
 #define FIX_ERR_POOR_M      500
-// Cuts kept on a track (newest), and how far a DF line is drawn.
+// Cuts kept on a track (newest). No DF line is drawn on the map (user,
+// 2026-11-01).
 #define CUTS_KEPT           8
-#define DF_LINE_M           4000
 // A JAMMER SITE DOES NOT MOVE (user, 2026-10-25: static sites easier): its
 // cuts are kept by where they were taken, not when - one per this much ground,
 // this many - and all of them cross into a fix, however old. A squad that
@@ -291,8 +291,6 @@
 // --- Map layer ---------------------------------------------------------------
 #define MAP_DISPLAY         12
 #define MAP_CONTROL         51
-#define COLOUR_CUT          [0.95, 0.75, 0.2, 0.9]
-#define COLOUR_CUT_EDGE     [0.95, 0.75, 0.2, 0.3]
 #define COLOUR_FIX          [0.9, 0.25, 0.2, 1]
 #define COLOUR_OWN_JAM      [0.3, 0.6, 0.95, 0.8]
 #define MAP_ICON_PX         20
@@ -318,24 +316,30 @@
 // --- THE EA PANEL (FUNC(appEa), user 2026-10-21: a ground-jammer control
 // panel) --------------------------------------------------------------------
 // Columns as fractions of the body: the controls on the left, the air on the
-// right, this much between them; the legend's share of the right column.
+// right, this much between them. The spectrum takes the right column's whole
+// width, its legend one row under it, PANEL_LEGEND_ITEMS to the row (review
+// 2026-11-01, DESIGN_TABLET_REVIEW 3.5).
 #define PANEL_LEFT_W        0.46
 #define PANEL_GAP_W         0.02
-#define PANEL_LEGEND_W      0.32
+#define PANEL_LEGEND_ITEMS  4
 // A setting row's label sits in this share of the left column, its cells in
 // the rest; a readout between stepper arrows is this many cells wide.
 #define PANEL_INLINE_LABEL_W 0.22
 #define PANEL_READOUT_WEIGHT 2
 // Heights in rows: the state line, a segmented cell, the air after a row,
-// the transmitter switch, the network footer, the spectrum graph. A row that
-// is not a segmented one steps this far.
+// the transmitter switch, the network footer, the spectrum graph (twice the
+// seven it was - review 2026-11-01, DESIGN_TABLET_REVIEW 3.5: "small, lots of
+// empty space"). A row that is not a segmented one steps this far.
 #define PANEL_STATE_ROWS    2
 #define PANEL_CELL_ROWS     1.15
 #define PANEL_ROW_AIR       0.3
 #define PANEL_TX_ROWS       1.8
 #define PANEL_FOOT_ROWS     2
-#define PANEL_GRAPH_ROWS    7
+#define PANEL_GRAPH_ROWS    14
 #define PANEL_ROW_STEP      1.3
+// Letter tracking only on a short label - this many characters or fewer;
+// never on a value, a name or a sentence (review 2026-11-01, 2.3).
+#define PANEL_TRACK_MAX     12
 // Type, as multiples of the shell's body size.
 #define PANEL_STATE_SIZE    TEXT_DISPLAY
 #define PANEL_SUB_SIZE      TEXT_BODY
@@ -351,9 +355,8 @@
 #define PANEL_BAR_TRACK     0.3
 #define PANEL_SWATCH        0.6
 #define PANEL_SWATCH_INSET  0.2
-// The TRANSMITTER and POWER SYSTEM blocks' key column, as a share of each
-// one's half of the right column.
-#define PANEL_KEY_W         0.42
+// The TRANSMITTER and POWER SYSTEM blocks are jmfsb_tacpad_apps_fnc_kvRow
+// lists, one per half of the right column (review 2026-11-01, 2.4).
 // The BATTERY and HEAT bars: where the bar starts in the right column and its
 // share of it (the value is right of it).
 #define PANEL_POWER_BAR_AT  0.2

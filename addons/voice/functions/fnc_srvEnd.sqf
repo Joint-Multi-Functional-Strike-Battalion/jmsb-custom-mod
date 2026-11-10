@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: ends a call. Its members leave the call net through the adapter
  * and the slot is freed (VON: the custom channel is emptied, ready for the
  * next call). A bumped call's people are told why.

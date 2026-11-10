@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The soldier classes a QRF module inserts, leader first.
  *
  *   UNIT CLASSES set: those, in order, and nothing else

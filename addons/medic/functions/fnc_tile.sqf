@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The MEDIC tile: how many of the player's squad are hurt, and an alert the
  * moment one of them is in cardiac arrest or bleeding heavily. A tile provider
  * for jmfsb_tacpad_apps' band (jmfsb_tacpad_apps_tileProviders, registered in

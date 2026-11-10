@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A message arrived for this player. Updates the index row, appends to the
  * thread cache if the thread is open, and tells the player once.
  *

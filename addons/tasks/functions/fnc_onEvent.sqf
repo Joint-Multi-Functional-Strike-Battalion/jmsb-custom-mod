@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: runs code once, the next time a task condition event is raised
  * with FUNC(raise). The task conditions listened on CBA events, and a CBA
  * event carries no sender: any client could raise one and complete or show

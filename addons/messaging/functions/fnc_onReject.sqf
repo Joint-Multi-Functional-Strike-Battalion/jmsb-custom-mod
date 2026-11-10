@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers code to run on this machine when the server refuses something
  * this player sent (FUNC(cltReject)). For screens that show the refusal -
  * TAC//MSG's composer puts the card back.

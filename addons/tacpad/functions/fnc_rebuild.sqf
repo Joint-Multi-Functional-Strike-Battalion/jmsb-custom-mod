@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Redraws a panel's contents in place, without touching its frame or its
  * position. A panel that has changed what it is showing - a reader that has
  * opened a thread, a roster that has lost a man - asks for this rather than

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the ALT readout (FUNC(altCell)) at the front of the phone's status
  * row for a jump and takes it out again on the ground. jmfsb_devices shows
  * the first OVERLAY_STATUS_CELLS of its order and six are named already, so

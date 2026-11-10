@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a man in a vehicle points (FUNC(keyPressVehicle), by remoteExec).
  * The pointer is the sender himself, in a vehicle that is not a static
  * weapon, and the point is within POINT_DISTANCE; it goes to that vehicle's

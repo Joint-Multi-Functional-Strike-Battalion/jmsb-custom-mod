@@ -1,30 +1,29 @@
-//! One player in one LiveKit room: his microphone published, everyone he is
-//! subscribed to played through the mixer, push-to-talk, and what happens
-//! reported as events.
+//! One player in one voice room, on either voice server: his microphone sent
+//! while he talks, everyone he is subscribed to played through the mixer,
+//! and what happens reported as events.
+//!
+//! THE TWO VOICE SERVERS (2026-11-01, no libwebrtc): the address picks one.
+//! - `ws://` / `wss://`: LiveKit, over pure Rust WebRTC (`livekit.rs`).
+//! - `mumble://identity@host:port/room`: a Mumble server (`mumble.rs`).
+//!
+//! Both carry 20 ms Opus packets; the encoding, the noise suppression and the
+//! decoding are this side's (`codec.rs`), the same for both.
 
-use std::borrow::Cow;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-use futures_util::StreamExt;
-use livekit::options::TrackPublishOptions;
-use livekit::prelude::*;
-use livekit::webrtc::audio_source::native::NativeAudioSource;
-use livekit::webrtc::audio_source::{AudioSourceOptions, RtcAudioSource};
-use livekit::webrtc::audio_stream::native::NativeAudioStream;
-use livekit::webrtc::prelude::AudioFrame;
 use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
-use tokio::task::JoinHandle;
 
 use crate::audio::{Devices, Mixer, FRAME, RATE};
-
-/// How much audio LiveKit's source may queue (ms).
-const SOURCE_QUEUE_MS: u32 = 100;
+use crate::codec::{Mic, Speakers};
+use crate::{livekit, mumble};
 
 /// A test tone in place of the microphone (Hz, and its level 0..1).
 const TONE_HZ: f32 = 440.0;
 const TONE_LEVEL: f32 = 0.2;
+/// The address that picks the Mumble server.
+const MUMBLE_SCHEME: &str = "mumble://";
 
 /// How a session is made.
 #[derive(Debug, Clone, Default)]
@@ -47,7 +46,7 @@ pub enum Event {
     Disconnected(String),
     Joined(String),
     Left(String),
-    /// Everyone talking now, by identity, as the server sees it.
+    /// Everyone talking now, by identity.
     Speaking(Vec<String>),
     /// The microphone could not be opened; the session runs on, listening
     /// only. Sent once per opening of the devices.
@@ -55,54 +54,90 @@ pub enum Event {
     Error(String),
 }
 
+/// What a voice server hands the session.
+#[derive(Debug)]
+pub enum Inbound {
+    /// One Opus packet from one speaker, by identity.
+    Audio { identity: String, opus: Vec<u8> },
+    /// A speaker is gone: forget his decoder and his place in the mixer.
+    Gone(String),
+}
+
+/// THE VOICE SERVER, either one. Each is a cheap handle (Clone) to its own
+/// task, so the microphone's task holds one too.
+#[derive(Clone)]
+pub enum Transport {
+    LiveKit(livekit::Conn),
+    Mumble(mumble::Conn),
+}
+
+impl Transport {
+    /// Connects to the server the address names. Its first events are
+    /// `Connected`, then `Joined` for everyone already there.
+    async fn connect(
+        url: &str,
+        token: &str,
+        inbound: UnboundedSender<Inbound>,
+        events: UnboundedSender<Event>,
+    ) -> Result<Self, String> {
+        if url.starts_with(MUMBLE_SCHEME) {
+            mumble::Conn::connect(url, token, inbound, events).await.map(Self::Mumble)
+        } else {
+            livekit::Conn::connect(url, token, inbound, events).await.map(Self::LiveKit)
+        }
+    }
+
+    /// One 20 ms Opus packet of the microphone; `last` ends a transmission.
+    fn send(&self, opus: Vec<u8>, last: bool) {
+        match self {
+            Self::LiveKit(c) => c.send(opus, last),
+            Self::Mumble(c) => c.send(opus, last),
+        }
+    }
+
+    fn set_talking(&self, on: bool) {
+        match self {
+            Self::LiveKit(c) => c.set_talking(on),
+            Self::Mumble(c) => c.set_talking(on),
+        }
+    }
+
+    fn subscribe(&self, identity: &str, on: bool) {
+        match self {
+            Self::LiveKit(c) => c.subscribe(identity, on),
+            Self::Mumble(c) => c.subscribe(identity, on),
+        }
+    }
+
+    async fn close(&self) {
+        match self {
+            Self::LiveKit(c) => c.close().await,
+            Self::Mumble(c) => c.close().await,
+        }
+    }
+}
+
 pub struct Session {
-    room: Arc<Room>,
-    track: LocalAudioTrack,
+    transport: Transport,
     talking: Arc<AtomicBool>,
     mixer: Mixer,
     devices: Devices,
     /// Where the microphone's frames go; none under the test tone.
     mic_tx: Option<UnboundedSender<Vec<i16>>>,
-    /// The speakers SQF wants received (`subscribe`), by identity: kept so a
-    /// track published later is subscribed when it appears.
+    /// The speakers SQF wants received (`subscribe`), by identity: only they
+    /// are decoded and played.
     wanted: Arc<Mutex<HashSet<String>>>,
     events: UnboundedSender<Event>,
 }
 
 impl Session {
-    /// Joins the room and starts the devices. The microphone starts closed.
-    /// AUTO-SUBSCRIBE IS OFF (docs/DESIGN_VOICE_LIVEKIT.md "Hear"): nobody's
-    /// audio is downloaded until `subscribe` asks for him.
+    /// Opens the devices, then joins. The microphone starts closed.
+    /// NOBODY IS RECEIVED until `subscribe` asks for him
+    /// (docs/DESIGN_VOICE_LIVEKIT.md "Hear").
     pub async fn connect(url: &str, token: &str, events: UnboundedSender<Event>, opts: Options) -> Result<Self, String> {
-        let mut options = RoomOptions::default();
-        options.auto_subscribe = false;
-        let (room, room_events) = Room::connect(url, token, options).await.map_err(|e| e.to_string())?;
-        let room = Arc::new(room);
-
-        // The microphone: our own frames pushed into a native source. The
-        // WebRTC noise suppression and gain run on them; echo cancellation
-        // has no far end to work from (we play the audio ourselves), so it
-        // stays off - most players wear headsets.
-        let source = NativeAudioSource::new(
-            AudioSourceOptions { echo_cancellation: false, noise_suppression: true, auto_gain_control: true },
-            RATE,
-            1,
-            SOURCE_QUEUE_MS,
-        );
-        let track = LocalAudioTrack::create_audio_track("mic", RtcAudioSource::Native(source.clone()));
-        track.mute();
-        room.local_participant()
-            .publish_track(
-                LocalTrack::Audio(track.clone()),
-                TrackPublishOptions { source: TrackSource::Microphone, dtx: true, ..Default::default() },
-            )
-            .await
-            .map_err(|e| e.to_string())?;
-
         let mixer = Mixer::default();
         let (mic_tx, mic_rx) = unbounded_channel::<Vec<i16>>();
         let (devices, mic_tx) = if opts.tone {
-            tokio::spawn(tone(mic_tx));
             (Devices::open(mixer.clone(), None, &opts.input, &opts.output), None)
         } else {
             (Devices::open(mixer.clone(), Some(mic_tx.clone()), &opts.input, &opts.output), Some(mic_tx))
@@ -110,21 +145,26 @@ impl Session {
         // No speakers fails the session; no microphone does not (Windows'
         // microphone privacy settings answer "Access is denied"): he listens.
         let (devices, mic_error) = devices.map_err(|e| format!("speakers: {e}"))?;
+        let mic = Mic::new()?;
+
+        let (in_tx, in_rx) = unbounded_channel::<Inbound>();
+        let transport = Transport::connect(url, token, in_tx, events.clone()).await?;
+
         let talking = Arc::new(AtomicBool::new(false));
         let wanted: Arc<Mutex<HashSet<String>>> = Arc::default();
-
-        tokio::spawn(pump_mic(source, mic_rx, talking.clone()));
-        tokio::spawn(pump_room(room_events, mixer.clone(), events.clone(), wanted.clone()));
-        let _ = events.send(Event::Connected);
-        // Who was there first: the room reports only those who join later.
-        for id in room.remote_participants().keys() {
-            let _ = events.send(Event::Joined(id.to_string()));
+        if opts.tone {
+            let (tone_tx, tone_rx) = unbounded_channel::<Vec<i16>>();
+            tokio::spawn(tone(tone_tx));
+            tokio::spawn(pump_mic(mic, tone_rx, talking.clone(), transport.clone()));
+        } else {
+            tokio::spawn(pump_mic(mic, mic_rx, talking.clone(), transport.clone()));
         }
+        tokio::spawn(pump_inbound(in_rx, mixer.clone(), wanted.clone()));
         if let Some(e) = mic_error {
             let _ = events.send(Event::NoMic(e));
         }
 
-        Ok(Self { room, track, talking, mixer, devices, mic_tx, wanted, events })
+        Ok(Self { transport, talking, mixer, devices, mic_tx, wanted, events })
     }
 
     /// What opening other devices needs (`Devices::open`), so it can run off
@@ -139,8 +179,9 @@ impl Session {
         std::mem::replace(&mut self.devices, devices)
     }
 
-    /// Receive one speaker or not. Off drops his audio from the network, not
-    /// his gain and ear in the mixer: turned on again he plays as set.
+    /// Receive one speaker or not. Off stops his audio (from the network
+    /// where the server allows it: LiveKit), not his gain and ear in the
+    /// mixer: turned on again he plays as set.
     pub fn subscribe(&self, identity: &str, on: bool) {
         {
             let mut wanted = self.wanted.lock().unwrap();
@@ -150,26 +191,16 @@ impl Session {
                 wanted.remove(identity);
             }
         }
-        for p in self.room.remote_participants().values() {
-            if p.identity().as_str() != identity {
-                continue;
-            }
-            for publication in p.track_publications().values() {
-                if publication.kind() == TrackKind::Audio && publication.is_desired() != on {
-                    publication.set_subscribed(on);
-                }
-            }
+        if !on {
+            self.mixer.reset(identity);
         }
+        self.transport.subscribe(identity, on);
     }
 
     /// Push-to-talk: open or close the microphone.
     pub fn set_talking(&self, on: bool) {
         self.talking.store(on, Ordering::Relaxed);
-        if on {
-            self.track.unmute();
-        } else {
-            self.track.mute();
-        }
+        self.transport.set_talking(on);
     }
 
     /// One speaker's loudness and ear, from Arma.
@@ -189,7 +220,7 @@ impl Session {
 
     pub async fn close(self) {
         self.set_talking(false);
-        let _ = self.room.close().await;
+        self.transport.close().await;
     }
 }
 
@@ -212,89 +243,45 @@ async fn tone(tx: UnboundedSender<Vec<i16>>) {
     }
 }
 
-/// Microphone chunks to LiveKit while the key is held; dropped otherwise.
-async fn pump_mic(source: NativeAudioSource, mut rx: UnboundedReceiver<Vec<i16>>, talking: Arc<AtomicBool>) {
+/// Microphone chunks, encoded, to the server while the key is held; dropped
+/// otherwise. Letting go sends what is left as the transmission's last packet.
+async fn pump_mic(mut mic: Mic, mut rx: UnboundedReceiver<Vec<i16>>, talking: Arc<AtomicBool>, transport: Transport) {
+    let mut was_on = false;
     while let Some(chunk) = rx.recv().await {
-        if !talking.load(Ordering::Relaxed) {
-            continue;
+        let on = talking.load(Ordering::Relaxed);
+        if on {
+            if let Some(packet) = mic.push(&chunk) {
+                transport.send(packet, false);
+            }
+        } else if was_on {
+            if let Some(packet) = mic.finish() {
+                transport.send(packet, true);
+            }
         }
-        let frame = AudioFrame {
-            data: Cow::Owned(chunk),
-            sample_rate: RATE,
-            num_channels: 1,
-            samples_per_channel: FRAME as u32,
-        };
-        if let Err(e) = source.capture_frame(&frame).await {
-            log::warn!("capture: {e}");
-        }
+        was_on = on;
     }
 }
 
-/// The room's events: a new audio track gets a reader into the mixer, and
-/// loses it when the track goes. LiveKit reuses the receiver for the next
-/// speaker, so a reader left running would play the newcomer under the old
-/// name (and twice). A reader's restart (a new track, a re-subscription)
-/// empties the speaker's buffer but KEEPS HIS GAIN AND EAR: SQF sends them
-/// only when they move, so dropping them here would play him at the
-/// default until the next change. Only his leaving forgets them.
-async fn pump_room(
-    mut rx: UnboundedReceiver<RoomEvent>,
-    mixer: Mixer,
-    events: UnboundedSender<Event>,
-    wanted: Arc<Mutex<HashSet<String>>>,
-) {
-    let mut readers: HashMap<String, JoinHandle<()>> = HashMap::new();
-    let stop = |id: &str, readers: &mut HashMap<String, JoinHandle<()>>| {
-        if let Some(reader) = readers.remove(id) {
-            reader.abort();
-        }
-        mixer.reset(id);
-    };
-    while let Some(event) = rx.recv().await {
-        match event {
-            RoomEvent::ParticipantConnected(p) => {
-                let _ = events.send(Event::Joined(p.identity().to_string()));
-            }
-            RoomEvent::ParticipantDisconnected(p) => {
-                let id = p.identity().to_string();
-                stop(&id, &mut readers);
-                mixer.remove(&id);
-                let _ = events.send(Event::Left(id));
-            }
-            // Auto-subscribe is off: a speaker SQF asked for before his
-            // microphone was published is subscribed when it is.
-            RoomEvent::TrackPublished { publication, participant } => {
-                let id = participant.identity().to_string();
-                if publication.kind() == TrackKind::Audio && wanted.lock().unwrap().contains(&id) {
-                    publication.set_subscribed(true);
+/// The server's audio: each wanted speaker's packets decoded into the mixer.
+/// A speaker no longer wanted, or gone, loses his decoder; his gain and ear
+/// stay until he leaves (SQF sends them only when they move).
+async fn pump_inbound(mut rx: UnboundedReceiver<Inbound>, mixer: Mixer, wanted: Arc<Mutex<HashSet<String>>>) {
+    let mut speakers = Speakers::default();
+    while let Some(inbound) = rx.recv().await {
+        match inbound {
+            Inbound::Audio { identity, opus } => {
+                if !wanted.lock().unwrap().contains(&identity) {
+                    speakers.forget(&identity);
+                    continue;
+                }
+                if let Some(samples) = speakers.decode(&identity, &opus) {
+                    mixer.push(&identity, &samples);
                 }
             }
-            RoomEvent::TrackSubscribed { track: RemoteTrack::Audio(track), participant, .. } => {
-                let id = participant.identity().to_string();
-                stop(&id, &mut readers);
-                let into = mixer.clone();
-                let key = id.clone();
-                let reader = tokio::spawn(async move {
-                    let mut stream = NativeAudioStream::new(track.rtc_track(), RATE as i32, 1);
-                    while let Some(frame) = stream.next().await {
-                        into.push(&key, &frame.data);
-                    }
-                });
-                readers.insert(id, reader);
+            Inbound::Gone(identity) => {
+                speakers.forget(&identity);
+                mixer.remove(&identity);
             }
-            RoomEvent::TrackUnsubscribed { participant, .. } => {
-                stop(participant.identity().as_str(), &mut readers);
-            }
-            RoomEvent::ActiveSpeakersChanged { speakers } => {
-                let ids = speakers.iter().map(|p| p.identity().to_string()).collect();
-                let _ = events.send(Event::Speaking(ids));
-            }
-            RoomEvent::Disconnected { reason } => {
-                let _ = events.send(Event::Disconnected(format!("{reason:?}")));
-                break;
-            }
-            _ => {}
         }
     }
-    readers.into_values().for_each(|r| r.abort());
 }

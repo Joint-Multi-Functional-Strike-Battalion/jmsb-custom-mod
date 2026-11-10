@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers a panel with the shell. A panel is a title, a default place on the
  * screen, a builder that fills its body, and a setting that says whether the
  * player wants it - the shell owns the frame, the placement and the theming,

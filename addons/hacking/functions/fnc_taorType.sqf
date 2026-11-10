@@ -39,7 +39,9 @@ Author:
 params [["_pos", [], [[]]]];
 
 if (_pos isEqualTo []) exitWith {""};
-if (isNil "jmfsb_adapter_alive_fnc_commanders") exitWith {""};
+// No commanders to scope by - not loaded, or loaded with none once the adapter
+// has given up (user, 2026-11-02: "same as not loaded").
+if (isNil QEFUNC(adapter_alive,commanders) || {!([] call EFUNC(common,aliveLoaded))}) exitWith {""};
 
 private _explicit = "";
 private _implicit = "";
@@ -47,7 +49,7 @@ private _implicit = "";
 {
     _x params ["_side", "_type"];
 
-    ([_side] call jmfsb_adapter_alive_fnc_taorFor) params [["_taor", []], ["_black", []]];
+    ([_side] call EFUNC(adapter_alive,taorFor)) params [["_taor", []], ["_black", []]];
 
     // Blacklisted ground belongs to nobody, whatever else covers it.
     if ((_black findIf {_pos inArea _x}) > -1) then {continue};
@@ -60,6 +62,6 @@ private _implicit = "";
     };
 
     if ((_taor findIf {_pos inArea _x}) > -1) exitWith {_explicit = _type};
-} forEach (call jmfsb_adapter_alive_fnc_commanders);
+} forEach (call EFUNC(adapter_alive,commanders));
 
 [_implicit, _explicit] select (_explicit isNotEqualTo "")

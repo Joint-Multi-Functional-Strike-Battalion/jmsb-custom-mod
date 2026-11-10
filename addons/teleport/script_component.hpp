@@ -31,6 +31,13 @@
 #define TP_LIST             GVAR(list)
 #define QTP_LIST            QGVAR(list)
 
+// THE GUARD ON THE PUBLIC COPY (XEH_postInit): a client's overwrite is put
+// right once per TP_REPUBLISH_S, however many arrive, and said in the RPT at
+// most once per TP_WARN_S with how many there were (2026-11-06: the line
+// filled a server's RPT about twenty times a second).
+#define TP_REPUBLISH_S      1
+#define TP_WARN_S           60
+
 // remoteExec target of the server (review S7: the Zeus module asks for a new
 // point by remoteExec so the server knows who sent it).
 #define SERVER_OWNER        2

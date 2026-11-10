@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers a voice adapter: a backend that can carry the audio. adapter_von
  * registers "von" and adapter_livekit "livekit", each in its preInit; every
  * one is kept, and the one in use is the system's (FUNC(applyAdapter): under
@@ -20,7 +20,8 @@
  * push-to-talk, every frame), "keyed" [unit, net, on] (a remote speaker's
  * pushed key event: apply his volume, count him as talking until key-up),
  * "audience" [unit, net] -> units (who can hear him on that net; default the
- * net's members), "selfTest" [].
+ * net's members), "selfTest" [], "serverReady" [] -> bool (server: its voice
+ * server is set up; false = game VON for the mission, FUNC(followServer)).
  *
  * Arguments:
  * 0: Adapter id <STRING>

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * PICK A NET, NOT A NUMBER: puts the player's active set of that kind on the
  * channel that carries the net (fnc_radioNets) - as its active net, or as its
  * alternate (TFAR's additional channel, our monitor net, keyed by the

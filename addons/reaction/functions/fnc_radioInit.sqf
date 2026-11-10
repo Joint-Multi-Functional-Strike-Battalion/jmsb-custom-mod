@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Arms this client's transmission watch.
  *
  * Game voice (jmfsb_voice) raises jmfsb_voice_talk [unit, net, on]; only the

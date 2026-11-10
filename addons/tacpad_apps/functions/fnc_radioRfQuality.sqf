@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RF's link quality for the local player on one net: the best of his nodes
  * that hold it (jmfsb_rf_fnc_quality on each), or that one node's when a node
  * id is given. QUALITY_UNKNOWN when RF is not loaded, no node of his holds the

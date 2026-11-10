@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TUNE HIS SETS FROM THE NET PLAN - the TFAR path of
  * jmfsb_players_fnc_setRadioChannel (at login, on joining a group, on respawn,
  * on a radio reset). Every set he carries is loaded with the plan's fill

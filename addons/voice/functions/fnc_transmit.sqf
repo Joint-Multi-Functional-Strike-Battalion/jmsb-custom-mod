@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the local player's own push-to-talk, on its edges (fnc_frame reads
  * the adapter's "ptt" hook every frame). SPEAKER-PUSHED KEYING: on key-down
  * the speaker himself tells everyone who can hear him on that net (the

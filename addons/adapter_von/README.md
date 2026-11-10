@@ -36,6 +36,9 @@ are the page JMSB - Voice (Built-in) > VON.
   mission made itself are left alone; when all ten are taken a net has none
   (and logs a warning). The map `[[key, id], ...]` is published as
   `jmfsb_adapter_von_channelMap`.
+- **Eight calls at once, here only.** The `channelUse` count is what keeps
+  the voice core at CALL 1-8 (`jmfsb_voice_fnc_srvSlot`): on the voice
+  server, which counts no channels, calls have no limit (user, 2026-11-01).
 - **An RTO net** (voice kind `custom`, addons/voice/README.md "RTO nets") is
   keyed by its id like a CALL and gets its own channel when the voice core
   asks through the `reserve` hook (`fnc_reserve`: `ensureChannel`, false

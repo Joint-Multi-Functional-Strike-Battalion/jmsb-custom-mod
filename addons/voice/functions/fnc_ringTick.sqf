@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every RING_PERIOD_S: the ring while a call or callback rings for
  * the local player, the ringback while his own dial is still ringing out.
  *

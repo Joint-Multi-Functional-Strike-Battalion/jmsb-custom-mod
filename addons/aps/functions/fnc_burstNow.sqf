@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A manual RF burst, asked for from the map panel (server, the one arbiter).
  * The same conditions the automatic burst needs - the vehicle is crewed,
  * running and not too badly hit, and the emitter is off its cooldown - and

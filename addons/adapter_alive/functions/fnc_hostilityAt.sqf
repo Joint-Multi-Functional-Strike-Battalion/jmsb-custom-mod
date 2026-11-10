@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How hostile the nearest settlement's civilians are to a side, 0 to 100.
  *
  * ALiVE's civilian model keeps a "hostility" hash on every settlement cluster

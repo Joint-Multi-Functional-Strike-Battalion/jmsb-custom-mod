@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client-local jam evaluation (CBA PFH). Publishes this player's jam factor per
  * domain for the meter and the handset, and applies the GPS denial.
  * Levers + falloff adapted from Crows-EW (APL-SA).

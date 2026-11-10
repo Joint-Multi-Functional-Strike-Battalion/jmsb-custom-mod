@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reports a scripted round to the air defence intercept (addons/adsite), so
  * its AD units can shoot it down - the same way they meet a fired one.
  *

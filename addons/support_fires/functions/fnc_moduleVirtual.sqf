@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one JMSB - Virtual Artillery module: a battery at the module's
  * position, on or off the map, with no gun objects anywhere. The artillery
  * module mission makers place (user, 2026-10-20: "arty should be virtual").

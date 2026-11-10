@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes one of the local player's nets his active net. THE GAME'S PUSH-TO-TALK
  * THEN SENDS ON IT: the adapter sets it as the current voice channel (VON:
  * setCurrentChannel - TEAM = Group, C2-kind = custom 1, A2G = custom 2, a

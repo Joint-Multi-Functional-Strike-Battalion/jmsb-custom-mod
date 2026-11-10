@@ -26,7 +26,7 @@ FA_IMAGE = r"\z\jmfsb\addons\fa_main\data\%s.paa"
 CATEGORY = ("JMSB", "1st JMSB")
 # Topic class, title, the boards in it (gen_signs.SIGNS keys; fa_ keys from FA_SIGNS).
 TOPICS = [
-    ("RadioVoice", "Radio voice", ["numpad", "numpad_tablet", "radio_howto", "radio_nets", "radio_keys"]),
+    ("RadioVoice", "Radio voice", ["fkeys", "numpad", "numpad_tablet", "radio_howto", "radio_nets", "radio_keys"]),
     ("Radios", "Radios", ["radio_sets"]),
     ("Devices", "Devices", ["radio_phone", "radio_side", "simple_phone", "simple_side"]),
     ("Tablets", "Tablets", ["radio_tablet", "tablet_apps", "simple_tablet"]),
@@ -88,6 +88,15 @@ def body(spec):
         for heading, items in spec["legend"]:
             parts.append("<t color='%s'>%s</t><br/>" % (TAN, esc(heading.upper())) + "<br/>".join(
                 "%s: <t color='%s'>%s</t>" % (esc(label), BONE, esc(key)) for label, key in items))
+    elif kind == "fkeys":
+        # The F row key by key, then Shift / Ctrl over F1-F8, then the legend.
+        parts.append("<t color='%s'>THE F ROW</t><br/>" % TAN + "<br/>".join(
+            "%s: <t color='%s'>%s</t>" % (esc(k), BONE, esc(c.replace("\n", " ")))
+            for k, c, _ in spec["keys"]))
+        for row, captions in spec["mods"]:
+            parts.append("<t color='%s'>%s</t><br/>" % (TAN, esc(row.upper())) + "<br/>".join(
+                "F%d: <t color='%s'>%s</t>" % (n + 1, BONE, esc(c)) for n, c in enumerate(captions)))
+        parts.append(esc(spec["legend"]))
     elif kind == "ammo2":
         for heading, items in spec["columns"]:
             parts.append("<t color='%s'>%s</t><br/>" % (TAN, esc(heading.upper())) + rows(items))

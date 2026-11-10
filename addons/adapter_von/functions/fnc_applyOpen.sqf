@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the current VON channel where it belongs: Direct while TALK LOCAL is
  * held, a PTT key's net while it is held (the last pressed of several; PTT 1
  * is the active net, 2-4 what jmfsb_voice_fnc_pttNet says), else the open

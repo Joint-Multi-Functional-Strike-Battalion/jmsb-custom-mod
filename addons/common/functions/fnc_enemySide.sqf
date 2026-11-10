@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The side the players are fighting, worked out rather than typed.
  *
  * SIDES ARE TYPED ONCE (D59). A module that needs "the enemy" - the jamming

@@ -1,15 +1,22 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A transport has reached its point: start what the task does there. The
  * phases it hands on are FUNC(transportStep)'s.
  *
  *   HOVER        holds a hover over the point                    -> "hold"
  *   LOITER       orbits it at the requested radius               -> "hold"
- *   PICKUP, EXTRACT, PICKUP > LZ, LAND, LAND ENG OFF, home
- *                lands (FUNC(landAt)): GET IN for the first three, GET OUT
- *                for LAND, LAND (shut down) for the rest          -> "landing"
+ *   EXTRACT      a low hover over the pickup, EXTRACT_HOVER m, never
+ *                down (user, 2026-11-08)                        -> "landing"
+ *   PICKUP, PICKUP > LZ, LAND, LAND ENG OFF, home
+ *                lands (FUNC(landAt)): GET IN for PICKUP, GET OUT for
+ *                LAND, LAND (shut down) for the rest - PICKUP > LZ too
+ *                (2026-11-08: "pick up with the helo lands turns off"; it
+ *                starts up for the insertion on its next order)  -> "landing"
  *   FASTROPE     comes down to the rope hover                    -> "ropeIn"
+ *   RAPPEL       comes down to the rappel hover (2026-11-08)     -> "rappelIn"
+ *                (a lift request's rope insertion: the control's cap
+ *                INSERT_APPROACH_SPEED - in fast)
  *   HELOCAST     comes down to the water                         -> "castIn"
  *   PARADROP     green light short of the drop zone, straight on -> "jumping"
  *   SLINGLOAD    finds the nearest load it can lift, comes down to it
@@ -45,10 +52,16 @@ private _fnc_hold = {
     _logic setVariable [QGVAR(status), _status, true];
     [_logic, _line, "normal", _requester] call FUNC(say);
 };
+// THE LOW HOVERS ARE THE FLIGHT CONTROL'S (2026-11-05, FUNC(heliTake)): the
+// rope, the cast and the hook heights over the point, held until the task is
+// done there and the AI gets the airframe back on the next order.
+// A LIFT REQUEST'S ROPE INSERTION COMES IN FAST (user, 2026-11-08): the
+// control's cap is INSERT_APPROACH_SPEED for it.
+private _insertion = count (_logic getVariable [QGVAR(liftJob), createHashMap]) > 0;
 private _fnc_lowHover = {
-    params ["_height"];
-    _veh flyInHeight _height;
-    [_veh, _target, "LIMITED"] call FUNC(moveTo);
+    params ["_height", "_why", ["_ignore", objNull]];
+    private _cap = [HELI_APPROACH_SPEED, INSERT_APPROACH_SPEED] select (_insertion && {_task in [TASK_FASTROPE, TASK_RAPPEL]});
+    [_veh, _target, _height, false, true, _cap, _why, _ignore] call FUNC(heliTake);
     _st set ["since", CBA_missionTime];
 };
 
@@ -71,12 +84,19 @@ switch (_task) do {
         // The rope item, topped up for this drop - the players aboard deploy
         // ropes with it if they go after the AI's are cut (FUNC(stockRopes)).
         [_logic, _veh] call FUNC(stockRopes);
-        [FASTROPE_HOVER] call _fnc_lowHover;
+        [FASTROPE_HOVER, "the rope hover"] call _fnc_lowHover;
         _st set ["phase", "ropeIn"];
         _logic setVariable [QGVAR(status), "fast-roping", true];
     };
+    // THE RAPPEL (user, 2026-11-08: "a simplex like repel"): any airframe, its
+    // own ropes - out once it holds the hover (FUNC(transportStep)).
+    case TASK_RAPPEL: {
+        [RAPPEL_HOVER, "the rappel hover"] call _fnc_lowHover;
+        _st set ["phase", "rappelIn"];
+        _logic setVariable [QGVAR(status), "rappelling", true];
+    };
     case TASK_HELOCAST: {
-        [HELOCAST_HEIGHT] call _fnc_lowHover;
+        [HELOCAST_HEIGHT, "the cast hover"] call _fnc_lowHover;
         _st set ["phase", "castIn"];
         _logic setVariable [QGVAR(status), "helocast", true];
     };
@@ -97,21 +117,33 @@ switch (_task) do {
         _st set ["load", _load];
         _st set ["target", getPosATL _load];
         _target = getPosATL _load;
-        [SLING_HOOK_HEIGHT] call _fnc_lowHover;
+        // The load is what it hovers over, not a surface under it.
+        [SLING_HOOK_HEIGHT, "the hook", _load] call _fnc_lowHover;
         _st set ["phase", "hook"];
         _logic setVariable [QGVAR(status), "hooking", true];
         [_logic, format ["over the load at %1, hooking %2", mapGridPosition _load, getText (configOf _load >> "displayName")], "normal", _requester] call FUNC(say);
     };
+    // THE EXTRACTION NEVER TOUCHES DOWN (user, 2026-11-08: "a low hover never
+    // touching"): the flight control holds it over the pickup while the group
+    // climbs in; FUNC(transportStep) loads it there as if landed.
+    case TASK_EXTRACT: {
+        [EXTRACT_HOVER, "the extraction hover"] call _fnc_lowHover;
+        _st set ["phase", "landing"];
+        _logic setVariable [QGVAR(status), "landing", true];
+    };
     default {
         private _mode = switch (_task) do {
-            case TASK_PICKUP;
-            case TASK_EXTRACT;
-            case TASK_LIFT: {"GET IN"};
+            case TASK_PICKUP: {"GET IN"};
             case TASK_LAND: {"GET OUT"};
             default {"LAND"};
         };
-        [_veh, _target, _mode] call FUNC(landAt);
+        // The pad is moved clear of anything in the rotor's way (2026-11-02,
+        // FUNC(clearSpot)) - home too, when the stand is on the ground.
+        private _homeASL = _logic getVariable [QGVAR(homeASL), AGLToASL _target];
+        private _clear = _task isNotEqualTo TASK_HOME || (_homeASL select 2) - getTerrainHeightASL _homeASL < ROTOR_DISC_LOW;
+        [_veh, _target, _mode, _clear] call FUNC(landAt);
         _st set ["mode", _mode];
+        _st set ["clearPad", _clear];
         _st set ["phase", "landing"];
         _st set ["since", CBA_missionTime];
         _logic setVariable [QGVAR(status), "landing", true];

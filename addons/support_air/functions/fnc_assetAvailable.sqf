@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * FUNC(available) by asset id - the "available" code this provider hands the
  * support core, asked before anything but a recall.
  *

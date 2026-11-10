@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a unit holds the jmfsb admin flag. One place, because the flag is set
  * by jmfsb_common on #login and BFT must never invent its own idea of who is an
  * admin - a second definition is how the chat gate and the map gate drift apart.

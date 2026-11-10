@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts or stops walking the route: USE and STOP on the page. Walking starts
  * at the waypoint the page has as next (the first, unless one was pressed),
  * moves on at the arrival radius (FUNC(tick)) and ends at the last. While a
@@ -27,8 +27,9 @@ if (_on && {GVAR(waypoints) isEqualTo []}) exitWith {
 if (_on && {GVAR(next) < 0 || {GVAR(next) >= count GVAR(waypoints)}}) then {GVAR(next) = 0};
 GVAR(navigating) = _on;
 
-// jmfsb_devices shows the first OVERLAY_STATUS_CELLS of its order and six
-// are named already: PM goes in front while a route is walked, out when not.
+// jmfsb_devices shows the first OVERLAY_STATUS_CELLS (seven) of its order on
+// the phone and the side devices: PM goes in front while a route is walked,
+// out when not.
 private _order = (missionNamespace getVariable [QEGVAR(devices,overlayOrder), []]) - [STATUS_ICON];
 if (_on) then {_order = [STATUS_ICON] + _order};
 missionNamespace setVariable [QEGVAR(devices,overlayOrder), _order];

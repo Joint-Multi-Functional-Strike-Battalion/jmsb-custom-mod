@@ -19,5 +19,7 @@ if (isNil QGVAR(entities)) then {
 
 // Shot ids handed to the air defence intercept (FUNC(threat)), server only.
 GVAR(nextThreat) = 0;
+// The live fire missions' impact areas, published for the JFO watch HUD (FUNC(impactSet)).
+GVAR(impacts) = [];
 
 ADDON = true;

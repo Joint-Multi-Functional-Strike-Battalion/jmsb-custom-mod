@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: arms one alarm. The list is kept here rather than on the setter's
  * machine, for the reason alarm clocks are not worn on the wrist of the person
  * who set them: the wake-up has to happen whether or not that person is still

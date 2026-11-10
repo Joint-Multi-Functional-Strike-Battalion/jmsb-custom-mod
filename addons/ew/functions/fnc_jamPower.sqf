@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, each DF tick: every jammer host's POWER SYSTEM and HEAT, kept on
  * the host vehicle (QGVAR(power), JAM_POWER_FRESH) so they outlive an
  * operator getting out.

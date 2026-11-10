@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The capture condition, over every watch: enough players of one side inside,
  * nobody hostile, held continuously. Any break resets the clock - taking
  * ground means clearing it AND staying.

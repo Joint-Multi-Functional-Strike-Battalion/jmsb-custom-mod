@@ -1,11 +1,13 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: signs a player into his own echo room, echo-<his UID>, and sends the
  * voice server's address and the token to him alone (FUNC(echoAnswer)). The
  * address is this addon's CBA setting; the key and secret its settings when
  * set, else the server's environment (JMSB_LIVEKIT_KEY / JMSB_LIVEKIT_SECRET,
- * read by the extension). One token per machine per TOKEN_MIN_S.
+ * read by the extension). One token per machine per TOKEN_MIN_S. On Mumble
+ * (jmfsb_voice_defaultSystem) the answer is the Mumble address marked for the server's
+ * loopback (MUMBLE_ECHO_FORMAT) and the password.
  *
  * THE SENDER MUST BE THE UNIT'S MACHINE: nobody asks for another man's room.
  *
@@ -34,14 +36,21 @@ if (CBA_missionTime - (GVAR(tokenAt) getOrDefault [_at, -TOKEN_MIN_S]) < TOKEN_M
     TRACE_1("echo token: asked too soon",_to);
 };
 GVAR(tokenAt) set [_at, CBA_missionTime];
+private _uid = getPlayerUID _unit;
+
+// MUMBLE (2026-11-01): the server's own loopback plays his voice back to him
+// alone, as the echo bot does on LiveKit; the token is the password.
+if (([] call FUNC(srvServerKind)) isNotEqualTo SERVER_LIVEKIT) exitWith {
+    if (GVAR(mumbleAddress) isEqualTo "") exitWith {
+        [false, NO_MUMBLE_TEXT] remoteExecCall [QFUNC(echoAnswer), _to];
+    };
+    private _mumble = format [MUMBLE_ECHO_FORMAT, _uid, GVAR(mumbleAddress)];
+    [true, _mumble, GVAR(mumblePassword)] remoteExecCall [QFUNC(echoAnswer), _to];
+};
 
 if (GVAR(url) isEqualTo "") exitWith {
     [false, NO_URL_TEXT] remoteExecCall [QFUNC(echoAnswer), _to];
 };
-
-// the key and secret as set, possibly empty: the extension then reads the
-// server's environment (JMSB_LIVEKIT_KEY / JMSB_LIVEKIT_SECRET)
-private _uid = getPlayerUID _unit;
 // The setting, else the in-game secret (review R4), else the server's environment.
 private _key = [GVAR(key), ["livekitKey"] call EFUNC(common,secret)] select (GVAR(key) isEqualTo "");
 private _secret = [GVAR(secret), ["livekitSecret"] call EFUNC(common,secret)] select (GVAR(secret) isEqualTo "");

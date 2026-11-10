@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps the drone link and the seat honest (FUNC(uavControl)), every UAV_TICK
  * seconds. Nothing linked and no seat held: nothing to do.
  *

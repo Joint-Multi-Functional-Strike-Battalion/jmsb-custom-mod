@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * DRONES - FLEET: one row per drone on the players' side (FUNC(appDronesData)):
  * the drone, its link (DATA / JAM n% / LOST / NO RF), RF quality, battery and
  * task. A row is a button: it picks the drone the FEED shows. Under the list,
@@ -34,19 +34,25 @@ private _enemyState = _enemy param [0, 0];
 
 ([_body, _rect, "FLEET", format ["%1 OWN - %2 ENEMY", count _fleet, parseNumber (_enemyState > 0)]] call FUNC(appPagePanel)) params ["_left", "_top", "_w", "_h"];
 
+private _ground = ["ground"] call EFUNC(tacpad,theme);
 private _ink = ["ink"] call EFUNC(tacpad,theme);
 private _accent = ["accent"] call EFUNC(tacpad,theme);
 private _line = ["line"] call EFUNC(tacpad,theme);
 private _muted = ["muted"] call EFUNC(tacpad,theme);
 private _dim = ["dim"] call EFUNC(tacpad,theme);
-private _tint = ["accentTint"] call EFUNC(tacpad,theme);
 
 private _pad = PAD * HOST_W;
 private _cardH = _rowH * 2;
 
-// DRONE LINK QUALITY BATT on the first line; the task under the name.
-private _cols = [0, 0.4, 0.58, 0.82];
-private _heads = ["DRONE", "LINK", "QUALITY", "BATT"];
+// NOTHING IN LINK, SAID ONCE (review 2026-11-01, DESIGN_TABLET_REVIEW 3.3):
+// every row read NO RF, an empty bar and a dash. When no drone holds the DATA
+// link the page says so in one line and the rows drop the link columns.
+private _linked = (_fleet findIf {(_x select 3) >= DRONE_LINK_LOST}) >= 0;
+
+// DRONE LINK QUALITY BATT on the first line; the task under the name. The
+// link columns only while something has a link.
+private _cols = [[0, 0.82], [0, 0.4, 0.58, 0.82]] select _linked;
+private _heads = [["DRONE", "BATT"], ["DRONE", "LINK", "QUALITY", "BATT"]] select _linked;
 private _cx = _cols apply {_left + _pad + _x * (_w - 2 * _pad)};
 private _cw = [];
 {
@@ -63,6 +69,10 @@ if (_fleet isEqualTo []) then {
     [_body, [_left + _pad, _y + _rowH * 0.2, _w - 2 * _pad, _rowH], "No drones up on your side.", _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
     _y = _y + _rowH * 1.4;
 };
+if (_fleet isNotEqualTo [] && !_linked) then {
+    [_body, [_left + _pad, _y + _rowH * 0.2, _w - 2 * _pad, _rowH], "No drone in data link range", _muted, TEXT_BODY] call EFUNC(tacpad,drawText);
+    _y = _y + _rowH * 1.4;
+};
 
 private _fit = floor ((_h - _rowH * 3) / _cardH) max 1;
 {
@@ -71,17 +81,24 @@ private _fit = floor ((_h - _rowH * 3) / _cardH) max 1;
     private _ry = _y + _forEachIndex * _cardH;
     private _bad = _word in ["LOST", "NO RF"] || {(_word select [0, 3]) isEqualTo "JAM"};
 
-    if (_uav isEqualTo _pick) then {
-        [_body, [_left, _ry, _w, _cardH], _tint] call EFUNC(tacpad,drawFill);
+    // THE SELECTED ROW IS THE INK FILL with the ground on it - the selected
+    // state every tab and chip in the suite uses (review 2026-11-01, 3.3: the
+    // accent tint did not read as picked).
+    private _picked = _uav isEqualTo _pick;
+    if (_picked) then {
+        [_body, [_left, _ry, _w, _cardH], _ink] call EFUNC(tacpad,drawFill);
     };
-    [_body, [_cx select 0, _ry, _cw select 0, _rowH], _name, _ink, TEXT_BODY, true] call EFUNC(tacpad,drawText);
-    [_body, [_cx select 1, _ry, _cw select 1, _rowH], _word, ([_ink, _accent] select _bad), TEXT_LABEL, _bad] call EFUNC(tacpad,drawText);
-    [_body, [_cx select 2, _ry, _cw select 2, _rowH], _q] call FUNC(appPageBar);
-    [_body, [_cx select 3, _ry, _cw select 3, _rowH], format ["%1%2", round (_batt * PERCENT), "%"], _ink, TEXT_LABEL] call EFUNC(tacpad,drawText);
+    private _text = [_ink, _ground] select _picked;
+    [_body, [_cx select 0, _ry, _cw select 0, _rowH], _name, _text, TEXT_BODY, true] call EFUNC(tacpad,drawText);
+    if (_linked) then {
+        [_body, [_cx select 1, _ry, _cw select 1, _rowH], _word, ([_text, _accent] select _bad), TEXT_LABEL, _bad] call EFUNC(tacpad,drawText);
+        [_body, [_cx select 2, _ry, _cw select 2, _rowH], _q, "", false, _picked] call FUNC(appPageBar);
+    };
+    [_body, [_cx select -1, _ry, _cw select -1, _rowH], format ["%1%2", round (_batt * PERCENT), "%"], _text, TEXT_LABEL] call EFUNC(tacpad,drawText);
     [
         _body, [_cx select 0, _ry + _rowH, _w - 2 * _pad, _rowH],
         format ["%1%2", _task, ["", " - YOURS"] select _mine],
-        ([_muted, _ink] select _mine), TEXT_LABEL, _mine
+        [[_muted, _ink] select _mine, _ground] select _picked, TEXT_LABEL, _mine
     ] call EFUNC(tacpad,drawText);
     [_body, [_left, _ry + _cardH - RULE_THIN * pixelH, _w, RULE_THIN * pixelH], _line] call EFUNC(tacpad,drawFill);
 

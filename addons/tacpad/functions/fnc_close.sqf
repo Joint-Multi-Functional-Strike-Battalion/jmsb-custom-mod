@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The map closed. Drops every panel and stops the refresh loop.
  *
  * The controls die with the display, so this is not about deleting them - it is

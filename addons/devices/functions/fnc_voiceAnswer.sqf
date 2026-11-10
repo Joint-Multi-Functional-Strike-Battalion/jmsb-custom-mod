@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Answers the call that is ringing the player, if one is (user, 2026-10-24:
  * "a pop up on the phone that says press ... 9 on the key pad to answer").
  * The TROOPS IN CONTACT key - numpad 9 by default - calls this first and

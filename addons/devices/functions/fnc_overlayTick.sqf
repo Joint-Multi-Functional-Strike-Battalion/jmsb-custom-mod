@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The walking view's one loop: decides whether the view should be up, raises
  * or cuts the layer to match, re-lays it out when something about it has
  * changed, and redraws the rows.
@@ -76,6 +76,13 @@ if (_placed) then {
 if (GVAR(overlayRfDirty)) then {
     GVAR(overlayRfDirty) = false;
     GVAR(overlayRf) = [] call FUNC(overlayRf);
+};
+
+// The drones the map marks, re-read on a timer, not per frame
+// (FUNC(overlayDrones)); the map's Draw event only reads their positions.
+if (CBA_missionTime >= GVAR(overlayDronesNext)) then {
+    GVAR(overlayDronesNext) = CBA_missionTime + DRONE_MARK_PERIOD;
+    GVAR(overlayDrones) = [] call FUNC(overlayDrones);
 };
 
 // A new placement is drawn into at once, so the rows never stand a frame in

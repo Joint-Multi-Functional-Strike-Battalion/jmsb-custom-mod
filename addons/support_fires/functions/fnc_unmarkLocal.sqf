@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes a mission's target markers off this map. Sent by the server
  * (FUNC(unmark)) by remoteExec and taken only from it (review S7).
  *

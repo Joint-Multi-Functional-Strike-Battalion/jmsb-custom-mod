@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: one evac, reached by remoteExec from FUNC(convert). Builds the
  * injured AI casualty clone and heals the player onto the medic. The server
  * can read the casualty's ACE medical vars (they are all broadcast) and owns

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The default "audience" hook: who a speaker's key event on a net goes to
  * (FUNC(transmit)) - every other player the SERVER has on that net
  * (FUNC(rosterNets)), not the speaker's own view of everyone's nets

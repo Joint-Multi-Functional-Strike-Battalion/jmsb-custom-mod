@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: what a track is called on this man's screen (DESIGN_EW "Identify",
  * "Player skill"). A named track (his side holds the key) shows its net and
  * set to anyone. Otherwise the class: an ISR player reads every class; anyone

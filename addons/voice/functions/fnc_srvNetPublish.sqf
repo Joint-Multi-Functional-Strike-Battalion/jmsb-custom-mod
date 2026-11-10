@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the RTO nets as rows, published when they changed. The rows go out
  * as jmfsb_voice_customPub (public, JIP-kept) and into this machine's own
  * plan at once (FUNC(planRefresh)); every client's planRefresh picks them up

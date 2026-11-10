@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes a hand reading on the machine where the patient is local, and
  * publishes it on him - value, mission time and who took it - so every medic
  * in the section sees the same "last measured" line. Sent by the server

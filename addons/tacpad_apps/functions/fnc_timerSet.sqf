@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every change the timer can be asked for, in one place: start, stop, reset, and
  * moving the countdown mark.
  *

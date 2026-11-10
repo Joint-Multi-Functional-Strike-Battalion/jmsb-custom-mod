@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The scanner sweep, or [] when this player has no set.
  *
  * ONE READ FOR THE WHOLE HUD. The drones tile, the jamming tile and the combined

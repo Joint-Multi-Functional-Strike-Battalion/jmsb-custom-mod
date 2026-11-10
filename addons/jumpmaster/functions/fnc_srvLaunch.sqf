@@ -1,95 +1,106 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Server: a run begins (by remoteExec, from FUNC(launch)). The aircraft
- * appears RUN_IN short of the red light at the type's altitude, every man of
- * the stick is put aboard where he is local (FUNC(board), by remoteExec), and
- * the run's watch starts (FUNC(srvTick)): red light, green light, the passes,
- * the hold and the leaving are its.
+ * Author: YonV
+ * Server: a run begins. A SIDE'S OWN AIRCRAFT: the frame after its WILCO
+ * (FUNC(srvThread)); a run stood down in the meantime (FUNC(srvAbort)) is not
+ * flown; the aircraft appears RUN_IN short of the red light at the type's
+ * altitude. A MODULE'S (user, 2026-11-02: virtual until tasked, boarded by
+ * message): on the leader's BOARD (FUNC(srvBoard)), its aircraft made at the
+ * request and orbiting the module (FUNC(airUp)) - it leaves its orbit for the
+ * start of the run-in, climbing or coming down
+ * to the type's altitude, and turns in there (FUNC(srvTick) PHASE_CIRCLE);
+ * the thread hears STICK ABOARD - n MEN - RED LIGHT IN m:ss with its ON TASK.
+ * Either way every man of the stick is put aboard where
+ * he is local (FUNC(board), by remoteExec - seats or the bay, as the
+ * aircraft says: its module, or the setting for a side's own), and the run's
+ * watch starts (FUNC(srvTick)): red light, green light, the passes, the hold
+ * and the leaving are its.
  *
- * Review S7: it was a CBA event, so any client could name any leader and any
- * men and have them put aboard. Now the leader must be the sender's own unit
- * and the stick is cut to living men of the leader's own group. The squad
- * leader test itself (FUNC(isJumpmaster)) stays on the client: the role words
- * it reads are the client's.
+ * IN THE THREAD (2026-11-02), a side's own: WHEELS UP "8 ABOARD - RED LIGHT IN
+ * 1:12", then IN_PROGRESS. An aircraft that could not be made: CANTCO "COULD NOT LAUNCH",
+ * and the run is dropped (FUNC(srvRelease)). The run is published on the
+ * squad's group and on a JMSB - Jump Aircraft module (QGVAR(run): the
+ * aircraft and its path) - the row reads TASKED and the thread's pin draws
+ * the run-in from it (FUNC(assets)).
+ *
+ * Never a client's call (review S7: it was a CBA event, then a remoteExec
+ * target that checked the sender; the card is the way in now).
  *
  * Arguments:
- * 0: The leader <OBJECT>
- * 1: Jump type <STRING>
- * 2: RED LIGHT point <ARRAY>
- * 3: GREEN LIGHT point <ARRAY>
- * 4: Passes <NUMBER>
- * 5: Exit - EXIT_AUTO or EXIT_MANUAL <STRING>
- * 6: The stick, in order <ARRAY>
+ * 0: The run <HASHMAP>
  *
  * Return Value:
  * None
  *
  * Example:
- * [player, "HALO", _red, _green, 2, "auto", units group player] call jmfsb_jumpmaster_fnc_srvLaunch
+ * [_st] call jmfsb_jumpmaster_fnc_srvLaunch
  *
  * Public: No
  */
 
-params [
-    ["_leader", objNull, [objNull]],
-    ["_type", TYPE_HALO, [""]],
-    ["_red", [], [[]]],
-    ["_green", [], [[]]],
-    ["_passes", 1, [0]],
-    ["_exit", EXIT_AUTO, [""]],
-    ["_jumpers", [], [[]]]
-];
+params [["_st", createHashMap, [createHashMap]]];
 
-if (!isServer || {isNull _leader} || {count _red < 2} || {count _green < 2}) exitWith {};
-if (!alive _leader || {!([_leader] call EFUNC(common,senderIs))}) exitWith {
-    WARNING_1("srvLaunch: refused - machine %1 named a leader not its own",remoteExecutedOwner);
+if (!isServer) exitWith {};
+if (isRemoteExecuted) exitWith {
+    WARNING_1("srvLaunch: refused - remote call from machine %1",remoteExecutedOwner);
 };
-if !(_type in TYPES) then {_type = TYPE_HALO};
-if !(_exit in EXITS) then {_exit = EXIT_AUTO};
+// Stood down before WHEELS UP: the run is no longer on the list.
+if ((GVAR(runs) findIf {(_x get "thread") isEqualTo (_st get "thread")}) < 0) exitWith {};
 
-private _fnc_tell = {
-    params ["_text"];
-    [_text, "high"] remoteExecCall [QFUNC(say), _leader];
-};
-
-if ((GVAR(runs) findIf {(_x get "leader") isEqualTo _leader}) >= 0) exitWith {
-    ["A jump is already running for your squad."] call _fnc_tell;
-};
-// His own squad only, never men named from elsewhere (review S7).
-private _squad = units group _leader;
-_jumpers = _jumpers select {_x isEqualType objNull && {alive _x} && {_x in _squad}};
-if (_jumpers isEqualTo []) exitWith {["Nobody to jump."] call _fnc_tell};
-
-private _alt = [_type] call FUNC(typeAlt);
-private _dir = _red getDir _green;
+private _red = _st get "red";
+private _green = _st get "green";
+private _dir = _st get "dir";
+private _alt = _st get "alt";
 private _start = _red getPos [RUN_IN, _dir + 180];
-private _veh = [_leader, _start, _dir, _alt] call FUNC(spawnAircraft);
-if (isNull _veh) exitWith {["The aircraft could not be put in the air - check the Jump aircraft setting."] call _fnc_tell};
+_st set ["start", _start];
 
-private _st = createHashMapFromArray [
-    ["leader", _leader],
-    ["type", _type],
-    ["red", _red],
-    ["green", _green],
-    ["dir", _dir],
-    ["alt", _alt],
-    ["passes", _passes max PASSES_MIN min PASSES_MAX],
-    ["exit", _exit],
-    ["jumpers", _jumpers],
-    ["stick", [_jumpers, _passes] call FUNC(stick)],
-    ["veh", _veh],
-    ["phase", PHASE_IN],
-    ["pass", 0],
-    ["lastOut", 0],
-    ["started", CBA_missionTime]
-];
-GVAR(runs) pushBack _st;
+// A MODULE'S AIRCRAFT WAS MADE AT THE REQUEST (2026-11-02, FUNC(airUp),
+// FUNC(srvBoard)); a side's own is made at the run-in.
+private _module = _st getOrDefault ["module", false];
+private _veh = if (_module) then {_st get "veh"} else {
+    [_st get "side", _st get "cls", _start, _dir, _alt] call FUNC(spawnAircraft)
+};
+if (isNull _veh) exitWith {
+    [_st] call FUNC(srvRelease);
+    [_st, "DECLINED", WHY_NO_LAUNCH] call FUNC(threadState);
+};
+_st set ["veh", _veh];
+_st set ["flown", true];
+// The run's clock (RUN_MAX_S) starts at WHEELS UP, not in the response delay.
+_st set ["started", CBA_missionTime];
 
+private _jumpers = (_st get "jumpers") select {alive _x};
+_st set ["jumpers", _jumpers];
 {
-    [_x, _veh, GVAR(bay), _forEachIndex, _type] remoteExecCall [QFUNC(board), _x];
+    [_x, _veh, _st get "bay", _forEachIndex, _st get "type"] remoteExecCall [QFUNC(board), _x];
 } forEach _jumpers;
+private _run = [_veh, [[_start, PLAN_RUN_IN], [_red, PLAN_RED], [_green, PLAN_GREEN]]];
+(_st get "group") setVariable [QGVAR(run), _run, true];
+private _logic = _st getOrDefault ["logic", objNull];
+if (!isNull _logic) then {_logic setVariable [QGVAR(run), _run, true]};
+
+// FROM ITS ORBIT OVER THE MODULE (user, 2026-11-02: "static 2000 then move to
+// jump alt, halo haho 6k"): to the start of the run-in, climbing or coming
+// down to the jump's altitude on the way; turned in there (FUNC(srvTick)
+// PHASE_CIRCLE, which says INBOUND - PASS 1 OF n). One message: STICK ABOARD -
+// n MEN - RED LIGHT IN m:ss, ON TASK.
+if (_module) exitWith {
+    _logic setVariable [QGVAR(airPhase), AIR_RUN, true];
+    [_veh, _alt] call EFUNC(support,flyAt);
+    [_veh, _start, "NORMAL"] call EFUNC(support_air,moveTo);
+    _st set ["phase", PHASE_CIRCLE];
+    [_st, format ["Aboard. To the run-in at %1 m.", round _alt], false] call FUNC(srvLight);
+    private _ahead = [[_veh, _start] call EFUNC(support,etaTo), [_st get "cls"] call FUNC(runEta)];
+    private _eta = [[ETA_UNKNOWN, (_ahead select 0) + (_ahead select 1)] select (ETA_UNKNOWN in _ahead), ETA_RED] call EFUNC(support,etaText);
+    [_st, "IN_PROGRESS", ([format [SAID_STICK_ABOARD, count _jumpers, [WORD_MAN, WORD_MEN] select (count _jumpers > 1)], _eta] select {_x isNotEqualTo ""}) joinString WILCO_SEP] call FUNC(threadState);
+    [FUNC(srvTick), RUN_TICK, [_st]] call CBA_fnc_addPerFrameHandler;
+};
+
 [_veh, _green getPos [RUN_OUT, _dir], "NORMAL"] call EFUNC(support_air,moveTo);
-[_st, format ["Aboard at %1 m, %2 km out from the red light.", _alt, round (RUN_IN / 1000)], false] call FUNC(srvLight);
+[_st, format ["Aboard at %1 m, %2 km out from the red light.", round _alt, round (RUN_IN / 1000)], false] call FUNC(srvLight);
+
+private _eta = [[_veh, _red] call EFUNC(support,etaTo), ETA_RED] call EFUNC(support,etaText);
+[_st, CARD_WHEELS_UP, ([format [SAID_ABOARD, count _jumpers], _eta] select {_x isNotEqualTo ""}) joinString WILCO_SEP] call FUNC(threadCard);
+[_st, "IN_PROGRESS"] call FUNC(threadState);
 
 [FUNC(srvTick), RUN_TICK, [_st]] call CBA_fnc_addPerFrameHandler;

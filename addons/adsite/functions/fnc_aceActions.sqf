@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The ACE interaction node for an AD vehicle class, once per class on this
  * machine: Air Defence > one entry per targeting mode, and mute / un-mute.
  * Nothing without ACE.

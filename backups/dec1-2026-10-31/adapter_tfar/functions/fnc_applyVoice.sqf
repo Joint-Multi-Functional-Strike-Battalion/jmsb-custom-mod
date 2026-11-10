@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: RF link quality onto TFAR's range levers for this player.
  *
  * RECEIVING is one lever per unit in TFAR, so it takes the best quality among

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a target's box goes on screen: round the given points, square to the
  * screen, as a UI rectangle snapped to whole pixels - so FUNC(drawBoxes) lays
  * its four sides edge to edge and the corners meet (user, 2026-10-17: "4

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One man's box for this frame: where it goes (FUNC(boxRect)), its colour
  * (FUNC(targetColour), faded with range) and its AiTR label.
  *

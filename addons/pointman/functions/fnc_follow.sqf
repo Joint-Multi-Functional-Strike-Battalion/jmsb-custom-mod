@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * FOLLOW (user, 2026-10-30): a waypoint that walks with a man - a BFT
  * friendly, or the vehicle he is in - so the distance on the phone tracks
  * him. Added at the end of the route like any other waypoint, labelled

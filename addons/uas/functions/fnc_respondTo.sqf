@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends one drone to look at a place - the recon rung of the reaction ladder.
  *
  * Obeys the same ceiling everything else does, so a side whose supply caches

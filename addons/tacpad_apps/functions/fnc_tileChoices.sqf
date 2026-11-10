@@ -1,9 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every tile SETTINGS > LIVE TILES can place or switch off: the declared
  * TILE_CHOICES in their order, then the tiles the providers answer for this
- * player (jmfsb_devices' VEHICLE, the medic's, Point Man's, the jumpmaster's)
+ * player (jmfsb_devices' VEHICLE, the medic's, Point Man's)
  * that the list does not already name. A provider's tile that cannot be
  * placed or switched off was a gap (notes, 2026-10-30).
  *
@@ -20,6 +20,10 @@
  */
 
 private _out = +TILE_CHOICES;
+// The tablet has no PAC tile to place (TILES_NATIVE_ONLY; user, 2026-11-01).
+if (HOST_DEVICE) then {
+    _out = _out select {!((_x # 0) in TILES_NATIVE_ONLY)};
+};
 {
     private _tiles = [] call _y;
     if (isNil "_tiles" || {!(_tiles isEqualType [])}) then {continue};

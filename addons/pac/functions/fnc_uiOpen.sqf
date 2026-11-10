@@ -7,7 +7,8 @@
         IT OPENS ON THE DASHBOARD, as the website does, and the nav bar along
         the top goes everywhere else. Admins only, the same as the website's
         admin pages; a player's own record, the roster and PAC requests are
-        on the tacpad's PAC tile (FUNC(app)).
+        in the tacpad's PAC app (FUNC(app)): the tablet bar's PAC button, the
+        PAC tile on the map (user, 2026-11-01).
 
         INSIDE THE TABLET when the tacpad's host is a device that is open
         (user, 2026-10-20: "all apps need to be inside the tablet") - the same
@@ -26,7 +27,7 @@ params [["_page", "dashboard", [""]], ["_args", createHashMap, [createHashMap]]]
 
 if (!hasInterface) exitWith {false};
 if (isNil "jmfsb_adminpanel_fnc_isAdmin" || {!([player] call jmfsb_adminpanel_fnc_isAdmin)}) exitWith {
-    ["TAC//PAC", "Admins only - the PAC tile on the tacpad has your record, the roster and PAC requests.", [0.831, 0.267, 0.267, 1]] call EFUNC(notify,notify);
+    ["TAC//PAC", "Admins only - PAC on the tablet's top bar (the PAC tile on the map) has your record, the roster and PAC requests.", [0.831, 0.267, 0.267, 1]] call EFUNC(notify,notify);
     false
 };
 

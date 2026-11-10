@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * GAME VON OFF (user, 2026-10-31: "no in-game VON"): under the voice server
  * every game channel's voice is off on this machine - Global, Side, Command,
  * Group, Vehicle, Direct and the custom channels - so Caps Lock reaching

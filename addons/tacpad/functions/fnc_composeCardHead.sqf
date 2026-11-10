@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The top of a report card, the handoff's anatomy (design_handoff_report_forms):
  * the header - a tag box with the template's short name and the full title
  * beside it, over a 2px ink rule - and under it the badge strip, the card's
@@ -14,6 +14,12 @@
  * THE STRIP SAYS WHAT SENDING THIS DOES - the task it opens, where it anchors
  * on the map, who else it reaches, who may send it - once, at the top, rather
  * than discovered after SEND.
+ *
+ * REAL WORLD / SIMPLE (docs/DESIGN_MESSAGE_TEMPLATES.md, 2026-11-09): a card with a
+ * short form (its shortKeys) carries the switch at the header's right end -
+ * one card, two views, the same keys. A press flips GVAR(composeShortOn) for
+ * this card; FUNC(composeCard) draws only the short form's fields while it is
+ * on. A FRAGO's card reads FRAGO: <TITLE> (FUNC(composeFrago)).
  *
  * Arguments:
  * 0: Group the card is drawn into <CONTROL>
@@ -47,6 +53,8 @@ private _padY = PAD * HOST_H;
 // ---------------------------------------------------------------- header ---
 private _short = toUpper (_template getOrDefault ["short", _template getOrDefault ["id", ""]]);
 private _title = toUpper (_template getOrDefault ["title", _short]);
+if (GVAR(composeFrago) isNotEqualTo []) then {_title = format [FRAGO_TITLE, _title]};
+private _hasShort = (_template getOrDefault ["shortKeys", []]) isNotEqualTo [];
 private _high = (_template getOrDefault ["priority", "normal"]) isEqualTo CARD_PRIORITY_HIGH;
 
 private _tagH = ([CARD_TAG_SIZE] call FUNC(textH)) + _padY;
@@ -57,7 +65,31 @@ private _tagY = (_headH - _tagH) * 0.5;
 
 [_body, [0, _tagY, _tagW, _tagH], [_ink, _accent] select _high] call FUNC(drawFill);
 [_body, [0, _tagY, _tagW, _tagH], _short, _ground, CARD_TAG_SIZE, true, "center"] call FUNC(drawText);
-[_body, [_tagW + _pad * 2, 0, _w - _tagW - _pad * 2, _headH], _title, _ink, CARD_TITLE_SIZE, true] call FUNC(drawText);
+private _switchW = [0, _w * SHORT_SWITCH_W] select _hasShort;
+[_body, [_tagW + _pad * 2, 0, _w - _tagW - _pad * 3 - _switchW, _headH], _title, _ink, CARD_TITLE_SIZE, true] call FUNC(drawText);
+
+// The REAL WORLD / SIMPLE switch: two segments, the view on is the ink fill.
+if (_hasShort) then {
+    private _segW = _switchW / 2;
+    {
+        _x params ["_word", "_isShort"];
+        private _sx = _w - _switchW + _forEachIndex * _segW;
+        private _on = GVAR(composeShortOn) isEqualTo _isShort;
+        if (_on) then {
+            [_body, [_sx, _tagY, _segW, _tagH], _ink] call FUNC(drawFill);
+        } else {
+            [_body, [_sx, _tagY, _segW, _tagH], _ink, RULE_THIN] call FUNC(drawFrame);
+        };
+        [_body, [_sx, _tagY, _segW, _tagH], _word, [_ink, _ground] select _on, CARD_TAG_SIZE, true, "center"] call FUNC(drawText);
+        private _hit = [_body, [_sx, _tagY, _segW, _tagH], {
+            params ["_ctrl"];
+            [] call FUNC(composeHarvest);
+            GVAR(composeShortOn) = _ctrl getVariable [QGVAR(shortView), false];
+            {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+        }] call FUNC(drawHit);
+        _hit setVariable [QGVAR(shortView), _isShort];
+    } forEach [[STD_WORD, false], [SHORT_WORD, true]];
+};
 [_body, [0, _headH, _w, RULE_THICK * pixelH], _ink] call FUNC(drawFill);
 
 private _y = _headH + RULE_THICK * pixelH;

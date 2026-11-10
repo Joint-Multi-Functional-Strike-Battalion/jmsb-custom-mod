@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a handheld in his hand: the first TFAR instance he carries of the
  * named arsenal class (its tf_parent) becomes TFAR's active short range radio
  * - the TFAR path of jmfsb_players_fnc_setActiveRadio, with the PAC plan's

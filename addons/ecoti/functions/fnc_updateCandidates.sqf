@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Rebuilds the two lists Draw3D draws from: men in range on foot, and the
  * vehicles and animals in range, and the colour each is drawn in. Runs twice a
  * second.
@@ -22,6 +22,7 @@ if (isNull player) exitWith {};
 if !([] call FUNC(isActive)) exitWith {
     GVAR(men) = [];
     GVAR(vehicles) = [];
+    GVAR(buildings) = [];
 };
 
 // ONE RANGE PER CLASS, the Vector's for everything while he looks through one
@@ -75,3 +76,12 @@ private _old = GVAR(men) + GVAR(vehicles);
 
 GVAR(men) = _men;
 GVAR(vehicles) = _vehicles;
+
+// THE MARKED BUILDINGS IN RANGE (2026-11-06), from the server's published list
+// (FUNC(markSet)): [building, rgb, label], out to MARK_RANGE.
+GVAR(buildings) = ((missionNamespace getVariable [QGVAR(marks), []]) select {
+    !isNull (_x select 0) && {(player distance (_x select 0)) <= MARK_RANGE}
+}) apply {
+    _x params ["_building", "_colour", "_label"];
+    [_building, (MARK_COLOURS param [_colour, MARK_COLOURS select 0]) select 1, _label]
+};

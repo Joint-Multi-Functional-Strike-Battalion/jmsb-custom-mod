@@ -18,12 +18,6 @@ GVAR(rfReachTime) = -1;
 
 #include "initSettings.inc.sqf"
 
-// Scanner stopwatch. Declared here so the screen can read it on the very
-// first frame, before anyone has touched the keybind.
-GVAR(timerState) = SCN_T_IDLE;
-GVAR(timerHeld) = 0;
-GVAR(timerFrom) = 0;
-
 // Scanner alarms. The armed list is the server's, kept in localNamespace
 // (review S7), with a public copy here for the screens - an alarm has to
 // outlive its setter, and every screen has to show the same countdown.
@@ -39,7 +33,5 @@ if (isServer) then {
     localNamespace setVariable [QGVAR(alarmNextId), 0];
 };
 
-// When the handset layer was last raised, so the tick knows when to renew.
-GVAR(scannerRaisedAt) = -1e9;
 
 ADDON = true;

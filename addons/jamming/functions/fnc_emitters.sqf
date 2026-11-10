@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The live jam zones as emitters, for direction finding (jmfsb_ew): where each
  * one radiates from, how far it reaches, what it denies and whose it is. A
  * zone with an object radiates from the object; an abstract zone (a hack's

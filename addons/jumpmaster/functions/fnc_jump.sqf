@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One man out of the aircraft, on the machine he is local to (by remoteExec
  * from the server at the green light, or his own JUMP): out of his seat or off
  * the hull, put just behind and below the tail with the aircraft's own

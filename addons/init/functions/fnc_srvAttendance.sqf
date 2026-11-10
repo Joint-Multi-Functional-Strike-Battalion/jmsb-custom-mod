@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: attendance, asked for by the #attendance chat command, the Zeus
  * "Take attendance" module or Call Endex, by remoteExec. It was a CBA server
  * event naming its own requester (review S7), so any client could read the

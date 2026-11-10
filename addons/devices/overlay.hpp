@@ -17,9 +17,12 @@
 
 class RscStructuredText;
 
-// A net cell: the outline (a coloured block), the label inset over it so the
-// block shows round it as the outline, and the receive-only R. Square, no
-// rounded corners (user, 2026-10-19).
+// A net cell, one per net button on the page shown (OVERLAY_NET_CELLS): the outline (a coloured block), the label inset over it so the
+// block shows round it as the outline, the ear tag (L / B / R; netRx, which
+// was the receive-only R before the ear took it) at its right end and the
+// receive-only R (netRo) at its left. Square, no rounded corners (user,
+// 2026-10-19). Last, over them, the red strike of a muted net (user,
+// 2026-11-01: "red line through muted channels").
 #define OVERLAY_NET_CELL(N) \
     class DOUBLES(netEdge,N): RscText { \
         idc = IDC_OVERLAY_NETEDGE(N); \
@@ -38,7 +41,21 @@ class RscStructuredText;
     class DOUBLES(netRx,N): RscText { \
         idc = IDC_OVERLAY_NETRX(N); \
         font = "RobotoCondensed"; \
-        text = "R"; \
+        text = ""; \
+        colorBackground[] = {0, 0, 0, 0}; \
+        x = 0; y = 0; w = 0; h = 0; \
+    }; \
+    class DOUBLES(netRo,N): RscText { \
+        idc = IDC_OVERLAY_NETRO(N); \
+        style = ST_CENTER; \
+        font = "RobotoCondensed"; \
+        text = NET_RX_TAG; \
+        colorBackground[] = {0, 0, 0, 0}; \
+        x = 0; y = 0; w = 0; h = 0; \
+    }; \
+    class DOUBLES(netMute,N): RscText { \
+        idc = IDC_OVERLAY_NETMUTE(N); \
+        text = ""; \
         colorBackground[] = {0, 0, 0, 0}; \
         x = 0; y = 0; w = 0; h = 0; \
     }
@@ -94,6 +111,7 @@ class RscTitles {
             OVERLAY_TEXT(Squad2,IDC_OVERLAY_SQUAD2,"RobotoCondensed");
             OVERLAY_TEXT(Talk,IDC_OVERLAY_TALK,"RobotoCondensedBold");
             OVERLAY_TEXT(Call,IDC_OVERLAY_CALL,"RobotoCondensed");
+            OVERLAY_TEXT(Ask,IDC_OVERLAY_ASK,"RobotoCondensed");
             // OVERLAY_STATUS_CELLS of them - seven with BATT (2026-10-30);
             // six here left the seventh cell without a control, so MSG
             // never drew.
@@ -108,10 +126,15 @@ class RscTitles {
             OVERLAY_NET_CELL(1);
             OVERLAY_NET_CELL(2);
             OVERLAY_NET_CELL(3);
-            OVERLAY_NET_CELL(4);
-            OVERLAY_NET_CELL(5);
-            OVERLAY_NET_CELL(6);
-            OVERLAY_NET_CELL(7);
+            // The net page marker, "2/3" (NET_PAGE_MARK; FUNC(overlayDraw)).
+            class NetPage: RscText {
+                idc = IDC_OVERLAY_NETPAGE;
+                style = ST_CENTER;
+                font = "RobotoCondensedBold";
+                text = "";
+                colorBackground[] = {0, 0, 0, 0};
+                x = 0; y = 0; w = 0; h = 0;
+            };
             class Frame: RscPicture {
                 idc = IDC_OVERLAY_FRAME;
                 text = "";

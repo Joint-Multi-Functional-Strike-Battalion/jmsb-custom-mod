@@ -79,7 +79,7 @@ The content sits 18 units inside the screen hole with a thin rim round it (the t
 - Active net: light fill, dark text.
 - Small grey `R` = receive only.
 - Only nets you are on are shown: VEH appears in a vehicle, CALL when a call is live or ringing. Cells show name + ear tag (L/B/R), no numbers.
-- Numpad 0 / . move the active net left / right. Numpad 6 7 8 9 are the device keys F1-F4 (2026-10-30; the walking view's jobs: ear / quick add, mute, zoom), * answers and / declines a call, - is TIC, + voice activation, Enter the tablet. See [DESIGN_VOICE.md](DESIGN_VOICE.md). Frequencies never shown.
+- Numpad 0 / . turn the net page left / right (2026-11-07: twelve net buttons, three pages of four; one page shown, "2/3" at the row's right end). Numpad 6 7 8 9 are the device keys F1-F4 (2026-10-30; the walking view's jobs: ear / quick add, mute, zoom), * answers and / declines a call, - is TIC, + voice activation, Enter the tablet. See [DESIGN_VOICE.md](DESIGN_VOICE.md). Frequencies never shown.
 
 ## Colours
 

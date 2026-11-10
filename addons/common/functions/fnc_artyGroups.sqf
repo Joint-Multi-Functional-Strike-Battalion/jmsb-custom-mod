@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The artillery teams of a side: the groups with a player in them whose ORBAT
  * squad kind - the map icon set on the squad's row in the ORBAT, carried on
  * the group as jmfsb_bft_type (jmfsb_groups_fnc_groupKind) - is an artillery

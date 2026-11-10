@@ -57,6 +57,8 @@ if (_mode isEqualTo "remove") exitWith {
     } forEach +GVAR(players);
     GVAR(sessions) = GVAR(sessions) select {(_x # 5) isNotEqualTo SAMPLE_WINDOW};
     GVAR(windows) = GVAR(windows) select {(_x # 0) isNotEqualTo SAMPLE_WINDOW};
+    // the next database write must not merge the samples back in (FUNC(storeSync))
+    GVAR(syncReplace) = true;
 
     [true] call FUNC(storeSave);
     [] call FUNC(publish);

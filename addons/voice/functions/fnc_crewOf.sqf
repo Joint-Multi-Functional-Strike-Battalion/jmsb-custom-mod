@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The vehicle whose crew intercom (and vehicle set) a unit is on: a land
  * vehicle, aircraft or boat in which he holds a seat that is not cargo.
  *

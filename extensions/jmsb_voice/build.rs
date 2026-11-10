@@ -9,7 +9,7 @@ fn main() {
     #[cfg(windows)]
     {
         let mut res = winresource::WindowsResource::new();
-        res.set("FileDescription", "JMSB voice extension for Arma 3 (radio voice over LiveKit)")
+        res.set("FileDescription", "JMSB voice extension for Arma 3 (radio voice over LiveKit or Mumble)")
             .set("ProductName", "JMSB mod")
             .set("CompanyName", "1st Joint Multi-Functional Strike Battalion")
             .set("LegalCopyright", "MIT License - YonV and the 1st JMSB contributors")

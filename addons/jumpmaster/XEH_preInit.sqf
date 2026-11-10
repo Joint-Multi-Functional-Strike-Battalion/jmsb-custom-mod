@@ -8,27 +8,16 @@ PREP_RECOMPILE_END;
 
 #include "initSettings.inc.sqf"
 
-// THE LEADER'S PLAN, his own machine: the type, the red and green light
-// points (world positions, [] unset), the passes and the exit he picked
-// (-1 and "" until the page reads the settings' defaults).
-GVAR(type) = TYPE_HALO;
-GVAR(red) = [];
-GVAR(green) = [];
-GVAR(passes) = -1;
-GVAR(exit) = "";
-// The page's refresh loop; a CBA handler id is only good for this mission.
-GVAR(pfh) = -1;
-GVAR(dotIcon) = getText (configFile >> "CfgMarkers" >> DOT_MARKER >> "icon");
-
-// THE RUNS, server: one hashmap each (FUNC(srvLaunch)), one per squad.
+// THE RUNS, server: one hashmap each (FUNC(srvThread)), one per squad.
 GVAR(runs) = [];
 
-// THE TILE, offered to tacpad_apps' band; it answers nothing for anyone
-// who is not a jumpmaster (FUNC(tile)), so that is its gate, not the role
-// tiles[] lists.
-if (!isNil QEGVAR(tacpad_apps,tileProviders)) then {
-    EGVAR(tacpad_apps,tileProviders) set [APP_ID, FUNC(tile)];
-    EGVAR(tacpad_apps,tileUngated) pushBackUnique APP_ID;
+// THE PLACED JUMP AIRCRAFT MODULES (user, 2026-11-02), in placement order; the
+// index IS the asset id ("jump:<n>"). The server fills it and publishes it:
+// the TO picker is drawn on the client and resolves ids there. Never
+// compacted - a module deleted mid-mission leaves a null. A JIP client may
+// already hold the broadcast copy, so it is only created when absent.
+if (isNil QGVAR(entities)) then {
+    GVAR(entities) = [];
 };
 
 // THE FREEFALL READOUT, offered to the phone's status row; FUNC(altWatch)

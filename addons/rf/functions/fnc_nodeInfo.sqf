@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One node of the registry, read-only (server): a copy, so a caller can never
  * write the registry through it. Keys: id, object, profile, side (string),
  * nets (net ids of the fill - keys are not handed out), holder, owner, state

@@ -13,7 +13,6 @@ copy their source — see `docs/DESIGN_INTEL_SYSTEM.md` §0.
 | File | Source in MRHMilsimTools | Used for |
 |---|---|---|
 | `tablet.paa` | `MRHSoldierTab/paa/tablet.paa` | Bezel behind the hacking tablet dialog — **rebranded**, see below |
-| `phone.paa` | `MRHFunctions/img/hackphone/hackphone.paa` | Handset behind the signal scanner screen |
 | `hackphone_icon.paa` | `MRHFunctions/models/hackphone/hackphoneIcon.paa` | Inventory icon for the Signal Scanner |
 
 The two MRH item models (`soldiertab.p3d`, `hackphone.p3d`) were dropped earlier - the
@@ -21,7 +20,7 @@ items use base-game models - and their textures and the tablet's inventory icon
 (`soldiertabtext.paa`, `p/hackphonetexture.paa`, `tablet_icon.paa`) went with them on
 2026-10-07, when tools/slim_assets.py removed every asset nothing named.
 
-Everything drawn *inside* the tablet and scanner screens is jmfsb-original.
+Everything drawn *inside* the tablet screen is jmfsb-original.
 
 `tablet.paa` is **not** the file as vendored: `tools/gen_tablet_bezel.py` paints
 out the "MRHTECH" wordmark on the chin and stamps the jmfsb logo there instead.
@@ -29,11 +28,10 @@ The untouched vendored copy lives at `art/tablet_src.paa` — kept outside
 `addons/` so a 1.1 MB source image is not packed into the pbo — and the script
 always regenerates from it, so it can be rerun and retuned freely.
 
-Note the two bezels are **square images of non-square devices** (`tablet.paa` is a
-landscape tablet in a 2048² canvas, `phone.paa` a handset in a 512²). Their
-controls must be sized accordingly or the device shears — `fnc_tabletLayout` keeps
-its control square, and `fnc_scannerLayout` stretches to `SCN_ASPECT`, which is
-the same stretch MRH's own dialog applies to the handset.
+Note the bezel is a **square image of a non-square device** (`tablet.paa` is a
+landscape tablet in a 2048² canvas), so `fnc_tabletLayout` keeps its control
+square. The hand-held scanner's handset art (`phone.paa`) went with the scanner
+screen on 2026-11-08.
 
 ## icons/
 

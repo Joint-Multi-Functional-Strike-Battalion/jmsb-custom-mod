@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One round of an engagement, then the next ADS_BURST_GAP later until the
  * count runs out - a CBA timer chain that ends by itself, never a PFH.
  *

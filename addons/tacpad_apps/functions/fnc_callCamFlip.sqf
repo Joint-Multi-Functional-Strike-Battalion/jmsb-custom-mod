@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Flips what the player's camera sends on a call: FACE (a camera in front of
  * his face) or VIEW (what he sees). Public on him, so everyone on his call
  * sees the change at their next look (FUNC(callFeedUnit)).

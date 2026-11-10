@@ -3,7 +3,7 @@
 class CfgPatches {
     class ADDON {
         name = COMPONENT_NAME;
-        units[] = {"jmfsb_modulesafestart", "jmfsb_moduleHealArea", "jmfsb_moduleAiSpawner", "jmfsb_moduleAiHunter"};
+        units[] = {"jmfsb_modulesafestart", "jmfsb_moduleHealArea", "jmfsb_moduleAiSpawner", "jmfsb_moduleAiHunter", QGVAR(holdAlive)};
         weapons[] = {};
         requiredVersion = REQUIRED_VERSION;
         // jmfsb_common: the spawn-scale trim and the groupSpawned bus

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: takes one zone out of the registry by id and publishes once. For a
  * caller that laid a zone with FUNC(zoneOnObject) and switches it off before
  * its object dies.

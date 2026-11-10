@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every ECHO_TICK_S while an echo test runs: ends it when the bot has
  * not answered in ECHO_ANSWER_S (the voice server is down, or its echo test is
  * off), or after ECHO_MAX_S, so a forgotten test does not keep the microphone

@@ -1,18 +1,20 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the TIMER app's live lines say now, and the shape that decides which
  * lines there are (code review R8). FUNC(appTimer) builds the page from these
  * values; its tick puts the next ones into the same lines in place
  * (EFUNC(tacpad,liveApply)), and builds the page again only when the shape
  * has changed - an alarm armed or deleted, the ring starting or stopping, a
- * delay stepped, the scheme or the type size changed.
+ * delay or a time stepped, the scheme or the type size changed.
  *
  * The values come in the order the page draws its live lines: per armed
  * alarm, soonest first, its countdown (red inside TIMER_RED_SECS, amber inside
- * TIMER_AMBER_SECS) and its number, wall time and owner; the custom delay and
- * its ARM key; the ALARM AT time and its ARM key, with what it costs in
- * mission time; the stopwatch's state, readout and START / STOP.
+ * TIMER_AMBER_SECS) and its number, wall time and owner; the ALARM AT key's
+ * words, with what that time costs in mission time, which moves on while the
+ * page is open; the stopwatch's state, readout and START / STOP. The CUSTOM
+ * delay and the ALARM AT time are not live lines: a step changes the shape and
+ * the page is built again.
  *
  * Arguments:
  * None
@@ -63,20 +65,16 @@ private _values = [];
     ];
 } forEach _sorted;
 
-// The custom delay and its key.
+// The ALARM AT key: the time, and what it costs in mission time - on a 6x
+// mission "at 0430" can be four minutes away, and a man who does not know
+// that sets it and walks off.
 private _custom = GVAR(alarmCustom);
-_values pushBack [[_custom] call FUNC(timerClock), _ink];
-_values pushBack [format ["ARM %1", [_custom] call FUNC(timerClock)], _ink];
-
-// Against game time: the time, and what it costs in mission time - which
-// moves on while the page is open.
 private _at = GVAR(alarmAt);
 private _atText = format ["%1:%2",
     [floor (_at / 3600), 2] call CBA_fnc_formatNumber,
     [floor ((_at % 3600) / 60), 2] call CBA_fnc_formatNumber
 ];
-_values pushBack [_atText, _ink];
-_values pushBack [format ["ARM AT %1  -  IN %2", _atText, [[_at] call FUNC(alarmAtDelay)] call FUNC(timerClock)], _ink];
+_values pushBack [format ["ARM AT %1 - IN %2", _atText, [[_at] call FUNC(alarmAtDelay)] call FUNC(timerClock)], _ground];
 
 // The stopwatch.
 ([] call FUNC(timerState)) params ["_secs", "_running", "", "_expired"];

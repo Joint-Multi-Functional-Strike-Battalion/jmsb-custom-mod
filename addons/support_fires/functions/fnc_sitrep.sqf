@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The one-line state of a fires asset: what it is doing and what it has left.
  * The support page offers SITREP for every type, artillery included.
  *

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an RTO (or admin) removes one of the RTO nets (by remoteExec from
  * FUNC(netRemove); the caller must be the sender,
  * jmfsb_common_fnc_senderIs). Any RTO may remove

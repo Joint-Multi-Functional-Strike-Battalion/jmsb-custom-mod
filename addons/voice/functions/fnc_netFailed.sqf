@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the server (or FUNC(netAdd) itself) refused something about an
  * RTO net - said in words, with the busy tone, the way a refused call is
  * (FUNC(callFailed)). Sent by remoteExec from the server and taken only from

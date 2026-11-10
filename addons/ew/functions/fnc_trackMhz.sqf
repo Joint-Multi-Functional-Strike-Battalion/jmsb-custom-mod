@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the frequency a track is heard on - the MHz of the emitter's net on
  * the track's band (jmfsb_rf_fnc_netFreq), the frequency a targeted jammer
  * must sit on to hit that net. An emitter on no net of that band (a jammer, a

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Launches one loitering munition from the site and starts its hunt
  * (FUNC(loiterTick)).
  *
@@ -15,16 +15,22 @@
  * 2: Search radius (m) <NUMBER>
  * 3: Enemy side <SIDE>
  * 4: Mission token <NUMBER>
+ * 5: The launch's number (QGVAR(launchNo)) <NUMBER> (optional, default 0)
+ * 6: Its transit to the point (s) <NUMBER> (optional, default 0)
+ *
+ * A CALL FOR FIRE'S THREAD (2026-11-01): the first munition of a launch to
+ * leave files SHOT there, with its transit ("TRANSIT n S"). There is no
+ * SPLASH - a munition hunts, so when it strikes is not known.
  *
  * Return Value: None
  *
  * Example:
- * [_logic, _pos, 400, east, 1] call jmfsb_support_fires_fnc_loiterOne
+ * [_logic, _pos, 400, east, 1, 1, 120] call jmfsb_support_fires_fnc_loiterOne
  *
  * Public: No
  */
 
-params ["_logic", "_target", "_radius", "_enemy", "_token"];
+params ["_logic", "_target", "_radius", "_enemy", "_token", ["_launch", 0, [0]], ["_eta", 0, [0]]];
 
 if (isNull _logic || {(_logic getVariable [QGVAR(token), -1]) isNotEqualTo _token}) exitWith {};
 if ((_logic getVariable [QGVAR(abort), false]) || {(_logic getVariable [QGVAR(left), 0]) < 1}) exitWith {
@@ -57,11 +63,21 @@ if (side _grp isNotEqualTo _side) then {
 _grp setBehaviourStrong "CARELESS";
 _grp setCombatMode "BLUE";
 _uav flyInHeight _alt;
+// DARK FROM LAUNCH (user, 2026-11-01: the support aircraft lights rule only -
+// its flight is left as it is). A munition has no airfield, so it is dark
+// throughout and its crew is kept from lighting up (EFUNC(support,tactical)).
+[_uav, []] call EFUNC(support,tactical);
 
 private _wp = _grp addWaypoint [_target, 0];
 _wp setWaypointType "MOVE";
 
 [_logic, "munition launched", "normal"] call FUNC(say);
+
+// SHOT in the call for fire's thread, once per launch.
+if ((_logic getVariable [QGVAR(shotKey), []]) isNotEqualTo [_token, _launch]) then {
+    _logic setVariable [QGVAR(shotKey), [_token, _launch]];
+    [_logic, CARD_SHOT, [[CARD_TEXT_KEY, format [WORDS_TRANSIT, round _eta]]]] call FUNC(threadCard);
+};
 
 [LINKFUNC(loiterTick), LM_TICK, [
     _uav, _logic, _target, _radius, _token, _enemy,

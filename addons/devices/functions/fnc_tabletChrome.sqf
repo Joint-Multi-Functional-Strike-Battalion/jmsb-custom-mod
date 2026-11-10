@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Builds the tablet screen's own rows round the map area - the device bar, the
  * notification line, the live tiles and the rule under them, the net row - and
  * the border round the map area, the recess round the whole screen (dark,

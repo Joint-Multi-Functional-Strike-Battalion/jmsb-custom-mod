@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One mesh edge: the two-way quality between two nodes on a net, the weaker
  * of the two directions (a MANET link carries traffic both ways, and the
  * sets' TX powers differ).

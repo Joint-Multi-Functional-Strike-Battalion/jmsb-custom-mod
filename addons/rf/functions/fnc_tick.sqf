@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE SERVER TICK (CBA per-frame handler at the player tick rate):
  *
  *   0. the satellite's rain fade for this tick (setting x rain / overcast)

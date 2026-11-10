@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * In-game diagnostic: logs to the RPT which system carries the voice
  * (jmfsb_voice_system; under "none" only that, voice unavailable) and the
  * voice state of the local player (adapter, nets, nodes, active net, cut-off level, roster,

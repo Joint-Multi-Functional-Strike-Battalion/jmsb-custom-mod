@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: keeps the active net one of the local player's nets. When it is
  * gone (a call ended, he left a vehicle or his group) it goes back to the
  * net that was active before the call, else his TEAM net, else his first

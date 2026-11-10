@@ -1,7 +1,7 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * One tasking, from TAC//SUPPORT or from anything else: gate, validate,
+ * Author: YonV
+ * One tasking, from a mission script or anything else: gate, validate,
  * dispatch to the provider that owns the asset, book the cooldown.
  *
  *   1. the tasking tag gate (FUNC(canTask)) - for every task, RTB included
@@ -11,19 +11,20 @@
  *      provider's own "available" code if it has one
  *   4. the provider's "task" code, [assetId, task, pos, params]
  *   5. accepted: a cooldown it returned is booked on the server
- *      (FUNC(bookCooldown), by remoteExec), and
+ *      (FUNC(bookCooldown), by remoteExec), the row's call sign is sent
+ *      for the asset's thread (FUNC(srvCallsign), by remoteExec), and
  *      QGVAR(tasked) is raised on this machine only (review S7/P8)
  *
  * RUNS WHERE IT IS CALLED. Today's providers task from the requesting client
  * and hand their heavy work to the server themselves (the CAS drones fly on
- * the server; ALiVE's FSMs watch public variables), so the core does not move
+ * the server), so the core does not move
  * the call. The acknowledgement comes back later through FUNC(ack).
  *
  * Arguments:
  * 0: Asset id <STRING>
  * 1: Task token <STRING> - "rtb" recalls
  * 2: Position <ARRAY> (optional, default [] - the provider decides what none means)
- * 3: Parameters - TAC//SUPPORT's parameter array <ARRAY> (optional, default [])
+ * 3: Parameters - the parameter array (README) <ARRAY> (optional, default [])
  *
  * Return Value:
  * 0: Accepted <BOOL>
@@ -86,6 +87,14 @@ if (_ok) then {
     if (_cooldown > 0 && !_isRtb) then {
         // By remoteExec, so the server knows who books it (review S6).
         [_assetId, _cooldown] remoteExecCall [QFUNC(bookCooldown), SERVER_OWNER];
+    };
+    // THE CALL SIGN THE ASSET ANSWERS ITS THREAD UNDER (2026-11-01). The
+    // server cannot ask `assets` (it answers for `player`, null on a
+    // dedicated server), so the row's own name is sent by remoteExec, checked
+    // there like the cooldown (FUNC(srvCallsign)).
+    private _callsign = (_rows select (_rows findIf {(_x param [0, ""]) isEqualTo _assetId})) param [2, ""];
+    if (_callsign isEqualType "" && _callsign isNotEqualTo "") then {
+        [_assetId, _callsign] remoteExecCall [QFUNC(srvCallsign), SERVER_OWNER];
     };
     // Local only (review S7/P8): nothing listens elsewhere, and a global
     // event's requester is whatever the raiser says. A count that must be

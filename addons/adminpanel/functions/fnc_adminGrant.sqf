@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, by remoteExec from GRANT ADMIN (admp_fnc_grantAdminAccess): gives or
  * takes a man's console access for this mission (review S2). The client used
  * to edit admp_authorisedIDs and publish it, so any client could publish a

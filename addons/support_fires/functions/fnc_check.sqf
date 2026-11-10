@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether one order may go to this asset, and what it fires - the ONE check
  * the requester's machine (FUNC(task)) and the server (FUNC(request),
  * FUNC(abort)) both run. The server runs it again with the sender's own
@@ -11,7 +11,8 @@
  * Simplex's request checks: the side's own asset, no target point, inside
  * the minimum or beyond the maximum range (FUNC(inRange)), nothing of that
  * type left. RTB: a cruise missile in flight cannot be recalled, and an idle
- * asset has nothing to recall.
+ * asset has nothing to recall. An adjust mission's next call is the held
+ * battery's own (FUNC(adjustFor)); its END needs no target.
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -54,8 +55,14 @@ if (_task isEqualTo TASK_RTB) exitWith {
     [true, "", [], []]
 };
 
+// ADJUST FIRE (2026-11-01): the observer's next call on the mission this
+// battery holds for him is not refused for the battery being busy with it.
+([_logic, _unit, _prm] call FUNC(adjustFor)) params ["_held", "_heldWhy", "_call"];
+if (_held isEqualTo ADJ_STATE_REFUSED) exitWith {[false, _heldWhy, [], []]};
+if (_held isEqualTo ADJ_STATE_HELD && _call isEqualTo ADJ_END) exitWith {[true, "", [], []]};
+
 ([_logic] call FUNC(available)) params ["_ok", "", "_why"];
-if (!_ok) exitWith {[false, _why, [], []]};
+if (!_ok && _held isNotEqualTo ADJ_STATE_HELD) exitWith {[false, _why, [], []]};
 
 if (_pos isEqualTo []) exitWith {[false, "no target point", [], []]};
 private _target = [_pos param [0, 0, [0]], _pos param [1, 0, [0]], 0];

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Re-reads the PAC net plan (jmfsb_pac_fnc_netPlan) into this machine's cache:
  * the voice kind of every plan net, which net carries which plan slot (VON
  * nets have none), and - emptied on every refresh - the per-squad answers of

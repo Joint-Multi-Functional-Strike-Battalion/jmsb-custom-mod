@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The players' air defence actions on one AD vehicle, on this machine - from
  * the vehicle's own InitPost (FUNC(vehicleInit)), so joining players get them
  * with no message from the server.

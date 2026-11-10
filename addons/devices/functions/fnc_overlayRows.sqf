@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The walking view's screen cut into its rows, from the design's numbers
  * (docs/DESIGN_PHONE_WALKING.md and DESIGN_SIDE_DEVICES.md, "Layout"). Pure:
  * the same screen rectangle always answers the same rows, so the placement
@@ -11,9 +11,14 @@
  * ... the same font" - FUNC(overlayDraw) fits the row by its widest cell), the map with the squad list over its
  * top left and the talking chip over its top right, one row of nets. A
  * portrait screen is the side devices' shared screen: status in three rows
- * of three, the map with the chip top left, the squad list in two columns
- * under the map, the nets in two columns under that. Both carry the call
- * strip along the map's bottom.
+ * of three, the map with the squad list over its top left and the chip over
+ * its top right, the nets in two columns under it. Both carry the call strip
+ * along the map's bottom.
+ *
+ * THE SIDE DEVICES' MAP RUNS FROM THE STATUS ROWS TO THE NETS (user,
+ * 2026-11-09: "make better use of the screen ... the red box should be the
+ * map"). The squad list left the space under the map for a place over it,
+ * the phone's way.
  *
  * THE STATUS ROW IS THE TOP BAR (user, 2026-10-21: "more like your old top
  * bar ... just no net number it did not make sense, net % maybe") - see
@@ -24,13 +29,11 @@
  * from the phones and sides"). The map takes their room. Popups stay upper
  * right on the game screen; call business has its own strip over the map.
  *
- * AN INNER BORDER, THE TABLET'S WAY (user, 2026-10-21: "corners do the same
- * as the tablet and on all devices"). A portrait screen's rows sit inside the
- * screen hole by OVERLAY_INSET of its shorter side - equal pixels on all four
- * sides - clear of the frame's corner bumpers; the ground shows between them
- * and the frame. The phone's border is OVERLAY_BORDER_PX, one pixel on all
- * four sides (user, 2026-10-30: "give the rest of the space back to the
- * screen").
+ * THE BORDER IS OVERLAY_BORDER_PX, one pixel on all four sides, on every
+ * walking-view device (user, 2026-10-30, the phone: "give the rest of the
+ * space back to the screen"; 2026-11-09, the side devices: "there is too much
+ * border"). The side devices' inset of a share of the hole's shorter side is
+ * gone.
  *
  * TEXT HAS A FLOOR. At the design's own numbers a side device's text came out
  * at six or seven pixels (user, 2026-10-21: "hard to read"). Text is raised
@@ -71,13 +74,10 @@ private _unitH = _sh / ([PHONE_DESIGN_H, SIDE_DESIGN_H] select _portrait);
 private _gapX = DESIGN_GAP * _unitW;
 private _gapY = DESIGN_GAP * _unitH;
 
-// The content rectangle, the border's width in from the hole: the same
-// pixels on all four sides - a share of the hole's shorter side on a
-// portrait screen, one pixel on the phone (user, 2026-10-30: "the border
-// should be 1px, give the rest of the space back to the screen").
-private _insetPx = [OVERLAY_BORDER_PX, OVERLAY_INSET * ((_sw / pixelW) min (_sh / pixelH))] select _portrait;
-private _insetX = _insetPx * pixelW;
-private _insetY = _insetPx * pixelH;
+// The content rectangle, the border's width in from the hole: one pixel on
+// all four sides, every device (user, 2026-10-30 and 2026-11-09).
+private _insetX = OVERLAY_BORDER_PX * pixelW;
+private _insetY = OVERLAY_BORDER_PX * pixelH;
 _sx = _sx + _insetX;
 _sy = _sy + _insetY;
 _sw = _sw - 2 * _insetX;
@@ -88,23 +88,23 @@ private _layout = [STATUS_LAYOUT_LANDSCAPE, STATUS_LAYOUT_PORTRAIT] select _port
 private _statusRows = count _layout;
 
 private _statusU = [PHONE_ROW_STATUS * _statusRows, SIDE_ROW_STATUS] select _portrait;
-private _squadU = [0, SIDE_ROW_SQUAD] select _portrait;
 private _netsU = [PHONE_ROW_NETS, SIDE_ROW_NETS] select _portrait;
 
 // How much the text, and the rows that carry it, grow over the design.
 private _designText = DESIGN_TEXT * _unitH;
-private _rowsH = (_statusU + _squadU + _netsU) * _unitH;
+private _rowsH = (_statusU + _netsU) * _unitH;
 private _scale = (OVERLAY_TEXT_MIN * safeZoneH / (_designText max pixelH)) max 1;
 _scale = _scale min OVERLAY_TEXT_SCALE_MAX min (((1 - OVERLAY_MAP_MIN) * _sh / (_rowsH max pixelH)) max 1);
 private _rowUnit = _unitH * _scale;
 
 private _statusH = _statusU * _rowUnit;
-private _squadH = _squadU * _rowUnit;
 // THE NET CELLS ARE FIXED PIXELS (notes, 2026-10-30): 38 on the phone's one
-// row, 34 in two columns on a portrait screen - six cells either way.
+// row, 34 in two columns on a portrait screen - a page of four net buttons
+// either way (user, 2026-11-07), the portrait screen's page marker in a row
+// of its own under them.
 private _netCellH = ([NET_CELL_PX_PHONE, NET_CELL_PX_PORTRAIT] select _portrait) * pixelH;
 private _netsH = if (_portrait) then {
-    (ceil (NET_ROW_CELLS / NET_COLS_PORTRAIT)) * (_netCellH + _gapY) + _gapY
+    ((ceil (NET_PAGE_SIZE / NET_COLS_PORTRAIT)) + NET_PAGE_MARK_ROWS) * (_netCellH + _gapY) + _gapY
 } else {
     _netCellH + 2 * _gapY
 };
@@ -141,34 +141,29 @@ for "_i" from 0 to (OVERLAY_STATUS_CELLS - 1) do {
 // fits each cell's text under it by measure.
 private _statusTextH = (_designText * _scale) min (_cellH * OVERLAY_CELL_TEXT_FIT);
 
+// The map: everything between the status rows and the nets, every device.
 private _mapY = _sy + _statusH;
-// A PORTRAIT SCREEN'S MAP IS A FIXED SHARE OF ITS HEIGHT (notes, 2026-10-30);
-// the squad list - two columns of three - takes what the nets leave.
-private _mapH = [_sh - _statusH - _squadH - _netsH, OVERLAY_MAP_PORTRAIT_K * _sh] select _portrait;
-if (_portrait) then {_squadH = _sh - _statusH - _mapH - _netsH};
+private _mapH = _sh - _statusH - _netsH;
 private _map = [_sx, _mapY, _sw, _mapH];
 
 // A text row is never under the hand devices' row height (the row rhythm).
+// On a portrait screen the squad list and the chip share the map's top, half
+// each.
 private _lineH = (DESIGN_LINE * _rowUnit) max (ROW_PX_DEVICE * pixelH);
-private _talkW = (DESIGN_TALK_W * _unitW * _scale) min (_sw - 2 * _gapX);
-private _talk = if (_portrait) then {
-    [_sx + _gapX, _mapY + _gapY, _talkW, _lineH]
-} else {
-    [_sx + _sw - _gapX - _talkW, _mapY + _gapY, _talkW, _lineH]
-};
+private _halfW = (_sw - 3 * _gapX) / 2;
+private _talkW = [(DESIGN_TALK_W * _unitW * _scale) min (_sw - 2 * _gapX), _halfW] select _portrait;
+private _talk = [_sx + _sw - _gapX - _talkW, _mapY + _gapY, _talkW, _lineH];
 
 // The call strip along the map's bottom.
 private _call = [_sx + _gapX, _mapY + _mapH - _gapY - _lineH, _sw - 2 * _gapX, _lineH];
+// The quick-answer strip right above it (2026-11-06), the full width.
+private _askH = ASK_STRIP_LINES * _lineH;
+private _ask = [_sx + _gapX, (_call select 1) - _gapY - _askH, _sw - 2 * _gapX, _askH];
 
-private _squad = if (_portrait) then {
-    private _colW = (_sw - (SQUAD_COLS_PORTRAIT - 1) * _gapX) / SQUAD_COLS_PORTRAIT;
-    [
-        [_sx, _mapY + _mapH, _colW, _squadH],
-        [_sx + _gapX + _colW, _mapY + _mapH, _colW, _squadH]
-    ]
-} else {
-    [[_sx + _gapX, _mapY + _gapY, (PHONE_LIST_W * _unitW * _scale) min (_sw / 2), _mapH - 3 * _gapY - _lineH]]
-};
+// The squad list over the map's top left; FUNC(overlayDraw) sets its height
+// to its lines.
+private _squadW = [(PHONE_LIST_W * _unitW * _scale) min (_sw / 2), _halfW] select _portrait;
+private _squad = [[_sx + _gapX, _mapY + _gapY, _squadW, _mapH - 3 * _gapY - _lineH]];
 
 createHashMapFromArray [
     ["portrait", _portrait],
@@ -185,8 +180,9 @@ createHashMapFromArray [
     ["talk", _talk],
     ["status", _status],
     ["call", _call],
+    ["ask", _ask],
     ["squad", _squad],
-    ["squadRows", [SQUAD_ROWS_LANDSCAPE, SQUAD_ROWS_PORTRAIT] select _portrait],
+    ["squadRows", SQUAD_ROWS_LANDSCAPE],
     // The nets row spans the content's width; FUNC(overlayDraw) adds its own
     // gutters, so the cells sit one gutter in from the content's edges - not
     // on them (user, 2026-10-31: the first chip "too close to the edge").

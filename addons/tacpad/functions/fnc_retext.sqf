@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets the words and colour of a line FUNC(drawText) made, in place: the same
  * type role, face, tracking and escaping, so a line updated on a tick reads
  * exactly as it did when it was drawn. FUNC(drawText) sets its text through
@@ -18,7 +18,7 @@
  * 3: Size, as a multiple of the body size <NUMBER> (optional, default 1)
  * 4: Bold <BOOL> (optional, default false)
  * 5: Alignment - "left", "right" or "center" <STRING> (optional, default "left")
- * 6: Track the letters, and uppercase them <BOOL> (optional, default false)
+ * 6: Track the letters (TRACK_MAX_CHARS or fewer), and uppercase them <BOOL> (optional, default false)
  * 7: Font - "" for the label face, FONT_MONO for numbers <STRING> (optional, default "")
  *
  * Return Value:
@@ -54,8 +54,14 @@ private _face = switch (true) do {
 // The apps' label and body text, one pixel up (FUNC(textSize)).
 _size = [_size] call FUNC(textSize);
 
+// Tracked is uppercase; only a short label is also spaced out (tablet review
+// 2026-11-01, 2.3: "B A N S H E E 1 - 1 V A N I L L A" was a name drawn as a
+// kicker). A longer line keeps its capitals and loses the spaces.
 if (_tracked) then {
-    _text = (toUpper _text) splitString "" joinString " ";
+    _text = toUpper _text;
+    if (count _text <= TRACK_MAX_CHARS) then {
+        _text = _text splitString "" joinString " ";
+    };
 };
 
 // After the tracking, so the spacing is applied to the glyphs the caller wrote

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The local player leaves a call (F4), or stops a dial still ringing out.
  * The call ends when one person is left.
  *

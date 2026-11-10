@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A thread's bodies arrived. Caches them and hands them to whatever asked.
  *
  * An empty payload means the server refused - the player is not a participant

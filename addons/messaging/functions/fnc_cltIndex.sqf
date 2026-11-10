@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Receives this player's whole index from the server and replaces the local one.
  * A replace rather than a merge: the server's answer is the truth, and a merge
  * would keep rows for threads the player has since lost access to.

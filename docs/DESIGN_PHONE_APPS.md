@@ -65,7 +65,7 @@ Top to bottom:
 
 - The mouse works too: click a screen name to jump to it, click a row to select it.
 - A blank soft key shows "—".
-- On the walking view 0 / . still move the active net. Only inside the app do they change screens.
+- On the walking view 0 / . turn the net page (2026-11-07). Only inside the app do they change screens.
 
 ## Screens
 

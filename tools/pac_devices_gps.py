@@ -8,7 +8,7 @@ arsenal changes need to be done in mongo").
     python tools/pac_devices_gps.py --apply    write, each document saved first
 
 - Every JMSB.arsenal* document: ItemGPS out of every list. The common arsenals (the ones with an itemsTools list
-  that are not a qualification's: JMSB.arsenal, JMSB.arsenal.testing, ...) get the phone, both side devices and the
+  that are not a qualification's: JMSB.arsenal) get the phone, both side devices and the
   RDC (2026-10-30) in itemsTools if they lack them.
 - Every JMSB.role.* document: ItemGPS out of the role's own arsenal lists; in its default loadout the GPS slot
   (getUnitLoadout index 9, slot 1) becomes jmfsb_devices_phone - replacing ItemGPS or filling an empty slot - and any

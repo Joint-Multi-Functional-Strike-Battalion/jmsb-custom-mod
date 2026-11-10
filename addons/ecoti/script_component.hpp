@@ -170,6 +170,33 @@
 #define COMPASS_FONT_READOUT 2.4
 #define COMPASS_WHITE [1, 1, 1, 1]
 
+// --- The LZs and DZs (FUNC(drawZones), user 2026-11-02: "in AiTR lz and drop
+// zones need to be highlighted") ---------------------------------------------
+// The support threads' open zones the server publishes to the side
+// (jmfsb_support FUNC(zones)), each a ring of dots on the ground with its label:
+// [the support core's zone kind, what it is, which]. A kind not listed reads
+// ZONE_WORD and the kind.
+#define ZONE_LABELS [ \
+    ["pickup", "LZ", "PICKUP"], ["insert", "LZ", "INSERT"], ["extract", "LZ", "EXTRACT"], \
+    ["casevac", "LZ", "CASEVAC"], ["dest", "LZ", "DEST"], ["qrf", "LZ", "QRF"], \
+    ["qrfdrop", "DZ", "QRF"], ["para", "DZ", "PARA"], ["static", "DZ", "STATIC"], \
+    ["halo", "DZ", "HALO"], ["haho", "DZ", "HAHO"], ["release", "DZ", "RELEASE"], \
+    ["resupply", "DROP", "RESUPPLY"], ["sling", "DROP", "SLING"] \
+]
+#define ZONE_WORD "ZONE"
+// No more zones than this drawn at once - the nearest, picked twice a second.
+#define ZONE_MAX 6
+// Dots round a zone's ring, and a dot's side in box line widths.
+#define ZONE_RING_DOTS 24
+#define ZONE_DOT_SCALE 2
+// The asset's call sign goes in the label when it is no longer than this.
+#define ZONE_CALLSIGN_FITS 12
+// A worldToScreen result on the screen at all - [] (behind the camera) is not.
+#define ON_SCREEN(SCR) (if ((SCR) isEqualTo []) then {false} else {((SCR) select 0) >= safeZoneX && ((SCR) select 0) <= safeZoneX + safeZoneW && ((SCR) select 1) >= safeZoneY && ((SCR) select 1) <= safeZoneY + safeZoneH})
+// A range in tenths of a kilometre past LABEL_KM (FUNC(rangeText)).
+#define LABEL_KM_TENTH 100
+#define TENTHS 10
+
 // Frames Draw3D may miss before FUNC(hideCovered) treats the scene as not drawn
 // (EachFrame can run before Draw3D in the same frame, so one frame is allowed).
 #define DRAW_FRAME_GAP 1
@@ -179,3 +206,39 @@
 #ifndef ST_CENTER
     #define ST_CENTER 2
 #endif
+
+// BUILDING MARKS (user, 2026-11-06: "add a way in 3den, zeus and by players to
+// make a building that this is highlighted in ecoti, the color when the
+// keybind is pressed need a 6-9 question on color"). The server keeps the list
+// - [building, colour index, label] - and publishes a copy (FUNC(markSet));
+// every AiTR draws a box round each marked building in its colour, with its
+// label and range, at up to MARK_RANGE (FUNC(buildingBox)). Line of sight is not
+// asked: a mark is told, not seen.
+#define MARK_COLOURS [ \
+    ["RED", [1, 0.25, 0.2]], \
+    ["BLUE", [0.25, 0.55, 1]], \
+    ["GREEN", [0.3, 0.85, 0.35]], \
+    ["YELLOW", [1, 0.85, 0.2]], \
+    ["WHITE", [1, 1, 1]], \
+    ["ORANGE", [1, 0.55, 0.1]], \
+    ["PURPLE", [0.75, 0.4, 1]] \
+]
+#define MARK_CLEAR_WORD "CLEAR"
+#define MARK_CLEAR -1
+#define MARK_RANGE 2000
+// How far the player's key looks for the building under the crosshair, and how
+// many surfaces it reads on the way (a fence or a tree may come first).
+#define MARK_LOOK_RANGE 1500
+#define MARK_LOOK_HITS 6
+// The Eden / Zeus module marks the buildings synced to it, else the nearest one
+// inside this radius.
+#define MARK_MODULE_RADIUS 25
+// The colour question on the phone's strip (jmfsb_tacpad_fnc_askChoice) waits
+// this long for a pick.
+#define MARK_ASK_ID "ecotiMark"
+#define MARK_ASK_TEXT "MARK %1 - COLOUR?"
+#define MARK_ASK_S 30
+#define MARK_DEFAULT_LABEL "MARK"
+#define MARK_BUILDING_CLASS "Building"
+#define MARK_LABEL_MAX 24
+#define SERVER_OWNER 2

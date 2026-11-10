@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A relevant round has been fired (FUNC(shot)): predict where it lands ONCE,
  * find the AD units it threatens, and queue it. Server only.
  *

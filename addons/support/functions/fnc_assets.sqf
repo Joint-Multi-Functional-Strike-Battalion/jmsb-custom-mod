@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every support asset the viewer can see, from every registered provider, as
  * the rows TAC//SUPPORT draws:
  *

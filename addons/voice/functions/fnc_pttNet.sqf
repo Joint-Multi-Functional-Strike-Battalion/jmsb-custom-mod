@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The net a PTT key talks on (the MPU5's Dual PTT, four keys here). PTT 1 is
  * the active net. PTT 2-4 are the net the RADIO app set for that key
  * (FUNC(pttKey)), or with none set the net in that place of his list

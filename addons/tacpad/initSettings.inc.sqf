@@ -53,6 +53,18 @@
     {[QGVAR(opacity_changed), []] call CBA_fnc_localEvent}
 ] call CBA_fnc_addSetting;
 
+// REAL WORLD / SIMPLE (docs/DESIGN_MESSAGE_TEMPLATES.md, 2026-11-09): which
+// view of a card the composer opens on. UNIT follows the unit's option in
+// TAC//PAC (real world unless it says simple). A card with a SIMPLE form
+// carries the switch on its header either way; this only says where it starts.
+[
+    QGVAR(composeShort), "LIST",
+    ["Message card form", "Which form a request card opens on. REAL WORLD is the doctrinal form in the publication's line order; SIMPLE is only what the asset cannot act without. UNIT follows your unit's choice in TAC//PAC. Same card, same fields - the REAL WORLD / SIMPLE switch on the card flips it."],
+    ["JMSB - Tablet & Map", "Tacpad"],
+    [["unit", "real", "simple"], ["Unit (TAC//PAC)", "Real world", "Simple"], 0],
+    false
+] call CBA_fnc_addSetting;
+
 [
     QGVAR(respectZones), "CHECKBOX",
     ["Keep clear of reserved areas", "Slides a panel out of the game menu, the chat overlay and the map's scale and contour legend when you drop it on one. Off lets you put a panel anywhere, including on top of your own chat."],

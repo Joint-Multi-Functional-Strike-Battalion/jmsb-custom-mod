@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RF node ids a player's sets can have (handheld, vehicle seat - no man
  * packs),
  * whether or not he carries them now. Ids are stable across respawn.

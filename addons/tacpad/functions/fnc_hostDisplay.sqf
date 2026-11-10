@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The display the suite draws on right now, or displayNull when there is none.
  *
  * In native mode that is the vanilla map, looked up fresh every time because a

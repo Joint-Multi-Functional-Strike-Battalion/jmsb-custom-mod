@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One line on the notify rail, titled POINT MAN. Nothing is said with no
  * text, and nothing without messaging.
  *

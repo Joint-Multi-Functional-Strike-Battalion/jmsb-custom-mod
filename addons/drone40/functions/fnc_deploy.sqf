@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a drone40 variant is up, or its mode was switched (FUNC(setMode)).
  * Its role is its mode (GVAR(mode), public on the drone) when one was set,
  * else its round's (GVAR(role) in config); in mode "off" nothing is

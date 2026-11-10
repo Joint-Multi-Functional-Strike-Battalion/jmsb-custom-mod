@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The MAP TOOLS strip: the front end for jmfsb_maptools, on the vanilla map and
  * on the tablet's screen alike. A four-across grid of outlined cells.
  *
@@ -19,6 +19,10 @@
  * cells the last row leaves free. CANCEL on the title bar stops the running
  * tool without the player having to know which one it was.
  *
+ * THE FULL GRID, ALWAYS (user, 2026-11-01: "like the old buttons better").
+ * The review's R5 folded the strip to one row of short marks (CTR RUL PRO ...)
+ * until a tool was opened; seen in game, the user reversed it.
+ *
  * CENTRE IS FIRST because it is the one pressed most. A man looking at his own
  * map has usually panned away from himself.
  *
@@ -35,6 +39,8 @@
 // The two momentary cells' ids. Everything else is a jmfsb_maptools tool id.
 #define TOOLS_CENTRE "centre"
 #define TOOLS_CLEAR "clear"
+// What the empty grid box says until something is typed in it.
+#define TOOLS_GRID_HINT "GRID REF"
 
 params [["_body", controlNull, [controlNull]], ["_id", "", [""]]];
 
@@ -161,18 +167,28 @@ if (_free < 2) then {
 private _gx = _pad + _goCol * _cellW;
 private _gy = _padY + _goRow * (_cellH + _padY);
 private _goW = _cellW - _pad;
-[_body, [_gx, _gy, _goW, _cellH], _line, RULE_THICK] call EFUNC(tacpad,drawFrame);
+// NO EMPTY CELL (review 2026-11-01, item 3.2: "the MAP TOOLS grid has an
+// empty cell"). The grid box was an edit with a faint outline and nothing in
+// it - a hole in the grid. It is outlined in the ink like its neighbours and
+// says what goes in it until something is typed; the hint sits under the box,
+// so the box keeps the click and the focus.
+[_body, [_gx, _gy, _goW, _cellH], _ink, RULE_THICK] call EFUNC(tacpad,drawFrame);
+private _typed = uiNamespace getVariable [QGVAR(toolsGrid), ""];
+private _hint = [_body, [_gx + _pad, _gy, _goW - 2 * _pad, _cellH], TOOLS_GRID_HINT, ["dim"] call EFUNC(tacpad,theme), _labelSize, true] call EFUNC(tacpad,drawText);
+_hint ctrlShow (_typed isEqualTo "");
 private _box = (ctrlParent _body) ctrlCreate ["RscEdit", -1, _body];
 _box ctrlSetPosition [_gx + _pad, _gy, _goW - 2 * _pad, _cellH];
 _box ctrlSetBackgroundColor [0, 0, 0, 0];
 _box ctrlSetTextColor _ink;
 _box ctrlSetFontHeight (_cellH * 0.72);
-_box ctrlSetText (uiNamespace getVariable [QGVAR(toolsGrid), ""]);
+_box ctrlSetText _typed;
 _box ctrlSetTooltip "A grid - 6, 8 or 10 figures - then GO: the map goes there.";
 _box ctrlCommit 0;
+_box setVariable [QGVAR(toolsHint), _hint];
 _box ctrlAddEventHandler ["KeyUp", {
     params ["_ctrl"];
     uiNamespace setVariable [QGVAR(toolsGrid), ctrlText _ctrl];
+    (_ctrl getVariable [QGVAR(toolsHint), controlNull]) ctrlShow ((ctrlText _ctrl) isEqualTo "");
     false
 }];
 private _gox = _gx + _cellW;

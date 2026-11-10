@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The noise a receiver hears on a band at a point: the band's floor plus
  * every contribution the noise-source hooks return (jmfsb_rf_fnc_addNoiseSource),
  * summed as powers. A contribution flagged spreadApplies is first reduced by

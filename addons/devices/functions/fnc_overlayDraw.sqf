@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Redraws the walking view - the status cells, the squad list and the talking
  * chip, the call strip, the nets - and puts the map back on the player.
  *
@@ -22,8 +22,9 @@
  * state colour (FUNC(netOutline): green good, amber weak or jammed, red no
  * route, dim muted) with the label inset over it by NET_EDGE_PX - never
  * hidden. The active net is filled light with dark text; a muted net's name
- * is dim; the small tag at the right is the net's ear (L / B / R). A ringing
- * call with no call net yet is a RING cell in the alert colour.
+ * is dim; the small tag at the right is the net's ear (L / B / R), and a
+ * grey R at the left marks a receive-only net (EMCON 3). A ringing call with
+ * no call net yet is a RING cell in the alert colour.
  *
  * CALLS GET THE CALL STRIP (FUNC(voiceLine)) along the map's bottom while
  * there is call business - a ring, a call, a pending callback, the F2
@@ -69,10 +70,13 @@ private _statusTextH = _rows get "statusTextH";
 // single line"; then "font too small"): every cell is measured at the row's
 // size first, and the one size they all get is the row's shrunk only as far
 // as the WHOLE line needs - on the phone's one row each cell is as wide as
-// its own text (GPS wide, MSG narrow), so the shrink is the line's overflow,
+// its own text (BATT wide, MSG narrow), so the shrink is the line's overflow,
 // not the widest cell's share; a portrait screen keeps its grid of equal
 // cells and shrinks by the worst cell. A gutter in from each edge either
 // way, so neighbours never touch.
+// EVEN SPACING (user, 2026-11-01: "Drop GPS, space the rest"): on the one row
+// the strip's spare width is one equal air between every two words and at
+// both ends, each cell its word plus that air, word centred.
 if ([_display, "status", [_base, _status]] call EFUNC(tacpad,changed)) then {
     private _shown = (count _status) min OVERLAY_STATUS_CELLS;
     private _widths = [];
@@ -97,13 +101,12 @@ if ([_display, "status", [_base, _status]] call EFUNC(tacpad,changed)) then {
         private _sum = 0;
         {_sum = _sum + _x} forEach _widths;
         if (_sum > 0 && _room > 0 && _sum > _room) then {_fit = _room / _sum};
-        // each cell its text's width (at the one size) plus a gutter each side,
-        // and the line's spare room shared out between them
-        private _spare = ((_room - _sum * _fit) max 0) / _shown;
+        // n words, n + 1 equal airs: half an air each side of every word
+        private _air = ((_cw - _sum * _fit) max 0) / (_shown + 1);
         _lineRects = [];
-        private _runX = _cx;
+        private _runX = _cx + _air * 0.5;
         {
-            private _w = _x * _fit + 2 * _gapX + _spare;
+            private _w = _x * _fit + _air;
             _lineRects pushBack [_runX, _cy, _w, _ch];
             _runX = _runX + _w;
         } forEach _widths;
@@ -124,8 +127,19 @@ if ([_display, "status", [_base, _status]] call EFUNC(tacpad,changed)) then {
     };
 };
 
+// ------------------------------------------------ another addon's screen ----
+// A SCREEN ANOTHER ADDON PUTS OVER THE MAP (2026-11-07: the AiTR patient
+// vitals, jmfsb_medic): GVAR(overlayScreens), id -> code called with
+// [display, rows, allowed] that draws its own controls over rows' "map" when
+// allowed and it is on, clears them otherwise, and answers whether it drew.
+// The RADIO app comes first; the first screen that draws takes the room.
+private _taken = false;
+{
+    if ([_display, _rows, !GVAR(radioOpen) && !_taken] call _y) then {_taken = true};
+} forEach GVAR(overlayScreens);
+
 // -------------------------------------------------------------- call ----
-private _app = GVAR(radioOpen);
+private _app = GVAR(radioOpen) || _taken;
 private _voiceLine = [] call FUNC(voiceLine);
 if ([_display, "call", [_base, _voiceLine, _app]] call EFUNC(tacpad,changed)) then {
     private _callCtrl = _display displayCtrl IDC_OVERLAY_CALL;
@@ -133,9 +147,20 @@ if ([_display, "call", [_base, _voiceLine, _app]] call EFUNC(tacpad,changed)) th
     _callCtrl ctrlShow (_voiceLine isNotEqualTo "" && !_app);
 };
 
+// -------------------------------------------------------- quick answers ----
+// WHAT A SUPPORT ASSET ASKS, ON THE KEYS (user, 2026-11-06): above the call
+// strip until it is answered (FUNC(overlayAsk)). The RADIO app keeps the keys
+// while it is open, so the strip waits under it.
+private _askLine = [] call FUNC(overlayAsk);
+if ([_display, "ask", [_base, _askLine, _app]] call EFUNC(tacpad,changed)) then {
+    private _askCtrl = _display displayCtrl IDC_OVERLAY_ASK;
+    _askCtrl ctrlSetStructuredText parseText _askLine;
+    _askCtrl ctrlShow (_askLine isNotEqualTo "" && !_app);
+};
+
 // ------------------------------------------------------ squad and chip ----
-// The phone's list hugs its lines over the map; the side devices' fills two
-// columns of three under it.
+// The list hugs its lines over the map, on every device (user, 2026-11-09:
+// the side devices' map fills the screen).
 private _perColumn = _rows get "squadRows";
 private _members = [_rf] call FUNC(overlaySquad);
 private _lineH = _rows get "lineH";
@@ -151,9 +176,7 @@ if ([_display, "squad", [_base, _members, _app]] call EFUNC(tacpad,changed)) the
         };
         _ctrl ctrlSetStructuredText parseText (_chunk joinString "<br/>");
         _ctrl ctrlSetBackgroundColor _wash;
-        if (!_portrait) then {
-            _ctrl ctrlSetPosition [_rect # 0, _rect # 1, _rect # 2, (count _chunk) * _lineH + _gapY];
-        };
+        _ctrl ctrlSetPosition [_rect # 0, _rect # 1, _rect # 2, (count _chunk) * _lineH + _gapY];
         _ctrl ctrlCommit 0;
         _ctrl ctrlShow true;
     } forEach [IDC_OVERLAY_SQUAD, IDC_OVERLAY_SQUAD2];
@@ -170,29 +193,57 @@ if ([_display, "talk", [_base, _chip, _app]] call EFUNC(tacpad,changed)) then {
 
 // ---------------------------------------------------------------- nets ----
 // One row of equal cells on the phone, two columns on a portrait screen.
-private _nets = [[] call FUNC(overlayNets), []] select _app;
+// ONE PAGE OF THE TWELVE NET BUTTONS (user, 2026-11-07; FUNC(netButtons)):
+// the page's four chips, numbered 1-4 (FUNC(overlayNets)), and while more
+// than one page has nets the page marker "2/3" - at the phone row's right
+// end, in its own row under a portrait screen's 2 x 2 cells. The device
+// arrows turn the page (FUNC(netPageStep)).
+private _buttons = [] call FUNC(netButtons);
+_buttons params ["", "_page", "_pages"];
+private _nets = [[_buttons] call FUNC(overlayNets), []] select _app;
+private _paged = (count _pages > 1) && !_app;
+private _mark = [format [NET_PAGE_MARK, (_pages find _page) + 1, count _pages], ""] select !_paged;
 (_rows get "nets") params ["_nx", "_ny", "_nw", "_nh"];
 // EQUAL CELLS ACROSS THE FULL WIDTH whatever the count (notes, 2026-10-30):
-// four on the phone's one row (user, 2026-10-31), six in two columns on a
-// portrait screen; an empty one is a dim outline. The RADIO app takes the
-// row (no nets) and every cell hides.
-private _cells = [NET_ROW_CELLS_PHONE, NET_ROW_CELLS] select _portrait;
-private _cols = [_cells, NET_COLS_PORTRAIT] select _portrait;
-private _slots = [_cells, 0] select _app;
+// a page's four on the phone's one row (user, 2026-10-31), two columns of two
+// on a portrait screen; an empty one is a dim outline. The RADIO app takes
+// the row (no nets) and every cell hides.
+private _cols = [NET_PAGE_SIZE, NET_COLS_PORTRAIT] select _portrait;
+private _slots = [NET_PAGE_SIZE, 0] select _app;
 private _netRows = (ceil (_slots / _cols)) max 1;
-private _cellW = (_nw - (_cols + 1) * _gapX) / _cols;
-private _cellH = (_rows get "netCellH") min ((_nh - (_netRows + 1) * _gapY) / _netRows);
-private _top = _ny + (_nh - _netRows * _cellH - (_netRows - 1) * _gapY) / 2;
+private _gridRows = _netRows + ([0, NET_PAGE_MARK_ROWS] select _portrait);
+private _markW = [0, NET_PAGE_MARK_W * (_rows get "unitW") * (_rows get "textScale")] select (_paged && !_portrait);
+private _cellW = (_nw - _markW - (_cols + 1) * _gapX) / _cols;
+private _cellH = (_rows get "netCellH") min ((_nh - (_gridRows + 1) * _gapY) / _gridRows);
+private _top = _ny + (_nh - _gridRows * _cellH - (_gridRows - 1) * _gapY) / 2;
 private _edgeW = NET_EDGE_PX * pixelW;
 private _edgeH = NET_EDGE_PX * pixelH;
 private _textH = _rows get "textH";
 
 // A cell is set only when the row would read differently.
-private _netsFresh = [_display, "nets", [_base, _nets, _app]] call EFUNC(tacpad,changed);
+private _netsFresh = [_display, "nets", [_base, _nets, _app, _mark]] call EFUNC(tacpad,changed);
+if (_netsFresh) then {
+    private _markCtrl = _display displayCtrl IDC_OVERLAY_NETPAGE;
+    private _markRect = if (_portrait) then {
+        [_nx + _gapX, _top + _netRows * (_cellH + _gapY), _nw - 2 * _gapX, _cellH]
+    } else {
+        [_nx + _nw - _markW, _top, _markW - _gapX, _cellH]
+    };
+    _markCtrl ctrlSetPosition _markRect;
+    _markCtrl ctrlSetFontHeight _textH;
+    _markCtrl ctrlSetText _mark;
+    _markCtrl ctrlSetTextColor _ink;
+    _markCtrl ctrlCommit 0;
+    _markCtrl ctrlShow _paged;
+};
 for "_i" from 0 to ([-1, OVERLAY_NET_CELLS - 1] select _netsFresh) do {
     private _edge = _display displayCtrl IDC_OVERLAY_NETEDGE(_i);
     private _cell = _display displayCtrl IDC_OVERLAY_NET(_i);
     private _rx = _display displayCtrl IDC_OVERLAY_NETRX(_i);
+    private _ro = _display displayCtrl IDC_OVERLAY_NETRO(_i);
+    private _strike = _display displayCtrl IDC_OVERLAY_NETMUTE(_i);
+    _strike ctrlShow false;
+    _ro ctrlShow false;
     if (_i >= _slots) then {
         {_x ctrlShow false} forEach [_edge, _cell, _rx];
         continue;
@@ -201,7 +252,7 @@ for "_i" from 0 to ([-1, OVERLAY_NET_CELLS - 1] select _netsFresh) do {
     private _y0 = _top + (floor (_i / _cols)) * (_cellH + _gapY);
 
     // AN EMPTY CELL IS A DIM OUTLINE on the ground, nothing in it.
-    if (_i >= count _nets) then {
+    if ((_nets param [_i, []]) isEqualTo []) then {
         _edge ctrlSetPosition [_x0, _y0, _cellW, _cellH];
         _edge ctrlSetBackgroundColor _dim;
         _cell ctrlSetPosition [_x0 + _edgeW, _y0 + _edgeH, _cellW - 2 * _edgeW, _cellH - 2 * _edgeH];
@@ -218,6 +269,7 @@ for "_i" from 0 to ([-1, OVERLAY_NET_CELLS - 1] select _netsFresh) do {
     private _ring = _kind isEqualTo NET_KIND_RING;
     // TALKING ON IT: the chip goes red with TX in front, whatever else it is.
     private _tx = (_nets select _i) param [9, false];
+    private _receiveOnly = (_nets select _i) param [10, false];
     if (_tx) then {_label = format ["%1 %2", NET_TX_TAG, _label]};
     private _outline = [[_nets select _i] call FUNC(netOutline), COLOUR_TX] select _tx;
     private _fill = switch (true) do {
@@ -239,9 +291,12 @@ for "_i" from 0 to ([-1, OVERLAY_NET_CELLS - 1] select _netsFresh) do {
     // text" - "1 GHOST" ran under its B): the text control ends where the
     // tag begins, the tag's own box carries the fill on to the cell's edge,
     // and a name still wider than its room is set smaller by measure.
+    // RECEIVE ONLY (EMCON 3) takes a tag's width at the LEFT end for its
+    // grey R, the ear keeping the right (FUNC(overlayNets)).
     private _tagW = [0, _textH + _edgeW] select (_ear isNotEqualTo "");
-    private _nameW = _cellW - 2 * _edgeW - _tagW;
-    _cell ctrlSetPosition [_x0 + _edgeW, _y0 + _edgeH, _nameW, _cellH - 2 * _edgeH];
+    private _roW = [0, _textH + _edgeW] select _receiveOnly;
+    private _nameW = _cellW - 2 * _edgeW - _tagW - _roW;
+    _cell ctrlSetPosition [_x0 + _edgeW + _roW, _y0 + _edgeH, _nameW, _cellH - 2 * _edgeH];
     _cell ctrlSetFontHeight _textH;
     _cell ctrlSetText _label;
     private _labelW = ctrlTextWidth _cell;
@@ -249,17 +304,31 @@ for "_i" from 0 to ([-1, OVERLAY_NET_CELLS - 1] select _netsFresh) do {
     if (_room > 0 && _labelW > _room) then {_cell ctrlSetFontHeight (_textH * _room / _labelW)};
     _cell ctrlSetBackgroundColor _fill;
     _cell ctrlSetTextColor _text;
-    _rx ctrlSetPosition [_x0 + _edgeW + _nameW, _y0 + _edgeH, _tagW, _cellH - 2 * _edgeH];
-    _rx ctrlSetBackgroundColor _fill;
-    _rx ctrlSetFontHeight _textH;
+    _rx ctrlSetPosition [_x0 + _edgeW + _roW + _nameW, _y0 + _edgeH, _tagW, _cellH - 2 * _edgeH];
     _rx ctrlSetText _ear;
-    _rx ctrlSetTextColor ([COLOUR_DIM, _ground] select _active);
+    _ro ctrlSetPosition [_x0 + _edgeW, _y0 + _edgeH, _roW, _cellH - 2 * _edgeH];
+    {
+        _x ctrlSetBackgroundColor _fill;
+        _x ctrlSetFontHeight _textH;
+        _x ctrlSetTextColor ([COLOUR_DIM, _ground] select _active);
+    } forEach [_rx, _ro];
     {
         _x ctrlCommit 0;
-    } forEach [_edge, _cell, _rx];
+    } forEach [_edge, _cell, _rx, _ro];
     _edge ctrlShow true;
     _cell ctrlShow true;
     _rx ctrlShow (_ear isNotEqualTo "");
+    _ro ctrlShow _receiveOnly;
+    // A MUTED NET IS STRUCK THROUGH (user, 2026-11-01: "red line through
+    // muted channels"): a red bar the outline's thickness across the cell's
+    // middle, over the dimmed name - as the tablet's row strikes it
+    // (FUNC(tabletNets)). Not on a TX cell, which is already that red.
+    if (_muted && !_tx) then {
+        _strike ctrlSetPosition [_x0, _y0 + (_cellH - _edgeH) / 2, _cellW, _edgeH];
+        _strike ctrlSetBackgroundColor COLOUR_ALERT;
+        _strike ctrlCommit 0;
+        _strike ctrlShow true;
+    };
 };
 
 // ------------------------------------------------------- the RADIO app ----

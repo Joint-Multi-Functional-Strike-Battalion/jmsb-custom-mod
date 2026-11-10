@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SCANNER: the sweep, on the HUD.
  *
  * THREE READINGS, AND THAT IS THE SCANNER. The handset's screen carries more

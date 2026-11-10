@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: how loud the local player hears a speaker on a net - the quality
  * after the grace time (jmfsb_voice_fnc_quality), 0 when he muted the net.
  *

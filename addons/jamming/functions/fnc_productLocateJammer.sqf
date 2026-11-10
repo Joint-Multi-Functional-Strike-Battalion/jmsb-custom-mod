@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE JAMMER: the emitters holding the quiet up, plotted exactly.
  *
  * Exact rather than fuzzed, and for the same reason LOCATE AA is: a jammer is

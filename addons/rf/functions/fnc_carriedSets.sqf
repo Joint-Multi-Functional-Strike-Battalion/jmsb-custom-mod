@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The radio sets a man carries, as RF sees them (FUNC(itemProfile)): the set in
  * his radio slot. What a voice adapter registers as his nodes. No radio mod is
  * asked.

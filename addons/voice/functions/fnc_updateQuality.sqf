@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: MESH DRIVES THE VOICE. For every other player and every radio net
  * of the local player's, the link quality from the slice, held at its last
  * good value for the grace time when the route drops, and 0 on a net he has

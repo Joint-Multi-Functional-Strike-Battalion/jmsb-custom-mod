@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Leaves the mission's room: the extension disconnects, the mic is closed,
  * the mix forgotten. For the echo test, which needs the extension's one
  * session (FUNC(echo) rejoins after); the mission's end disconnects on its

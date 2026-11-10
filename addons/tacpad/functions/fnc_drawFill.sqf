@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A flat rectangle of colour. The whole suite is flat blocks and rules, so this
  * is most of what it draws.
  *

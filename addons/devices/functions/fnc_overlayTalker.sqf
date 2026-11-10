@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The talking box (docs/DESIGN_VOICE.md, "Nets on the devices": name, net and
  * ear): "<N> <NAME> on <NET> [EAR]" for the last man heard, held for TALK_HOLD
  * seconds after he stops - or, while a call rings, "RINGING <NAME>". On a call

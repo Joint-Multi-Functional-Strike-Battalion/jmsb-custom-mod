@@ -1,8 +1,8 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * What the side hears, on its notify rail: an air asset's line, so a drop or a
- * QRF is not something that silently happens somewhere. The requester already
+ * Author: YonV
+ * What the side hears, on its notify rail: an air asset's line, so a strike
+ * or a QRF is not something that silently happens somewhere. The requester already
  * has it as the support core's acknowledgement and is not told twice.
  *
  * Sent by the server (FUNC(say)) by remoteExec to the module's side and taken

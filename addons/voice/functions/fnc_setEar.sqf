@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets the ear a net's beeps and static play from (VON cannot pan voice).
  * Nothing while no game-voice system runs (system "none").
  *

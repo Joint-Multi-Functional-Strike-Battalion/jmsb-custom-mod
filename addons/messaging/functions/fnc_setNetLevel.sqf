@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets a shared net's subscription level for THIS player and keeps it.
  *
  * Written to the player's profile, not the mission: which nets a man wants

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: a threat warning from the server (FUNC(warn)) on the notification
  * rail - kind as the title, the detail and what to do as the line. The
  * OVERVIEW tab keeps the recent ones from the slice.

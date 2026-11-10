@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RF link quality -> the share of TFAR's normal range a net keeps:
  *
  *   unknown (-1)        1           RF has no word on it: TFAR's own range

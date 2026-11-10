@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the server's answer to an echo test (FUNC(srvEchoToken)) - the voice
  * server's address and his token, and the extension joins; or why not, and
  * the test ends. Taken only from the server, and only while joining.

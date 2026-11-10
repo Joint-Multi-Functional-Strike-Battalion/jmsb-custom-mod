@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the timer currently reads, as numbers. The tile and the app both ask
  * here, so the band and the screen can never show different times.
  *

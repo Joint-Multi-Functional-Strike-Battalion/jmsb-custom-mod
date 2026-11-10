@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The people a thread's CALL button rings (user, 2026-10-21: "add to the
  * tac/msg app a call as a reply button"): the players among a thread's
  * authors and participants, by uid - in game, alive, and not the caller.

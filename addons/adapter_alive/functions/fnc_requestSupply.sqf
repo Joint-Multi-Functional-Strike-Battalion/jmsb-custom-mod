@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Asks the side's LOGCOM to send something to a place - the "enemy rebuilds"
  * half of every jmfsb site. A cache that is hit gets a section to guard the
  * next one; a battery that is hit gets its defenders back.

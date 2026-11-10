@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a virtual barrage is coming down (jmfsb_common_fnc_fireBarrage's
  * event - the enemy's shells with no gun on the map: a major reaction, a QRF's
  * fires, a jammer's reply, a drone's spot, the counter-battery answer). The

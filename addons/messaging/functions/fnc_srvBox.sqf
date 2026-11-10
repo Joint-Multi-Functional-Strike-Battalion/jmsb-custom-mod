@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Gets a mailbox, creating it if it does not exist yet. Everything is a
  * mailbox: a player, a group and a shared filing box differ only in how their
  * membership is worked out, so there is one record type and one lookup.

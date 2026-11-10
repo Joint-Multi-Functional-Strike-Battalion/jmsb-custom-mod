@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SLICE ZERO (docs/new.md section 9). Four probes, each dumping evidence to
  * the RPT and to the caller's chat. Rule 6: nothing else in the restart
  * merges until all four have passed in a live mission.

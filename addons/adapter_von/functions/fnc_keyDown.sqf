@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * KeyDown on the mission display: swallows the VON toggle (Voice Over Net)
  * so the mic is never left open - the mesh volume, the sounds and the
  * cut-offs all follow the push-to-talk - and tells the player once to bind

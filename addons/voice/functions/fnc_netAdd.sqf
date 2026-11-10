@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: asks the server for an RTO net (user, 2026-10-22: "allow rtos to
  * add custom channels"). What a client can tell is refused here with the
  * same words the server would use; the rest - the name, the count, the

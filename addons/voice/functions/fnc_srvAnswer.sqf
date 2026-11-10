@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a ringing person accepts or declines. Accepting joins him to the
  * call net (and the whole call, the moment it goes live); declining tells
  * the caller. Reached by remoteExec from FUNC(callAccept) / callDecline: the

@@ -36,3 +36,24 @@ PREP(viewshedCancel);
 
 // LOS between two points (user, 2026-10-30)
 PREP(losCheck);
+
+// MAP MARKERS (user, 2026-11-01): double-click and MARK, one placement path
+// through the player's marker system - the built-in card, ACE's dialog, or
+// ALiVE's through jmfsb_adapter_alive.
+PREP(mapDblClick);
+PREP(markLabel);
+PREP(markerOpen);
+PREP(markerChannels);
+PREP(markerOwn);
+PREP(markerDelete);
+PREP(markerCard);
+PREP(markerCardDraw);
+PREP(markerCardCells);
+// The whole marker set, by tab, and its page (user, 2026-11-02).
+PREP(markerCardCatalog);
+PREP(markerCardIcons);
+PREP(markerCardPlace);
+PREP(markerCardClose);
+PREP(markerAce);
+PREP(markerAceInit);
+PREP(markerAceDone);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How much ammunition a man has left for his primary weapon, as a percentage.
  *
  * MEASURED AGAINST WHAT HE IS CARRYING, not against what he started with. There

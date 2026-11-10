@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - CALLS, the right column: LIVE CALL over CALLBACKS.
  *
  * LIVE CALL. An incoming call rings here with ACCEPT and DECLINE - the walking
@@ -191,6 +191,6 @@ private _fits = floor ((_ch - _rowH * 3.5) / _step) max 1;
 
 [
     _body, [_cl + _pad, _ct + _rowH * 1.2 + ((count _callbacks) min _fits) * _step + _rowH * 0.3, _cw - 2 * _pad, _rowH * 2],
-    "Rings both phones when there is a route and a free slot. Expires after 15 min. Cancelling one is not built.",
+    "Rings both phones when there is a route and a free slot. Expires after 15 min.",
     _muted, TEXT_LABEL
 ] call EFUNC(tacpad,drawText);

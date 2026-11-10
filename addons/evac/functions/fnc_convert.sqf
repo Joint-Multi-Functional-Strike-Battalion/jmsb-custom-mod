@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Performs the evac once the progress bar completes. Marks the casualty
  * claimed (so the action is not offered twice in the round trip) and hands
  * off to the server by remoteExec (FUNC(evacServer)), which knows who sent

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hangs the two ways out of an open app on the host display: ESC and a press on
  * the map. Lifted out of FUNC(openApp) so a screen that draws itself and is
  * adopted with FUNC(appHost) - the TAC//MSG reader and TAC//PAC inside the

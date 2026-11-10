@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one JMSB - CAS module and puts the aircraft it describes on
  * TAC//SUPPORT. Many modules are many aircraft; nothing here is global.
  *
@@ -31,15 +31,15 @@ if ((call EFUNC(common,playerSides)) isEqualTo []) exitWith {
     [{(call EFUNC(common,playerSides)) isNotEqualTo []}, FUNC(moduleCAS), _this] call CBA_fnc_waitUntilAndExecute;
 };
 
-// Sorties are the stock: -1 is unlimited, so "0 left" can mean spent.
-private _sorties = round (_logic getVariable ["sorties", 4]);
-_logic setVariable [QGVAR(left), [_sorties, -1] select (_sorties <= 0), true];
-_logic setVariable [QGVAR(stock), _sorties max 0, true];
-_logic setVariable [QGVAR(altitude), 50 max (_logic getVariable ["altitude", 600]), true];
+// SORTIES ARE RETIRED (user, 2026-11-02: "make sure there is a respawn count
+// for each support, default no respawns"): the airframe is the stock - while
+// it flies it takes every task; Respawns says how many more (FUNC(register)).
+// VIRTUAL UNTIL TASKED (user, 2026-11-02): nothing is put up here - the
+// airframe is made over the module when a task is accepted. The Ingress
+// Distance is retired with it (made over the module, not out on the bearing).
 _logic setVariable [QGVAR(runIn), 1000 max (_logic getVariable ["runIn", 3000]), true];
 _logic setVariable [QGVAR(stationTime), 60 max (_logic getVariable ["stationTime", 600]), true];
 _logic setVariable [QGVAR(searchRadius), 0 max (_logic getVariable ["searchRadius", 300]), true];
-_logic setVariable [QGVAR(ingressDistance), INGRESS_FLOOR max (_logic getVariable ["ingressDistance", 6000]), true];
 _logic setVariable [QGVAR(friendlyRange), 0 max (_logic getVariable ["friendlyRange", 100]), true];
 
 [_logic, KIND_CAS, "HOG", "Air", true] call FUNC(register);

@@ -16,11 +16,20 @@ class Cfg3DEN {
             attributeSave = QUOTE([ARR_2(_this,true)] call EFUNC(common,edenClassPickSave));
         };
         class GVAR(pickHeli): jmfsb_ClassPick_Base_Single {
-            attributeLoad = QUOTE([ARR_7(_this,'heli_transport','','Transport helicopter class:',-1,true,_value)] call EFUNC(common,edenClassPickLoad));
+            attributeLoad = QUOTE([ARR_7(_this,'heli_transport','','Transport helicopter or VTOL class:',-1,true,_value)] call EFUNC(common,edenClassPickLoad));
             attributeSave = QUOTE([ARR_2(_this,true)] call EFUNC(common,edenClassPickSave));
         };
         class GVAR(pickCargo): jmfsb_ClassPick_Base_Single {
             attributeLoad = QUOTE([ARR_7(_this,'air_transport','','Aircraft class:',-1,true,_value)] call EFUNC(common,edenClassPickLoad));
+            attributeSave = QUOTE([ARR_2(_this,true)] call EFUNC(common,edenClassPickSave));
+        };
+        // The drone escorts (user, 2026-11-01): drones only, one list per kind.
+        class GVAR(pickEscortPlane): jmfsb_ClassPick_Base_Single {
+            attributeLoad = QUOTE([ARR_7(_this,'uav_plane','','Fixed-wing escort drone class:',-1,true,_value)] call EFUNC(common,edenClassPickLoad));
+            attributeSave = QUOTE([ARR_2(_this,true)] call EFUNC(common,edenClassPickSave));
+        };
+        class GVAR(pickEscortHeli): jmfsb_ClassPick_Base_Single {
+            attributeLoad = QUOTE([ARR_7(_this,'uav_heli','','Rotary escort drone class:',-1,true,_value)] call EFUNC(common,edenClassPickLoad));
             attributeSave = QUOTE([ARR_2(_this,true)] call EFUNC(common,edenClassPickSave));
         };
     };

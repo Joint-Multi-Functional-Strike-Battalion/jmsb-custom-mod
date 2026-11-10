@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Tells each player how his batteries stand: jmfsb_rf_batteries on his unit,
  * [[node id, level 0..1], ...] for the sets he holds that have a battery
  * (FUNC(battery) reads it). Levels are quantised to BATTERY_STEP and the

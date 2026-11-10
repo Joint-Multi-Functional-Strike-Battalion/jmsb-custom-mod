@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The local player's active net: the one the game push-to-talk sends on.
  * "" while no game-voice system runs (system "none").
  *

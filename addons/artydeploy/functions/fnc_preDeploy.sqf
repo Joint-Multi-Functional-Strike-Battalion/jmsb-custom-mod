@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: PRE-DEPLOY - marks the gun's spot behind the carrier with an ACE
  * mortar baseplate, right away (user, 2026-10-25: "a predeploy step that
  * places an ace_csw_mortarBaseplate in the spawn spot, right away, then the

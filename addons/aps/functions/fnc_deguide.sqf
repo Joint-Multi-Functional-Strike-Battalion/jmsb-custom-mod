@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A guided munition loses its guidance (runs where the projectile is local):
  * the target is cleared, so it flies on ballistically past the hull, with a
  * small kick so the miss is visible.

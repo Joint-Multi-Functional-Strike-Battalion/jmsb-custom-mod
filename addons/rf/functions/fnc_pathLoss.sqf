@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the world takes out of a link between two points: log-distance path
  * loss, terrain and clutter. Symmetric, so the mesh casts it once per pair
  * and band and uses it in both directions.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Switches the player's CURRENT group on, if nobody has said otherwise about it.
  *
  * THE TRACKER SWITCH IS A PROPERTY OF THE GROUP. That is right - a group is what

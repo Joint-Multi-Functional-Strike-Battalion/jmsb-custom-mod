@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Kills a round this machine fired, on the server's word (FUNC(resolve)): the
  * round is deleted where it is and a harmless blast (GVAR(blast)) is made in
  * its place. Done HERE because this machine owns the round - it is the copy

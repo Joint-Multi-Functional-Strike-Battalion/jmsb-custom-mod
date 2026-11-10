@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A typed grid reference - 6, 8 or 10 digits, spaces allowed - to a position
  * on this terrain, the centre of the square it names. The inverse of
  * FUNC(gridText), on the same calibration (FUNC(gridCalibrate)), so it is

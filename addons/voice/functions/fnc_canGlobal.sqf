@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a man may talk on the Global channel (the tablet's GLOBAL button,
  * FUNC(global)): a logged-in admin or the host, as before, and the men the
  * game-voice comm plan puts on a C2 net - the TLs, the ATLs and all of HHC

@@ -1,10 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet's device bar (docs/DESIGN_TABLET.md, "Layout"): TAC//APP, the
  * time, "GRID <easting> <northing>" and callsign . group on the left; the
- * device right-aligned beside ESC CLOSES, which is in the accent
- * (art/images/tablet_screen.png). The vehicle tablet's device reads
+ * device, MENU and PAC right-aligned beside ESC CLOSES, the last three in the
+ * accent (art/images/tablet_screen.png). The vehicle tablet's device reads
  * "VEHICLE . <vehicle callsign>" (FUNC(vehicleName)).
  *
  * Redrawn only when one of those has changed - the key is the line itself.
@@ -45,7 +45,11 @@ private _clock = _f get "clock";
 private _left = format ["GRID %1   %2", _gridText, _f get "who"];
 private _right = [_f get "channels", _f getOrDefault ["nav", ""], _f getOrDefault ["batt", ""]] select {_x isNotEqualTo ""} joinString "   ";
 
-private _key = str [_clock, _left, _right, _device];
+// THE PAC BUTTON (user, 2026-11-01: "make pac a button between menu and esc
+// closes"): wherever the PAC app is there, as the PAC tile it stands in for.
+private _pac = TABLET_PAC_APP in (missionNamespace getVariable [QEGVAR(tacpad,appHandlers), createHashMap]);
+
+private _key = str [_clock, _left, _right, _device, _pac];
 if (_key isEqualTo (_keys getOrDefault ["bar", ""])) exitWith {false};
 _keys set ["bar", _key];
 
@@ -58,6 +62,9 @@ private _escW = _w * TABLET_BAR_ESC_W;
 private _menuW = _w * TABLET_BAR_MENU_W;
 private _deviceW = _w * TABLET_BAR_DEVICE_W;
 private _clockW = _w * TABLET_BAR_CLOCK_W;
+private _pacW = _w * TABLET_BAR_PAC_W;
+// The device's name and MENU stand left of PAC by its width and a gap.
+private _pacRoom = [0, _pacW + _pad] select _pac;
 private _accent = ["accent"] call EFUNC(tacpad,theme);
 private _text = +(["ground"] call EFUNC(tacpad,theme));
 _text set [3, 1];
@@ -68,16 +75,22 @@ _text set [3, 1];
 // device's name.
 private _clockX = (_w - _clockW) * 0.5;
 private _rightX = _clockX + _clockW + _pad;
-private _deviceX = _w - _escW - _menuW - _deviceW - 3 * _pad;
+private _deviceX = _w - _escW - _pacRoom - _menuW - _deviceW - 3 * _pad;
 [_body, [_pad + _brandW, 0, _clockX - _pad - _brandW - _pad, _h], _left, _text, TABLET_TEXT_BAR, true, "left", false, FONT_MONO] call EFUNC(tacpad,drawText);
 [_body, [_clockX, 0, _clockW, _h], _clock, _text, TABLET_TEXT_BAR, true, "center", false, FONT_MONO] call EFUNC(tacpad,drawText);
 [_body, [_rightX, 0, _deviceX - _rightX - _pad, _h], _right, _text, TABLET_TEXT_BAR, true, "left", false, FONT_MONO] call EFUNC(tacpad,drawText);
 [_body, [_deviceX, 0, _deviceW, _h], _device, _text, TABLET_TEXT_BAR, true, "right"] call EFUNC(tacpad,drawText);
 // MENU: every app and the settings, one press (user, 2026-10-30: "add a menu
 // icon to get to each app and settings").
-private _menuRect = [_w - _escW - _menuW - 2 * _pad, 0, _menuW, _h];
+private _menuRect = [_w - _escW - _pacRoom - _menuW - 2 * _pad, 0, _menuW, _h];
 [_body, _menuRect, TABLET_BAR_MENU, _accent, TABLET_TEXT_BAR, true, "right"] call EFUNC(tacpad,drawText);
 [_body, _menuRect, {[TABLET_MENU_APP, [], true] call EFUNC(tacpad,openApp)}] call EFUNC(tacpad,drawHit);
+// PAC: the app the map's PAC tile opens, the same way (user, 2026-11-01).
+if (_pac) then {
+    private _pacRect = [_w - _escW - _pacW - 2 * _pad, 0, _pacW, _h];
+    [_body, _pacRect, TABLET_BAR_PAC, _accent, TABLET_TEXT_BAR, true, "right"] call EFUNC(tacpad,drawText);
+    [_body, _pacRect, {[TABLET_PAC_APP, [], true] call EFUNC(tacpad,openApp)}] call EFUNC(tacpad,drawHit);
+};
 [_body, [_w - _escW - _pad, 0, _escW, _h], "ESC CLOSES", _accent, TABLET_TEXT_BAR, false, "right"] call EFUNC(tacpad,drawText);
 
 true

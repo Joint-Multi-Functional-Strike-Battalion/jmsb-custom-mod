@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The talk keys (initKeybinds.inc.sqf): PTT 1-4 put the mic on that key's net
  * while held (jmfsb_voice_fnc_pttNet: PTT 1 the active net, 2-4 the nets the
  * RADIO app gave them), TALK LOCAL puts it on Direct. Under voice activation

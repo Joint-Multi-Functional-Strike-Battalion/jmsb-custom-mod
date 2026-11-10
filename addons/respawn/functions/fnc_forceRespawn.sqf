@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB (from veteran29's module)
+ * Author: YonV (from veteran29's module)
  * Forces the dead players of a side back into the fight.
  *
  * WAS A MODULE, IS A FUNCTION. Forcing a respawn is trigger-fired and one-shot -

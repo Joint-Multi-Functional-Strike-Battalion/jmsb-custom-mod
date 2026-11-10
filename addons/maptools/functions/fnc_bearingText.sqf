@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A bearing as the player asked to read it (QGVAR(angleUnit)): degrees as
  * three digits, NATO mils as four, or both.
  *

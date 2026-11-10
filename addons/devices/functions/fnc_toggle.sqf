@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The key: opens the tablet, or closes it if it is open.
  *
  * Arguments:

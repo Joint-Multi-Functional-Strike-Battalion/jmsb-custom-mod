@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What Point Man is doing now: whether a route is being walked, which
  * waypoint is next, and how far and which way it is from where the GPS says
  * the player is (FUNC(gpsPos)). One answer for the page, the tile, the

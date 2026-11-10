@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Takes one waypoint out of the route. The one being walked to keeps its
  * place in the list; with the last one gone the route is over.
  *

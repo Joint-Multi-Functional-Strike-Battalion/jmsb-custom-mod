@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: Call Endex, or calls it off, asked for by the Zeus's machine
  * (FUNC(callEndex)) by remoteExec. It was a CBA global event, which carries
  * no sender, so any client could heal every player and make every AI group

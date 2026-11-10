@@ -1,8 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Hangs the route's drawing on one map control - the vanilla map's, or the
- * tablet's screen, which jmfsb_devices declares at the same idc. Once per
+ * Author: YonV
+ * Hangs the route's drawing on one map control - the vanilla map's, the
+ * tablet's screen, which jmfsb_devices declares at the same idc, or the
+ * phone's and side devices' walking-view map, which jmfsb_devices hangs it on
+ * as it raises the layer (user, 2026-11-01). Once per
  * control: a flag on the control, so the route is drawn once however many
  * times the map opens.
  *

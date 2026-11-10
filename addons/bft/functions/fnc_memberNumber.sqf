@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The one number a man carries on every surface: the BFT member mark, the
  * phone's squad list and its map dot, the side devices, TAC//APP. Asked here
  * and nowhere else, so the map and the handset can never disagree about who

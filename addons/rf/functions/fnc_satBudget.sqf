@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE SATELLITE LINK BUDGET, one direction (docs/DESIGN_RF.md "The satellite
  * link"). No distance, no terrain, no clutter: the signal through the bird
  * arrives at a constant level, placed so that clear sky reads

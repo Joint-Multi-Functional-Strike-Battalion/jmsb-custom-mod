@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The call camera key (user, 2026-10-28: "the flip needs a key bind"): flips
  * what the player's camera sends on his live call, FACE or VIEW
  * (jmfsb_tacpad_apps_fnc_callCamFlip), and redraws the labels that name it -

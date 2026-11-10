@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The walking view's voice actions (docs/DESIGN_VOICE.md, "F-keys on the
  * walking view"), as the device buttons' settings name them (BUTTON_IDS):
  *
@@ -12,8 +12,9 @@
  *   mute           F3   mute or unmute the active net
  *   declineHangUp  F4   close the quick-add list; else decline the ringing
  *                       call; else hang up
- *   netPrev        0    in the quick-add list, move the cursor; else the
- *   netNext        .    active net one left / right
+ *   netPrev        0    in the quick-add list, move the cursor; else turn
+ *   netNext        .    the net row's page left / right (FUNC(netPageStep);
+ *                       user, 2026-11-07 - not consumed with one page)
  *
  * Everything goes through jmfsb_voice's API; nothing here is a radio.
  *
@@ -95,8 +96,7 @@ switch (_action) do {
             if (_count > 0) then {GVAR(quickCursor) = (GVAR(quickCursor) + _step + _count) mod _count};
             true
         };
-        [_step] call EFUNC(voice,stepActive);
-        true
+        [_step] call FUNC(netPageStep)
     };
     default {false};
 }

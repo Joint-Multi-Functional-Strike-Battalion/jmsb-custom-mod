@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The SECRETS dialog's onLoad (code review R4, 2026-10-31): paints it as
  * TIME / WEATHER is painted, names the rows, and asks the server which secrets
  * are set (jmfsb_common_fnc_secretStatus answers FUNC(secretsShow)). Until

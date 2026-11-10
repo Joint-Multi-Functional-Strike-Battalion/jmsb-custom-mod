@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The contact a shooter should act on, or [] if none is worth acting on.
  *
  * Every consumer that wants "the best target near me" was going to write this

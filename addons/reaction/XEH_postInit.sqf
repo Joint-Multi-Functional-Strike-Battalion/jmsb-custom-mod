@@ -66,7 +66,7 @@ GVAR(majors) = createHashMap;
 // anyone.
 
 // COUNTER-BATTERY: a player's gun fired (the client hook above, by remoteExec
-// to FUNC(cbShot)). The players' VIRTUAL artillery - TAC//SUPPORT's batteries -
+// to FUNC(cbShot)). The players' VIRTUAL artillery - the support batteries -
 // is the exception and is never counter-batteried (user, 2026-10-25: "player
 // side virtual are the exception").
 // THE RADAR: an enemy gun fired (the class hook above, by remoteExec to
@@ -77,27 +77,46 @@ GVAR(majors) = createHashMap;
 
 // "THE ENEMY HAS YOUR POSITION." The enemy commander files spot reports on
 // the players like on anyone else, and the adapter reads them back off the
-// COP (jmfsb_adapter_alive_fnc_enemyKnowledge). When a report lands within
+// COP (EFUNC(adapter_alive,enemyKnowledge)). When a report lands within
 // REACT_SPOTTED_RANGE of a player, that player's group is told once, then
 // left alone for REACT_SPOTTED_COOLDOWN - the point is the warning, not a
 // ticker. Server-side, so one read serves everyone.
+//
+// WITHOUT ALiVE (user, 2026-11-02: "works with or without") there is no COP:
+// the hostile side's own knowledge of the man is the report instead - the
+// engine's knowsAbout for that side, at REACT_SPOTTED_KNOWS or better.
 if (isServer) then {
     GVAR(spottedUntil) = createHashMap;
     [{
-        if (isNil "jmfsb_adapter_alive_fnc_enemyKnowledge") exitWith {};
+        // Asked every tick, not once at start: ALiVE loaded with no commanders
+        // turns into "not loaded" when the adapter gives up (user, 2026-11-02:
+        // "same as not loaded"). Asked first, so the line is said either way.
+        private _withAlive = (["Spotted warning", "from the hostile side's own knowsAbout"] call EFUNC(common,aliveLoaded))
+            && {!isNil QEFUNC(adapter_alive,enemyKnowledge)};
         private _bySide = createHashMap;
         {
-            private _grp = group _x;
-            if (isNull _grp || {!alive _x}) then {continue};
+            private _man = _x;
+            private _grp = group _man;
+            if (isNull _grp || {!alive _man}) then {continue};
             private _side = side _grp;
-            if (isNil {_bySide get (str _side)}) then {
-                _bySide set [str _side, [_side] call jmfsb_adapter_alive_fnc_enemyKnowledge];
-            };
-            private _known = _bySide get (str _side);
-            if (_known isEqualTo []) then {continue};
             private _gid = str _grp;
             if (CBA_missionTime < (GVAR(spottedUntil) getOrDefault [_gid, -1])) then {continue};
-            private _at = getPosATL _x;
+            private _known = [];
+            if (_withAlive) then {
+                if (isNil {_bySide get (str _side)}) then {
+                    _bySide set [str _side, [_side] call EFUNC(adapter_alive,enemyKnowledge)];
+                };
+                _known = _bySide get (str _side);
+            } else {
+                // The same shape as the adapter's: [pos, type, count, age, by].
+                {
+                    if (_x getFriend _side < REACT_HOSTILE_BELOW && {(_x knowsAbout _man) >= REACT_SPOTTED_KNOWS}) then {
+                        _known pushBack [getPosATL _man, "", 0, 0, [_x] call EFUNC(common,sideToText)];
+                    };
+                } forEach ([west, east, independent] - [_side]);
+            };
+            if (_known isEqualTo []) then {continue};
+            private _at = getPosATL _man;
             private _hit = _known findIf {(_x select 0) distance2D _at <= REACT_SPOTTED_RANGE};
             if (_hit < 0) then {continue};
             GVAR(spottedUntil) set [_gid, CBA_missionTime + REACT_SPOTTED_COOLDOWN];

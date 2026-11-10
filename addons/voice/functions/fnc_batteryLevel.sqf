@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The player's handheld's battery, 0..1, as RF last reported it
  * (jmfsb_rf_fnc_battery on his radio-slot node); -1 when he carries no set
  * with a battery, or RF has not said yet.

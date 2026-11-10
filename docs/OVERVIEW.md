@@ -8,8 +8,9 @@ this page is the plain-language answer to "what does jmfsb actually add".
 ## Command and control (the tablet suite)
 
 - **TACPAD** - the map-screen app shell: live tiles, panels, colour schemes, settings
-- **TAC//SUPPORT** - ALiVE combat-support tasking (transport / CAS / artillery)
-  with an embedded map, parameter steppers, GUNS control, SITREP and RTB
+- **Combat support by message** - CAS, artillery, transport, CASEVAC, airdrop,
+  logistics and QRF, called by a TAC//MSG message to the asset; the asset
+  answers in the thread (the TAC//SUPPORT app was removed 2026-11-01)
 - **Messaging** - the cTab replacement: threads, nets, 13 report templates,
   composer and reader
 - **BFT** - blue-force tracking with trails, icon and colour rules, per-side fuzzing

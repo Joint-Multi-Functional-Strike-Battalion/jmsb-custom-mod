@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ALiVE's map knowledge as plain positions: where the water is, where the
  * towns are.
  *

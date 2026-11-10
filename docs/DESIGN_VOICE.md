@@ -60,18 +60,20 @@ The comparison made on 2026-10-20, kept for the record. TFAR was removed on 2026
 
 ## Numpad
 
-The numpad standard (user, 2026-10-30: "1-5 are radio nets, 6 7 8 9 are
-F1-F4, - is TIC, 0 and . are the arrows, / = no do not answer, * = yes or
-answer"; Ctrl + a net's number mutes it since 2026-10-25). The sign of it is
+The numpad standard (2026-11-07, docs/DESIGN_WATCH_HUD.json: 1-4 nets, 5-8
+F1-F4, 9 the action key; it replaces 2026-10-30's 1-5 nets / 6-9 F1-F4. "- is
+TIC, 0 and . are the arrows, / = no do not answer, * = yes or answer" stand;
+Ctrl + a net's number mutes it since 2026-10-25). The sign of it is
 `numpad` in tools/gen_signs.py. It replaces 2026-10-25's 1-6 nets with 7 8 9
 as functions, which replaced 2026-10-24's 1-4 F-keys.
 
 | Numpad | Does |
 |---|---|
-| 1 - 5 | pick net 1-5 - the number on the net chip (6-9: keybinds, unbound) |
-| Ctrl + 1 - 5 | mute / unmute that net |
-| 6 7 8 9 | device F1-F4: the walking view's F-key jobs below; on the tablet, the frame's F1-F4 apps |
-| 0 / . | device arrows: active net left / right (walking view), cursor (apps); on the tablet they turn the live tiles' page (user, 2026-10-31: "the arrows on the tablet should move the live tiles"), and with one page scroll the open screen up / down - the list under the mouse, else the biggest list of an open app, message view or notices log. The net chips on the tablet are buttons: a press makes that net active |
+| 1 - 4 | pick chip 1-4 of the net page shown - the number on the chip (5-9: keybinds, unbound; bound, they pick net buttons 5-9 across the pages) |
+| Ctrl + 1 - 4 | mute / unmute that chip's net |
+| 5 6 7 8 | device F1-F4: the walking view's F-key jobs below; on the tablet, the frame's F1-F4 apps. While a watch profile is on: report, cycle profile, all off, squad view (hold) |
+| 9 | the ACTION key: context action on what you look at - adds or removes a watch slot (jmfsb_watch) |
+| 0 / . | device arrows: net page left / right on the walking view - phone and side devices (2026-11-07; pages with no nets skipped, round from the last to the first) - cursor (apps); on the tablet they turn the live tiles' page (user, 2026-10-31: "the arrows on the tablet should move the live tiles"), and with one page scroll the open screen up / down - the list under the mouse, else the biggest list of an open app, message view or notices log. The net chips on the tablet are buttons: a press makes that net active; the tablet's net row turns its pages with its own < > buttons |
 | * | answer the ringing call (yes); with none ringing, hang up; in the quick-add list, add |
 | / | decline the ringing call (no); closes the quick-add list |
 | - | TROOPS IN CONTACT (answers a ringing call first) |
@@ -109,7 +111,7 @@ No default key, each rebindable in Configure Addons: decline
 its tabs, open channel NET / LOCAL. The call strip and the ring popup name
 only keys that are bound.
 
-**F-keys on the walking view** (numpad 6 7 8 9): F1 ear for the active
+**F-keys on the walking view** (numpad 5 6 7 8): F1 ear for the active
 net, during a call the quick-add list (numpad * adds, the arrows move); F2 mute
 the active net; F3 / F4 map zoom in / out.
 
@@ -146,6 +148,24 @@ Decided (user, 2026-10-20: "who counts as air: pilots").
 - **Ear tag per net** (L / B / R). VON can't pan voice, so the ear pans the net's beeps and static, not the voice.
 - **PTT column** (game voice only): 1 on the active net, 2-4 on the nets those keys talk on. Set on the tablet's RADIO app (a press steps the net through PTT 2, 3, 4, none).
 - **Talking box:** name, net and ear.
+- **Net buttons** (user, 2026-11-07: "4 quick access and then 2 pages of 4
+  additional"): twelve buttons in three pages of four - QUICK 1-4, page 2,
+  page 3. Every net row (phone, side devices, tablet) shows one page of four
+  chips, numbered 1-4, and the page marker ("2/3") while more than one page
+  has nets. Numpad 1-4 and Ctrl + 1-4 act on the page shown; numpad 0 / .
+  turn the page on the walking view, the < > buttons on the tablet's row.
+  Pages with no nets are skipped.
+  - **Which net is on which button** is the player's: tablet RADIO app, NETS >
+    BUTTONS. Each button is AUTO or a net he is on; kept in his profile
+    (`jmfsb_devices_netButtons`, twelve net ids, "" = AUTO). A press steps
+    the button through AUTO and his nets. A net sits on one button only.
+  - **Filling the row:** a set net sits on its button while he is on it;
+    every other net fills the AUTO buttons in order, quick buttons first.
+  - **A net set on a button he is not on leaves that button empty** (a dim
+    cell), so the nets he set keep their keys. Only when every AUTO button is
+    taken do left-over nets fill those empty buttons.
+  - **A ringing call is always on the page shown:** its RING cell takes the
+    page's first empty cell, else its last cell for as long as it rings.
 
 Phone walking view, incoming call, in a call:
 
@@ -159,7 +179,7 @@ Side device walking and ringing:
 
 ## Calls
 
-- **A call is one custom channel,** any size up to 8 people. Max 8 calls at once.
+- **A call is one custom channel,** any size up to 8 people. Max 8 calls at once under game VON (ten custom channels, C2 and A2G take two). **No limit on the voice server** (Mumble or LiveKit; user, 2026-11-01: "on the radio calls tab there should be no limit to the # of calls").
 - **Dial:** CALL needs reach on DATA. The other person gets a ring, with F1 accept and F4 decline.
 - **Add people:**
   - + ADD on a contact while a call is live;
@@ -235,7 +255,7 @@ Played locally. The radio itself sounds like Arma's own radio: its squelch and n
 
 ## Tablet RADIO app
 
-**NETS:** your nets, VON channel, link, ear (L/B/R), beep volume, state, who is talking; sounds and keys panels.
+**NETS:** your nets, VON channel, link, ear (L/B/R), beep volume, state, who is talking; sounds, keys and buttons panels. BUTTONS (2026-11-07) lists the twelve net buttons - QUICK 1-4, PAGE 2 1-4, PAGE 3 1-4 - each with its setting (AUTO or a net; a press steps it) and the net on it now (see "Net buttons" above).
 
 ![tablet nets](images/voice_tablet_nets.png)
 

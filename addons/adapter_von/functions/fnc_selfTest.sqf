@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "selfTest" (jmfsb_voice_fnc_selfTest): the five "Tests to run
  * first" of docs/DESIGN_VOICE.md, as an in-game diagnostic. Every line goes
  * to the RPT with a "VON Tn" tag. T1 and T5 are immediate; T2, T3 and T4 run

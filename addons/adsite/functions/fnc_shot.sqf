@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reports one relevant round to the server, from the machine that fired it,
  * and keeps the round so the server can ask for it to be killed (FUNC(kill)).
  *

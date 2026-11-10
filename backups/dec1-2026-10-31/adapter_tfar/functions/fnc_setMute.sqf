@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "setMute", client: mutes or unmutes the set that hears a net -
  * TFAR has one volume per set, so both of its nets go quiet. Muting keeps the
  * set's volume and puts it at 0; unmuting puts the kept volume back (TFAR's

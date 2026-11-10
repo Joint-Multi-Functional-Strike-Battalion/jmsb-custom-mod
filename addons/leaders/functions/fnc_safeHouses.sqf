@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The chain's ground: enterable buildings in settlement clusters inside the
  * asymmetric commander's TAOR.
  *
@@ -17,7 +17,7 @@
  */
 
 // The module's own TAOR field wins; the commander's ALiVE placements
-// otherwise. And whichever ground was resolved goes in the LOG - an empty
+// otherwise (without ALiVE, the jmfsb_taor markers - EFUNC(common,groundFor)). And whichever ground was resolved goes in the LOG - an empty
 // list here means every settlement on the map is a candidate, which on a
 // shared map is leaders standing on somebody else's ground, and that state
 // has to be readable in the RPT rather than deduced from where a body fell.
@@ -26,7 +26,7 @@ private _black = [];
 if (!isNil QGVAR(taorMarkers) && {GVAR(taorMarkers) isNotEqualTo []}) then {
     _taor = +GVAR(taorMarkers);
 } else {
-    ([GVAR(asymSide)] call jmfsb_adapter_alive_fnc_taorFor) params ["_t", "_b"];
+    ([GVAR(asymSide)] call EFUNC(common,groundFor)) params ["_t", "_b"];
     _taor = _t;
     _black = _b;
 };
@@ -36,7 +36,8 @@ if (_taor isEqualTo []) then {
     INFO_2("safe-house ground for %1: %2",GVAR(asymSide),_taor joinString ", ");
 };
 
-private _clusters = ["settlement"] call jmfsb_adapter_alive_fnc_clusterCandidates;
+// ALiVE's settlement clusters, or without ALiVE the map's own towns.
+private _clusters = call EFUNC(common,settlements);
 if (_clusters isEqualTo []) exitWith {
     INFO("no settlement clusters - map unindexed, so no safe houses");
     []

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The custom channel a voice net rides: "C2" for every C2-kind net, "A2G"
  * for every A2G-kind net (the plan's air-to-ground nets too), or the CALL
  * net's own id. TEAM, VEH and DIRECT are on built-in channels.

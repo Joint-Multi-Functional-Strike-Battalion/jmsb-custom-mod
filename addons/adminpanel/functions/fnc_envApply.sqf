@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SET TIME or SET WEATHER: reads the combos and sends them to the server -
  * time (FUNC(envTime)), weather (FUNC(envWeather), which the server passes on
  * to every machine, the way ZEN's weather module does it). By remoteExec, so

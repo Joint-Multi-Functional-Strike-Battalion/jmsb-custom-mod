@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Presses one of the six buttons printed on the walking view's frame - F1-F4,
  * LEFT, RIGHT - by its keybind: numpad 1-4, 0 and . by default
  * (docs/SPEC_TACNET.json D16).
@@ -10,7 +10,7 @@
  * - OTHERWISE each does what the player set it to (jmfsb_devices_buttonF1 ..
  *   buttonRight; BUTTON_IDS). The defaults are the voice keys of
  *   docs/DESIGN_VOICE.md - F1 accept a call, F2 ear / quick add, F3 mute the
- *   active net, F4 decline / hang up, the arrows the active net left / right
+ *   active net, F4 decline / hang up, the arrows the net page left / right
  *   (FUNC(voiceAction)) - and every one can be set to another action.
  *
  * BY KEYBIND ONLY. The walking view is a title layer, which takes no mouse,
@@ -36,6 +36,26 @@ if (isNull (uiNamespace getVariable [QGVAR(overlayDisplay), displayNull])) exitW
 
 if (GVAR(radioOpen)) exitWith {
     [_index] call FUNC(radioKey)
+};
+
+// A QUESTION ON THE STRIP HAS THE KEYS (user, 2026-11-06: "the 6-9 are for
+// fast replys with out opening the tablet"): F1-F4 answer it, the arrows page
+// (jmfsb_tacpad_fnc_askKey). With nothing waiting they are the player's own.
+if (!isNil QEFUNC(tacpad,askKey) && {[_index] call EFUNC(tacpad,askKey)}) exitWith {
+    [] call FUNC(overlayTick);
+    true
+};
+
+// ANOTHER ADDON MAY HOLD THE KEYS (2026-11-07: the watch HUD - while a watch
+// profile is on, F1-F4 are report, cycle, all off, squad view): GVAR(buttonHooks),
+// id -> code called with [index] that answers whether it took the press.
+private _hooked = false;
+{
+    if ([_index] call _y) exitWith {_hooked = true};
+} forEach GVAR(buttonHooks);
+if (_hooked) exitWith {
+    [] call FUNC(overlayTick);
+    true
 };
 
 private _action = [GVAR(buttonF1), GVAR(buttonF2), GVAR(buttonF3), GVAR(buttonF4), GVAR(buttonLeft), GVAR(buttonRight)] param [_index, BUTTON_NONE];

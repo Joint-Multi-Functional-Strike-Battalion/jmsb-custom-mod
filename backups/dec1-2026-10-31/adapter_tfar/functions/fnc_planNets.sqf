@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE PAC NET PLAN AS TFAR SETS. The plan is jmfsb_pac_fnc_netPlan - the one
  * plan, for VON and TFAR alike - as [id, band, "sr" | "lr" | "a2g", slot].
  * Here each net gets:

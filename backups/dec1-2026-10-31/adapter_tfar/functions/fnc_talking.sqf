@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "talking", client: the other players this one hears on his TFAR
  * nets now. A speaker pushes his own key-down and key-up to his side
  * (fnc_tangent -> fnc_keyed); he counts as talking while his key is down, he

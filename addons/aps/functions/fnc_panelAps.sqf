@@ -1,7 +1,7 @@
 #include "script_component.hpp"
 #include "\z\jmfsb\addons\tacpad\shared.inc.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE APS PANEL ON THE MAP (user, 2026-08-29: "APS should be on vehicles based
  * on their tier with a live panel to control APS on the map"). One block per
  * fitted vehicle the player is entitled to see - the one they are in first,

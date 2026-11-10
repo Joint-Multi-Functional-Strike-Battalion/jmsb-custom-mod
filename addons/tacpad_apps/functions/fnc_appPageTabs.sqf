@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tab row of a board, with the status note on its right: the picked tab is
  * the ink fill, the rest are outlined. A press stores the tab id in uiNamespace
  * under the given variable and redraws the app next frame - the way every app

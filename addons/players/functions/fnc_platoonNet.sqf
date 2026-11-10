@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The net name of the platoon a squad belongs to, from the unit's ORBAT.
  *
  * WHY THIS EXISTS. Nets are written per PLATOON, not per squad (user,

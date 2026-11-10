@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The full comms app, opened over the map. This is the only place a message can
  * be sent - the docked reader can show a thread beside the map, but it cannot
  * answer one.
@@ -75,9 +75,10 @@ if (_cached isEqualTo []) then {
     } forEach _messages;
 
     // THE QUICK REPLIES. Asked of the engine rather than listed here, so a
-    // button is only ever offered when the server would actually accept it.
-    private _status = _thread get "status";
-    private _replies = ["reply", _status] call EFUNC(messaging,templateIds);
+    // button is only ever offered when the server would actually accept it -
+    // the reader's own rule (2026-11-02, jmfsb_tacpad_fnc_threadLegal): an
+    // asset's own cards to its thread's issuer, never the asset's words.
+    private _replies = [_threadId, _thread] call EFUNC(tacpad,threadLegal);
 
     _row = _row + 1;
     [_body, _row, "REPLY", "", [], true] call FUNC(row);

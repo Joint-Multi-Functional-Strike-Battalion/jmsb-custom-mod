@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The driver's ACE self-interaction on every artillery carrier (every vehicle
  * class with GVAR(weapons)[]): ARTILLERY > Pre-deploy (mark spot), Deploy gun,
  * Pack gun, Clear spot - each shown only when it can be done

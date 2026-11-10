@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a mission's target on the map for the asset's side - Simplex's task
  * marker: an icon on the point with the asset's words, and the area shelled
  * or hunted as an outline when the mission has one. It stays until the

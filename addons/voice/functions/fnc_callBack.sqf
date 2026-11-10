@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * CALL BACK: asks the server to hold a callback between the local player and
  * a unit. When both reach each other on DATA and a call slot is free, both
  * phones ring. Expires after the callback expiry time; one per pair, a few

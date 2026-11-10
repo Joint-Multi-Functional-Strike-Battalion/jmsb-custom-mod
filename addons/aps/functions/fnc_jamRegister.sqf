@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One burst reaches this player (client): the source is put on the jam
  * registry with its expiry, and the registry is applied at once. A source
  * already listed has its time refreshed, not extended - the cooldown

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Adds the "Unbuild Patrol Base" action to a base beacon. Runs on every client
  * (remoteExec'd from the server, JIP-tied to the beacon). Any player within 3m
  * sees it.

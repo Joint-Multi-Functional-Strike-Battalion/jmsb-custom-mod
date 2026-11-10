@@ -127,6 +127,17 @@
     false
 ] call CBA_fnc_addSetting;
 
+// THE LZs AND DZs (user, 2026-11-02: "in AiTR lz and drop zones need to be
+// highlighted"). The open landing and drop zones of your side's support
+// requests, at any range; off, the overlay draws none.
+[
+    QGVAR(zoneHighlight), "CHECKBOX",
+    ["AiTR LZ / DZ highlight", "The landing and drop zones of your side's open support requests, ringed on the ground with what they are, the asset and their range - LZ | PICKUP | RAVEN | 1.2 km. At any range, not only in sight."],
+    ["JMSB - Gear & Vision", "AiTR (ECOTI)"],
+    true,
+    false
+] call CBA_fnc_addSetting;
+
 // THE COMPASS (user, 2026-10-19: "a compass on the top like DUI has"). Only
 // while AiTR is drawing; off, the overlay is boxes and labels alone.
 [

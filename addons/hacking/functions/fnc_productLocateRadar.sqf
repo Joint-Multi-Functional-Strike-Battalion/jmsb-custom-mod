@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOCATE RADAR: every network's eyes, on the shrinking circle ladder.
  *
  * TWO SOURCES, ONE HUNT. The coastal radars are jmfsb's own objects
@@ -47,12 +47,12 @@ private _pool = [];
 
 // ALiVE's radars are profiles: a profileID is already the stable id the
 // ladder wants, and a dead set leaves the profile system on its own.
-if (!isNil "jmfsb_adapter_alive_fnc_radars") then {
+if (!isNil QEFUNC(adapter_alive,radars)) then {
     {
         _x params ["_id", "_at", "_rside"];
         if (_rside getFriend _side >= 0.6) then {continue};
         _pool pushBack [_id, _at, _rside];
-    } forEach (call jmfsb_adapter_alive_fnc_radars);
+    } forEach (call EFUNC(adapter_alive,radars));
 };
 
 if (isNil QGVAR(radarLock)) then { GVAR(radarLock) = createHashMap };

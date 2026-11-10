@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a player fired during endex (FUNC(endexFired), by remoteExec). The
  * shot is logged, and everyone is told "Hold your fire" once per muzzle.
  *

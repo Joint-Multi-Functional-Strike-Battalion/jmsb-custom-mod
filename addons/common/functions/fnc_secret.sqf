@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a secret an admin entered in game (FUNC(secretSet); code review R4,
  * 2026-10-31), from the server's own profile - never a CBA setting (every
  * setting reaches every player) and never published. "" when none was set;

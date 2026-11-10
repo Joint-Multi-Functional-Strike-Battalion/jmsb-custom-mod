@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: forgets a drone that died, was picked up or was deleted, or whose
  * mode is being switched (FUNC(setMode)). Its RF node goes; a jammer stops
  * counting in FUNC(noise) at once and, with jmfsb_ew loaded, stops being an

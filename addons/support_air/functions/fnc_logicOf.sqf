@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The module behind an asset id - "air:<n>" is entity n.
  *
  * Arguments:

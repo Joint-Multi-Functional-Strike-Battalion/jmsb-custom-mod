@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is this object a jammer that is still jamming - a terminal that holds a
  * zone in the published registry and has not been disabled or hacked? The
  * ACE actions on a terminal ask this before they offer anything; a dead

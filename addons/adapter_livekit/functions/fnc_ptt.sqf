@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hook "ptt": the local player's own push-to-talk, asked every frame by the
  * voice core (jmfsb_voice_fnc_frame), which sends the key edge to the net and
  * plays the cues. A PTT key held: down on that key's net (the last pressed

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: publishes a copy of the armed alarm list for the screens (the
  * scanner, the HUD timer, the tacpad's TIMER app). The server's own list is
  * in localNamespace and is the only one it reads (review S7): a client that

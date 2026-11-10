@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One virtual round arrives: the shell class itself, spawned high over its
  * impact point on the descending branch of its arc, moving - so it is heard
  * coming in and lands like a fired round, with the class's own effects.
@@ -15,6 +15,12 @@
  * ground by script, because a spawned round has no aim point for the
  * engine's fuze to measure against.
  *
+ * AIRBURST (user, 2026-11-02, from the Tun Firesupport review): a round fired
+ * with the airburst fuze (a card asking for AIRBURST, FUNC(fireVirtual)) goes
+ * off on its own charge a random AIRBURST_MIN to AIRBURST_MAX m over the
+ * ground: put at that height on the frame it would pass it, and triggered
+ * (triggerAmmo). A flare or a submunition round keeps its own fuze.
+ *
  * Arguments:
  * 0: The module logic <OBJECT>
  * 1: Ammo class <STRING>
@@ -22,6 +28,7 @@
  * 3: Descent angle (deg) <NUMBER>
  * 4: High-angle fallback (deg) <NUMBER>
  * 5: Bearing, battery to target (deg) <NUMBER>
+ * 6: Airburst <BOOL> (optional, default false)
  *
  * Return Value: None
  *
@@ -31,7 +38,7 @@
  * Public: No
  */
 
-params ["_logic", "_cls", "_impact", "_angle", "_steep", "_dir"];
+params ["_logic", "_cls", "_impact", "_angle", "_steep", "_dir", ["_burst", false, [false]]];
 
 private _ammo = configFile >> "CfgAmmo";
 
@@ -74,6 +81,20 @@ private _round = createVehicle [_cls, ASLToAGL _from, [], 0, "CAN_COLLIDE"];
 _round setPosASL _from;
 _round setVectorDir _vel;
 _round setVelocity _vel;
+
+if (_burst && {!(_cls isKindOf ["SubmunitionCore", _ammo])}) exitWith {
+    private _height = AIRBURST_MIN + random (AIRBURST_MAX - AIRBURST_MIN);
+    [{
+        params ["_round", "_height"];
+        isNull _round || {((getPosATL _round) select 2) <= _height + (abs ((velocity _round) select 2)) * diag_deltaTime * FUZE_LOOKAHEAD_TICKS}
+    }, {
+        params ["_round", "_height"];
+        if (isNull _round) exitWith {};
+        (getPosATL _round) params ["_bx", "_by"];
+        _round setPosATL [_bx, _by, _height];
+        triggerAmmo _round;
+    }, [_round, _height]] call CBA_fnc_waitUntilAndExecute;
+};
 
 if (_cls isKindOf ["SubmunitionCore", _ammo]) then {
     private _fuze = getNumber (_ammo >> _cls >> "triggerDistance");

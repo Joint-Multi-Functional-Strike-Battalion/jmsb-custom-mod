@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_unregister: takes a node out of the registry. Its links vanish on the
  * next tick, and every slice that named it changes then.
  *

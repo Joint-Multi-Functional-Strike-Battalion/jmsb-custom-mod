@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, end of every fnc_poll: this player's TFAR sets as the voice API sees
  * them (jmfsb_voice reads these through its hooks, addons/voice/README.md):
  *

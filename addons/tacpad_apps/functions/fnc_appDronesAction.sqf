@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The DRONES board's buttons, on the picked drone. There is no vanilla UAV
  * terminal any more (user, 2026-10-20: out of the arsenal), so the link and
  * the seat are the devices' own (EFUNC(devices,uavControl)), with their gate

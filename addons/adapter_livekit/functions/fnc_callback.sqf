@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the jmsb_voice extension reports (its ExtensionCallback, XEH_postInit).
  * The extension has one session, the echo test's while that runs
  * (GVAR(echo) joining or live), the mission's room otherwise:

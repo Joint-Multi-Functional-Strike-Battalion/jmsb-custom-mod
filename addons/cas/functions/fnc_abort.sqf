@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: RTB for one CAS asset, sent by remoteExec from FUNC(task). Only a
  * man of the asset's own side who may task support recalls it (review S6:
  * a CBA server event let any client abort any side's run). FUNC(mayTask)
@@ -31,8 +31,8 @@ if (!_ok) exitWith {
     WARNING_2("abort: refused from machine %1 - %2",remoteExecutedOwner,_why);
 };
 
-// Nothing in the air, nothing to recall. A flag raised on an idle asset
-// (cooling down or expended reads idle here) would sit there and kill the
-// next run on its first tick.
-if ((_logic getVariable [QGVAR(status), STATUS_IDLE]) isEqualTo STATUS_IDLE) exitWith {};
+// No run, nothing to recall. A flag raised on an asset between runs - ready,
+// cooling down, replacing, expended - would sit there and kill the next run on
+// its first tick.
+if ((_logic getVariable [QGVAR(status), STATUS_IDLE]) in STATUSES_NO_RUN) exitWith {};
 _logic setVariable [QGVAR(abort), true, true];

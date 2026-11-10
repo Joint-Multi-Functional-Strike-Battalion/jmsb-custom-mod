@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The transport a boarding point may use, nearest first.
  *
  * Synchronised vehicles are the mission's answer and are used as given.

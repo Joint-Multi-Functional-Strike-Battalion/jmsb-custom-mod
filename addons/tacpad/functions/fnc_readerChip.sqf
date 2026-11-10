@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A priority chip - FLASH, PRIORITY or ROUTINE - sized to its word, drawn by
  * the one chip primitive (FUNC(drawChip)): FLASH the accent filled, PRIORITY
  * the accent outline, ROUTINE an outline, so the one that matters is the only

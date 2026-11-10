@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A fresh battery in a set: full, and switched back on if it was flat. The
  * item that was spent is the caller's business (jmfsb_voice_fnc_batterySwap
  * takes it out of the player's kit before asking). On a client this

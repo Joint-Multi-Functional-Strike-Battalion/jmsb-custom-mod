@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether an emitting RF node can also listen and take a DF cut, and
  * how well (DESIGN_EW "ES: DF"). The set's own class first - handheld 15 deg,
  * manpack and relay 10, vehicle 5 - then the kit of whoever runs it: an EW

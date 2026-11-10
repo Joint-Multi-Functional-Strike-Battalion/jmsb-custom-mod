@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: crosses a track's recent cuts into a fix (DESIGN_EW "2+ cuts within
  * 30 s make a fix with an error ellipse"). Every pair of cuts inside the fix
  * window, from sensors at least FIX_MIN_BASELINE_M apart and crossing at

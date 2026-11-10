@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Can this helicopter put men down on ropes: ACE fast-roping loaded, and the
  * airframe fitted with FRIES or able to take them (ace_fastroping_enabled 1
  * built in, 2 fitted on request). The same test the QRF air assault makes

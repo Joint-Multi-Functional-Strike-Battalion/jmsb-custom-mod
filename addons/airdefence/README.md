@@ -8,6 +8,8 @@ Places air defence for every ALiVE commander on the map. TEMPORARY - it stands i
 
 `#jmfsbaa` (the batteries, MANPAD teams and their grids) is admins only and answered to the caller alone: it is `#jmfsb aa` on the admin debug surface (review R1: it was a CBA event any player could raise to print every battery's position in everyone's chat). Nothing starts on the adapter's ready CBA event any more: the module waits on `jmfsb_adapter_alive_fnc_whenReady`, which runs once.
 
+**Without ALiVE (2026-11-02)** the Air Defence module still builds, once the mission is running. Every side with ground of its own - the module's TAOR field for it, or `jmfsb_taor_west` / `_east` / `_guer` area markers - is answered as a conventional commander: batteries over the map's towns on that ground, in the faction its men on the map wear. No ground drawn for anyone: the mission's enemy over the whole map, with no battery within 3 km of a player-side man at the start. The RPT says `Air defence: ALiVE not loaded - ...` once. Built, not seen in game.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -28,7 +30,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 `jmfsb_moduleAirDefence`, category jmfsb_modules
 
-Places air defence for every ALiVE commander on the map. TEMPORARY - it stands in until ALiVE 3's own air defence is stable.<br>Conventional commanders (invasion, occupation) get radar-cued missile batteries. Asymmetric commanders get MANPAD teams instead - a guerrilla does not field a battery.<br>Where they go is read from ALiVE: each commander's own TAOR and objectives, never anything set here. Everything placed is profiled, so it costs nothing while nobody is near it.<br>Batteries Per Side - conventional commanders only, asymmetric get none Launchers Per Battery - set back from the radar that cues them Battery Spacing (m) - least distance between two batteries Radar / Launcher / MANPAD classes are set PER SIDE - the three commanders are three different armies. Leave any of them blank to pick from that commander's own faction. Clear Ground (m) - open ground a battery needs; a radar in a wood sees nothing MANPAD Teams Per Side - asymmetric commanders only
+Places air defence for every ALiVE commander on the map. TEMPORARY - it stands in until ALiVE 3's own air defence is stable.<br>Conventional commanders (invasion, occupation) get radar-cued missile batteries. Asymmetric commanders get MANPAD teams instead - a guerrilla does not field a battery.<br>Where they go is read from ALiVE: each commander's own TAOR and objectives, never anything set here. Everything placed is profiled, so it costs nothing while nobody is near it.<br>Without ALiVE: every side with a TAOR field here or jmfsb_taor_west / _east / _guer area markers gets batteries over the towns on that ground. No ground drawn at all: the mission's enemy, over towns clear of the players' start.<br>Batteries Per Side - conventional commanders only, asymmetric get none Launchers Per Battery - set back from the radar that cues them Battery Spacing (m) - least distance between two batteries Radar / Launcher / MANPAD classes are set PER SIDE - the three commanders are three different armies. Leave any of them blank to pick from that commander's own faction. Clear Ground (m) - open ground a battery needs; a radar in a wood sees nothing MANPAD Teams Per Side - asymmetric commanders only
 
 <details><summary>22 attributes</summary>
 

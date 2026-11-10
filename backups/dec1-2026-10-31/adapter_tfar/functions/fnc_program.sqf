@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Programs one TFAR set from a fill: each channel named in the fill gets that
  * net's frequency (fnc_netFrequency) through TFAR's own
  * TFAR_fnc_setChannelFrequency. Channels the fill leaves "" keep what they

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The spare radio batteries the player carries: every item in his kit whose
  * class the Spare batteries setting names.
  *

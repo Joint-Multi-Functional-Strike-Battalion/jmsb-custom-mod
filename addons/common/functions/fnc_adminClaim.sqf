@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, by remoteExec from a client: "check my admin status" - after #login,
  * #logout, a change of unit, and once at start. The server sets the sender's
  * flag from its own records (FUNC(adminFlags)); the client never sets its own

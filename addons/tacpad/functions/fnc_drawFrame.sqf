@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An outline: four edge rectangles, drawn AROUND what is inside rather than
  * behind it.
  *

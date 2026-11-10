@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is this body worth searching, and can this player reach it?
  *
  * Arguments:

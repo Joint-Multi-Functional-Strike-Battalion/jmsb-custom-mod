@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Which walking-view device the player has in the GPS slot, if any.
  *
  * THE ITEM IS THE SWITCH. The walking view is up while one of the three

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads everything typed on the compose pane into the answer map.
  *
  * IT IS CALLED BEFORE EVERY REDRAW, and that is the whole point of it. The pane
@@ -80,12 +80,15 @@ if (isNull _display) exitWith {};
     // cleared required field still passes validation.
     if (_text isEqualTo "") then {
         GVAR(composeValues) deleteAt _key;
+        GVAR(composeValues) deleteAt (_key + MARKER_NAME_SUFFIX);
         GVAR(composeGridText) deleteAt _key;
         continue;
     };
 
     if (_text isEqualTo (GVAR(composeGridText) getOrDefault [_key, ""])) then {continue};
 
+    // Typed over: the grid is his own now, no marker's name with it.
     GVAR(composeGridText) deleteAt _key;
+    GVAR(composeValues) deleteAt (_key + MARKER_NAME_SUFFIX);
     GVAR(composeValues) set [_key, _text];
 } forEach (allControls _display);

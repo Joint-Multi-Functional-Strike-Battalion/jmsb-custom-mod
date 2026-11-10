@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The block level from which a net can no longer be talked on: the radio
  * nets (TEAM, C2-kind, A2G, CALL) from radio silence, VEH from unconscious,
  * DIRECT only when dead or out of air. Anything else (Global, not one of

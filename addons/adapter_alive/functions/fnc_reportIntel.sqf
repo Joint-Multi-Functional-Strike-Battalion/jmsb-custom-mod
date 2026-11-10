@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hands a piece of jmfsb intel to the friendly commander's G2, so the
  * C2ISTAR tablet, the COP and ALiVE's own confidence decay show what the
  * players earned through a hack or a deposit - one picture, not two.

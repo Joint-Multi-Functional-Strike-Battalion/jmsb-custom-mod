@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "setMute", client: mutes or unmutes the radio on that net -
  * its ACRE volume (acre_api_fnc_setRadioVolume) to 0, and back to what it was
  * (full when nothing was kept).

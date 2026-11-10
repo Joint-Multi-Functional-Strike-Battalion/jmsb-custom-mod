@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Everything a new message can be addressed to, as [mailbox id, label] pairs.
  *
  * THE ONE LIST. The nets, the squads and the people were rebuilt inline in the

@@ -111,6 +111,8 @@ switch (_mode) do {
         GVAR(windows) = _windows;
         GVAR(opordArchive) = _opordsIn;
         GVAR(log) = _logIn;
+        // a restore is the whole store: the next database write is it, not a merge (FUNC(storeSync))
+        GVAR(syncReplace) = true;
         _newer = count _players;
         _added = count _sessions + count _windows;
     };

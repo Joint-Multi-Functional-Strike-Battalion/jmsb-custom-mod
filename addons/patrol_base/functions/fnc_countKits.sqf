@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Counts patrol-base kits near a position: loose kit items sitting in ground
  * weapon holders PLUS deployed kit objects (both count toward building).
  *

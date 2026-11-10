@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The best target a loitering munition can see inside its search area, by
  * the module's strike rules - enemy side only.
  *

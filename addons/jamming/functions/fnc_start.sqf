@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts the prune that retires a jammer site once its emitter is dead.
  *
  * Called by FUNC(moduleController) - never on its own. The Jamming module is

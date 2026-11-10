@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: writes a client's log line (FUNC(log) with sendToServer) into the
  * server's RPT, tagged with the machine, player and Steam id that sent it.
  *

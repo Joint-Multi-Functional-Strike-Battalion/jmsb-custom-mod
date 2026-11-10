@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sounds the alarm in every area a new threat is coming down on - once per
  * salvo: an area that sounded within the Alarm Repeat stays quiet. Played with
  * playSound3D (heard on every machine) on the area's un-muted units and on its

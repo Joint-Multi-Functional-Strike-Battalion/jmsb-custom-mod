@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: where this man's GPS says he is, for anything that REPORTS his
  * position - CUR LOC in a report card, the compose pin, + GRID in a reply,
  * the TIC's location, CENTRE on the map. Spoofed: the false position, with

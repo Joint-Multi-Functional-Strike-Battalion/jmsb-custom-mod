@@ -101,41 +101,10 @@
 #define HACK_RF_MAX_NODES   12
 #define HACK_HOSTILE_BELOW  0.6
 
-// --- hand-held scanner ------------------------------------------------------
-// A held device, not a dialog: it stays on screen while you walk, and every
-// reading changes as you move. Behaviour referenced from ACE's MicroDAGR - ACE
-// is GPL, so nothing is copied, only the idea of a device you carry.
-// The readings themselves (FUNC(scannerRead)) are the whole readout.
-#define IDD_SCANNER         8800
-#define IDC_SCN_BEZEL       8801
-// 8802 was the screen panel. The text draws straight onto the art now, so there
-// is nothing opaque left to misalign with the moulding.
-#define IDC_SCN_TITLE       8803
-#define IDC_SCN_DRONE_L     8804
-#define IDC_SCN_DRONE_V     8805
-#define IDC_SCN_JAM_L       8806
-#define IDC_SCN_JAM_V       8807
-#define IDC_SCN_MESH_L      8808
-#define IDC_SCN_MESH_V      8809
-#define IDC_SCN_NETHEAD     8810
-#define IDC_SCN_NET_L       8811
-#define IDC_SCN_NET_V       8812
-#define IDC_SCN_STATUS      8813
-#define IDC_SCN_ICO_DRONE   8814
-#define IDC_SCN_ICO_JAM     8815
-#define IDC_SCN_ICO_MESH    8816
-#define IDC_SCN_ICO_NET     8817
-#define IDC_SCN_TIMER       8818
-#define IDC_SCN_ALARM       8819
+// --- scanner readings (FUNC(scannerRead)) ----------------------------------
+// The hand-held scanner screen is gone (2026-11-08); its sweep stays - the HUD,
+// the tacpad tiles and the drone tags read it.
 
-#define SCN_TICK            0.25    // sec between readings
-
-// How long the handset's title layer lives before the engine drops it, and
-// how often the tick renews it. Short on purpose: the gap is the slack, and
-// a mission that has stopped renews nothing - which is what keeps the
-// scanner off the main menu.
-#define SCN_LAYER_LIFE      5
-#define SCN_LAYER_RENEW     2
 #define SCN_DRONE_WARN      2000    // m: amber
 #define SCN_DRONE_ALERT     1000    // m: red
 // How long one scanner sweep is reused for. The readout is a lamp and a
@@ -144,35 +113,7 @@
 #define SCN_CACHE_TTL       2
 
 #define SCN_MESH_RANGE      200     // m: a friendly close enough to stand in for a mesh link
-#define SCN_HUD_ID          "hackScanner"
 
-// Geometry. SCN_ASPECT is a PHYSICAL width:height - turn it into a UI width with
-// EFUNC(common,uiSquare), because UI units are only square when safeZoneW /
-// safeZoneH happens to match the display aspect. The art is a square 512x512
-// image of a phone that MRH's own dialog stretches to a tall handset, and
-// SCN_ASPECT reproduces that same stretch.
-#define SCN_H               0.391   // x safeZoneH
-#define SCN_ASPECT          0.602   // control w:h
-// The same width expressed as a safeZoneW fraction, which is what the shared
-// HUD position/move helpers take.
-#define SCN_WFRAC           (SCN_H * SCN_ASPECT * safeZoneH / safeZoneW)
-
-// The lit screen inside the art, as a fraction of the control. Measured off
-// data/phone.paa: the black panel runs x 65..449, y 36..403 of 512, inset a
-// touch so no glyph ever kisses the bezel.
-#define SCN_SCR_X           0.140
-#define SCN_SCR_Y           0.082
-#define SCN_SCR_W           0.724
-#define SCN_SCR_H           0.693
-
-// The screen is a terminal, so everything sits on a fixed line grid.
-#define SCN_ROWS            12
-
-// Stopwatch states, cycled by one keybind: press to start, press to stop, press
-// again to clear.
-#define SCN_T_IDLE          0
-#define SCN_T_RUNNING       1
-#define SCN_T_STOPPED       2
 
 // WHAT COMES OFF A BODY. One list, so the search, the deposit and the "have
 // you got any" check can never disagree about what counts as intel - three
@@ -194,8 +135,6 @@
 #define SCN_ALARM_ARM_DELAY 2       // sec of quiet after the last press before it arms
 #define SCN_ALARM_RING      15      // sec a ring beeps and blinks before giving up
 
-#define SCN_DEF_X           0.845
-#define SCN_DEF_Y           0.42
 
 // How often the agent sweep looks for someone new to hand a handset to.
 #define PHONE_SWEEP 30

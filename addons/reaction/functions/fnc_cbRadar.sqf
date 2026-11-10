@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an ENEMY gun fired (the class hook in XEH_postInit - AI artillery,
  * never a player's). One report per gun per cbRadarCooldown seconds goes to
  * the players' artillery teams (FUNC(cbReport)). Virtual barrages, which have

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hook "setActive": the voice core made a net the active one - what PTT 1
  * talks on. Always taken: the server has no channel to fail on. A held PTT 1
  * moves with it (FUNC(mic)).

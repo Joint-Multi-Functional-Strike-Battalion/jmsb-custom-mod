@@ -1,9 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The men the BFT picture counts as friendly: everyone alive in a group on
  * the local player's side that has a player in it - the groups the member
- * marks are drawn for. One list, so the danger-close check (TAC//SUPPORT)
+ * marks are drawn for. One list, so the danger-close check (support core)
  * and Point Man's FOLLOW agree with the map about who is a friendly.
  *
  * Arguments:

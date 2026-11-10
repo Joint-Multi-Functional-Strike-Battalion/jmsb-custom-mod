@@ -65,9 +65,28 @@
 // saveProfileNamespace per edit is the hitch it warns about.
 #define PAC_SAVE_DEBOUNCE 30
 
+// Range scores (FUNC(rangeStore)): runs kept per range on a record - the
+// oldest of that range goes when a new one comes - and the colour the
+// latest run of each range is drawn in.
+#define PAC_RANGE_KEEP    20
+#define PAC_RANGE_LATEST  [0.761, 0.659, 0.471, 1]
+
 // The attendance heartbeat, for crash safety: a session that never saw a
 // disconnect is closed at the last beat rather than lost.
 #define PAC_HEARTBEAT     60
+
+// The three servers a unit runs (user, 2026-11-07: "3 server ids ops training
+// and dev, only ops counts toward a player's time, but we need to track all
+// 3"). Each session and window row carries the id of the server that wrote it;
+// a row from before ids has none and counts as it always did. Any other
+// serverId in a mission is taken as dev, with one RPT line.
+#define PAC_SERVER_OPS      "ops"
+#define PAC_SERVER_TRAINING "training"
+#define PAC_SERVER_DEV      "dev"
+#define PAC_SERVERS         [PAC_SERVER_OPS, PAC_SERVER_TRAINING, PAC_SERVER_DEV]
+// Row element holding the server id: sessions [.., windowId, serverId],
+// windows [.., kind, serverId].
+#define PAC_ROW_SERVER      6
 
 // getUserInfo's "is a headless client" field. A headless client connects like
 // a player and is never one (review L1).
@@ -82,6 +101,20 @@
 // question puts on one line of the tile's APPLICATION tab.
 #define QUESTION_ORDER_STEP 10
 #define APPLY_SKILL_COLUMNS 2
+
+// A report-deck card's dangerClose option (metres) when it sets none - the
+// deck editor stores the option only above this (user, 2026-11-01, D8).
+#define DECK_DANGER_CLOSE_NONE 0
+// SIMPLE OR REAL WORLD TEMPLATES (user, 2026-11-09: "add a option in the pac
+// for simple or real world templates ... default us to real world"): the
+// unit's setting, which view TAC//MSG's composer opens a card in - the short
+// form or the doctrinal one (docs/DESIGN_MESSAGE_TEMPLATES.md). Published to
+// every client as GVAR(templateForm); a player's own composer setting may
+// still override it (tacpad).
+#define TEMPLATE_FORM_KEY "templateForm"
+#define TEMPLATE_FORM_REAL "real"
+#define TEMPLATE_FORM_SIMPLE "simple"
+#define TEMPLATE_FORMS [TEMPLATE_FORM_REAL, TEMPLATE_FORM_SIMPLE]
 
 // TAC//PAC INSIDE THE TABLET (FUNC(uiHost)): the id it is adopted under as the
 // tablet's open app (jmfsb_tacpad_fnc_appHost). Not the PAC tile's "pac" - that
@@ -115,6 +148,8 @@
 #define VON_COL_SQUADS 2
 #define VON_COL_ROLES 3
 #define VON_COL_SKILLS 4
+// optional: the lowest Arma rank on the row ("CORPORAL" = corporal and up)
+#define VON_COL_RANK 5
 #define ROLE_TEST_SUFFIX "_t"
 #define NET_KIND_A2G VON_KIND_A2G
 // the slot columns of a tfarNets row [net, sr slot, lr slot]

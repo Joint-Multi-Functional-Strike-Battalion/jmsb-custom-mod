@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What an asset has left to fire, one entry per type, in the order the
  * support page steps through them:
  *

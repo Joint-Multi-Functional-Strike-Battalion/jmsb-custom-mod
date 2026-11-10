@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * DRONES: what is in the air, and where.
  *
  * ITS OWN TILE because it is the one readout on the HUD that means MOVE. Sharing

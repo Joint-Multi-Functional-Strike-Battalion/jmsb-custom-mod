@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Wires one boarding point: the objects synchronised to this module get an
  * ACE action that loads everybody standing near the module.
  *

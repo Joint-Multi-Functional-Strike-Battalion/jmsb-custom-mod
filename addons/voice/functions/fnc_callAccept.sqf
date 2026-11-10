@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Accepts a call ringing for the local player (F1). It becomes his active net
  * when it goes live.
  *

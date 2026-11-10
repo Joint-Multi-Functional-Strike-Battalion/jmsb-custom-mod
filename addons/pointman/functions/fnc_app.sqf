@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * POINT MAN, the page (user, 2026-10-30): a grid box and ADD, PICK ON MAP,
  * FOLLOW (a list of the BFT friendlies; press one and a waypoint walks with
  * him, FUNC(follow)), the waypoints in order with their distance and bearing

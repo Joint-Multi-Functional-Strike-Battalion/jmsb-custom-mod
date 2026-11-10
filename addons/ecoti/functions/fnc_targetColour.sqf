@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The colour a target is drawn in (user, 2026-10-17):
  *
  *   blue    your own faction                        (Own faction colour)

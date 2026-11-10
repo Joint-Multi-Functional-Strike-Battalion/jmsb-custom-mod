@@ -1,8 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TAC//MEDIC - the squad as a medic triages it. Two pages in one frame: the
- * PATIENT LIST (the player's group, worst first) and a PATIENT's own page
+ * PATIENT LIST (the player's group, worst first - or, on the NEARBY tab, every
+ * man next to the medic from another squad) and a PATIENT's own page
  * (vitals, blood, airway, chest, wounds, tourniquets, splints, IVs, and SHOW
  * ON MAP). Pressing a patient opens his page; BACK returns to the list.
  *
@@ -54,9 +55,10 @@ if (_fresh && {!isNull GVAR(patient)}) then {
 GVAR(keepPatient) = false;
 
 // A patient who has left the section, or been deleted, drops the page back to
-// the list rather than showing a man the medic no longer has.
+// the list rather than showing a man the medic no longer has. A man from
+// another squad stays while he is next to the medic (the NEARBY page).
 private _patient = GVAR(patient);
-if (!isNull _patient && {!(_patient in units group player)}) then {
+if (!isNull _patient && {!(_patient in units group player)} && {(player distance _patient) > NEARBY_RANGE}) then {
     GVAR(patient) = objNull;
     _patient = objNull;
 };
@@ -81,7 +83,17 @@ switch (true) do {
         [_body, "MEDICAL SYSTEM NOT LOADED", "ACE MEDICAL IS NOT RUNNING - THERE IS NOTHING TO READ"] call FUNC(appNotice);
     };
     case (_paged): {[_body, _patient] call FUNC(appPatient)};
-    default {[_body] call FUNC(appList)};
+    default {
+        // SQUAD or NEARBY (user, 2026-11-07: a medic next to a casualty from
+        // another squad still sees his vitals). NEARBY is every man within
+        // NEARBY_RANGE who is not in the medic's squad, the dead included.
+        if ((uiNamespace getVariable [QGVAR(tab), TAB_SQUAD]) isEqualTo TAB_NEARBY) then {
+            private _squad = units group player;
+            [_body, (nearestObjects [player, ["CAManBase"], NEARBY_RANGE]) select {!(_x in _squad)}, true] call FUNC(appList);
+        } else {
+            [_body, units group player, false] call FUNC(appList);
+        };
+    };
 };
 
 // A notice does not change; only a live page needs the loop. The handle is a

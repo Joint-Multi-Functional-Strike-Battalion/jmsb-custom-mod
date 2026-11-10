@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "selfTest" (jmfsb_voice_fnc_selfTest under ACRE): logs to the
  * RPT each radio he carries with its base class, channel and net, the voice
  * API's view (nets, rows, the net in hand), who is heard on a radio and his

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Starts working out line of sight from a point, out to the radius setting,
  * replacing any viewshed already on the map.
  *

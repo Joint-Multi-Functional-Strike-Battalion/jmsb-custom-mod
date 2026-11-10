@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the enemy's counter-battery answer on a fixed player battery
  * (FUNC(cbShot)). Asked of a hostile commander's own guns first, the way a
  * major reaction is (FUNC(major)); with no commander to ask, a virtual barrage.
@@ -35,17 +35,18 @@ if (GVAR(cbWarn) > 0) then {
     };
 };
 
-private _answering = sideUnknown;
-if (!isNil "jmfsb_adapter_alive_fnc_commanders") then {
-    {
-        _x params ["_cside"];
-        if (_cside getFriend _pside < 0.6) exitWith {_answering = _cside};
-    } forEach (call jmfsb_adapter_alive_fnc_commanders);
-};
+// The first ALiVE commander hostile to the guns' side - without ALiVE, the
+// mission's enemy (user, 2026-11-02). Without ALiVE there are no commander's
+// guns to ask, so the virtual barrage below answers.
+private _answering = ([_pside] call EFUNC(common,hostileCommander)) select 0;
 
 private _asked = false;
-if (_answering isNotEqualTo sideUnknown && {!isNil "jmfsb_adapter_alive_fnc_requestFire"}) then {
-    _asked = [_answering, _pos, 1] call jmfsb_adapter_alive_fnc_requestFire;
+// No commander's guns with ALiVE loaded but no commanders either (user,
+// 2026-11-02: "same as not loaded").
+if (_answering isNotEqualTo sideUnknown
+    && {!isNil QEFUNC(adapter_alive,requestFire)}
+    && {[] call EFUNC(common,aliveLoaded)}) then {
+    _asked = [_answering, _pos, 1] call EFUNC(adapter_alive,requestFire);
 };
 if (!_asked) then {
     [_pos, GVAR(cbRounds), GVAR(cbSpread), CB_AMMO, GVAR(cbRounds) * CB_GAP] call EFUNC(common,fireBarrage);

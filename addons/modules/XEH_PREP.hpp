@@ -5,3 +5,4 @@ PREP(moduleAiHunter);
 PREP(moduleAiSpawner);
 PREP(moduleSafeStart);
 PREP(moduleHealArea);
+PREP(moduleHoldAlive);

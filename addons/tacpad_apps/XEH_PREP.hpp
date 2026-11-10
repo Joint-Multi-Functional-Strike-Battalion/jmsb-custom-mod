@@ -1,6 +1,8 @@
 // The shared row. Every list in the suite is drawn with it, so they cannot
 // drift apart in padding, type size or divider weight.
 PREP(row);
+// ...and the shared key/value list (review 2026-11-01, decision R2)
+PREP(kvRow);
 PREP(readerRow);
 PREP(ammoState);
 PREP(radioState);
@@ -43,7 +45,10 @@ PREP(alarmAtDelay);
 PREP(appSettings);
 PREP(appMenu);
 PREP(appSquad);
-PREP(appSupport);
+// ...its MEMBER page, the BFT mark on a row and a man's reach on DATA
+PREP(appSquadMember);
+PREP(squadIcon);
+PREP(squadLink);
 PREP(appWeather);
 PREP(appRadio);
 PREP(roleTiles);
@@ -53,21 +58,6 @@ PREP(settingStep);
 PREP(settingCycle);
 PREP(missionSchemes);
 PREP(toggleNet);
-PREP(supportGroup);
-PREP(supportCell);
-PREP(supportHover);
-PREP(supportTint);
-PREP(supportStepper);
-PREP(supportPassengers);
-PREP(supportMapDraw);
-PREP(supportMapLive);
-PREP(supportPointVars);
-PREP(supportPointSet);
-PREP(supportRequestParams);
-// CONFIRM TASKING's send, and the danger-close question asked before it
-// (user, 2026-10-30: a popup with a yes or no).
-PREP(supportConfirm);
-PREP(supportDangerClose);
 
 // RADIO / DRONES / HACK boards (docs/DESIGN_TABLET_APPS.md) - the shared panel
 // vocabulary, then each board's pages and readers.
@@ -87,7 +77,10 @@ PREP(radioRfQuality);
 PREP(appRadioKey);
 PREP(appRadioNets);
 PREP(appRadioSounds);
+PREP(appRadioButtons);
 PREP(appRadioCalls);
+// the voice server's calls, no limit to how many (user, 2026-11-01)
+PREP(appRadioCallList);
 PREP(appRadioContacts);
 PREP(appRadioLive);
 // the call's picture (user, 2026-10-28: a camera on the caller, flips to his view)
@@ -118,6 +111,8 @@ PREP(appHackTrack);
 
 // The notices log, opened from settings, the MSG tile and the reader rail.
 PREP(openLog);
+// The LOG app - the notices log in the MENU and on a tile (2026-11-09).
+PREP(appLog);
 // The player's live-tile layout: which tiles, in which slots.
 PREP(tileLayout);
 PREP(tileLayoutSet);

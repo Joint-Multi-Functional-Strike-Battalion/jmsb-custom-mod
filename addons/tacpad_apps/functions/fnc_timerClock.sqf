@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A running clock, not a rounded minute: a row that reads "1 MIN" for sixty
  * seconds is a label, not a timer. The archived device's own formatter, for
  * the TIMER app's roster, stopwatch and delays (FUNC(appTimer),

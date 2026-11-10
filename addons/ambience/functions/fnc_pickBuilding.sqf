@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One building near one player, for the ambience to hit. Shared by the
  * shelling and the kamikaze modules - the "war happens around you" rule is
  * the same for both: a random player standing inside the markers, a random

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "selfTest" (jmfsb_voice_fnc_selfTest under TFAR): logs to the
  * RPT what this adapter reads off TFAR - each set's node, the plan's nets as
  * TFAR sets, the voice API's view (nets, rows, active net), who is heard

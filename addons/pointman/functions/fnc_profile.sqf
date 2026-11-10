@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * THE ELEVATION PROFILE of the route: the ground's height sampled at
  * PROFILE_BARS even steps from the first waypoint to the last - from the GPS
  * fix to the only waypoint when there is just one - with the total climb and

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Who a quick add offers (DESIGN_VOICE.md, "Add people": the recent contacts
  * list, and the walking view's F2 quick add): the people of the player's recent
  * calls first, newest first (GVAR(radioRecent), kept by FUNC(radioCalls)), then

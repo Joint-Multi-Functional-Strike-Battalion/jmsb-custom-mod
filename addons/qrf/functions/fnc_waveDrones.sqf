@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Wave 2: something comes to look.
  *
  * Out of that side's cache-limited ceiling, so raiding supply thins the

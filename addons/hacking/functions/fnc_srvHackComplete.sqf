@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a hack finished on a tablet (FUNC(hackComplete), by remoteExec).
  * What the client says is checked before anything happens (review S7):
  * - the operator is the sender's own unit, and his side is his group's;

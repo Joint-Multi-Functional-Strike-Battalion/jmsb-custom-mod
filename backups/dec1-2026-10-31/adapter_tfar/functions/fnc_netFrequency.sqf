@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A net's TFAR frequency - the number TFAR needs and the player never sees.
  *
  *   1. The plan's own: a slotted net of the PAC plan (fnc_planNets) sits on

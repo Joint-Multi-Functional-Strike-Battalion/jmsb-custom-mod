@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a jammer gone - its operator dropped the pack, left the vehicle,
  * died or left the game. Its GPS zone, if it had one, goes with it.
  *

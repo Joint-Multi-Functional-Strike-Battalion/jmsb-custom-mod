@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The mesh of one net for the nodes holding one key: every node's best path
  * to every other, as [quality, hops, lastHop].
  *

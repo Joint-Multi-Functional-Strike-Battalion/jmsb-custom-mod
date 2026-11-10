@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Shows this frame's boxes as UI controls on the mission display: each box
  * four strips laid INSIDE its pixel-snapped rectangle, edge to edge, so the
  * corners meet exactly, and its AiTR label (and net card) centred under it. Controls are

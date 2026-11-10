@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Files a thread into the mailboxes it was addressed to and pushes the new
  * message to everyone who should see it now.
  *

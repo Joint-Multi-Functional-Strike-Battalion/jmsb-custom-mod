@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes an aircraft on the map THE asset of a module that flies a synced
  * aircraft: the module's own airframe from here on, its loss counted on the
  * server. Called for the aircraft synced in Eden (FUNC(register)) and for

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The players on a voice net, by the voice layer (each one's nets: his fill
  * from the server's roster, his calls, his crew seat). VEH is per vehicle,
  * so for VEH only the crew of the given unit's vehicle count.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, once at mission start (the mission display is up): arms the VON
  * toggle block (fnc_keyDown) and tells the player when his game cannot carry
  * our voice - Push To Talk has no key, or his VON volume is near zero.

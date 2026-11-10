@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the local player on the Global channel, or takes him off it - the
  * leaders' GLOBAL button on the tablet (user, 2026-10-21). On: the adapter
  * opens Global to him and makes it his current channel, so push-to-talk

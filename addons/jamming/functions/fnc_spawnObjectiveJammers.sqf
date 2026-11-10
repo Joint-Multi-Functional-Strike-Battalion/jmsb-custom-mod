@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Jammer sites at each commander's objectives (new.md section 1.3).
  *
  * A data site at the biggest objectives and a radio site at the rest - the size
@@ -34,7 +34,7 @@
  */
 
 if (!isServer) exitWith {0};
-if (isNil "jmfsb_adapter_alive_fnc_commanders") exitWith {0};
+if (isNil QEFUNC(adapter_alive,commanders)) exitWith {0};
 
 // ---------------------------------------------------------------- the plan --
 // Built first, placed later. Deciding WHAT to build is cheap - it is reading
@@ -45,7 +45,7 @@ private _gpsDone = false;
 {
     _x params ["_side"];
 
-    private _objs = [_side] call jmfsb_adapter_alive_fnc_objectivesFor;
+    private _objs = [_side] call EFUNC(adapter_alive,objectivesFor);
     if (_objs isEqualTo []) then {continue};
 
     // biggest first - those are the ones worth denying data over
@@ -95,7 +95,7 @@ private _gpsDone = false;
         _jobs insert [0, [[_side, (_objs select 0) select 1, 0, DOM_GPS, 0]]];
         _gpsDone = true;
     };
-} forEach (call jmfsb_adapter_alive_fnc_commanders);
+} forEach (call EFUNC(adapter_alive,commanders));
 
 INFO_1("%1 jammer site(s) queued",count _jobs);
 if (_jobs isEqualTo []) exitWith {0};

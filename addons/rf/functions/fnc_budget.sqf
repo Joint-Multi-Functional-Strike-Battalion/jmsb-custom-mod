@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_budget: the full one-way budget from one node to another as they stand
  * now (server). Not cached: it casts fresh, for tools and the range checks,
  * not for the tick. On SAT it is the satellite budget

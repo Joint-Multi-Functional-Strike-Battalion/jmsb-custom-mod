@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a node's antenna is, ASL: a man's eyes (or his vehicle's, when he is
  * in one), otherwise a little above the object. Height above ground is not
  * in the budget yet (docs/DESIGN_RF.md open item 1); this only keeps the

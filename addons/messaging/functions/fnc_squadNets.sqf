@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The squads this mission declares, as addressable net names.
  *
  * READ OFF missionConfigFile, NEVER A PATH. The unit framework's

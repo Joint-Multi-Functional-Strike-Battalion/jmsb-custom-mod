@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a client's request to the registry - FUNC(register),
  * FUNC(unregister), FUNC(setState), FUNC(batterySwap) or FUNC(netSet) called
  * on a client lands here by remoteExec.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The custom-channel gauge every device shows (user, 2026-10-21: "add to all
  * devices a net use % of the 10 custom channels"): "CH 3/10 30%", from
  * jmfsb_voice_fnc_channelUse. Game voice has ten custom channels in all -

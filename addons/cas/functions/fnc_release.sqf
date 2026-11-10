@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The aircraft is in hot: its terminal guidance is read back to the side, so
  * the JTAC knows whether his spot or smoke was the thing used.
  *

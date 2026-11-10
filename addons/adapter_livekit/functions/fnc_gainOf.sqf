@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How loud, and in which ear, the local player hears a speaker now - the mix
  * (docs/DESIGN_VOICE_LIVEKIT.md). Everyone's audio is in the one room; this
  * is who hears whom:

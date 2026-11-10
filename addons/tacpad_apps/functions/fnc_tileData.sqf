@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the four tiles currently say. One function so the band has one source
  * and the tile drawing stays about drawing.
  *
@@ -28,7 +28,7 @@
  *
  * Return Value:
  * One entry per tile: [appId, kicker, qualifier, value, detail, state, icon] <ARRAY>
- * State is "rest", "ok" (green), "warn" (amber), "alert" (red) or "stale" <STRING>
+ * State is "rest", "ok" (green), "warn" (amber), "alert" (the inverted accent block) or "stale" <STRING>
  * Icon is a texture path, "" for none <STRING>
  *
  * Public: No
@@ -235,7 +235,8 @@ if (isNil QEFUNC(voice,netState)) then {
     private _nets = [] call EFUNC(voice,netState);
     private _i = _nets findIf {_x param [3, false]};
     if (_i < 0) then {
-        _out pushBack ["radio", "RADIO", "NO NET", "----", format ["%1 NETS", count _nets], "warn"];
+        // Plural only when the count is not one (review 2026-11-01, item 2.7).
+        _out pushBack ["radio", "RADIO", "NO NET", "----", format ["%1 NET%2", count _nets, ["S", ""] select (count _nets isEqualTo 1)], "warn"];
     } else {
         (_nets select _i) params [["_netId", ""], ["_name", ""], ["_kind", ""], "", ["_muted", false], "", ["_reach", false], ["_talkers", []]];
         private _detail = switch (true) do {
@@ -272,13 +273,36 @@ if (!isNil QEFUNC(common,artyGroups) && {(group player) in ([side group player] 
     } else {
         GVAR(artyFix) params ["_fixPos", "_fixAt"];
         private _age = CBA_missionTime - _fixAt;
+        // The fix at the player's grid digits, as the device header draws
+        // them (jmfsb_devices_gridDigits; review 2026-11-01, item 2.7).
+        private _fixGrid = if (isNil QEFUNC(devices,overlayGrid)) then {
+            mapGridPosition _fixPos
+        } else {
+            ([_fixPos] call EFUNC(devices,overlayGrid)) select 0
+        };
         _out pushBack [
-            "arty", "ARTY", _gunWord, mapGridPosition _fixPos,
+            "arty", "ARTY", _gunWord, _fixGrid,
             format ["RADAR FIX %1 MIN AGO - PRESS TO PLOT", floor (_age / 60)],
             ["rest", "alert"] select (_age < ARTY_FIX_HOT)
         ];
     };
 };
+
+// --- LOG, off the notices kept (user, 2026-11-09: "add back in the logs app")
+// How many notices, how many in the last LOG_RECENT_S s, and the newest one.
+// Pressing it opens the reader's LOG view (FUNC(panelTiles)).
+private _history = missionNamespace getVariable [QEGVAR(notify,history), []];
+if !(_history isEqualType []) then {_history = []};
+private _recent = {(_x param [3, -1e10]) > (time - LOG_RECENT_S)} count _history;
+private _newest = _history param [count _history - 1, []];
+_out pushBack [
+    LOG_APP,
+    "LOG",
+    ["QUIET", format ["%1 NEW", _recent]] select (_recent > 0),
+    str (count _history),
+    [LOG_NONE, toUpper format [LOG_DETAIL_FORMAT, _newest param [0, ""], _newest param [1, ""]]] select (_newest isNotEqualTo []),
+    ["rest", "ok"] select (_recent > 0)
+];
 
 // --- MSG, off the player's own message index -------------------------------
 // Unread across every box he can read, FLASH or IMMEDIATE unread making it an
@@ -347,9 +371,9 @@ if (_gated) then {
 // reading when it is there, nothing at all when a suite is not loaded - so the
 // order they happen to be pushed in is not a decision anybody made. This is.
 //
-// THE TWO THAT ACT RATHER THAN REPORT SIT ON THE RIGHT: SUPPORT calls something
-// in and HACK does something to something, while the other five only tell you
-// what is true. Reading tiles stay left where the eye starts.
+// THE ONE THAT ACTS RATHER THAN REPORTS SITS ON THE RIGHT: HACK does something
+// to something, while the others only tell you what is true. Reading tiles
+// stay left where the eye starts.
 //
 // A tile not named here sorts to the end rather than to the front, so adding one
 // and forgetting this list puts it in the wrong place instead of at the head of
@@ -377,30 +401,9 @@ _out pushBack [
     ["stale", "rest"] select (_intel isNotEqualTo [])
 ];
 
-// --- SUPPORT, over the support core ----------------------------------------
-// NO CORE, NO TILE. The app is not registered without it either - a live
-// tile reading NO LINK for a system that is not installed is a permanent
-// apology, and the band is only six wide.
-//
-// ONE COUNT, ANY NUMBER OF BACK ENDS. EFUNC(support,assets) merges every
-// registered provider's rows - ALiVE's ATO and NEO assets, jmfsb's CAS drones,
-// support_fires and support_air - so this does not care which of them is present.
-if (!isNil QEFUNC(support,assets)) then {
-    private _support = call EFUNC(support,assets);
-    private _idle = {(_x param [4, ""]) isEqualTo "idle"} count _support;
-    // The qualifier is the first tab and its count - CAS 2 (notes, 2026-10-30).
-    private _firstType = (_support param [0, []]) param [1, ""];
-    private _firstCount = {(_x param [1, ""]) isEqualTo _firstType} count _support;
-    _out pushBack [
-        "support",
-        "SUPPORT",
-        // the type in SUP_QUALIFIER_CHARS letters, so the badge never wraps
-        ["NO LINK", format ["%1 %2", (toUpper _firstType) select [0, SUP_QUALIFIER_CHARS], _firstCount]] select (_support isNotEqualTo []),
-        str count _support,
-        ["CS LINK NOT WIRED", format ["%1 IDLE - PRESS TO TASK", _idle]] select (_support isNotEqualTo []),
-        ["stale", "rest"] select (_support isNotEqualTo [])
-    ];
-};
+// NO SUPPORT TILE (user, 2026-11-01: "thought we were removing this"):
+// support is called from TAC//MSG, by a message to the asset - there is no
+// support app (docs/DESIGN_SUPPORT_MESSAGING.md step 9).
 
 // --- PAC, the unit ------------------------------------------------------------
 // Structure hash, current OPORD, players on, op window - the handoff's own list
@@ -415,6 +418,10 @@ if (!isNil "jmfsb_pac_summary") then {
     private _window = _pac getOrDefault ["window", ""];
     private _open = _window isEqualType "" && _window isNotEqualTo "";
     private _hash = _pac getOrDefault ["hash", 0];
+    // THE HASH ONLY WHEN THERE IS ONE (review 2026-11-01, item 2.7): an empty
+    // hash left the detail reading "NO OPORD -".
+    private _pacDetail = [["NO OPORD", toUpper _opord] select (_opord isNotEqualTo "")];
+    if !(_hash in [0, ""]) then {_pacDetail pushBack format ["%1", _hash]};
 
     // An open op window is the unit at work, not a fault: green, never amber
     // (user, 2026-10-30: "why or how would pac be yellow?").
@@ -423,9 +430,16 @@ if (!isNil "jmfsb_pac_summary") then {
         "PAC",
         ["NO OP", "OP OPEN"] select _open,
         str (_pac getOrDefault ["players", 0]),
-        format ["%1 - %2", ["NO OPORD", toUpper _opord] select (_opord isNotEqualTo ""), _hash],
+        _pacDetail joinString " - ",
         ["rest", "ok"] select _open
     ];
+};
+
+// THE TABLET'S ROW CARRIES NO PAC TILE (TILES_NATIVE_ONLY; user, 2026-11-01:
+// "make pac a button between menu and esc closes"): the device bar's PAC
+// button opens the app. The map's band keeps it - that host has no bar.
+if (HOST_DEVICE) then {
+    _out = _out select {!((_x # 0) in TILES_NATIVE_ONLY)};
 };
 
 // THE PLAYER'S OWN LAYOUT FIRST (user, 2026-10-24: "turn on and off live
@@ -434,7 +448,7 @@ if (!isNil "jmfsb_pac_summary") then {
 // is dropped, and the AUTO tiles fill the rest in the default order - the
 // declared list first, then whatever the providers added, in their order.
 // One algorithm, FUNC(tileOrder), shared with SETTINGS > LIVE TILES. The PAC
-// tile's small print reads larger.
+// tile's detail line reads larger (its kicker does not - FUNC(panelTiles)).
 private _byId = createHashMap;
 {
     if ((_x # 0) isEqualTo "pac") then {

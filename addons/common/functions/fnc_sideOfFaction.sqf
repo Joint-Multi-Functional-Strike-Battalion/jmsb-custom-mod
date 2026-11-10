@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The side a faction class fights for, read from the faction's own config.
  *
  * THE OTHER HALF OF FUNC(sideFromText). That one reads a side NAME - "GUER",

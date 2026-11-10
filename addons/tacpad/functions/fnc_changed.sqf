@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The change key a live screen skips work with (code review R8). The screen
  * says what it would draw as a value; this keeps that value's text on the
  * holder under the name given, and answers whether the new one differs - and

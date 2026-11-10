@@ -54,26 +54,18 @@ if (hasInterface) then {
     ["jmfsbperf", {
         ["perf"] remoteExecCall [QFUNC(probe), SERVER_OWNER];
     }, "all"] call CBA_fnc_registerChatCommand;
+
+    // TRAINING HOLD. A mission with the JMSB - Hold ALiVE module starts with
+    // ALiVE paused; this starts it. Admins only - FUNC(hold) checks the sender.
+    ["jmfsbalivestart", {
+        [false] remoteExecCall [QFUNC(hold), SERVER_OWNER];
+    }, "all"] call CBA_fnc_registerChatCommand;
 };
 
-// ---------------------------------------------------------------------------
-// ALiVE COMBAT SUPPORT AS A SUPPORT PROVIDER. The support core owns the
-// registry, the gate and the request flow; this registers ALiVE's NEO assets
-// and the ATO's one row as provider "alive", so every ALiVE name stays in this
-// addon. Ids are "alive:<type>:<index>" and "alive:ato". The AI commander's
-// artillery is deliberately absent - see the note at the ATO publish loop below.
-// An ATO task is a server event, because the request has to be raised on the
-// machine that holds ALiVE's event log.
-//
-// ON EVERY MACHINE, ABOVE THE SERVER-ONLY EXIT: TAC//SUPPORT is drawn on the
-// client and reads its rows locally. (The old ATO provider sat below that exit
-// and so only ever reached the server's own screen.)
-[SUPPORT_KIND, createHashMapFromArray [
-    ["assets", FUNC(supportAssets)],
-    ["task", FUNC(supportTask)],
-    ["sitrep", FUNC(supportSitrep)],
-    ["types", call FUNC(supportTypes)]
-]] call EFUNC(support,registerProvider);
+// NO SUPPORT PROVIDER (user, 2026-11-02: "if alive is present we integrate -
+// but not the support"). ALiVE's NEO combat support and its ATO are not
+// support assets: TAC//MSG lists the mod's own providers only, the same with
+// or without ALiVE. Nothing here registers with the support core.
 
 if (!isServer) exitWith {};
 
@@ -88,6 +80,11 @@ if (!isServer) exitWith {};
 // cannot read the enemy's positions out of a variable. Started once, from
 // FUNC(whenReady) - not the ready CBA event any client could raise again
 // (review R1).
+//
+// No fallback (user, 2026-11-02: "same as not loaded"): when FUNC(ready) gives
+// up on a mission with no commander, nothing here starts - no pools, no
+// bridge, no COP or LAMBS settings - exactly as when this PBO is not loaded.
+// The counts stay unset, which every reader takes as 0.
 [{
     [{
         // ONE HEAVY WALK PER TICK, NOT ALL OF THEM. aaTargets, artyTargets,
@@ -105,13 +102,6 @@ if (!isServer) exitWith {};
             case 3: { missionNamespace setVariable [QGVAR(radarCount), count (call FUNC(radars)), true] };
         };
 
-        // The ATO presence flag is all the support app needs from ALiVE now -
-        // the battery registry is deliberately NOT published: listing every
-        // AI-commander gun made the app a directory of assets the player
-        // cannot actually task (ARTY_REQUEST picks its own battery, and only
-        // where a friendly artillery module exists at all).
-        missionNamespace setVariable [QGVAR(atoPub),
-            (allMissionObjects ATO_CLASS) apply {toUpper (_x getVariable ["side", ""])}, true];
         // hubCount reads the supply-network hash, which is small - every tick.
         missionNamespace setVariable
             [QGVAR(hubCount), count (call FUNC(logisticsHubs)), true];
@@ -194,8 +184,4 @@ if (!isServer) exitWith {};
         });
     }, POOL_TICK, []] call CBA_fnc_addPerFrameHandler;
 }] call FUNC(whenReady);
-
-// An ATO task reaches the server by remoteExec to FUNC(srvRequestATO), which
-// takes the requester and his side from the sender - not the "supportRequest"
-// CBA event any client could raise for any side (review S7).
 

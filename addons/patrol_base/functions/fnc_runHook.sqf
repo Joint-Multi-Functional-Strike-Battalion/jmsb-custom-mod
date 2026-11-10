@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Compiles and calls a user hook (an SQF code string from a CBA setting) with
  * the given arguments. No-op if the string is empty.
  *

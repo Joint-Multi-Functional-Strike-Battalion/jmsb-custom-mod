@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The one detection roll, for every way of being noticed.
  *
  * Degrees (new.md section 2):
@@ -60,9 +60,11 @@ if (_source isEqualTo "burnthrough") exitWith {
 };
 
 ([_unit] call FUNC(flagged)) params ["_isFlagged", "_mult"];
-// The town's word - see REACT_HOSTILITY_FLOOR.
-if (!isNil "jmfsb_adapter_alive_fnc_hostilityAt") then {
-    private _h = [getPosATL _unit, side group _unit] call jmfsb_adapter_alive_fnc_hostilityAt;
+// The town's word - see REACT_HOSTILITY_FLOOR. ALiVE's civilian model only;
+// without ALiVE the town has no word and the roll is the chance as set - nor
+// with ALiVE loaded but no commanders (user, 2026-11-02: "same as not loaded").
+if (!isNil QEFUNC(adapter_alive,hostilityAt) && {[] call EFUNC(common,aliveLoaded)}) then {
+    private _h = [getPosATL _unit, side group _unit] call EFUNC(adapter_alive,hostilityAt);
     _mult = _mult * (REACT_HOSTILITY_FLOOR + (_h / 100));
 };
 

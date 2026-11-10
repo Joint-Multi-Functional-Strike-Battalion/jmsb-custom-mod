@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The server refused something this player sent. Told to him and nobody else.
  * It is the server's half of the validation the client already ran, so it only
  * fires when the two disagreed - a stale template, or a thread that changed

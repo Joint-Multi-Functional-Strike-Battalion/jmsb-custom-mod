@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The keyboard while the tablet is up: the numpad block of docs/SPEC_TACNET.json
  * D16 (user, 2026-10-20: "we are not using keyboard F1-F4, we are using
  * numpad"), passed through to the device.
@@ -9,12 +9,12 @@
  * that means something on the tablet is matched here against the player's own
  * binding (CBA_fnc_getKeybind - a rebound key works rebound):
  *
- *   device keys F1-F4 (numpad 6-9)   the frame's F1-F4: the app each is set to
- *   select net 1-9 (numpad 1-5)      that net chip becomes the active net
- *   device arrows (numpad 0 / .)     the call window's corner while a call is up, else scroll
- *                                    an open screen, else the active net (FUNC(softKey))
+ *   device keys F1-F4 (numpad 5-8)   the frame's F1-F4: the app each is set to
+ *   select net 1-9 (numpad 1-4)      that chip of the net page shown becomes the active net
+ *   device arrows (numpad 0 / .)     the call window's corner while a call is up, else the
+ *                                    live tiles' page, else scroll an open screen (FUNC(softKey))
  *   call camera key (unbound)        FACE / VIEW on a live call (FUNC(voiceCamKey))
- *   tablet key (numpad Enter)        closes the tablet
+ *   tablet key (unbound)             closes the tablet
  *   radio app key (unbound)          opens or closes the tablet's RADIO app
  *   tab keys (unbound)               RADIO's previous / next tab while it is open
  *   answer / decline (numpad * / /)  the ringing call
@@ -64,8 +64,8 @@ private _fnc_bound = {
 
 // ENTER NEVER CLOSES THE DEVICE BY ITSELF - a dialog with no default button
 // closes on it - so it is swallowed; in a multi-line box it is a new line.
-// NUMPAD ENTER IS THE TABLET KEY (user, 2026-10-30): bound so, it closes the
-// tablet the way the key does, as any other key would.
+// A player who binds the tablet key to Enter himself still gets it closing
+// the tablet; the mod never binds Enter (user, 2026-11-01).
 if (_key in [DIK_RETURN, DIK_NUMPADENTER]) exitWith {
     if (_typing) exitWith {(ctrlStyle _focus) % (2 * ST_MULTI) < ST_MULTI};
     if ([QGVAR(tabletKey)] call _fnc_bound) then {[] call FUNC(close)};

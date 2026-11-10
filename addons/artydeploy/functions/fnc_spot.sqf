@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a carrier's gun goes: REAR_GAP metres (2.5) behind the rear edge of
  * the vehicle, on its centre line, on the ground, facing the way the vehicle
  * faces (user, 2026-10-25: "deployed to the rear of the vehicle 2.5 meters to

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What every device's header bar says - the tablet's (FUNC(tabletBar)) and
  * the phone's and side devices' (FUNC(overlayDraw); user, 2026-10-21: "the
  * devices still need some kind of header bar with info"). One answer, so the

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, self test T4: takes a player off the C2 custom channel now and
  * puts him back after TEST_READD_S, telling him the server time of each, so
  * his client can log when it saw them.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Paints and sizes the console from the player's tacpad settings.
  *
  * WHY A FUNCTION AND NOT CONFIG. The colours in ui\dialog.inc.hpp are the dark

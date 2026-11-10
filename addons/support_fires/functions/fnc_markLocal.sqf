@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws a mission's target as local markers, only for the asset's side: one
  * icon and one area per asset, a new mission of the same asset replacing
  * them. Sent by the server (FUNC(mark)) by remoteExec, JIP included, and

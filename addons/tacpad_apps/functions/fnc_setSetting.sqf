@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Changes one CBA setting from inside the game, then puts the change on screen.
  *
  * THROUGH CBA'S OWN SETTER (CBA_settings_fnc_set, the client source, stored),

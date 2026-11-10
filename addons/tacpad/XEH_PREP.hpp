@@ -76,8 +76,25 @@ PREP(drawChip);
 PREP(chipWidth);
 PREP(readerPreview);
 PREP(readerCard);
+// A filed card as one key/value column (2026-11-02): its rows, and the column.
+PREP(readerKvRows);
+PREP(readerKv);
 PREP(readerReplies);
 PREP(readerQuick);
+PREP(readerQuickTiles);
+// What a thread takes from this player (2026-11-02) - one rule for every
+// place that offers a reply - and a new task for its asset, in it.
+PREP(threadLegal);
+PREP(taskInThread);
+// The message templates (docs/DESIGN_MESSAGE_TEMPLATES.md, 2026-11-09): a
+// support request filed in a report, the FRAGO composer and its payload, the
+// preview that reads either.
+PREP(starterInReport);
+PREP(composeFrago);
+PREP(composeFragoPayload);
+PREP(fragoSame);
+PREP(composePreviewText);
+PREP(composeShortDefault);
 PREP(readerCallUnits);
 PREP(readerMarkers);
 PREP(readerFlash);
@@ -95,15 +112,67 @@ PREP(composeOpen);
 PREP(composePane);
 PREP(composePicker);
 PREP(composeToPicker);
+// The picker's SUPPORT group (2026-11-01): the assets' rows, how one reads,
+// the group drawn, and its two-second poll.
+PREP(composeToSupport);
+PREP(composeToSupportLine);
+PREP(composeToSupportDraw);
+PREP(composeToSupportTick);
 PREP(composeCard);
 PREP(composeCardHead);
 PREP(composeTiles);
 PREP(composeHarvest);
 PREP(composeSend);
+// A support card's verdict beside SEND and its footprint on the map
+// (2026-11-02), and the poll that takes the footprint off again.
+PREP(composeFire);
+PREP(composeFireTick);
+// The card's autofills (report-card review, 2026-11-02): applied before every
+// draw, one source each.
+PREP(composeAutoFill);
+// The CAS 9-line's game-filled lines (2026-11-09).
+PREP(autoCas);
+PREP(autoValue);
+PREP(autoVehicle);
+PREP(autoDamage);
+PREP(autoFuel);
+PREP(autoWind);
+PREP(autoSquadAce);
+PREP(autoAnchor);
+// A choice the composer fills at runtime (choicesFrom, 2026-11-02): its picks,
+// and the drop-down they are chosen from.
+PREP(composeChoices);
+PREP(composeDrop);
+// After contact, a SITREP (user, 2026-11-02): SEND SITREP on a TIC thread, and
+// the sender's watch for the contact ending.
+PREP(sitrepAfterTic);
+PREP(contactArm);
+PREP(contactAgain);
+PREP(contactCheck);
+PREP(contactDrop);
+PREP(contactTraffic);
 
 // The CC line: the @ completions it drops, and the mailbox ids it resolves to.
 PREP(composeCcDrop);
 PREP(composeCcIds);
+// @ mentions of support assets on it (2026-11-01): a name typed in full, the
+// mention (TO and the asset's card), the card switch that keeps typed text,
+// and the question asked before it would not.
+PREP(composeMentionTyped);
+PREP(composeMention);
+PREP(composeMentionSwitch);
+PREP(composeMentionAsk);
 
 // Where a grid comes from when the player does not type it.
 PREP(markerGrids);
+
+// Quick answers on the walking view: numpad 6-9 answer what an asset asks.
+PREP(askLocal);
+PREP(askChanged);
+PREP(askTraffic);
+PREP(askChoice);
+PREP(askList);
+PREP(askItems);
+PREP(askCurrent);
+PREP(askView);
+PREP(askKey);

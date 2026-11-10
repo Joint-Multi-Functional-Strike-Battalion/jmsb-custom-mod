@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_link: the best path from node A to node B on a net. On the server any
  * pair; on a client only from a node in that client's own slice (anything else
  * reads as no link) - clients read, never compute.

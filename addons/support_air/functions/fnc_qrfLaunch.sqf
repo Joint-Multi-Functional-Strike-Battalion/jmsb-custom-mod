@@ -1,13 +1,24 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Puts a QRF aircraft in the air over the module with the squad in the back
- * and starts its watch (FUNC(qrfTick)).
+ * Author: YonV
+ * Puts the squad in the back of a QRF aircraft and starts its watch
+ * (FUNC(qrfTick)). VIRTUAL UNTIL TASKED (user, 2026-11-02: "all support
+ * aircraft needs to be virtual till tasked, then they spawn in at alt over the
+ * support module location"): the airframe is made now over the module at its
+ * flight height, engines on (FUNC(spawnAircraft)), and the squad in its cargo.
+ * After the insertion it RTBs to the module and is removed there (user,
+ * 2026-11-02: "egress then RTB"), virtual again. Going home uses no respawn.
  *
  * THE FLIGHT FOLLOWS THE INSERTION:
  *
  *   STATIC   low and slow at the static-line height, over the grid
- *   ASSAULT  helicopter at ASSAULT_CRUISE, for the grid
+ *   ASSAULT  helicopter nap of the earth, for the grid
+ *
+ * TACTICAL (user, 2026-11-01): out of the module at the support core's transit
+ * height - a helicopter nap of the earth, a fixed-wing at its transit
+ * altitude - and dark once clear of it. A static line comes to its height on
+ * the way in (FUNC(qrfTick), EFUNC(support,approachHeight)); it starts on that
+ * slope when the grid is close.
  *
  * THE SQUAD IS THE PLAYERS' SIDE (D59) and is made in the cargo seats; a
  * soldier the aircraft has no seat for is not made, and the RPT says how
@@ -39,20 +50,27 @@ if (isNull _logic) exitWith {};
 
 private _fnc_standDown = {
     params ["_why"];
-    private _left = _logic getVariable [QGVAR(left), -1];
-    if (_left >= 0) then {_logic setVariable [QGVAR(left), _left + 1, true]};
     _logic setVariable [QGVAR(abort), false, true];
     _logic setVariable [QGVAR(status), STATUS_IDLE, true];
     _logic setVariable [QGVAR(plan), [], true];
     [_logic, _why, "normal", _requester] call FUNC(say);
+    [_logic, "DECLINED", _why] call FUNC(threadState);
+    _logic setVariable [QGVAR(sortieThread), nil];
+    _logic setVariable [QGVAR(qrfJob), nil];
 };
 
 if (_logic getVariable [QGVAR(abort), false]) exitWith {["stood down"] call _fnc_standDown};
 
-private _alt = [_logic getVariable [QGVAR(staticAlt), 250], ASSAULT_CRUISE] select (_task isEqualTo TASK_ASSAULT);
+private _cls = _logic getVariable [QGVAR(cls), ""];
+private _alt = if (_task isEqualTo TASK_ASSAULT) then {
+    [_cls, FLY_TRANSIT] call EFUNC(support,flightHeight)
+} else {
+    [_cls, _logic getVariable [QGVAR(staticAlt), 250], (_logic getVariable [QGVAR(home), getPosATL _logic]) distance2D _pos] call EFUNC(support,approachHeight)
+};
 
 private _veh = [_logic, +_pos, _alt] call FUNC(spawnAircraft);
 if (!alive _veh) exitWith {["could not launch"] call _fnc_standDown};
+[_veh, _alt] call EFUNC(support,flyAt);
 
 private _crew = group driver _veh;
 _crew setBehaviour "CARELESS";
@@ -88,10 +106,21 @@ if (!isNil QEFUNC(adapter_alive,profileIgnore)) then {
 
 [_veh, _pos, ["NORMAL", "LIMITED"] select (_task isEqualTo TASK_STATIC)] call FUNC(moveTo);
 
+// DRONE ESCORTS (user, 2026-11-02: "based on lz security for helos and always
+// for fix wings"): a plane's always, a helicopter's only on a YELLOW or RED LZ
+// security - a `qrf` card has none - made beside it over the module.
+[_logic, _veh, _pos, format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id), -1]], _logic getVariable [QGVAR(side), west]] call FUNC(escortLaunch);
+
 _logic setVariable [QGVAR(vehicle), _veh, true];
 _logic setVariable [QGVAR(status), "inbound", true];
 _logic setVariable [QGVAR(ticking), true];
 [_logic, format ["airborne with %1 aboard, inbound %2", count _aboard, mapGridPosition _pos], "normal", _requester] call FUNC(say);
+// WHEELS UP and ON TASK in the asset's thread, if one was filed to it
+// (2026-11-01; WHEELS UP for a QRF tasked by message, step 7) - WHEELS UP
+// "INBOUND - ETA m:ss" to the link-up (user, 2026-11-01).
+private _eta = [[_veh, _pos] call EFUNC(support,etaTo)] call EFUNC(support,etaText);
+[_logic, CARD_WHEELS_UP, [mapGridPosition _veh, format [WHEELS_UP_INBOUND, _eta]] select (_eta isNotEqualTo "")] call FUNC(threadCard);
+[_logic, "IN_PROGRESS"] call FUNC(threadState);
 
 private _st = createHashMapFromArray [
     ["phase", "in"],
@@ -102,4 +131,7 @@ private _st = createHashMapFromArray [
     ["requester", _requester],
     ["until", CBA_missionTime + SORTIE_TIMEOUT]
 ];
+// Kept on the module (2026-11-09): MOVE, FRAGO, HOLD and ABORT re-aim it
+// (FUNC(qrfReply)).
+_logic setVariable [QGVAR(qrfState), _st];
 [FUNC(qrfTick), JUMP_INTERVAL, [_logic, _veh, _st]] call CBA_fnc_addPerFrameHandler;

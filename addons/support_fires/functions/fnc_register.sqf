@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts one read module on the board: its type, callsign and side on the logic,
  * public, and the logic in the broadcast ledger whose index is its asset id.
  *

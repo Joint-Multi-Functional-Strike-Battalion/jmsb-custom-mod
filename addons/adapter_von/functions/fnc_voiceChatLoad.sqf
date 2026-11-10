@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * onLoad of the game's talking popup (RscDisplayVoiceChat, RscDisplayVoiceChat.hpp):
  * under game voice the vanilla microphone is hidden and our chip says what the
  * player is talking on - "TX GHOST 1", "TX GLOBAL" - kept current every

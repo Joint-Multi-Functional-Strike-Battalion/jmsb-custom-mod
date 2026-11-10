@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a round will come down and when - computed ONCE, as it is fired.
  * Wind- and drag-free; the protected radius absorbs what that misses.
  *

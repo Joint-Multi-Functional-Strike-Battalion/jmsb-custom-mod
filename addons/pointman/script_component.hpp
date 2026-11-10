@@ -57,7 +57,7 @@
 // A waypoint with no name on it yet, when the grid could not be read.
 #define WP_UNNAMED "WP"
 // PICK ON MAP: the map claimed through the tacpad (EGVAR(tacpad,appMapClaim))
-// so the press is this app's, like TAC//SUPPORT's; left adds, right ends,
+// so the press is this app's, like the drones' GO TO; left adds, right ends,
 // and it ends itself after this long untouched.
 #define CLAIM "pointman"
 #define MOUSE_PICK 0
@@ -77,6 +77,21 @@
 #define TEXT_MIN_K 0.5
 #define ICON_SIZE_DOT 12
 #define DOT_MARKER "mil_dot"
-// What the tablet bar says while navigating (jmfsb_devices_fnc_deviceFacts).
-#define NAV_FORMAT "PM WP%1 %2 %3"
+// What the tablet bar says while navigating (jmfsb_devices_fnc_deviceFacts):
+// the waypoint and the short leg (FUNC(legText)).
+#define NAV_FORMAT "PM WP%1 %2"
+// The phone's PM cell's value: the waypoint and the short leg.
+#define CELL_FORMAT "%1 %2"
+// THE SHORT LEG (FUNC(legText); user, 2026-11-01: "no line no direction no
+// distance"): distance and one bearing, mils for a player whose map tools
+// read mils (jmfsb_maptools_angleUnit), degrees otherwise.
+#define LEG_FORMAT "%1 %2"
+#define LEG_DEG_FORMAT "%1°"
+#define LEG_MIL_FORMAT "%1 MIL"
+#define LEG_UNIT_MIL "mil"
+#define LEG_DEG_TURN 360
+#define LEG_MIL_TURN 6400
+#define LEG_DEG_DIGITS 3
+#define LEG_MIL_DIGITS 4
+#define LEG_NO_FIX "NO FIX"
 #define NOTIFY_TITLE "POINT MAN"

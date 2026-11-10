@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Re-checks line of sight for one slice of the candidates. Called every
  * VIS_TICK; the slices rotate, so each target is refreshed every
  * VIS_TICK * VIS_SLICES seconds and no single frame checks them all.

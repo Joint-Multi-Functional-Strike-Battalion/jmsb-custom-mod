@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, every tick, per call:
  * - a call marked for a FLASH bump ends when its warning time is up, and the
  *   FLASH dial is made again into the freed slot;

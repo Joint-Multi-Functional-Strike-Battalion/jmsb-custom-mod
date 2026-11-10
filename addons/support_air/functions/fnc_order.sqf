@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The server end of an order: reached by remoteExec from FUNC(task), it
  * checks who sent it and hands it to the asset type that flies it.
  *
@@ -60,7 +60,6 @@ private _args = [_logic, _task, _at, _prm, _requester];
 switch (_logic getVariable [QGVAR(kind), ""]) do {
     case KIND_CAS: {_args call FUNC(casOrder)};
     case KIND_TRANSPORT: {_args call FUNC(transportOrder)};
-    case KIND_LOGISTICS: {_args call FUNC(dropOrder)};
     case KIND_QRF: {_args call FUNC(qrfOrder)};
     default {WARNING_1("order: %1 is not an air module",_logic)};
 };

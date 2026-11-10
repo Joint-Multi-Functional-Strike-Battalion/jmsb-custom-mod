@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a panel actually goes: its default, clamped into the current safe zone
  * and pushed clear of the three regions the design says must never be covered -
  * or, on a device that handed over a layout table, its fixed place there.

@@ -1,7 +1,8 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * The EachFrame guard that takes the boxes and the compass down when something
+ * Author: YonV
+ * The EachFrame guard that takes the boxes, the compass and the LZs and DZs
+ * (2026-11-02) down when something
  * covers the world view - the map, the tablet or any other dialog.
  *
  * WHY NOT IN FUNC(draw). FUNC(draw) is the Draw3D handler, and Arma does not
@@ -27,10 +28,11 @@
  * Public: No
  */
 
-if (GVAR(shown) isEqualTo 0 && {!GVAR(compassShown)}) exitWith {};
+if (GVAR(shown) isEqualTo 0 && {!GVAR(compassShown)} && GVAR(zonesShown) isEqualTo 0) exitWith {};
 
 private _covered = visibleMap || {dialog} || {diag_frameNo - GVAR(drawFrame) > DRAW_FRAME_GAP};
 if (!_covered) exitWith {};
 
 [[]] call FUNC(drawBoxes);
 [false] call FUNC(drawCompass);
+[false] call FUNC(drawZones);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * HIDE ALL, and the SHOW ALL that undoes it. The one panel the master switch
  * does not take with it.
  *

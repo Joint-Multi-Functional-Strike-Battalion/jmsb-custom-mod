@@ -1,13 +1,15 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts an aircraft down near a point.
  *
- * A HELICOPTER lands on an invisible pad set on the clearest patch within
- * LZ_SEARCH of the point - the engine lands on the nearest pad, and without
- * one picks its own spot, which is the roof the section is standing beside.
- * The mode is the engine's: "GET IN" waits engine running for boarders,
- * "GET OUT" for passengers leaving, "LAND" shuts down.
+ * A HELICOPTER lands on the clearest patch within LZ_SEARCH of the point,
+ * flown in and put down by this addon's own flight control (2026-11-05,
+ * FUNC(heliTake) - modelled on how Simplex Support Services pilots a
+ * helicopter; no code of it used): a hover HELI_LAND_HOVER m over the pad,
+ * then a damped touchdown. The mode says what the engine does once it is
+ * down: "GET IN" and "GET OUT" keep it running for boarders and passengers
+ * leaving, "LAND" shuts down. It stays put until its next order.
  *
  * A FIXED-WING AIRCRAFT goes to the nearest airfield to the point - the
  * map's own, or a carrier-style dynamic one - and lands there. Only a synced
@@ -18,6 +20,9 @@
  * 0: The aircraft <OBJECT>
  * 1: Where, ATL <ARRAY>
  * 2: Landing mode for a helicopter <STRING> (optional, default "LAND")
+ * 3: A helicopter's pad is moved clear of anything in its rotor's way
+ *    (FUNC(clearSpot), 2026-11-02) - false for a stand on a deck or a roof
+ *    <BOOL> (optional, default true)
  *
  * Return Value:
  * Landing ordered <BOOL>
@@ -28,22 +33,30 @@
  * Public: No
  */
 
-params [["_veh", objNull, [objNull]], ["_pos", [], [[]]], ["_mode", "LAND", [""]]];
+params [["_veh", objNull, [objNull]], ["_pos", [], [[]]], ["_mode", "LAND", [""]], ["_clear", true, [true]]];
 
 if (!alive _veh || {_pos isEqualTo []}) exitWith {false};
 
-if (_veh isKindOf "Helicopter") exitWith {
+if ([_veh] call EFUNC(support,isRotary)) exitWith {
     private _lz = _pos findEmptyPosition [0, LZ_SEARCH, typeOf _veh];
     if (_lz isEqualTo []) then {_lz = +_pos};
 
-    private _old = _veh getVariable [QGVAR(pad), objNull];
-    if (!isNull _old) then {deleteVehicle _old};
-    private _pad = createVehicle [LZ_PAD, _lz, [], 0, "CAN_COLLIDE"];
-    _veh setVariable [QGVAR(pad), _pad];
+    // A CLEAR PAD FOR THE ROTOR (2026-11-02, the user's RPT 07:37:53: RAVEN's
+    // rotor wrecked on the ground, nothing hit it): findEmptyPosition fits the
+    // body, not the rotor disc. A pad with something standing into it is moved
+    // to the nearest clear spot within LZ_SEARCH, said in the RPT
+    // (FUNC(clearSpot)); none clear - the pad stays, said too.
+    if (_clear) then {
+        ([_veh, _lz, 0, LZ_SEARCH] call FUNC(clearSpot)) params ["_spot", "_blockers"];
+        if (_blockers isEqualTo []) exitWith {};
+        if (_spot isEqualTo []) exitWith {
+            WARNING_3("'%1' lands at %2 with %3 in its rotor's way - no clear spot near",typeOf _veh,mapGridPosition _lz,_blockers joinString ", ");
+        };
+        WARNING_4("'%1' landing at %2 blocked for the rotor by %3 - moved %4 m",typeOf _veh,mapGridPosition _lz,_blockers joinString ", ",round (_lz distance2D _spot));
+        _lz = _spot;
+    };
 
-    [_veh, _lz, "NORMAL"] call FUNC(moveTo);
-    _veh land _mode;
-    true
+    [_veh, _lz, HELI_LAND_HOVER, true, _mode isNotEqualTo "LAND", HELI_APPROACH_SPEED, format ["landing to %1", toLower _mode]] call FUNC(heliTake)
 };
 
 // THE NEAREST AIRFIELD. Static airports are numbered by the world config:

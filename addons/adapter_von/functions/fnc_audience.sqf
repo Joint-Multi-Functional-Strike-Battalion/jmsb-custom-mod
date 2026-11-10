@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "audience": every player VON lets hear a speaker on a net's
  * channel - so each can set his volume, including those who must hear him
  * at 0. Group: the players of his Arma group (with a set or not); Vehicle:

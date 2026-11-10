@@ -68,7 +68,7 @@ GVAR(planSquad) = createHashMap;    // "<SQUAD>|<kind>" -> net, from jmfsb_pac_f
 
 // SERVER STATE.
 GVAR(calls) = createHashMap;        // call id -> call hashmap
-GVAR(slots) = [];                   // CALL_SLOTS call ids, "" = free
+GVAR(slots) = [];                   // call ids per slot, "" = free: CALL_SLOTS, more on the voice server (FUNC(srvSlot))
 for "_i" from 1 to CALL_SLOTS do {GVAR(slots) pushBack ""};
 GVAR(callbacks) = [];               // [[from, to, requestedAt, state], ...]
 GVAR(joined) = createHashMap;       // uid -> nets the adapter has him joined to

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A patient's name, dead or alive. The engine's `name` of a corpse can come
  * back as an error string; ACE keeps the name on the unit for exactly this, so
  * its getName is asked when it is loaded.

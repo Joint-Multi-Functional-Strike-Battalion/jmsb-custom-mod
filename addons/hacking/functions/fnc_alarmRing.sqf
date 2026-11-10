@@ -13,8 +13,8 @@ Description:
     the terminal on purpose - an alarm you can set on a device but never hear
     from it is a clock with no bell.
 
-    The ring is a beep on a slow loop plus the blinking row the screen paints
-    from GVAR(alarmRingUntil), and it gives up on its own after SCN_ALARM_RING
+    The ring is a beep on a slow loop until GVAR(alarmRingUntil) (the tacpad
+    TIMER reads it too), and it gives up on its own after SCN_ALARM_RING
     seconds because an alarm nobody dismisses has still done its job. A second
     alarm landing mid-ring just pushes the deadline back; there is one beeper,
     not one per alarm.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The map markers a grid field can be filled from, nearest first.
  *
  * A location on a report is nearly always somewhere already marked - the LZ, the

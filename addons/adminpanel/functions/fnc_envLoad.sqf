@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The TIME / WEATHER dialog's onLoad: fills every combo, picks in each the
  * value the world has now, paints the dialog from the tacpad's scheme the way
  * FUNC(styleMessage) paints the message box, and starts the readout.

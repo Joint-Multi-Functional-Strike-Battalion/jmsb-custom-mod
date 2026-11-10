@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, every SERVER_TICK_S:
  * - the PAC plan re-read; a TEAM net in RF for every group with a player in
  *   it and no net of the plan;

@@ -71,7 +71,7 @@ class CfgVehicles {
                 expression = QUOTE(_this setVariable [ARR_2('watts',_value)]);
             };
             // COUNTER-BATTERY (user, 2026-10-25): PLAYER-CREWED guns only. The
-            // players' virtual artillery (TAC//SUPPORT) is the exception, and
+            // players' virtual artillery (support batteries) is the exception, and
             // AI artillery never counts.
             class cbChance: Edit {
                 property = QGVAR(cbChance);
@@ -183,7 +183,7 @@ class CfgVehicles {
                 "Barrage Rounds Max - Most shells",
                 "Radio Watts Watched - Transmit power at or above which a radio can be direction-found",
                 "",
-                "Counter-battery - player-crewed guns only; the players' virtual artillery (TAC//SUPPORT) and AI artillery never:",
+                "Counter-battery - player-crewed guns only; the players' virtual artillery (support batteries called by message) and AI artillery never:",
                 "Chance (%) - 0 turns it off. Rounds To Fix and Fix Window - how much fire the enemy radar needs",
                 "Delay Min / Max (s) - when the answer lands, on where the guns were. Rounds, Spread - the answer",
                 "Cooldown (s) - per gun. Warning (1/0) - INCOMING to the gun crew",

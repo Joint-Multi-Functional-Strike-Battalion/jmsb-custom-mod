@@ -29,6 +29,13 @@
 // one that does not move is a photograph of one.
 #define MEDIC_REFRESH 1
 
+// THE STATE BLOCK down a list row's left edge (user, 2026-11-01: "the color on
+// the medical app on the left for state needs to be bigger"): the row's full
+// height and this many screen pixels wide - it was a 4 px bar - with this gap
+// between it and the row's first column.
+#define STATE_BLOCK_PX 16
+#define STATE_BLOCK_GAP_PX 6
+
 // The map control on the host display, and the control type to look for when a
 // device host puts its map somewhere else (CT_MAP_MAIN).
 #define MAP_IDC 51
@@ -92,6 +99,12 @@
 #define BLOOD_TYPES ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]
 #define RHYTHM_SINUS 0
 #define RHYTHMS ["SINUS", "ASYSTOLE", "VF", "PULSELESS VT", "VT", "PEA"]
+// The watch HUD's EKG trace per rhythm, in RHYTHMS order (FUNC(watchTrace),
+// jmfsb_watch's TRACE_RHYTHMS); PEA draws its complexes at this rate.
+#define TRACE_KINDS ["sinus", "flat", "vf", "vt", "vt", "pea"]
+#define PEA_TRACE_RATE 40
+// The pulse pressure (systolic - diastolic, mmHg) that draws a full pleth.
+#define TRACE_PULSE_FULL 40
 // ACM_disability_SplintStatus per part: none, SAM splint on, SAM splint wrapped.
 #define SPLINT_NONE 0
 #define SPLINT_WRAPPED 2
@@ -113,6 +126,34 @@
 // The server takes a hand check only from a medic this close to the patient
 // (review R1), metres - ACE's treatment reach with room for a vehicle seat.
 #define CHECK_RANGE 10
+// The NEARBY tab: men within this many metres, not in the medic's squad.
+#define NEARBY_RANGE 10
+#define TAB_SQUAD "squad"
+#define TAB_NEARBY "nearby"
+#define MEDIC_TABS [[TAB_SQUAD, "SQUAD"], [TAB_NEARBY, "NEARBY"]]
+
+// The watch HUD's medical profile (docs/DESIGN_WATCH_HUD.json, 2026-11-07):
+// any man within WATCH_REACH, for anyone in AiTR goggles; six slots, the
+// device's 3 x 2 tiles (user, 2026-11-08). SHARE (F2) puts a patient on every
+// medic near (jmfsb_watch_fnc_slotShare).
+#define WATCH_PROFILE "medical"
+#define WATCH_REACH 5
+#define WATCH_ORDER 10
+#define WATCH_SLOTS 6
+#define AITR_ICON "\a3\ui_f\data\igui\cfg\actions\heal_ca.paa"
+// ACE's triage card: 1 immediate, 2 delayed, 3 minimal, 4 expectant - the
+// unit's ACM board colours (T4 grey on the HUD, black on the card).
+#define ACEV_TRIAGE "ace_medical_triageLevel"
+#define TRIAGE_LEVELS [1, 2, 3, 4]
+#define TRIAGE_COLOURS [[0.9, 0.2, 0.15, 1], [0.95, 0.8, 0.1, 1], [0.3, 0.75, 0.3, 1], [0.55, 0.55, 0.55, 1]]
+// Alerts (design medical.alerts): a tourniquet on this many seconds, SpO2
+// under this, a MIST older than this many seconds.
+#define TQ_ALERT 600
+#define SPO2_ALERT 90
+#define SPO2_FULL 99
+#define MIST_STALE 300
+#define MIST_TEMPLATE "mist"
+#define MIST_NET "MEDICAL.mist"
 #define SERVER_OWNER 2
 
 // ---------------------------------------------------------------------------

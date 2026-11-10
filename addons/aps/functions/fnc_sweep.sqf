@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server tick: every vehicle in the world the system has not looked at yet
  * is fitted (or found to carry nothing) - the ones placed in the editor on
  * the first tick, everything ALiVE spawns after that within APS_SWEEP.

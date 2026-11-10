@@ -249,8 +249,13 @@ switch (_view) do {
         // Attendance, all time - the server totals it from the sessions when it
         // publishes, so the client never sees the sessions themselves. It is on
         // the published row, so it reads the same for a man you tapped.
-        _time params [["_mins", 0], ["_joins", 0]];
-        ["TIME ON", format ["%1h %2m  ·  %3 session%4", floor (_mins / 60), _mins mod 60, _joins, ["s", ""] select (_joins isEqualTo 1)], _ink] call _fnc_row;
+        // TIME ON is the ops server's - the only time that counts; training
+        // and dev are tracked under it (FUNC(rosterTotals)).
+        _time params [["_mins", 0], ["_joins", 0], ["_trMins", 0], ["_trJoins", 0], ["_devMins", 0], ["_devJoins", 0]];
+        {
+            _x params ["_label", "_m", "_j"];
+            [_label, format ["%1h %2m  ·  %3 session%4", floor (_m / 60), _m mod 60, _j, ["s", ""] select (_j isEqualTo 1)], _ink] call _fnc_row;
+        } forEach [["TIME ON", _mins, _joins], ["TRAINING", _trMins, _trJoins], ["DEV", _devMins, _devJoins]];
         _y = _y + _rowH * 0.5;
 
         [_body, [_pad, _y, _w - 2 * _pad, _rowH], format ["UPDATED %1", _updated], _dim, TEXT_LABEL, false, "right"] call jmfsb_tacpad_fnc_drawText;

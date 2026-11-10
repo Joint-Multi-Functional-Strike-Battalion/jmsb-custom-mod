@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the local player's current radio frequency where everyone's ECOTI net
  * card can read it (FUNC(targetCard)). The TAC//PAD publishes his channel and
  * its name but not the frequency, and no radio mod answers for another

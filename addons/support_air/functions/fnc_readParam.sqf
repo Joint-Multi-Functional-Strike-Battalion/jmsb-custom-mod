@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One value out of TAC//SUPPORT's parameter array, read the way the stepper
  * that wrote it drew it.
  *

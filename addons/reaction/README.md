@@ -29,7 +29,7 @@ it, nobody else. Same as `#jmfsb react`.
 AI arty", then "player side virtual are the exception"). A player-crewed gun
 firing counts (ACE's `ace_firedPlayerVehicle`, raised only on the player
 gunner's machine, on a vehicle with an artillery computer). The players'
-virtual artillery - TAC//SUPPORT's batteries - and AI artillery never do.
+virtual artillery - the support batteries - and AI artillery never do.
 After *Rounds To Fix* inside the *Fix Window* the enemy rolls *Chance*; a hit
 answers *Delay Min-Max* seconds later on where the guns were at the fix - the
 hostile commander's guns if one can be asked, else a virtual 155 mm barrage,
@@ -58,6 +58,12 @@ per call. An AI gun firing goes to `cbRadar` from the machine that holds the
 gun. The server's own sources (drones, DF fixes, a remote hack's failure)
 call `roll` directly.
 
+**Without ALiVE (2026-11-02)** the mission's enemy answers a MAJOR and a
+counter-battery (virtual barrage, drone if the UAS addon is loaded), the town's
+hostility leaves the roll as set, and "has your position" comes from the
+hostile side's own `knowsAbout` the man (3 or better) instead of ALiVE's COP.
+Built, not seen in game.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -79,7 +85,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 `jmfsb_moduleReaction`, category jmfsb_modules
 
-Placing this module turns on enemy reaction. Without it, the system is off.<br>Hack Fail Chance (%) - Chance an intrusion fails outright Detection Chance (%) - Chance a failure, a drone sighting or a transmission is noticed Barrage Rounds Min - Fewest shells a major response puts down Barrage Rounds Max - Most shells Radio Watts Watched - Transmit power at or above which a radio can be direction-found<br>Counter-battery - player-crewed guns only; the players' virtual artillery (TAC , , ,
+Placing this module turns on enemy reaction. Without it, the system is off.<br>Hack Fail Chance (%) - Chance an intrusion fails outright Detection Chance (%) - Chance a failure, a drone sighting or a transmission is noticed Barrage Rounds Min - Fewest shells a major response puts down Barrage Rounds Max - Most shells Radio Watts Watched - Transmit power at or above which a radio can be direction-found<br>Counter-battery - player-crewed guns only; the players' virtual artillery (support batteries called by message) and AI artillery never: Chance (%) - 0 turns it off. Rounds To Fix and Fix Window - how much fire the enemy radar needs Delay Min / Max (s) - when the answer lands, on where the guns were. Rounds, Spread - the answer Cooldown (s) - per gun. Warning (1/0) - INCOMING to the gun crew
 
 <details><summary>17 attributes</summary>
 

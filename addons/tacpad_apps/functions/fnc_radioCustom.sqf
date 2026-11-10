@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The custom nets the voice server publishes (jmfsb_voice_fnc_customList;
  * user, 2026-10-22: "allow rtos to add custom channels"), as the RADIO board
  * reads them - once for the MANAGE tab and once for the redraw key. A voice

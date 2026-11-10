@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The debug overlay, on the map's Draw event: a line between every pair of
  * directly linked nodes, red at quality 0 to green at 1. The server publishes
  * the links (jmfsb_rf_debugEdges) only while the debug setting is on; the

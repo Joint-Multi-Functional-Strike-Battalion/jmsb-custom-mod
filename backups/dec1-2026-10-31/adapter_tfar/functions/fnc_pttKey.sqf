@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The PTT keys while other modifiers are held. A CBA keybind fires only on its
  * exact modifiers, so a PTT on CapsLock would not key while sprinting (Shift)
  * - TFAR hooks the mission display's keys for its own PTT for the same reason

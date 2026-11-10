@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - CALLS, the CONTACTS panel: everyone the voice API lists, with the
  * role tags it gives them, whether he is in reach on DATA, and what can be done:
  *
@@ -93,7 +93,7 @@ if (_first > 0) then {
         case ECHO_LIVE: {"LIVE"};
         default {"READY"};
     };
-    [_body, [_left + _w * 0.5, _cy, _w * 0.16, _rowH], _state, [_ink, _accent] select _on, TEXT_LABEL, true] call EFUNC(tacpad,drawText);
+    [_body, [_left + _w * 0.5, _cy, _w * 0.16, _rowH], _state, [_ink, _accent] select _on, TEXT_BODY, true] call EFUNC(tacpad,drawText);
     private _fnc_echo = {
         [([] call EFUNC(adapter_livekit,echoState)) isEqualTo ECHO_IDLE] call EFUNC(adapter_livekit,echo);
         {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
@@ -117,7 +117,8 @@ if (_first > 0) then {
         case (_busy && !_mine): {"BUSY"};
         default {"REACH"};
     };
-    [_body, [_left + _w * 0.5, _cy, _w * 0.16, _rowH], _reachWord, ([_ink, _accent] select (_reachWord isNotEqualTo "REACH")), TEXT_LABEL, true] call EFUNC(tacpad,drawText);
+    // A state is a value: never under the body size (tablet review 2026-11-01, R1).
+    [_body, [_left + _w * 0.5, _cy, _w * 0.16, _rowH], _reachWord, ([_ink, _accent] select (_reachWord isNotEqualTo "REACH")), TEXT_BODY, true] call EFUNC(tacpad,drawText);
 
     private _fnc_press = {
         params ["_ctrl"];
@@ -132,13 +133,13 @@ if (_first > 0) then {
 
     switch (true) do {
         case (_mine): {
-            [_body, [_act1, _cy, _btnW, _rowH], "ON CALL", _ink, TEXT_LABEL, true, "center"] call EFUNC(tacpad,drawText);
+            [_body, [_act1, _cy, _btnW, _rowH], "ON CALL", _ink, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
         };
         case (!_reach || _busy): {
             [_body, [_act1, _cy, _btnW, _rowH], "CALL BACK", "line", _fnc_press, ["back", _unit]] call FUNC(appPageButton);
         };
         case (_callId isNotEqualTo "" && !_canAdd): {
-            [_body, [_act1, _cy, _btnW, _rowH], "OWNER ADDS", _muted, TEXT_LABEL, true, "center"] call EFUNC(tacpad,drawText);
+            [_body, [_act1, _cy, _btnW, _rowH], "OWNER ADDS", _muted, TEXT_BODY, true, "center"] call EFUNC(tacpad,drawText);
         };
         default {
             if (_callId isNotEqualTo "") then {
@@ -155,6 +156,8 @@ private _more = (count _rows) - _fits;
 private _footY = _top + _rowH * 1.2 + (((count _rows) min _fits) + _first) * _step + _rowH * 0.3;
 [
     _body, [_left + _pad, _footY, _w - 2 * _pad, _rowH],
-    format ["%1While a call is live, + ADD rings that person into it. ADD TO CALL on the map or the squad list is not built.", ["", format ["+%1 more - search to narrow. ", _more]] select (_more > 0)],
+    // No "not built" on the screen (tablet review 2026-11-01, 2.1): what is
+    // missing is the README's to say.
+    format ["%1While a call is live, + ADD rings that person into it.", ["", format ["+%1 more - search to narrow. ", _more]] select (_more > 0)],
     _muted, TEXT_LABEL
 ] call EFUNC(tacpad,drawText);

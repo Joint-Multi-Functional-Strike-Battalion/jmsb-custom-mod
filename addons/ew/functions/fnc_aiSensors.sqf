@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the enemy AI's DF sensors this tick (DESIGN_EW "Both ways", AI EW
  * BASIC: "ES reacts to fixes on player transmitters"). RF counts no AI sets
  * (jmfsb_rf_aiNodes is off and no adapter registers them), so the AI does not

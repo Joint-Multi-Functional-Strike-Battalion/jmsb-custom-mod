@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Receives an alert on the client, keeps it, and says it out loud once.
  *
  * Kept in a list rather than only shown, because the two jobs are different: a

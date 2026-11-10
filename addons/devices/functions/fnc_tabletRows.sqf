@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet's screen cut into its rows, from the design's numbers
  * (docs/DESIGN_TABLET.md, "Layout"): the device bar, the notification line, the
  * live tiles with the rule under them, the map area and the net row, top to

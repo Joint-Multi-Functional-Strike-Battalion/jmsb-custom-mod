@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A line of text on the map at a world position - drawIcon with nothing to
  * draw but the text, shadowed so it reads over contour lines and forest.
  *

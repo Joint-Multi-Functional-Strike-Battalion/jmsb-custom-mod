@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every machine: an FPV class's wrecks are taken away as soon as they blow
  * (FUNC(fpvWreck)). Our IED Pelican from preInit, every class on Drongo's
  * Drone Tweaks' FPV list once DDT is ready. A Killed handler fires where the

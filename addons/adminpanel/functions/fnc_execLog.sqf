@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a line in the RETURN panel beside the code box.
  *
  * THIS IS THE HALF THE DEBUG CONSOLE WAS MISSING. Code went out and a

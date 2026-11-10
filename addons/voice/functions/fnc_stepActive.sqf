@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Steps the active net left or right through the local player's nets (the
  * device arrows, numpad 0 / .), skipping a net the adapter cannot select.
  *

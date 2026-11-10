@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Declines a call ringing for the local player (F4). The caller is told.
  *
  * Arguments:

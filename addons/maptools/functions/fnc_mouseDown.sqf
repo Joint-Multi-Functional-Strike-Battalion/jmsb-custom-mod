@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A press on a map with a tool running - the one place a click becomes a
  * measurement. Left button only, and never with a modifier held: shift, ctrl
  * and alt clicks are the game's own (waypoints, drawn lines).
@@ -9,7 +9,9 @@
  *               drag (FUNC(mouseUp)), is the other end
  *   PROTRACTOR  places the centre; the arm follows the cursor until the next
  *               press locks it; the press after that places a new centre
- *   MARK        drops a marker here (FUNC(mark))
+ *   MARK        opens the player's marker system here (FUNC(markerOpen)),
+ *               grid and time as the text; on a marker of his own, deletes
+ *               it (FUNC(markerDelete))
  *   VIEWSHED    works out line of sight from here (FUNC(viewshedStart))
  *   ROUTE       adds a waypoint
  *   RINGS       places the rings' centre
@@ -62,8 +64,19 @@ switch (GVAR(tool)) do {
             [_pos, -1]
         };
     };
+    // ONE PLACEMENT PATH WITH THE DOUBLE-CLICK (user, 2026-11-01): the
+    // player's marker system opens at the press - the card, ACE's dialog or
+    // ALiVE's - so a MARK is a real marker on the channel he picks. A press
+    // on a marker of his own deletes it, as the game's map does on Delete.
     case TOOL_MARK: {
-        [_pos] call FUNC(mark);
+        (ctrlMapMouseOver _map) params [["_kind", ""], ["_over", ""]];
+        private _deleted = false;
+        if (_kind isEqualTo "marker") then {
+            _deleted = [_over] call FUNC(markerDelete);
+        };
+        if (!_deleted) then {
+            [_map, _pos, [_pos] call FUNC(markLabel), [MARKER_CHANNEL_LOCAL, MARK_CHANNEL] select GVAR(markShare)] call FUNC(markerOpen);
+        };
     };
     case TOOL_VIEWSHED: {
         [_pos] call FUNC(viewshedStart);

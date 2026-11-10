@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_setState: changes a node's state. Keys (all optional): on, tx, relay,
  * activeNet, monitorNet, emcon (0..3), keys - [[net id, key], ...] to
  * replace the key the node holds for nets already in its fill - and data -

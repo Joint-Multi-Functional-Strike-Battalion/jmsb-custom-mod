@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One of the six keys printed on the tablet frame was pressed - clicked with
  * the mouse (FUNC(keyButtons)) or pressed on the numpad (FUNC(keyDown)):
  *
@@ -14,8 +14,9 @@
  *   on the tablet should move the live tiles";
  *   jmfsb_tacpad_apps_fnc_tilePageStep) when the band has more than one, and
  *   with one page they scroll an open screen up / down (FUNC(scrollScreen)).
- *   They no longer step the active net: the net chips are buttons and nets
- *   1-5 have their keys.
+ *   They no longer step the active net: the net chips are buttons, numpad
+ *   1-4 pick the chips of the page shown, and the net row's own < > buttons
+ *   turn the net pages (FUNC(tabletNets), 2026-11-07).
  *
  * Arguments:
  * 0: Key index - 0..3 = F1..F4, 4 = LEFT, 5 = RIGHT <NUMBER>

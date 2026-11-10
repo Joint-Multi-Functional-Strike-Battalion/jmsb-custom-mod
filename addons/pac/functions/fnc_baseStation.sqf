@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: puts a BASE STATION at a staging zone or a patrol base (user,
  * 2026-10-20: "use our patrol base as a relay", "a staging zone or patrol base
  * as a sat uplink"). It is an RF node of the "base" profile (VHF, UHF and SAT;

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The stick split across the passes, evenly and in squad order (user,
  * 2026-10-30: "if the window is small drop 1/2 team first pass then the plane
  * circles around for second pass").

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Drops every waypoint and stops navigating.
  *
  * Arguments:

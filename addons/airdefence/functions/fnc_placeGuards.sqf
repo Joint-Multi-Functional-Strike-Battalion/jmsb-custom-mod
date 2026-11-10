@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts infantry groups on the ground around a site, holding where they stand.
  *
  * Placement only - what happens to them afterwards (left live, or handed to

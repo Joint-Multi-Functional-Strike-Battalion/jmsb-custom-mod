@@ -18,6 +18,7 @@ PREP(assetAvailable);
 PREP(typeList);
 PREP(preview);
 PREP(overlay);
+PREP(reach);
 
 // Shared reads, so the row, the refusal and the server cannot disagree about
 // what an asset has left or whether it is free.
@@ -61,6 +62,55 @@ PREP(fireVirtual);
 PREP(aimPoint);
 PREP(virtualShot);
 PREP(virtualRound);
+// The scatter of a round and of a salvo's aim, an ellipse along the line of
+// fire, and the aiming error each correction takes down (2026-11-02).
+PREP(scatter);
+PREP(aimError);
+PREP(layHeight);
+PREP(ammoKind);
+
+// Adjust fire (TAC//SUPPORT v2 step 6): an observer's corrections on a held
+// battery, through the same order path and sender checks.
+PREP(adjustFor);
+PREP(adjustNext);
+PREP(adjustHold);
+
+// Call for fire by message (2026-11-01, DESIGN_SUPPORT_MESSAGING step 6): the
+// support core's server hooks - whose battery, the card, the observer's
+// follow-ups - and the thread the battery answers in: its salvos, SHOT and
+// SPLASH, its prompts with their D9 waits, its stand-down.
+PREP(side);
+PREP(srvThread);
+PREP(threadReply);
+// A new mission or a FRAGO in the battery's thread, and its STATUS
+// (docs/DESIGN_MESSAGE_TEMPLATES.md, 2026-11-09).
+PREP(threadRetask);
+PREP(status);
+PREP(threadFire);
+PREP(threadVolley);
+PREP(threadCard);
+PREP(threadPrompt);
+PREP(threadEnd);
+PREP(threadTot);
+// TARGET SHAPE, METHOD OF FIRE, RECORD AS TARGET and the stock in the
+// battery's words (2026-11-02). The recorded target's marker is hidden from
+// other sides by FUNC(targetLocal), from the server by remoteExec (JIP).
+PREP(threadShape);
+PREP(threadMethod);
+PREP(stockWords);
+PREP(targetPrefix);
+PREP(record);
+PREP(targetLocal);
+// The SHOT and SPLASH cue on the caller's machine (FUNC(cueLocal) by
+// remoteExec from the server), and the composer's preview of a call for fire
+// before SEND - the support core's "cardPreview" hook (2026-11-02).
+PREP(cue);
+PREP(cueLocal);
+PREP(cardPreview);
+// Cruise missiles and loitering munitions by the same card (2026-11-01): one
+// launch, SHOT (and SPLASH for a missile), the BDA prompt, the D9 waits.
+PREP(threadStrike);
+PREP(threadLaunch);
 
 // Cruise missiles: a real projectile flown along a route.
 PREP(launchCruise);
@@ -71,3 +121,6 @@ PREP(launchLoiter);
 PREP(loiterOne);
 PREP(loiterTick);
 PREP(pickTarget);
+
+// The live impact areas, for the JFO watch HUD
+PREP(impactSet);

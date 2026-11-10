@@ -1,9 +1,11 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a dial. CALL NEEDS REACH ON DATA: a callee the caller cannot reach
  * on DATA is refused (no route), one in another call is busy; the caller is
- * told about both, with CALL BACK offered. The rest ring, in a free slot.
+ * told about both, with CALL BACK offered. The rest ring, in a free slot
+ * (FUNC(srvSlot): on the voice server there is always one - no limit to the
+ * number of calls, user 2026-11-01; game VON has its eight).
  * With every slot taken, a FLASH call from an RTO, HQ or admin bumps the
  * oldest ROUTINE call: that call hears the priority warning for the bump
  * warning time, then ends, and this dial is made again (fnc_srvCallTick).
@@ -52,7 +54,7 @@ if (_busy isNotEqualTo []) then {
 };
 if (_ok isEqualTo []) exitWith {};
 
-private _slot = GVAR(slots) find "";
+private _slot = [] call FUNC(srvSlot);
 if (_slot >= 0) exitWith {
     [_callId, _caller, [_caller], _ok, _priority, _slot] call FUNC(srvStart);
     [] call FUNC(srvPublish);

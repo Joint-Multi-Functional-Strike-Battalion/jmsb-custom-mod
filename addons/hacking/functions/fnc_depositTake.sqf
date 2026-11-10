@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The items the server banked come out of the man's inventory, on the machine
  * where he is local (FUNC(srvDeposit)). Taken only from the server (review
  * S7): a client cannot empty another man's pockets by asking.

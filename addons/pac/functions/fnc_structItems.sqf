@@ -118,7 +118,7 @@ switch (_base) do {
             ["arsenalMode", "what adds to the common arsenal - role: the role's lists | skills: the arsenal:<name> skill effects (qual_<name> lists) | both"],
             ["savedLoadouts", "kept loadouts per player per role; 0 turns them off"],
             ["autoPromote", "1 promotes a man the moment he is over the points for the next rank; 0 lists him on the dashboard for a human to do it"],
-            ["newPlayers", "auto: a record is seeded the moment somebody first connects | apply: they fill in an application on the PAC tile and an admin accepts them"]
+            ["newPlayers", "auto: a record is seeded the moment somebody first connects | apply: they fill in an application in the tacpad's PAC app and an admin accepts them"]
         ];
         private _out = createHashMap;
         {

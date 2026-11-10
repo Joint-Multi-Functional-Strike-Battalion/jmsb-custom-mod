@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every squad callsign a custom net can be given (user, 2026-10-22: "allow
  * rtos to add custom channels"): the distinct callsigns of the voice contacts
  * and the player's own group, upper-cased and sorted - the form a custom

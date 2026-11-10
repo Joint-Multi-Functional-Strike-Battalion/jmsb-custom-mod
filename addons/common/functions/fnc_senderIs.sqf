@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether the remote-executed call now running came from the machine
  * that owns this unit - so a caller, requester or author passed in the
  * arguments is the sender himself and not someone he names (review S5, R1).

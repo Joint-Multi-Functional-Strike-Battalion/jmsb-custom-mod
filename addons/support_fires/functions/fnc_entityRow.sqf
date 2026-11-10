@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One module as one support-page row, in the core's shape
  * (addons/support/README.md):
  *

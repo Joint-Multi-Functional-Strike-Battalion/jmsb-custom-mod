@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Lays the walking view out for one device on one edge: the frame, the
  * ground, the status cells, the map, the squad list, the talking
  * chip and the call strip, from the screen rectangle FUNC(overlayLayout)
@@ -58,6 +58,12 @@ private _call = _display displayCtrl IDC_OVERLAY_CALL;
 _call ctrlSetPosition (_rows get "call");
 _call ctrlSetFontHeight _textH;
 _call ctrlSetBackgroundColor COLOUR_BAR_SCRIM;
+
+// The quick-answer strip (2026-11-06), on the call strip's scrim.
+private _ask = _display displayCtrl IDC_OVERLAY_ASK;
+_ask ctrlSetPosition (_rows get "ask");
+_ask ctrlSetFontHeight _textH;
+_ask ctrlSetBackgroundColor COLOUR_BAR_SCRIM;
 
 // The status cells: the row's type size; FUNC(overlayDraw) fits each cell's
 // text under it by measure every tick.

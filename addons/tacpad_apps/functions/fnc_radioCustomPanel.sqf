@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The RTO NETS block under MANAGE's NETS panel (user, 2026-10-22: "allow rtos
  * to add custom channels"): the nets the voice server holds, each with REMOVE
  * for an RTO or admin, then the ADD NET form - a name box, the squads to put
@@ -51,7 +51,7 @@ private _bottom = _top + _h;
 private _ry = _top + _rowH * 1.2;
 
 if !(_ctx getOrDefault ["voice", false]) exitWith {
-    [_body, [_left, _ry, _w, _rowH * 2], "RTO nets need the voice addon (jmfsb_voice).", _dim, TEXT_LABEL] call EFUNC(tacpad,drawText);
+    [_body, [_left, _ry, _w, _rowH * 2], "RTO nets need the voice addon.", _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
 };
 
 // THE ADD NET FORM IS ANCHORED AT THE BOTTOM of the block, its height known
@@ -62,7 +62,13 @@ if !(_ctx getOrDefault ["voice", false]) exitWith {
 private _form = _canManage && {count _custom < _max};
 private _squads = [_ctx getOrDefault ["contacts", []]] call FUNC(radioSquads);
 private _barH = _rowH * 1.3;
+// THE SQUAD CHIPS ARE AS WIDE AS THEIR CALL SIGNS, untracked (tablet review
+// 2026-11-01, 3.10 / 2.3: a tracked name overflowed a fixed chip): the grid's
+// cell is the widest of them, never wider than the block.
 private _chipW = _w * CUSTOM_CHIP_K;
+if (_squads isNotEqualTo []) then {
+    _chipW = ((selectMax (_squads apply {[_x, TEXT_LABEL, false] call EFUNC(tacpad,chipWidth)})) + _pad) min _w;
+};
 private _perRow = floor (_w / (_chipW + _pad)) max 1;
 private _chipRows = (ceil ((count _squads) / _perRow)) min CUSTOM_CHIP_ROWS_MAX;
 private _room = _chipRows * _perRow;
@@ -75,10 +81,16 @@ private _shown = 0;
 {
     _x params ["_id", "_name", "_squadsOn", "_uids", "", "_owner"];
     if (_shown >= CUSTOM_LIST_MAX || {_ry + _rowH > _listBottom}) then {break};
+    // Counts singular at one; a row of values at the body size (tablet review
+    // 2026-11-01, 2.7 / R1).
     [
         _body, [_left, _ry, _w * 0.74, _rowH],
-        format ["%1  %2  BY %3  %2  %4 SQUADS, %5 PLAYERS", toUpper _name, MIDDOT_TEXT, toUpper _owner, count _squadsOn, count _uids],
-        _ink, TEXT_LABEL, true
+        format [
+            "%1  %2  BY %3  %2  %4 %5, %6 %7", toUpper _name, MIDDOT_TEXT, toUpper _owner,
+            count _squadsOn, ["SQUADS", "SQUAD"] select (count _squadsOn isEqualTo 1),
+            count _uids, ["PLAYERS", "PLAYER"] select (count _uids isEqualTo 1)
+        ],
+        _ink, TEXT_BODY, true
     ] call EFUNC(tacpad,drawText);
     if (_canManage) then {
         [_body, [_left + _w * 0.76, _ry, _w * 0.24 - _pad, _rowH], "REMOVE", "line", {
@@ -148,5 +160,5 @@ private _ticked = uiNamespace getVariable [QGVAR(radioNewSquads), []];
     }, _x] call FUNC(radioTick);
 } forEach _squads;
 if (_moreRows > 0) then {
-    [_body, [_left, _ry + _chipRows * _rowH * 1.1, _w, _rowH], format ["+%1 MORE SQUADS - ADD THEM ON MEMBERS ONCE IT EXISTS", count _squads - _room], _muted, TEXT_LABEL] call EFUNC(tacpad,drawText);
+    [_body, [_left, _ry + _chipRows * _rowH * 1.1, _w, _rowH], format ["+%1 MORE %2 - ADD ON MEMBERS ONCE IT EXISTS", count _squads - _room, ["SQUADS", "SQUAD"] select ((count _squads - _room) isEqualTo 1)], _muted, TEXT_LABEL] call EFUNC(tacpad,drawText);
 };

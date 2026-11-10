@@ -13,17 +13,22 @@ update the phone with distance when using").
   with their distance and bearing from where the GPS says you are, USE /
   STOP and CLEAR ALL. Press a waypoint to make it the next one; DEL takes it
   out. Up to 20.
-- **On the map**, every map - the tablet's and the paper one - the moment a
-  waypoint exists: numbered dots and measured legs in ink, the way the map
-  tools draw a route; while navigating, the next waypoint and the leg to it
-  from you in the accent.
+- **On the map**, every map - the tablet's, the paper one, and the phone's
+  and side devices' walking-view map (2026-11-01: `jmfsb_devices_fnc_overlayOpen`
+  hangs `fnc_attach` on it) - the moment a waypoint exists: numbered dots and
+  measured legs in ink, the way the map tools draw a route; while navigating,
+  the next waypoint and the leg to it from you in the accent.
 - **USE walks the route**: inside the arrival radius (CBA setting, 25 m by
   default) it moves on to the next waypoint and says so; at the last it ends.
   By the GPS, so a jammed set (jmfsb_ew) gives NO FIX, not a true distance,
   and does not walk the route by itself.
-- **While navigating** the phone's status row leads with a PM cell - waypoint,
-  distance, bearing - and the tablet bar carries the same; the tile shows the
-  distance over the bearing and the grid.
+- **While navigating** the phone's and side devices' status row leads with a
+  PM cell - waypoint, distance, bearing, short: `PM 3 420M 045°` (mils,
+  `0800 MIL`, when Bearing units is Mils; `fnc_legText`) - and the tablet bar
+  carries the same (`PM WP3 420M 045°`); the tile shows the distance over the
+  bearing and the grid. The cell is short because the strip sets every cell
+  at the size its longest fits: the page's full `045° / 0800 MIL` left a side
+  device's strip a few pixels high (user, 2026-11-01).
 - **FOLLOW** (2026-10-30): a list of the BFT friendlies
   (`jmfsb_bft_fnc_friendlies`), nearest first, with the vehicle each is in;
   press one and a waypoint walks with him - the distance on the phone tracks
@@ -51,7 +56,7 @@ shared (the shared picture is TAC//MSG's and BFT's).
 
 ## Ships
 
-20 functions.
+21 functions.
 
 ## CBA settings
 
@@ -61,7 +66,7 @@ shared (the shared picture is TAC//MSG's and BFT's).
 
 ## Functions
 
-<details><summary>20</summary>
+<details><summary>21</summary>
 
 - `jmfsb_pointman_fnc_add`
 - `jmfsb_pointman_fnc_addGrid`
@@ -73,6 +78,7 @@ shared (the shared picture is TAC//MSG's and BFT's).
 - `jmfsb_pointman_fnc_draw`
 - `jmfsb_pointman_fnc_follow`
 - `jmfsb_pointman_fnc_gpsPos`
+- `jmfsb_pointman_fnc_legText`
 - `jmfsb_pointman_fnc_navText`
 - `jmfsb_pointman_fnc_pick`
 - `jmfsb_pointman_fnc_profile`

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an RTO (or admin) sets who is on one of the RTO nets (by remoteExec
  * from FUNC(netMembers); the caller must be the sender,
  * jmfsb_common_fnc_senderIs) - both lists are replaced. The right is FUNC(canFlash)'s, checked here; a net nobody knows

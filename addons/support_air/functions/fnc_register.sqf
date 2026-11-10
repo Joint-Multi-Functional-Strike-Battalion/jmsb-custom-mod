@@ -1,10 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts one placed air module on the board: works out the aircraft, the side
  * and the base, and gives the module its asset id.
  *
- * WHAT THE FOUR MODULES SHARE, and the only place they share it. Each module
+ * WHAT THE THREE MODULES SHARE, and the only place they share it. Each module
  * function reads its own attributes onto the logic first and then calls this,
  * so a module that is refused here (no such class, wrong kind of aircraft)
  * never reaches TAC//SUPPORT at all - no module, no asset, and a bad module
@@ -14,8 +14,11 @@
  * module reads it. A module never asks.
  *
  * THE BASE IS THE MODULE, or the aircraft synced to it: a synced aircraft
- * flies from where it stands and is parked back there, a class is created at
- * the module and goes home to it.
+ * flies from where it stands and is parked back there. A class is VIRTUAL
+ * UNTIL TASKED (user, 2026-11-02: "all support aircraft needs to be virtual
+ * till tasked, then they spawn in at alt over the support module location"):
+ * nothing exists until a task is accepted; then it is made over the module
+ * (FUNC(spawnAircraft)) and removed there when it comes home.
  *
  * A SYNCED AIRCRAFT'S CREW IS PHOTOGRAPHED HERE - class, seat and loadout of
  * every crew seat - so a respawn (FUNC(respawn)) and a return to base
@@ -26,7 +29,8 @@
  * 0: The module logic <OBJECT>
  * 1: Asset type - KIND_CAS, KIND_TRANSPORT, ... <STRING>
  * 2: Callsign when the module gives none <STRING>
- * 3: What the aircraft must be a kind of - "Air", "Helicopter" <STRING>
+ * 3: What the aircraft must be a kind of - "Air", "Helicopter", or a list
+ *    of kinds any one of which will do <STRING or ARRAY>
  * 4: May a synced aircraft be flown instead of a class <BOOL>
  *
  * Return Value:
@@ -42,7 +46,7 @@ params [
     ["_logic", objNull, [objNull]],
     ["_kind", "", [""]],
     ["_fallbackCallsign", "", [""]],
-    ["_needs", "Air", [""]],
+    ["_needs", "Air", ["", []]],
     ["_allowSynced", false, [false]]
 ];
 
@@ -65,8 +69,9 @@ if !(isClass (configFile >> "CfgVehicles" >> _cls)) exitWith {
     WARNING_2("%1 module names aircraft '%2', which is not a class in this mission - no asset placed",_kind,_cls);
     false
 };
-if !(_cls isKindOf _needs) exitWith {
-    WARNING_3("%1 module aircraft '%2' is not a %3 - no asset placed",_kind,_cls,_needs);
+private _kinds = [[_needs], _needs] select (_needs isEqualType []);
+if ((_kinds findIf {_cls isKindOf _x}) < 0) exitWith {
+    WARNING_3("%1 module aircraft '%2' is not a %3 - no asset placed",_kind,_cls,_kinds joinString " or ");
     false
 };
 
@@ -88,11 +93,12 @@ _logic setVariable [QGVAR(home), _home, true];
 _logic setVariable [QGVAR(homeDir), _homeDir, true];
 // ASL as well: a stand on a deck or a roof is not where ATL puts it.
 _logic setVariable [QGVAR(homeASL), [AGLToASL _home, getPosASL _synced] select (!isNull _synced)];
-_logic setVariable [QGVAR(spawnDelay), 0 max (_logic getVariable ["spawnDelay", 60]), true];
 _logic setVariable [QGVAR(cooldown), 0 max (_logic getVariable ["cooldown", 300]), true];
-// Anything below zero is "never"; the attribute's own -1 is the documented way.
-private _respawn = _logic getVariable ["respawnDelay", RESPAWN_NEVER];
-_logic setVariable [QGVAR(respawnDelay), [_respawn, RESPAWN_NEVER] select (_respawn < 0), true];
+// THE RESPAWN COUNT (user, 2026-11-02: "make sure there is a respawn count for
+// each support, default no respawns"): the replacements left, and the wait for
+// each. The old -1 "never" is Respawns 0 now; a delay below zero is none.
+_logic setVariable [QGVAR(respawnDelay), 0 max (_logic getVariable ["respawnDelay", MODULE_RESPAWN_DELAY]), true];
+_logic setVariable [QGVAR(respawnsLeft), 0 max round (_logic getVariable ["respawns", MODULE_RESPAWNS]), true];
 private _trigger = _logic getVariable ["cooldownTrigger", COOLDOWN_AT_END];
 // COOLDOWN_AT_END is 0 and COOLDOWN_AT_START 1, so the flag is the number.
 _logic setVariable [QGVAR(cooldownTrigger), parseNumber (_trigger isEqualTo COOLDOWN_AT_START), true];
@@ -104,7 +110,6 @@ _logic setVariable [QGVAR(plan), [], true];
 _logic setVariable [QGVAR(status), STATUS_IDLE, true];
 _logic setVariable [QGVAR(vehicle), _synced, true];
 _logic setVariable [QGVAR(readyAt), 0, true];
-_logic setVariable [QGVAR(lost), 0, true];
 _logic setVariable [QGVAR(abort), false, true];
 
 // A SYNCED AIRCRAFT IS THE ASSET, so losing it is losing the asset - until

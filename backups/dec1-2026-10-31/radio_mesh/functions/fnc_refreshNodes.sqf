@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Rebuilds this client's relay table: every radio of a relay-capable base
  * type that a player carries or a vehicle has racked, with the frequency its
  * current channel receives on, its transmit power and its side. Runs on the

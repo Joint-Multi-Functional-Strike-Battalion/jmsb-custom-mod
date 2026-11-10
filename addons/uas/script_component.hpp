@@ -51,9 +51,6 @@
 #define UAS_IED_TICK        0.5
 #define UAS_IED_ARM_DELAY   12
 
-// How long an FPV's wreck stays after it blows - see FUNC(fpvWreck). Long
-// enough for the other Killed handlers to read where it was.
-#define UAS_FPV_WRECK_S     0.2
 // How long FUNC(fpvWatch)'s wait for Drongo's Drone Tweaks sits before giving up.
 #define UAS_DDT_WAIT_S      600
 
@@ -121,6 +118,17 @@
 #define UAS_SWARM_FUSE      6       // m
 #define UAS_SWARM_TIMEOUT   120     // s before a lost airframe deletes itself
 #define UAS_SWARM_WARHEAD   "Sh_122mm_AMOS"
+
+// THE REST OF THE FUSE - see FUNC(swarmImpact). How far ahead the dive looks
+// for a surface or the ground before the next step: two steps' travel and the
+// fuse, so a long frame still finds the wall before the airframe does. How
+// many hits that look may return - the airframe's own crew come back first.
+// Under this height over the terrain the airframe is on the ground. Inside
+// this many metres of the aim, moving away from it counts as having arrived.
+#define UAS_SWARM_REACH     (UAS_SWARM_SPEED * UAS_SWARM_STEP * 2 + UAS_SWARM_FUSE)
+#define UAS_SWARM_SCAN_HITS 4
+#define UAS_SWARM_DECK      1
+#define UAS_SWARM_TERMINAL  50
 
 // CIRCLE
 #define UAS_SWARM_RADIUS    400     // m orbit when the module was never resized

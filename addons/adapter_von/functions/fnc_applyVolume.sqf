@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: sets how loud the local player hears a speaker
  * (setPlayerVoNVolume), for the channel the speaker is talking on now. VON's
  * volume is per speaker, not per channel, so it follows his channel:

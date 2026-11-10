@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * rf_quality: how well a node is connected on a net - the best path quality
  * from it to any peer on that net, through the mesh. On the server any node;
  * on a client only the client's own nodes (his slice).

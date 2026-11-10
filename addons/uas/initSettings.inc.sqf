@@ -67,7 +67,7 @@
 // They do nothing at all without the adapter loaded and its commanders up.
 [
     QGVAR(aliveZones), "CHECKBOX",
-    ["Patrol ALiVE objectives", "Turn a share of each commander's ALiVE objectives into patrol zones, once, when the campaign comes up. Hand-placed Drone Patrol modules are unaffected and add to these."],
+    ["Patrol ALiVE objectives", "Turn a share of each commander's ALiVE objectives into patrol zones, once, when the campaign comes up. Hand-placed Drone Patrol modules are unaffected and add to these. Needs ALiVE - without it this does nothing."],
     ["JMSB - EW, Drones & Intel", "Drones"],
     false,
     true

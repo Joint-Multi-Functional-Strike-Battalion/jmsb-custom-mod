@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: one DF cut - a bearing from a sensor to an emitter - laid on the
  * hearing side's track for that emitter, made if it is new. The bearing is
  * the true one plus an error that grows as the SNR falls (DESIGN_EW "DF").

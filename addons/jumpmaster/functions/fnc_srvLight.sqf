@@ -1,11 +1,10 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
- * Server: the light to every man of a run - the word, and whether he may
- * exit himself from now (FUNC(light) by remoteExec, where each is local;
- * review S7) - and the run's
- * phase published on the leader for his page (QGVAR(run): phase, pass,
- * passes; [] when the run is over).
+ * Author: YonV
+ * Server: the light to every man of a run - the word on his notify rail, and
+ * whether he may exit himself from now (FUNC(light) by remoteExec, where each
+ * is local; review S7). The leader hears the same in the run's thread
+ * (FUNC(threadCard), 2026-11-02).
  *
  * Arguments:
  * 0: The run <HASHMAP>
@@ -26,5 +25,3 @@ params [["_st", createHashMap, [createHashMap]], ["_text", "", [""]], ["_mayJump
 {
     [_x, _text, _mayJump] remoteExecCall [QFUNC(light), _x];
 } forEach ((_st get "jumpers") select {alive _x});
-
-(_st get "leader") setVariable [QGVAR(run), [_st get "phase", (_st get "pass") + 1, _st get "passes"], true];

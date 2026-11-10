@@ -67,6 +67,11 @@ crest when the mission loading screen's holiday table says so
 Year's Dec 26 to Jan 2), the unit's otherwise. One table for both screens,
 so they always agree.
 
+**Boot screen document grid** (user, 2026-11-01: "I like wider"). The three
+rows of ten document cells under the step list run from 0.04 to 0.96 of the
+safe zone, wider than the step list, each cell wide enough that an entry such
+as `arsenal versions 8/8` stays on one line.
+
 **Quick brief on the loading screen** (user, 2026-10-30). An OPORD class in
 the mission's `CfgGFA_PAC >> opords` may carry one optional text attribute
 beside its six sections, `quickBrief`: a few lines for the mission loading
@@ -105,11 +110,11 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 
 ## Ships
 
-203 functions.
+207 functions.
 
 ## Functions
 
-<details><summary>203</summary>
+<details><summary>207</summary>
 
 - `jmfsb_pac_fnc_adminAddOperator`
 - `jmfsb_pac_fnc_adminApplication`
@@ -225,6 +230,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_radioApply`
 - `jmfsb_pac_fnc_radioFromMission`
 - `jmfsb_pac_fnc_radioKeys`
+- `jmfsb_pac_fnc_rangeStore`
 - `jmfsb_pac_fnc_rankOf`
 - `jmfsb_pac_fnc_reapplyLocal`
 - `jmfsb_pac_fnc_record`
@@ -248,7 +254,9 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_storeAdopt`
 - `jmfsb_pac_fnc_storeJson`
 - `jmfsb_pac_fnc_storeLoad`
+- `jmfsb_pac_fnc_storeMerge`
 - `jmfsb_pac_fnc_storeSave`
+- `jmfsb_pac_fnc_storeSync`
 - `jmfsb_pac_fnc_stripComments`
 - `jmfsb_pac_fnc_structBase`
 - `jmfsb_pac_fnc_structFields`
@@ -265,6 +273,7 @@ Carries `skipWhenMissingDependencies` - the PBO is skipped rather than breaking 
 - `jmfsb_pac_fnc_svcSections`
 - `jmfsb_pac_fnc_svcStructure`
 - `jmfsb_pac_fnc_takeServer`
+- `jmfsb_pac_fnc_templateFormPublish`
 - `jmfsb_pac_fnc_templatesApply`
 - `jmfsb_pac_fnc_textRecv`
 - `jmfsb_pac_fnc_ticketMine`

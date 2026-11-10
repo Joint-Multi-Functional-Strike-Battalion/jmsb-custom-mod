@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One patrol: spawn the faction's own UAV, profile it, and give the profile a
  * waypoint over the objective.
  *

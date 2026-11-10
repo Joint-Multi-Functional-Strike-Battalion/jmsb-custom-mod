@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a terminal has been disabled by hand (FUNC(disableStart)). Its zone
  * comes out of the registry for good - the same end as destroying or hacking
  * it - the terminal is flagged so no menu offers it again, and the player who

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, self test T4: the server says when it removed or re-added him on
  * the C2 channel; logged with the time since the test started here, to set
  * against the membership changes fnc_selfTestFrame saw. Sent by

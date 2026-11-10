@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: the one line a hack's product ends on ("Intel plotted - check your
  * map.", a package's files), shown to the side that earned it. Sent by the
  * server (FUNC(serverPick), FUNC(productPackage)) by remoteExec and taken

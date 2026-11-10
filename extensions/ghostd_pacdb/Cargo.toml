@@ -1,0 +1,27 @@
+[package]
+name = "ghostd_pacdb"
+version = "0.7.0"
+edition = "2021"
+description = "TAC//PAC's database extension for the Arma 3 server: MongoDB directly, or the pacdb service over HTTP"
+publish = false
+
+# THE RUST PORT (2026-11-01) of DIVINER tools/pacdb/extension/Extension.cs,
+# the same verbs and answers. The C# build (NativeAOT with the .NET MongoDB
+# driver, 28 MB) was flagged by ClamAV and Gridinsoft; this one is pure Rust:
+# the MongoDB driver, rustls on ring, no runtime packed in.
+[lib]
+name = "ghostd_pacdb"
+crate-type = ["cdylib"]
+
+# The DLL's file properties (build.rs).
+[target.'cfg(windows)'.build-dependencies]
+winresource = "0.1"
+
+[dependencies]
+mongodb = { version = "3.9", default-features = false, features = ["compat-3-0-0", "rustls-tls", "dns-resolver"] }
+# documents keep their field order as written
+serde_json = { version = "1", features = ["preserve_order"] }
+tokio = { version = "1", features = ["rt-multi-thread", "time", "sync"] }
+futures-util = "0.3"
+# the pacdb service backend; 0.12's rustls is on ring (0.13's needs aws-lc)
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }

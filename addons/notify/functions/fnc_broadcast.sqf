@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Posts a notification to other players: everyone, one side, one player, one
  * machine or a list of players. The server works out who is told and sends it
  * by remoteExec to FUNC(notify) on their machines, which takes a remote call

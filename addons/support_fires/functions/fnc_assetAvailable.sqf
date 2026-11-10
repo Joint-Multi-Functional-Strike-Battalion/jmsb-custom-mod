@@ -1,8 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * FUNC(available) by asset id - the "available" code this addon hands the
- * support core, which asks it before dispatching anything but a recall.
+ * support core, which asks it before dispatching anything but a recall. A
+ * battery holding an adjust mission answers yes to the player it holds for.
  *
  * Arguments:
  * 0: Asset id, "fires:<n>" <STRING>
@@ -19,6 +20,16 @@
 
 params [["_assetId", "", [""]]];
 
-([[_assetId] call FUNC(logicOf)] call FUNC(available)) params ["_ok", "", "_why"];
+private _logic = [_assetId] call FUNC(logicOf);
+([_logic] call FUNC(available)) params ["_ok", "", "_why"];
+
+// ADJUST FIRE (2026-11-01): a battery holding an adjust mission for this
+// player takes his next call; FUNC(check) then says which calls.
+if (!_ok && hasInterface) then {
+    if ((_logic getVariable [QGVAR(holdBy), ""]) isEqualTo getPlayerUID player) then {
+        _ok = true;
+        _why = "";
+    };
+};
 
 [_ok, _why]

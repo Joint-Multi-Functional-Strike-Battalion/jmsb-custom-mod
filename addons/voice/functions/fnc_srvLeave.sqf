@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: someone leaves a call (hang-up, dropped, gone). A member leaves
  * the call net; someone ringing just stops ringing. The caller hanging up
  * before anyone answered ends the dial; otherwise the call ends when one

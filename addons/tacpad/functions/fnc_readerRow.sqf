@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One thread in the reader's list (handoff 1a, pane 2): the priority chip, the
  * template type and the time on the meta line; the subject; a preview; and the
  * reply meta. Selected is the accent tint with a 4 px accent bar down the left;
@@ -61,7 +61,8 @@ private _chipH = _rowH * 0.75;
 private _chipW = [_root, [_left, _y], _chipH, _entry getOrDefault ["priority", ""]] call FUNC(readerChip);
 private _type = ([_entry getOrDefault ["templateId", ""]] call EFUNC(messaging,template)) getOrDefault ["short", ""];
 [_root, [_left + _chipW + _pad * 2, _y, _textW * 0.5, _chipH], _type, _label, READER_K_SIZE, true, "left", true] call FUNC(drawText);
-[_root, [_left + _textW * 0.6, _y, _textW * 0.4, _chipH], [_entry getOrDefault ["lastActivity", 0]] call FUNC(clock), _label, READER_K_SIZE, true, "right", true] call FUNC(drawText);
+// The time is a value: untracked (tablet review 2026-11-01, 2.3).
+[_root, [_left + _textW * 0.6, _y, _textW * 0.4, _chipH], [_entry getOrDefault ["lastActivity", 0]] call FUNC(clock), _label, READER_K_SIZE, true, "right"] call FUNC(drawText);
 _y = _y + _chipH + _padY;
 
 // --------------------------------------------------------------- subject ---
@@ -90,7 +91,8 @@ if (_unread > 0) then {_meta pushBack format ["%1 UNREAD", _unread]};
 if (_closed) then {_meta pushBack "CLOSED"};
 
 private _metaInk = [_label, _accentText] select (_unread > 0 && !_selected && !_closed);
-[_root, [_left, _y, _textW, _rowH * 0.8], _meta joinString " - ", _metaInk, READER_K_SIZE, true, "left", true] call FUNC(drawText);
+// Counts are values: untracked (tablet review 2026-11-01, 2.3).
+[_root, [_left, _y, _textW, _rowH * 0.8], _meta joinString " - ", _metaInk, READER_K_SIZE, true] call FUNC(drawText);
 
 [_root, [_rx, _ry + _rh - RULE_THIN * pixelH, _rw, RULE_THIN * pixelH], _line] call FUNC(drawFill);
 

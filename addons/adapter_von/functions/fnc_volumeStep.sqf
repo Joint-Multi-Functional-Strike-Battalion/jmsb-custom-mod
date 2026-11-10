@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Radio voice volume up or down by one step (user, 2026-10-24: "need a volume
  * on the in game voip"). Writes the player's own CBA setting, so Addon Options,
  * the RADIO app and the keys all move the same knob; the setting's own change

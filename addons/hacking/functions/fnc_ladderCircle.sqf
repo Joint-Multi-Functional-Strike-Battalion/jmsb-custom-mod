@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ONE SITE AT A TIME, tightening. The shared body behind LOCATE AA and
  * LOCATE ARTILLERY: both used to answer differently and neither did this.
  *
@@ -94,8 +94,9 @@ _store set [_sk, [_id, _tier, _bearing, _colour]];
 
 // THE G2 LEARNS WHAT THE PLAYER LEARNED - the circle's centre, not the
 // target. Filed as a spot report so the commander's tablet and COP carry it.
-if (!isNil "jmfsb_adapter_alive_fnc_reportIntel") then {
-    [_side, (_pool select _i) param [2, sideUnknown], _id, _centre, toLower _label] call jmfsb_adapter_alive_fnc_reportIntel;
+// Not with ALiVE loaded but no commanders (user, 2026-11-02: "same as not loaded").
+if (!isNil QEFUNC(adapter_alive,reportIntel) && {[] call EFUNC(common,aliveLoaded)}) then {
+    [_side, (_pool select _i) param [2, sideUnknown], _id, _centre, toLower _label] call EFUNC(adapter_alive,reportIntel);
 };
 
 // One marker per product per side, so a new circle REPLACES the last rather

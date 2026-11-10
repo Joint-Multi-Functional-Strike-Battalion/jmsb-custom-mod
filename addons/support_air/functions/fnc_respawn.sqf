@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The replacement for a lost synced aircraft, built on the stand the first
  * one stood on, facing the same way, crewed as the mission maker crewed it
  * (FUNC(restoreCrew)) and adopted as the asset (FUNC(adopt)). Run on the
@@ -41,7 +41,25 @@ if (isNull _veh) exitWith {
     objNull
 };
 _veh setDir (_logic getVariable [QGVAR(homeDir), 0]);
-_veh setPosASL (_logic getVariable [QGVAR(homeASL), AGLToASL _home]);
+private _homeASL = _logic getVariable [QGVAR(homeASL), AGLToASL _home];
+_veh setPosASL _homeASL;
+
+// A CLEAR STAND FOR THE ROTOR (2026-11-02, the user's RPT 07:37:53: a rotor
+// wrecked on the ground, nothing hit it): a helicopter's stand on the ground
+// with something standing into its rotor disc - a hangar, a tree, another
+// aircraft - is left for the nearest clear spot, said in the RPT
+// (FUNC(clearSpot)). A stand on a deck or a roof is the mission's, kept.
+if ([_veh] call EFUNC(support,isRotary) && (_homeASL select 2) - getTerrainHeightASL _homeASL < ROTOR_DISC_LOW) then {
+    ([_veh, _home, 0, LZ_SEARCH, [_old]] call FUNC(clearSpot)) params ["_spot", "_blockers"];
+    if (_blockers isEqualTo []) exitWith {};
+    private _callsign = _logic getVariable [QGVAR(callsign), "AIR"];
+    if (_spot isEqualTo []) exitWith {
+        WARNING_3("%1: the stand at %2 has %3 in the rotor's way - no clear spot near, kept",_callsign,mapGridPosition _home,_blockers joinString ", ");
+    };
+    WARNING_4("%1: the stand at %2 is blocked for the rotor by %3 - the replacement is put %4 m off it",_callsign,mapGridPosition _home,_blockers joinString ", ",round (_home distance2D _spot));
+    _veh setPosATL _spot;
+    _veh setVectorUp surfaceNormal _spot;
+};
 
 [_logic, _veh] call FUNC(restoreCrew);
 [_logic, _veh] call FUNC(adopt);

@@ -1,11 +1,17 @@
 # Signing the extension DLLs
 
 The Windows DLLs in the mod root (`jmsb_voice_x64.dll`, `ghostd_pacdb_x64.dll`)
-get a code signature. Only `jmsb_voice_x64.dll` reaches players: since
-2026-10-31 `ghostd_pacdb_x64.dll` (server-only, flagged 2/70 by ClamAV and
-Gridinsoft heuristics while unsigned) is left out of the release
-(`.hemtt/project.toml`); a Windows server copies it in by hand. Antivirus trusts a signed DLL more, Windows shows the
-publisher in its properties, and BattlEye can see who made it.
+get a code signature. Only `jmsb_voice_x64.dll` is loaded by players;
+`ghostd_pacdb_x64.dll` ships in the release again since 2026-11-01 for a
+Windows server or host, and only the server loads it. Antivirus
+trusts a signed DLL more, Windows shows the publisher in its properties, and
+BattlEye can see who made it.
+
+**Unsigned and clean is the first route (2026-11-01).** Both DLLs were
+rebuilt in pure Rust, without the parts antivirus flagged: the voice DLL
+without Google's WebRTC library, the database DLL without .NET's NativeAOT
+runtime (extensions/ghostd_pacdb, which replaced DIVINER tools/pacdb's C#).
+The voice DLL scanned clean on VirusTotal. Signing stays paused.
 
 Signing does not replace BattlEye whitelisting. Sign first, then submit the
 signed file: signing changes the hash.
@@ -68,14 +74,14 @@ builds made by GitHub Actions from the public repository.
   need two-factor sign-in on the account.
 - The signed DLL from the workflow's `jmsb_voice_x64-signed` artifact goes in
   the mod root, its hash in `tools/dlls.sha256`, then to BattlEye.
-- `ghostd_pacdb_x64.dll` would need the same in the DIVINER repository (its
-  `tools/pacdb` under MIT and its own workflow). It no longer reaches players,
-  so it can wait.
+- `ghostd_pacdb_x64.dll` is built from `extensions/ghostd_pacdb` since
+  2026-11-01; it would need its own workflow. It does not reach players, so
+  it can wait.
 
 ## Every release with a changed DLL
 
 1. Build the DLL and copy it to the mod root (extensions/jmsb_voice/README.md;
-   pacdb: DIVINER tools/pacdb).
+   pacdb: extensions/ghostd_pacdb/README.md).
 2. `az login`
 3. `python tools/sign_dlls.py --dlib C:\path\to\bin\x64\Azure.CodeSigning.Dlib.dll`
 
@@ -95,12 +101,11 @@ The Linux `.so` files run only on the server: no signing, no BattlEye.
 For the BattlEye submission and anyone who asks:
 
 - **Microphone and network:** it is a voice client. It opens the microphone
-  only while in a voice room and sends audio to the unit's own LiveKit server.
-- **`GetAsyncKeyState` in its imports:** from Google's WebRTC library
-  (inside LiveKit), which checks for key presses to filter out typing noise.
-  The extension does not read keys.
-- **Screen and video names in its exports:** WebRTC is built with video and
-  screen sharing. The extension publishes microphone audio only, and its
-  tokens allow nothing else.
-- **About 30 MB:** WebRTC is linked in, with no other files needed.
+  only while in a voice room and sends audio to the unit's own voice server,
+  LiveKit or Mumble, as the server's settings say.
+- **No keyboard, screen or video code** since 2026-11-01: Google's WebRTC
+  library (and with it `GetAsyncKeyState` and the screen-capture glue) was
+  replaced by pure Rust WebRTC. It exports only Arma's entry points.
+- **About 10 MB:** pure Rust WebRTC, TLS, libopus and RNNoise linked in, with
+  no other files needed.
 - **Source:** `extensions/jmsb_voice` (Rust). Nothing is packed or obfuscated.

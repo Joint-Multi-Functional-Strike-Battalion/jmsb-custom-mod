@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One static-line jumper's descent, every CHUTE_TICK seconds: open his canopy
  * when the line pulls it, and let him go on the ground.
  *

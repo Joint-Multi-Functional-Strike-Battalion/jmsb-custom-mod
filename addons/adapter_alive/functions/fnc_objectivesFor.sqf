@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A side's objectives, as its commander knows them.
  *
  * Keys verified against source (mil_opcom fnc_OPCOM.sqf:2907-2911): the type

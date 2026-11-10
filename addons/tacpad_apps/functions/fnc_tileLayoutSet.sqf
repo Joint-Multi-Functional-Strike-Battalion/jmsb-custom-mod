@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sets one tile's place in the player's live-tile layout (FUNC(tileLayout)) and
  * writes it back to his setting, through the suite's setter so it persists and
  * the screen rebuilds.

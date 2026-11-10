@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tasks TAC//SUPPORT offers for an asset type, or for one picked asset:
  *
  *   [token, label, meta, guidance, steppers, needsPoint, pointLabel]

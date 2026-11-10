@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server end of an admin debug command (FUNC(debugCommand)): runs the
  * handler here and replies to the admin who typed it. Reached by remoteExec,
  * so the caller is the sender's own unit and an admin by the server's records

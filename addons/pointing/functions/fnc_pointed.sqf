@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: a crewmate points (FUNC(srvPoint)); DUI's radar shows the finger.
  * Taken only from the server (review R1).
  *

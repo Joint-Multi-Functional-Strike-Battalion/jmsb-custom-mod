@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether one order may go to this asset, and the point it is flown to - the
  * ONE check the requester's machine (FUNC(task)) and the server
  * (FUNC(order)) both run. The server runs it again with the sender's own

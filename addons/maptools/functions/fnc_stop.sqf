@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Stops the running tool. The map stops answering to it; everything it drew
  * stays where it is until CLEAR.
  *

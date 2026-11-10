@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ALiVE's event log calls this for every event once FUNC(eventBridge) has
  * registered it. ALiVE dispatches as [listener, "handleEvent", event] to the
  * function named in the listener's "class" key (x_lib fnc_eventLog.sqf:229).

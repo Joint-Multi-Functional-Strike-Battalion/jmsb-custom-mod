@@ -21,7 +21,7 @@
 
 // --- Which system carries the voice (user, 2026-10-20; a setting, 2026-10-30) ---
 // The CBA setting jmfsb_voice_defaultSystem (JMSB - Voice > System,
-// server-forced) is Automatic, the voice server or game VON; a system chosen
+// server-forced) is Automatic, Mumble, LiveKit or game VON; a system chosen
 // but not loaded falls back to Automatic. Decided by FUNC(selectSystem): the
 // automatic answer in preInit, the setting's at CBA_settingsInitialized,
 // before anything of any system starts. jmfsb_voice_system is then
@@ -40,6 +40,13 @@
 // calls, callbacks, cut-offs) under either. adapter_livekit announces
 // itself in GVAR(loaded) from its preInit, as the radios' CfgPatches do.
 #define SYSTEM_LIVEKIT      "livekit"
+// ONE SETTING PICKS THE VOICE (user, 2026-11-01: "have more than one cba
+// setting to pic the voice system" - adapter_livekit's Voice server type went
+// into this list). Mumble is a choice, not a system: the same adapter and
+// extension carry it (system "livekit"); adapter_livekit's server reads the
+// choice to hand out a Mumble or a LiveKit address. Automatic is Mumble when
+// its address is set, else LiveKit, else game VON (2026-11-05), the default.
+#define SYSTEM_MUMBLE       "mumble"
 // THE SERVER PICKS FOR EVERYONE (2026-10-31, PLAN_VOICE_EW_PLAY V1): the
 // server's system is published (GVAR(serverSystem)) and every client follows
 // it (FUNC(followServer)). A client that cannot run it - the voice server
@@ -53,8 +60,8 @@
 #define UNAVAILABLE_TEXT    "The server runs the voice over %1, which cannot run here (the voice extension did not load: Linux, or BattlEye without the whitelist). Nobody hears you and you hear nobody. Text messages still work."
 #define SYSTEM_GAME_IDS     [SYSTEM_LIVEKIT, SYSTEM_VON]
 // The setting's choices, in the order the list shows them.
-#define SYSTEM_CHOICES      [SYSTEM_AUTO, SYSTEM_LIVEKIT, SYSTEM_VON]
-#define SYSTEM_CHOICE_NAMES ["Automatic: the voice server, else game VON", "Voice server (LiveKit)", "Game VON (fallback)"]
+#define SYSTEM_CHOICES      [SYSTEM_AUTO, SYSTEM_MUMBLE, SYSTEM_LIVEKIT, SYSTEM_VON]
+#define SYSTEM_CHOICE_NAMES ["Automatic: Mumble, else LiveKit, else game VON", "Mumble", "LiveKit", "Game VON (fallback)"]
 #define DEFAULT_SYSTEM_CHOICE 0
 // The CBA pages: the choice on its own page, the game voice's settings on
 // the Built-in page.
@@ -204,7 +211,12 @@
 #define EMCON_SILENT        3
 
 // --- Calls ------------------------------------------------------------------
-// VON: one custom channel per call; ten custom channels, two are C2 / A2G.
+// VON: one custom channel per call; ten custom channels, two are C2 / A2G -
+// so eight call slots. NO LIMIT TO THE NUMBER OF CALLS ON THE VOICE SERVER
+// (user, 2026-11-01): an adapter that counts no channels gets a slot more
+// whenever these are all taken (FUNC(srvSlot)). The people in a call are a
+// design rule (DESIGN_VOICE.md "Calls", SPEC_TACNET calls.size_max), not a
+// channel count: eight under every system.
 #define CALL_SLOTS          8
 #define CALL_MAX_MEMBERS    8
 // A call is live from two members, and ends when one is left.

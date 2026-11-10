@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A man's blood type, the way a medic gets it: off his dog tags. Always shown,
  * monitored or not - it is stamped on him, not measured.
  *

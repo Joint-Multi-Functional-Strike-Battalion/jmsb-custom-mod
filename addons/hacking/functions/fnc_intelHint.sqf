@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * ISR processed a batch: one circle on the nearest piece of the enemy's
  * network.
  *
@@ -43,6 +43,10 @@ params [["_from", [], [[]]], ["_side", sideUnknown, [sideUnknown]]];
 
 if (!isServer || {_side isEqualTo sideUnknown}) exitWith {false};
 private _pool = [];
+// ALiVE's half of the pool, its persistence and its G2 - none of it with ALiVE
+// loaded but no commanders, once the adapter has given up (user, 2026-11-02:
+// "same as not loaded").
+private _alive = [] call EFUNC(common,aliveLoaded);
 
 // --- the conventional network ----------------------------------------------
 {
@@ -60,54 +64,54 @@ private _pool = [];
     };
 } forEach (missionNamespace getVariable [QEGVAR(antiship,radars), []]);
 
-if (!isNil "jmfsb_adapter_alive_fnc_aaTargets") then {
+if (_alive && {!isNil QEFUNC(adapter_alive,aaTargets)}) then {
     {
         _x params ["_id", "_at", "_aSide"];
         if (_aSide getFriend _side < 0.6) then {
             _pool pushBack [_id, _at, "air defence", "conv"];
         };
-    } forEach (call jmfsb_adapter_alive_fnc_aaTargets);
+    } forEach (call EFUNC(adapter_alive,aaTargets));
 };
 
-if (!isNil "jmfsb_adapter_alive_fnc_artyTargets") then {
+if (_alive && {!isNil QEFUNC(adapter_alive,artyTargets)}) then {
     {
         _x params ["_id", "_at", "_aSide"];
         if (_aSide getFriend _side < 0.6) then {
             _pool pushBack [_id, _at, "artillery", "conv"];
         };
-    } forEach ([sideUnknown] call jmfsb_adapter_alive_fnc_artyTargets);
+    } forEach ([sideUnknown] call EFUNC(adapter_alive,artyTargets));
 };
 
 // ALiVE's radars, beside the coastal ones above: the eyes of every network.
-if (!isNil "jmfsb_adapter_alive_fnc_radars") then {
+if (_alive && {!isNil QEFUNC(adapter_alive,radars)}) then {
     {
         _x params ["_id", "_at", "_rSide"];
         if (_rSide getFriend _side < 0.6) then {
             _pool pushBack [_id, _at, "radar", "conv"];
         };
-    } forEach (call jmfsb_adapter_alive_fnc_radars);
+    } forEach (call EFUNC(adapter_alive,radars));
 };
 
 // THE REAR. A camp is hostile by who garrisons it now; an empty one has no
 // side and is not pointed at. A hub is hostile by the faction LOGCOM runs it
 // for. Both are the conventional war's - the asymmetric chain has its own
 // rear, the installations and safe houses below.
-if (!isNil "jmfsb_adapter_alive_fnc_camps") then {
+if (_alive && {!isNil QEFUNC(adapter_alive,camps)}) then {
     {
         _x params ["_id", "_at", "", "_cSide"];
         if (_cSide isNotEqualTo sideUnknown && {_cSide getFriend _side < 0.6}) then {
             _pool pushBack [_id, _at, "camp", "conv"];
         };
-    } forEach (call jmfsb_adapter_alive_fnc_camps);
+    } forEach (call EFUNC(adapter_alive,camps));
 };
 
-if (!isNil "jmfsb_adapter_alive_fnc_logisticsHubs") then {
+if (_alive && {!isNil QEFUNC(adapter_alive,logisticsHubs)}) then {
     {
         _x params ["_id", "_at", "_hSide"];
         if (_hSide getFriend _side < 0.6) then {
             _pool pushBack [_id, _at, "logistics hub", "conv"];
         };
-    } forEach (call jmfsb_adapter_alive_fnc_logisticsHubs);
+    } forEach (call EFUNC(adapter_alive,logisticsHubs));
 };
 
 {
@@ -118,11 +122,11 @@ if (!isNil "jmfsb_adapter_alive_fnc_logisticsHubs") then {
 } forEach (missionNamespace getVariable [QEGVAR(uas,caches), []]);
 
 // --- the asymmetric network -------------------------------------------------
-if (!isNil "jmfsb_adapter_alive_fnc_installations") then {
+if (_alive && {!isNil QEFUNC(adapter_alive,installations)}) then {
     {
         _x params ["_id", "_at", "", "_type"];
         _pool pushBack [_id, _at, _type, "asym"];
-    } forEach ([] call jmfsb_adapter_alive_fnc_installations);
+    } forEach ([] call EFUNC(adapter_alive,installations));
 };
 
 if (!isNil "jmfsb_leaders_houses") then {
@@ -205,14 +209,14 @@ _hinted pushBack _id;
 localNamespace setVariable [QGVAR(hintedIds), _hinted];
 localNamespace setVariable [QGVAR(hintTier), _tier + 1];
 // The walk survives a restart with ALiVE's war state - see XEH_postInit.
-if (!isNil "jmfsb_adapter_alive_fnc_setData") then {
-    [QGVAR(hintedIds), _hinted] call jmfsb_adapter_alive_fnc_setData;
-    [QGVAR(hintTier), _tier + 1] call jmfsb_adapter_alive_fnc_setData;
+if (_alive && {!isNil QEFUNC(adapter_alive,setData)}) then {
+    [QGVAR(hintedIds), _hinted] call EFUNC(adapter_alive,setData);
+    [QGVAR(hintTier), _tier + 1] call EFUNC(adapter_alive,setData);
 };
 // Into the friendly G2 as well - see FUNC(ladderCircle). The hint pool
 // carries no side; the adapter files it against the hostile commander.
-if (!isNil "jmfsb_adapter_alive_fnc_reportIntel") then {
-    [_side, sideUnknown, _id, _centre, _type] call jmfsb_adapter_alive_fnc_reportIntel;
+if (_alive && {!isNil QEFUNC(adapter_alive,reportIntel)}) then {
+    [_side, sideUnknown, _id, _centre, _type] call EFUNC(adapter_alive,reportIntel);
 };
 
 ["circle",

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One slice of a viewshed: the next VS_RAYS_PER_FRAME cells, each traced and
  * sorted into the seen or the hidden triangle list. Removes itself when the
  * last cell is done.

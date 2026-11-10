@@ -59,7 +59,10 @@ fallback where it does not). NOT RUN IN GAME.
   downloads the other side's voices or nets he is not on.
 - **Hooks** registered with `jmfsb_voice`: `quality`, `talking` (the keyed
   speakers), `setActive` / `current`, `block`, `ptt`, `keyed`; `reserve`
-  always true (no channel count), `global` false (no Global channel). No
+  always true and `channelUse` `[]` (no channel count: every RTO net is
+  granted, and **calls have no limit** - the core makes a CALL slot more
+  whenever all are taken, `jmfsb_voice_fnc_srvSlot`; user, 2026-11-01),
+  `global` false (no Global channel). No
   `audience`: the core's default sends a key event to everyone the server
   has on that net. The extension's `speaking` callback is not used.
 - **The echo test** takes the extension's one session: the room is left for
@@ -78,7 +81,7 @@ fallback where it does not). NOT RUN IN GAME.
 
 | File (mod root) | Where | What |
 |---|---|---|
-| `jmsb_voice_x64.dll` | players (and a Windows server) | joins rooms, the microphone, the mix; signs tokens |
+| `jmsb_voice_x64.dll` | players (and a Windows server) | joins rooms on LiveKit or Mumble, the microphone, the mix; signs tokens |
 | `jmsb_voice_x64.so` | a Linux server | signs tokens only |
 
 Built from `extensions/jmsb_voice` (its README). A player without the DLL
@@ -123,6 +126,37 @@ server:
 No address, or no key and secret either way: the join and the echo test
 answer "not set".
 
+### Mumble instead (2026-11-01)
+
+**JMSB - Voice > Voice system** (`jmfsb_voice_defaultSystem`) is the one
+setting that picks the voice: Automatic, Mumble, LiveKit or Game VON
+(user, 2026-11-01: this adapter's own Voice server type went into it).
+**Mumble is the default**: Automatic and Mumble hand out Mumble addresses,
+only LiveKit the LiveKit server's. With Mumble, set Voice server (Mumble):
+
+- **Mumble server address:** `host:port` as the players reach it (Mumble's
+  port is 64738, TCP only).
+
+WHICH ONE RUNS (2026-11-05, `srvServerKind`): Voice system LiveKit or Mumble
+uses that server; Automatic uses Mumble when its address is set, else LiveKit
+when its address is set. No address set for the system in use: the server
+says so in the RPT (`has no voice server set`) and the game VON carries the
+voice for the whole mission - it used to be silence for everyone.
+- **Mumble server password:** the server's password, empty when it has none.
+  It is a setting on purpose: every player needs it to connect.
+
+Nothing is signed, but the Arma server must still load the voice extension
+(`jmsb_voice_x64.dll`, or `jmsb_voice_x64.so` on a 64-bit Linux server): a
+server without it runs the game VON for the whole mission. The server answers
+each player with `mumble://<his UID>@<address>/<room>` and the password, and
+his DLL connects. Nets, calls, local voice and the mix work as on LiveKit.
+The echo test uses the Mumble server's own loopback, so no bot is needed.
+Players never install the Mumble app. The Mumble server is the pelican-eggs
+`mumble-voice` egg, or any Mumble server 1.4 or later where everyone may make
+a temporary channel in the root (stock Mumble allows it to registered users
+only). Without that, every mission shares the root channel: voice works, but
+every voice is sent to everyone.
+
 <!-- generated below this line by tools/gen_addon_readmes.py - do not edit -->
 
 ## Requires
@@ -136,12 +170,14 @@ answer "not set".
 
 ## Ships
 
-25 functions.
+27 functions.
 
 ## CBA settings
 
 | Setting | Type | Name |
 |---|---|---|
+| `jmfsb_adapter_livekit_mumbleAddress` | EDITBOX | Mumble server address |
+| `jmfsb_adapter_livekit_mumblePassword` | EDITBOX | Mumble server password |
 | `jmfsb_adapter_livekit_url` | EDITBOX | Voice server address |
 | `jmfsb_adapter_livekit_key` | EDITBOX | API key |
 | `jmfsb_adapter_livekit_inputDevice` | EDITBOX | Microphone |
@@ -151,7 +187,7 @@ answer "not set".
 
 ## Functions
 
-<details><summary>25</summary>
+<details><summary>27</summary>
 
 - `jmfsb_adapter_livekit_fnc_applyDevices`
 - `jmfsb_adapter_livekit_fnc_block`
@@ -171,10 +207,12 @@ answer "not set".
 - `jmfsb_adapter_livekit_fnc_roomAnswer`
 - `jmfsb_adapter_livekit_fnc_roomJoin`
 - `jmfsb_adapter_livekit_fnc_roomLeave`
+- `jmfsb_adapter_livekit_fnc_selfTest`
 - `jmfsb_adapter_livekit_fnc_setActive`
 - `jmfsb_adapter_livekit_fnc_speaker`
 - `jmfsb_adapter_livekit_fnc_srvEchoToken`
 - `jmfsb_adapter_livekit_fnc_srvRoomToken`
+- `jmfsb_adapter_livekit_fnc_srvServerKind`
 - `jmfsb_adapter_livekit_fnc_talking`
 - `jmfsb_adapter_livekit_fnc_tick`
 - `jmfsb_adapter_livekit_fnc_vonOff`

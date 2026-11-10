@@ -1,0 +1,17 @@
+# TLS in front of LiveKit when the egg's TLS is true (jmsb-voice-start).
+# The certificate is the host's, mounted read-only; Caddy gets none itself, so
+# it needs no port 80 or 443.
+{
+	auto_https off
+	admin 127.0.0.1:2019
+	# HTTP/1.1 only: LiveKit's signalling is a websocket upgrade, which a
+	# client that negotiates HTTP/2 could not make.
+	servers {
+		protocols h1
+	}
+}
+
+:{$SERVER_PORT} {
+	tls {$CERT_DIR}/fullchain.pem {$CERT_DIR}/privkey.pem
+	reverse_proxy 127.0.0.1:{$INTERNAL_PORT}
+}

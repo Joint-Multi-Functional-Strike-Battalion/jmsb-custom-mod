@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A key pressed while the small devices' RADIO app is open: the soft keys F1-F4
  * (what FUNC(radioRows) labels them on this tab), the cursor (numpad 0 / .),
  * and the tabs (numpad 7 / 8). docs/DESIGN_VOICE.md, "Adding a caller on the

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * JAMMING: which of the three services is down, and how hard.
  *
  * ONE ROW PER DOMAIN - RADIO, DATA, GPS (user, 2026-08-31). This was one big

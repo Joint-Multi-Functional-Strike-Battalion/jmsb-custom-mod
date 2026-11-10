@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The composer at the foot of an opened thread (handoff 1a): QUICK REPLY and
  * its six tiles, the + TEMPLATE / + GRID / + MARKER / CALL row, and the reply
  * box with SEND.
@@ -11,13 +11,18 @@
  * does (jmfsb_tacpad_apps_fnc_radioDial: a new call, or into the live one you
  * own). Drawn only with game voice; dim when nobody on the thread is in game.
  *
- * THE TILES ARE THE REGISTRY'S ONE-TAP REPLIES FIRST - every reply template
- * with no fields (ROGER, WILCO, ON TASK), the same set FUNC(composeTiles) puts
- * at the head of the reply picker. A tile the thread's state will not take is
- * drawn dim and cannot be pressed, so the row shows what exists without ever
- * offering what the server refuses. The player's own Quick replies setting
- * fills the slots left; the sixth is VOICE MSG, present and disabled until the
- * voice-message work lands (docs/PLAN_MESSAGING_UI.md, phase 5).
+ * THE TILES ARE FUNC(readerQuickTiles): what the asset just asked (a
+ * `prompt` card's answers), a support card's own row to its sender (doc 6.2,
+ * user 2026-11-01), or the registry's one-tap replies (ROGER, WILCO, ON TASK)
+ * and the player's own Quick replies setting - after SEND SITREP on a TIC
+ * thread, for its sender and his squad leader (user, 2026-11-02), under
+ * CONTACT OVER? SEND SITREP in the accent once the sender's contact has gone
+ * quiet (FUNC(contactCheck)). Only what the server would
+ * take is on the row (tablet review 2026-11-01, 3.1). A support row may run
+ * onto a second row of tiles (READER_TILE_ROWS); the first row's sixth slot is
+ * VOICE MSG, present and disabled until the voice-message work lands
+ * (docs/PLAN_MESSAGING_UI.md, phase 5), and BACK while the ADJUST distance
+ * pick is open.
  *
  * Arguments:
  * 0: Content group <CONTROL>
@@ -26,12 +31,13 @@
  * 3: [x, width, bottom] of the composer <ARRAY>
  * 4: Measure only - return the height and draw nothing <BOOL> (optional, default false)
  * 5: Uids on the thread, for CALL <ARRAY of STRINGs> (optional, default [])
+ * 6: The thread's messages, root first <ARRAY> (optional, default [])
  *
  * Return Value:
  * Height of the composer <NUMBER>
  *
  * Example:
- * private _h = [_root, _thread, _legal, [_bx, _bw, _h], true] call jmfsb_tacpad_fnc_readerQuick
+ * private _h = [_root, _thread, _legal, [_bx, _bw, _h], true, [], _messages] call jmfsb_tacpad_fnc_readerQuick
  *
  * Public: No
  */
@@ -42,7 +48,8 @@ params [
     ["_legal", [], [[]]],
     ["_at", [0, 0, 0], [[]], 3],
     ["_measure", false, [false]],
-    ["_callUids", [], [[]]]
+    ["_callUids", [], [[]]],
+    ["_messages", [], [[]]]
 ];
 
 _at params ["_bx", "_bw", "_bottom"];
@@ -55,7 +62,13 @@ private _tileH = _btnH * READER_TILE_H;
 private _labelH = _rowH;
 private _gap = _padY * 2;
 
-private _height = READER_INSET * _padY + _labelH + _tileH + _gap + _btnH + _gap + _btnH + READER_INSET * _padY;
+// The tiles first: how many rows of them is the composer's height.
+([_thread, _messages, _legal] call FUNC(readerQuickTiles)) params ["_kicker", "_tiles", "_picking", ["_alert", false]];
+private _firstRow = READER_TILES - ([1, 0] select _picking);
+private _tileRows = [1, READER_TILE_ROWS] select (count _tiles > _firstRow);
+private _tilesH = _tileRows * _tileH + (_tileRows - 1) * _gap;
+
+private _height = READER_INSET * _padY + _labelH + _tilesH + _gap + _btnH + _gap + _btnH + READER_INSET * _padY;
 if (_measure || {isNull _root}) exitWith {_height};
 
 ([] call FUNC(theme)) params ["_ground", "_ink", "_accent"];
@@ -72,75 +85,90 @@ private _y = _bottom - _height;
 [_root, [_bx, _y, _bw, RULE_THICK * pixelH], _dim] call FUNC(drawFill);
 _y = _y + READER_INSET * _padY;
 
-[_root, [_bx, _y, _bw * 0.4, _labelH], "QUICK REPLY", _muted, READER_K_SIZE, true, "left", true] call FUNC(drawText);
+// CONTACT OVER? SEND SITREP (user, 2026-11-02) is the row's label in the
+// accent, across the pane - the sender's TIC has gone quiet.
+[_root, [_bx, _y, [_bw * 0.4, _bw] select _alert, _labelH], _kicker, [_muted, _accent] select _alert, READER_K_SIZE, true, "left", true] call FUNC(drawText);
 _y = _y + _labelH;
 
 // ------------------------------------------------------------- the tiles ---
-// [template id or "", label, pressable]. A template only a leader may send is
-// not offered to anyone else - the picker's rule.
-private _isLeader = (player getVariable ["isLeader", false]) isEqualTo true;
-private _tiles = [];
-{
-    private _t = [_x] call EFUNC(messaging,template);
-    if ((_t getOrDefault ["order", []]) isNotEqualTo []) then {continue};
-    if ((_t getOrDefault ["senderMustBe", "any"]) isEqualTo "leader" && !_isLeader) then {continue};
-    _tiles pushBack [_x, toUpper (_t getOrDefault ["short", _x]), _x in _legal];
-} forEach (["reply"] call EFUNC(messaging,templateIds));
-
-// The player's phrases into what is left. A template id already on the row is
-// not repeated; one the thread will not take is not sent as words either.
-private _known = missionNamespace getVariable [QEGVAR(messaging,templateIds), []];
-{
-    private _entry = trim _x;
-    private _id = toLower _entry;
-    if (_entry isEqualTo "" || {(_tiles findIf {(_x # 0) isEqualTo _id}) >= 0}) then {continue};
-    if (_id in _known) then {
-        if (_id in _legal) then {_tiles pushBack [_id, toUpper (([_id] call EFUNC(messaging,template)) getOrDefault ["short", _entry]), true]};
-        continue;
-    };
-    _tiles pushBack ["", toUpper _entry, _free];
-} forEach (GVAR(quickReplies) splitString ",");
-
-if (count _tiles > READER_TILES - 1) then {_tiles resize (READER_TILES - 1)};
-
+// ONLY WHAT THE THREAD TAKES IS DRAWN (tablet review 2026-11-01, 3.1) - see
+// FUNC(readerQuickTiles). A reply it would refuse is not on the row at all; it
+// was drawn dim, which still read as an offer. A word is a word and a distance
+// a value: neither is tracked.
 private _tileW = (_bw - _pad * 2 * (READER_TILES - 1)) / READER_TILES;
 {
-    _x params ["_id", "_label", "_live"];
-    private _tx = _bx + _forEachIndex * (_tileW + _pad * 2);
+    _x params ["_word", "_act", "_id", "_payload"];
+    private _second = _forEachIndex >= _firstRow;
+    private _col = [_forEachIndex, _forEachIndex - _firstRow] select _second;
+    private _tx = _bx + _col * (_tileW + _pad * 2);
+    private _ty = _y + ([0, _tileH + _gap] select _second);
 
-    [_root, [_tx, _y, _tileW, _tileH], [_dim, _ink] select _live, RULE_THICK] call FUNC(drawFrame);
-    [_root, [_tx + _pad * 3, _y, _tileW - _pad * 4, _tileH], _label, [_dim, _ink] select _live, READER_TILE_SIZE, true] call FUNC(drawText);
+    [_root, [_tx, _ty, _tileW, _tileH], _ink, RULE_THICK] call FUNC(drawFrame);
+    [_root, [_tx + _pad * 3, _ty, _tileW - _pad * 4, _tileH], _word, _ink, READER_TILE_SIZE, true] call FUNC(drawText);
 
-    if (_live) then {
-        private _hit = [_root, [_tx, _y, _tileW, _tileH], {
-            params ["_ctrl"];
-            private _id = _ctrl getVariable [QGVAR(quickId), ""];
-            private _key = _ctrl getVariable [QGVAR(quickKey), ""];
+    private _hit = [_root, [_tx, _ty, _tileW, _tileH], {
+        params ["_ctrl"];
+        private _act = _ctrl getVariable [QGVAR(quickAct), ""];
+        private _id = _ctrl getVariable [QGVAR(quickId), ""];
+        private _payload = _ctrl getVariable [QGVAR(quickPayload), []];
 
-            // A phrase is a free-text reply carrying the words on the tile; a
-            // template id is the template, so the thread's state still moves.
-            if (_id isEqualTo "") then {
-                ["freetext", [[_key, _ctrl getVariable [QGVAR(quickText), ""]]], [], GVAR(readerThread)] call EFUNC(messaging,submit);
-            } else {
-                [_id, [], [], GVAR(readerThread)] call EFUNC(messaging,submit);
+        // A card is filed as itself, so the thread's state still moves; one
+        // with a line left to fill opens in the composer, on this thread; a
+        // phrase is a free-text reply carrying the words on the tile.
+        switch (_act) do {
+            case QUICK_FILE: {
+                [_id, _payload, [], GVAR(readerThread)] call EFUNC(messaging,submit);
+                if (GVAR(readerAdjust) isNotEqualTo []) then {
+                    GVAR(readerAdjust) = [];
+                    {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+                };
             };
-        }] call FUNC(drawHit);
-        _hit setVariable [QGVAR(quickId), _id];
-        _hit setVariable [QGVAR(quickText), _label];
-        _hit setVariable [QGVAR(quickKey), _freeKey];
-    };
+            case QUICK_OPEN: {
+                [GVAR(readerThread), _id] call FUNC(composeOpen);
+            };
+            case QUICK_PICK: {
+                GVAR(readerAdjust) = [GVAR(readerThread), _payload param [0, ""]];
+                {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+            };
+            case QUICK_BACK: {
+                GVAR(readerAdjust) = [];
+                {[] call FUNC(readerDraw)} call CBA_fnc_execNextFrame;
+            };
+            // SEND SITREP on a TIC thread (user, 2026-11-02): the SITREP in
+            // the composer, in this thread, its location and ACE state filled.
+            case QUICK_SITREP: {
+                [GVAR(readerThread)] call FUNC(sitrepAfterTic);
+            };
+            // A NEW TASK IN THE THREAD (2026-11-02): the asset's own card -
+            // a new CAS REQUEST, a NEXT LIFT - in the composer, in this thread.
+            case QUICK_TASK: {
+                [GVAR(readerThread), _id] call FUNC(taskInThread);
+            };
+            default {
+                ["freetext", [[_ctrl getVariable [QGVAR(quickKey), ""], _ctrl getVariable [QGVAR(quickText), ""]]], [], GVAR(readerThread)] call EFUNC(messaging,submit);
+            };
+        };
+    }] call FUNC(drawHit);
+    _hit setVariable [QGVAR(quickAct), _act];
+    _hit setVariable [QGVAR(quickId), _id];
+    _hit setVariable [QGVAR(quickPayload), _payload];
+    _hit setVariable [QGVAR(quickText), _word];
+    _hit setVariable [QGVAR(quickKey), _freeKey];
 } forEach _tiles;
 
 // VOICE MSG: the design's inverted sixth tile, with the accent square that will
 // be the record light. Disabled - no hit - until the voice work is decided.
-private _vx = _bx + _bw - _tileW;
-private _sq = _tileH * 0.22;
-[_root, [_vx, _y, _tileW, _tileH], _dim] call FUNC(drawFill);
-[_root, [_vx + _pad * 3, _y, _tileW * 0.7, _tileH * 0.6], "VOICE MSG", _ground, READER_TILE_SIZE, true] call FUNC(drawText);
-[_root, [_vx + _pad * 3, _y + _tileH * 0.5, _tileW * 0.7, _tileH * 0.45], "COMING", _ground, READER_K_SIZE, true, "left", true] call FUNC(drawText);
-[_root, [_vx + _tileW - _pad * 3 - _sq / pixelH * pixelW, _y + (_tileH - _sq) * 0.5, _sq / pixelH * pixelW, _sq], _accent] call FUNC(drawFill);
+// BACK has the slot while the distance pick is open.
+if (!_picking) then {
+    private _vx = _bx + _bw - _tileW;
+    private _sq = _tileH * 0.22;
+    [_root, [_vx, _y, _tileW, _tileH], _dim] call FUNC(drawFill);
+    [_root, [_vx + _pad * 3, _y, _tileW * 0.7, _tileH * 0.6], "VOICE MSG", _ground, READER_TILE_SIZE, true] call FUNC(drawText);
+    [_root, [_vx + _pad * 3, _y + _tileH * 0.5, _tileW * 0.7, _tileH * 0.45], "COMING", _ground, READER_K_SIZE, true, "left", true] call FUNC(drawText);
+    [_root, [_vx + _tileW - _pad * 3 - _sq / pixelH * pixelW, _y + (_tileH - _sq) * 0.5, _sq / pixelH * pixelW, _sq], _accent] call FUNC(drawFill);
+};
 
-_y = _y + _tileH + _gap;
+_y = _y + _tilesH + _gap;
 
 // ------------------------------------------------------------ action row ---
 private _actW = _bw * 0.15;
@@ -167,7 +195,11 @@ private _gridX = _bx + _actW + _pad * 2;
     private _ctrl = _d displayCtrl IDC_RD_INPUT;
     private _at = if (isNil QEFUNC(ew,gpsHere)) then {getPosATL player} else {[true] call EFUNC(ew,gpsHere)};
     if (_at isEqualTo []) exitWith {};
-    _ctrl ctrlSetText trim format ["%1 %2", trim (ctrlText _ctrl), mapGridPosition _at];
+    // At the player's own figures, jmfsb_devices_gridDigits (tablet review
+    // 2026-11-01, 2.7), through the devices' one grid formatter; the engine's
+    // square where the devices are not loaded.
+    private _grid = if (isNil QEFUNC(devices,overlayGrid)) then {mapGridPosition _at} else {([_at] call EFUNC(devices,overlayGrid)) select 0};
+    _ctrl ctrlSetText trim format ["%1 %2", trim (ctrlText _ctrl), _grid];
     ctrlSetFocus _ctrl;
 }] call _fnc_action;
 

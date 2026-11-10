@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where the group is local: an AI group has been told of a DF fix (BASIC's
  * "alert nearby groups, look toward the bearing"). It goes AWARE unless it
  * is already in COMBAT, and its men watch the fix for AI_WATCH_S, then stop.

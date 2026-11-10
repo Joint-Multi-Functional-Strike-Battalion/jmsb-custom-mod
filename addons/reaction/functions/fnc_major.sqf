@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The objective-lost-grade reply (new.md section 2): shells from the hostile
  * commander's own guns, a drone sent to look, and the neighbourhood told.
  *
@@ -37,13 +37,10 @@ private _pside = side group _unit;
 INFO_3("MAJOR on %1 (%2) at %3",name _unit,_source,mapGridPosition _pos);
 
 // --- who is hostile enough to care ---------------------------------------
-private _answering = sideUnknown;
-if (!isNil "jmfsb_adapter_alive_fnc_commanders") then {
-    {
-        _x params ["_cside"];
-        if (_cside getFriend _pside < 0.6) exitWith { _answering = _cside };
-    } forEach (call jmfsb_adapter_alive_fnc_commanders);
-};
+// The first ALiVE commander hostile to them - without ALiVE, the mission's
+// enemy (user, 2026-11-02: "works with or without"), so the drone still comes
+// looking and the fallback barrage is still gated to that side's ground.
+private _answering = ([_pside] call EFUNC(common,hostileCommander)) select 0;
 
 // --- shells ----------------------------------------------------------------
 private _lo = GVAR(roundsMin);
@@ -52,8 +49,12 @@ private _rounds = round (_lo + random (_hi - _lo));
 
 if (_rounds > 0) then {
     private _asked = false;
-    if (_answering isNotEqualTo sideUnknown && {!isNil "jmfsb_adapter_alive_fnc_requestFire"}) then {
-        _asked = [_answering, _pos, 1] call jmfsb_adapter_alive_fnc_requestFire;
+    // No commander's guns with ALiVE loaded but no commanders either (user,
+    // 2026-11-02: "same as not loaded").
+    if (_answering isNotEqualTo sideUnknown
+        && {!isNil QEFUNC(adapter_alive,requestFire)}
+        && {[] call EFUNC(common,aliveLoaded)}) then {
+        _asked = [_answering, _pos, 1] call EFUNC(adapter_alive,requestFire);
     };
     if (!_asked) then {
         // Nobody to ask. The lesson still lands, from nowhere in particular -
@@ -88,8 +89,8 @@ private _radius = REACT_REVEAL_MIN + random (REACT_REVEAL_MAX - REACT_REVEAL_MIN
 
 // The virtual world hears it too, so a section that walks away from the
 // shells does not walk into a commander that never noticed.
-if (!isNil "jmfsb_adapter_alive_fnc_nearProfiles") then {
-    private _n = count ([_pos, _radius] call jmfsb_adapter_alive_fnc_nearProfiles);
+if (!isNil QEFUNC(adapter_alive,nearProfiles) && {[] call EFUNC(common,aliveLoaded)}) then {
+    private _n = count ([_pos, _radius] call EFUNC(adapter_alive,nearProfiles));
     if (_n > 0) then { INFO_1("%1 nearby profile(s) share the fix",_n) };
 };
 

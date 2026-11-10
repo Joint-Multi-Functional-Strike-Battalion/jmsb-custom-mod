@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TFAR's side default frequency lists from the net plan - the TFAR path of
  * jmfsb_gear_fnc_setupRadios. TFAR's client init reads these when it issues a
  * radio (TFAR_defaultFrequencies_sr_* / lr_*, set for west, east and

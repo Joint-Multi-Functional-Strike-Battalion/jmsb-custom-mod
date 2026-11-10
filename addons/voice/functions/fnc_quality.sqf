@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Link quality from a speaker to the local player on a net, as he hears it:
  * RF's best path, held at its last value for the grace time after the route
  * drops. Mute is not applied. DIRECT 1; VEH 1 between crew of one vehicle.

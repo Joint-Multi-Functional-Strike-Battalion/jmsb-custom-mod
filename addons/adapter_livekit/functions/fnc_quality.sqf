@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Hook "quality": how loud the local player hears a speaker on a net, from
  * the voice core (RF link quality with its grace time, 0 when the net is
  * muted). Kept per speaker and net; applied at once (FUNC(speaker)).

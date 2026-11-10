@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Empties this client's thread cache. The server sends it when the store is
  * emptied under the clients (msg.clear): the cache then holds threads that no
  * longer exist, and an index refresh alone would not clear them.

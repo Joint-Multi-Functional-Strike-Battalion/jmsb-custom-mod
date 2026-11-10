@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "block", client: the cut-off level of the local player, applied
  * at once by fnc_channels (enableChannel, voice only). 0 none; 1 radio
  * silence (EMCON 3): Group and our custom channels closed; 2 unconscious:

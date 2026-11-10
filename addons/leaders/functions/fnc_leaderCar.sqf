@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The car a leader moves town in. One per leader, parked at whichever safe
  * house he is currently in and travelling with him.
  *

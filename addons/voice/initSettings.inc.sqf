@@ -12,7 +12,7 @@
 // takes a mission restart.
 [
     QGVAR(defaultSystem), "LIST",
-    ["Voice system", "Which system carries the voice. Automatic: the voice server (LiveKit, through the mod's voice extension), else the game's own VON. Game VON is the fallback for a machine without the extension; chosen, it runs whatever is loaded. A system chosen but not loaded falls back to Automatic. The server's choice is everyone's. Read at mission start."],
+    ["Voice system", "Which system carries the voice. Automatic: Mumble when its address is set (through the mod's voice extension - no Mumble app needed), else LiveKit when its address is set, else the game's own VON. Mumble or LiveKit chosen with no address set: the game VON. Mumble and LiveKit: their server under JMSB - Voice (Built-in). Game VON is the fallback for a machine without the extension; chosen, it runs whatever is loaded. A system chosen but not loaded falls back to Automatic. The server's choice is everyone's. Read at mission start."],
     [CATEGORY_VOICE, "System"],
     [SYSTEM_CHOICES, SYSTEM_CHOICE_NAMES, DEFAULT_SYSTEM_CHOICE],
     1,

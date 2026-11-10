@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Fits every vehicle again (server). Called when the tables change under a
  * running system - a JMSB - APS module arriving after the settings had
  * already armed it, with a tier or fit table of its own. Each vehicle's watch

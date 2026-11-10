@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The voice activation key - numpad 7 in the numpad standard (user,
  * 2026-10-24: "toggle voice activation"): flips the VON adapter's own player
  * setting (jmfsb_adapter_von_vad) and says which way it went. Without the
@@ -19,7 +19,8 @@
  */
 
 if (isNil QEGVAR(adapter_von,vad)) exitWith {
-    ["VOICE", "Voice activation needs the game voice adapter (jmfsb_adapter_von)."] call EFUNC(notify,notify);
+    // No addon name on the screen (tablet review 2026-11-01, 2.1).
+    ["VOICE", "Voice activation needs the game voice adapter, which is not loaded."] call EFUNC(notify,notify);
     false
 };
 

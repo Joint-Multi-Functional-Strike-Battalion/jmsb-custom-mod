@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Fills both slots with whatever they are set to.
  *
  * DRAWN WITH THE TACPAD'S OWN VOCABULARY - drawFill, drawFrame, drawText - so

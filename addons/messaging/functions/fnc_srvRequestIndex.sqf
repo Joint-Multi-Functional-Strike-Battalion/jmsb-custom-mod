@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A client asks for its index (FUNC(request)), by remoteExecCall to the
  * server. The player named must be the sending machine's own (review S7): a
  * CBA event carries no sender, so anyone could have asked on anyone's behalf.

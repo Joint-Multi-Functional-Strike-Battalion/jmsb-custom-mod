@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How full a set's battery is, as the server last told its holder
  * (FUNC(batteryPublish)): 0..1, or -1 for a set that has no battery, is not
  * the holder's, or has not been reported yet. Answers on any machine from

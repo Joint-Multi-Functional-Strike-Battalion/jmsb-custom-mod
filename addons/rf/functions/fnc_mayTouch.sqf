@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: whether the remote-executed request now running may act on this
  * node (review R1) - the sender holds it (its holder is a unit of the sending
  * machine, or the node was registered to the sender's Steam id, so a respawn

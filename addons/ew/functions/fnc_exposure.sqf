@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How far a set is heard (DESIGN_EW "Exposure", shown in the EP tab): the
  * clear-ground distance at which a generic enemy receiver (EXPOSURE_SENS_DBM,
  * EXPOSURE_GAIN_DBI, without the key - so the set's spread gain comes off)

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * SET WEATHER, by remoteExec from FUNC(envApply) to the server, which checks
  * the sender is an admin (review S7), sets rain, fog and wind, forces the
  * change through at once, and passes the overcast on to every other machine

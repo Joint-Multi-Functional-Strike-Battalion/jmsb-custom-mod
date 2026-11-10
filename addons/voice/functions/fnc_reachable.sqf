@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: whether the local player reaches anyone on a net of his. A radio
  * net: any of his nodes has a path of quality above 0 to a peer on it; a
  * CALL: he reaches at least one other member on DATA. VEH and DIRECT always.

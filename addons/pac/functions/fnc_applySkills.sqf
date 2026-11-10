@@ -203,13 +203,18 @@ private _fnc_effect = {
 } forEach (_unit getVariable [QGVAR(setVars), []]);
 {
     _y params ["_name", "_value"];
+    // a nil _has is never compared (an error): unset counts as different
     private _has = _unit getVariable _name;
-    if (isNil "_has" || _has isNotEqualTo _value) then {_unit setVariable [_name, _value, true]};
+    private _differs = isNil "_has";
+    if (!_differs) then {_differs = _has isNotEqualTo _value};
+    if (_differs) then {_unit setVariable [_name, _value, true]};
 } forEach _vars;
 {
     _y params ["_name", "_value"];
     private _has = _unit getUnitTrait _name;
-    if (isNil "_has" || _has isNotEqualTo _value) then {_unit setUnitTrait [_name, _value]};
+    private _differs = isNil "_has";
+    if (!_differs) then {_differs = _has isNotEqualTo _value};
+    if (_differs) then {_unit setUnitTrait [_name, _value]};
 } forEach _traits;
 
 _unit setVariable [QGVAR(setVars), _setVars];

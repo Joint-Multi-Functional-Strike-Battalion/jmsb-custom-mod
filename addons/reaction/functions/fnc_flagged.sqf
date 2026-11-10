@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is this player carrying a silent flag, and what does it cost them?
  *
  * Read by the hacking console so a flagged player's FAIL chance is trebled

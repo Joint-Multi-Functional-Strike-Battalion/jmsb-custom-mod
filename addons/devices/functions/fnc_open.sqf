@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens the tablet wearing the given frame.
  *
  * TABLET MODE ONLY. In native mode the suite is on the map screen and the shell

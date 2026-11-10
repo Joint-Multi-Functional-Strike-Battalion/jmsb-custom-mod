@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A leader has reached his new town. He gets out, goes inside, and stops
  * moving until the next rotation.
  *

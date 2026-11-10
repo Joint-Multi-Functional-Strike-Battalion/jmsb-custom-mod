@@ -21,10 +21,12 @@ GVAR(dotIcon) = getText (configFile >> "CfgMarkers" >> DOT_MARKER >> "icon");
 
 #include "initSettings.inc.sqf"
 
-// THE PHONE'S STATUS CELL and THE TABLET'S TILE, offered to their rows.
-// jmfsb_devices shows the first OVERLAY_STATUS_CELLS of its order, and six
-// are already named, so PM is put at the front of the order only while
-// navigating (FUNC(use)). The tile is ungated: a route is anyone's.
+// THE PHONE'S AND SIDE DEVICES' STATUS CELL and THE TABLET'S TILE, offered
+// to their rows. jmfsb_devices shows the first OVERLAY_STATUS_CELLS (seven)
+// of its order, five named since GPS went (2026-11-01), so PM is put at the
+// front of the order only while navigating (FUNC(use)). jmfsb_devices is a
+// required addon, so its preInit has built the providers by now. The tile is
+// ungated: a route is anyone's.
 if (!isNil QEGVAR(devices,overlayProviders)) then {
     EGVAR(devices,overlayProviders) set [STATUS_ICON, FUNC(cell)];
 };

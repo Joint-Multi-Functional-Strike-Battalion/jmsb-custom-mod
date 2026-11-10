@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The live tile band. Each tile is a kicker with a right-aligned qualifier, one
  * big live value and one detail line - and clicking it opens that app, which is
  * the only way into an app.
@@ -240,8 +240,12 @@ private _i = 0;
     // The tile's small text - kicker, qualifier, detail - is TEXT_BODY two
     // pixels over the rest of the app text (user, 2026-10-22: "the secondary
     // text in the tiles 2px larger"; jmfsb_tacpad_fnc_textPx).
-    // A tile may ask for larger small print - the PAC tile does (user, 2026-10-24).
-    private _tileText = ([TEXT_BODY, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx)) * _textK;
+    // A tile may ask for a larger detail line - the PAC tile does (user,
+    // 2026-10-24). ONLY THE DETAIL: its kicker and badge are the band's size
+    // like every other tile's (review 2026-11-01, item 2.7: "kicker larger
+    // than other tiles").
+    private _smallText = [TEXT_BODY, APP_TEXT_UP_PX] call EFUNC(tacpad,textPx);
+    private _tileText = _smallText * _textK;
     [_body, [_x0, _rowY, _tileW, _tileH], _ground] call EFUNC(tacpad,drawFill);
     if (_live) then {
         [[_x0, _rowY, _tileW, _tileH]] call _fnc_fill;
@@ -261,14 +265,26 @@ private _i = 0;
     // text, like every chip, its width estimated at the monospace's own
     // advance (TILE_BADGE_GLYPH) so it never wraps; it was measured at a
     // tighter estimate and drawn a size larger, and broke in two.
+    //
+    // AND THE KICKER KEEPS TILE_KICKER_MIN_GLYPHS (review 2026-11-01, item
+    // 2.7: the DRONES tile read "DRON"). The badge gets what is left after
+    // that; a badge narrower than its word sets the word smaller by the same
+    // ratio, so the chip shrinks with it instead of breaking in two.
     private _badgeW = 0;
-    private _badgeSize = _tileText * CHIP_SIZE_K;
+    private _badgeSize = _smallText * CHIP_SIZE_K;
     if (_qualifier isNotEqualTo "") then {
         private _badgeFontH = ([_badgeSize] call EFUNC(tacpad,textH)) / 1.25;
-        _badgeW = ((count _qualifier) * TILE_BADGE_GLYPH * _badgeFontH * pixelW / pixelH + 2 * CHIP_PAD_PX * pixelW) min (_tileW * TILE_BADGE_MAX_K);
+        private _chipPadW = 2 * CHIP_PAD_PX * pixelW;
+        private _badgeNatW = (count _qualifier) * TILE_BADGE_GLYPH * _badgeFontH * pixelW / pixelH + _chipPadW;
+        private _kickFontH = ([_smallText] call EFUNC(tacpad,textH)) / 1.25;
+        private _kickMinW = TILE_KICKER_MIN_GLYPHS * TILE_KICKER_GLYPH * _kickFontH * pixelW / pixelH;
+        _badgeW = ((_badgeNatW min (_tileW * TILE_BADGE_MAX_K)) min (_tileW - 2 * _padX - _padX * 0.5 - _kickMinW)) max _chipPadW;
+        if (_badgeW < _badgeNatW) then {
+            _badgeSize = _badgeSize * (_badgeW - _chipPadW) / (_badgeNatW - _chipPadW);
+        };
     };
     private _kickW = _tileW - 2 * _padX - ([0, _badgeW + _padX * 0.5] select (_badgeW > 0));
-    [[_x0 + _padX, _rowY + _kickOff, _kickW, _kickH], [_tileText, true, "left", true, ""]] call _fnc_text;
+    [[_x0 + _padX, _rowY + _kickOff, _kickW, _kickH], [_smallText, true, "left", true, ""]] call _fnc_text;
     if (_badgeW > 0) then {
         private _badge = [_x0 + _tileW - _padX - _badgeW, _rowY + _kickOff, _badgeW, _kickH];
         [_badge] call _fnc_fill;
@@ -286,6 +302,8 @@ private _i = 0;
         private _app = _ctrl getVariable [QGVAR(tileApp), ""];
         // The MSG tile is the reader, not an app (user, 2026-10-24).
         if (_app isEqualTo "msg") exitWith {[] call EFUNC(tacpad,openReader)};
+        // The LOG tile is the reader's LOG view (2026-11-09).
+        if (_app isEqualTo LOG_APP) exitWith {[] call FUNC(openLog)};
         [_app, [], true] call EFUNC(tacpad,openApp);
     }] call EFUNC(tacpad,drawHit);
     _hit setVariable [QGVAR(tileApp), _app];

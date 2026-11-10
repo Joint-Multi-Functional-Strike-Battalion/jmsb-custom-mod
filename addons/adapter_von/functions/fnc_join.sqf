@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "join", server: puts a unit on the custom channel of a net
  * (radioChannelAdd). TEAM is VON's Group channel, which follows the Arma
  * group by itself; VEH and DIRECT need nothing.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * EA: sets a man's jammer (DESIGN_EW "EA"). One jammer per operator,
  * radiating from what FUNC(kit) says he jams from - the vehicle carrying a
  * jammer module. On a client this forwards to the server, which

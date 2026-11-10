@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * OPEN CHANNEL: NET or LOCAL - where an open mic sits when no talk key is held,
  * under voice activation (FUNC(openChannel)). A key and a RADIO app button.
  * Under push to talk it changes nothing audible and says so.

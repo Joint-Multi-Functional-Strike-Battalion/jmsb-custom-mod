@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * EA: places a decoy at a man's feet (DESIGN_EW "Decoy"; ISR only). The
  * decoy is a ground antenna registered in RF with a chosen profile's band and
  * power, claiming one net under a key nobody else holds - so it carries no

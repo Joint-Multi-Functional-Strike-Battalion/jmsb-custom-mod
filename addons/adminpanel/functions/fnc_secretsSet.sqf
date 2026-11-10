@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A SECRETS row's SET (code review R4): sends what is typed in that row to the
  * server alone (jmfsb_common_fnc_secretSet, which checks the logged-in admin
  * and answers with the status), then empties the field so it is not left on

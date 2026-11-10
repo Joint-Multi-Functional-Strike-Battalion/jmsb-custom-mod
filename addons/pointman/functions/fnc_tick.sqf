@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every PM_TICK seconds (XEH_postInit): a tablet map that has opened gets the
  * route drawn on it, and a walked route moves on when the GPS says the next
  * waypoint is inside the arrival radius - or ends at the last. No fix, no

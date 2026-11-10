@@ -46,6 +46,8 @@ Parameters:
     0: Force the write, ignoring the debounce <BOOL> (optional, default false)
     1: Also write the database, not just the profile <BOOL> (optional, default
        false - profile only)
+    2: Push at once, without the merge's read <BOOL> (optional, default false -
+       mission end only, where a scheduled read would not finish)
 
 Returns:
     Whether it wrote <BOOL>
@@ -54,7 +56,7 @@ Author:
     YonV
 ---------------------------------------------------------------------------- */
 
-params [["_force", false, [false]], ["_toService", false, [false]]];
+params [["_force", false, [false]], ["_toService", false, [false]], ["_atOnce", false, [false]]];
 
 if (!isServer) exitWith {false};
 
@@ -110,7 +112,15 @@ GVAR(savedAt) = [] call FUNC(stamp);
 // window (the host's own, always) must not push that copy over the real
 // store. Before READY nothing writes the database; the session row is in
 // memory and the next write carries it.
-if (_toService && GVAR(svcUp) && {missionNamespace getVariable [QGVAR(ready), false]}) then {[] call FUNC(svcSave)};
+//
+// MERGED, NOT PUSHED BLIND (2026-11-07): FUNC(storeSync) reads the database's
+// copy first and folds in what the other servers wrote. At mission end the
+// push goes at once: a scheduled read would be cut off with the mission. It
+// carries this server's store as of its last merge; the other servers still
+// hold their own rows and put them back with their next save.
+if (_toService && GVAR(svcUp) && {missionNamespace getVariable [QGVAR(ready), false]}) then {
+    if (_atOnce) then {[] call FUNC(svcSave)} else {[] call FUNC(storeSync)};
+};
 
 TRACE_2("store written",count GVAR(players),count GVAR(sessions));
 

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Is this man carrying a radio worth taking off his body?
  *
  * The test is the item's own SIMULATION rather than a list of classnames, so

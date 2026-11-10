@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What a man is for, in the three or four letters a roster uses.
  *
  * A QUALIFICATION WINS FIRST (2026-10-07): the PAC skill tags on the unit

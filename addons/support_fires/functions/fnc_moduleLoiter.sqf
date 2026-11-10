@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one JMSB - Loitering Munitions module: a launch site at the module's
  * position with a stock of munitions.
  *

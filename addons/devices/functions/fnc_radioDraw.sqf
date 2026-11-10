@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws the small devices' RADIO app over the walking view's map, squad list
  * and net row (docs/DESIGN_VOICE.md, "Phone and side RADIO app"; the
  * voice_phone_app_* and voice_side_app_* images): the tab strip, the header

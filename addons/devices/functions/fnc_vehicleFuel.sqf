@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A vehicle's fuel and a rough range on what is left.
  *
  * THE RANGE IS MEASURED, NOT CONFIGURED. A vehicle's config carries a tank

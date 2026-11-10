@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an ACM casualty evacuation on a player's machine (the
  * ACM_casualtyEvacuated handler in FUNC(eventHandlers)) - the original unit
  * leaves its slot in the dynamic groups.

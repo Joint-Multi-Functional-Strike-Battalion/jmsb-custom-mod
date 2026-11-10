@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: each player's EW slice - his side's tracks and his own state - sent
  * with publicVariableClient only when it changed (positions on a 10 m grid,
  * dB as integers, so standing still is not a change). Tracks are the

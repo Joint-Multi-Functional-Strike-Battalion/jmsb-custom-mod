@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Keeps the tablet's rows current: the device bar, the notification line, the
  * net row and the who-is-talking chip whenever what they say has changed, the
  * live tiles on their own period when theirs has, every ground recoloured when

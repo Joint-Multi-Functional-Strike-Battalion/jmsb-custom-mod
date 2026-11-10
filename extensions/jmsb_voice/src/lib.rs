@@ -1,13 +1,16 @@
 //! jmsb_voice: the JMSB mod's Arma 3 extension for radio voice over LiveKit
-//! (docs/DESIGN_VOICE_LIVEKIT.md). SQF decides who hears whom and how well;
-//! this carries the audio.
+//! or Mumble (docs/DESIGN_VOICE_LIVEKIT.md; session.rs picks by the address).
+//! SQF decides who hears whom and how well; this carries the audio.
 //!
 //! Commands (`"jmsb_voice" callExtension [command, [args]]`):
 //!   version                        the extension's version
 //!   token   [key, secret, room, identity, name] SERVER: a join token; an
 //!                                  empty key or secret is read from the
 //!                                  server's JMSB_LIVEKIT_KEY / _SECRET
-//!   connect [url, token]           CLIENT: join; events arrive as callbacks
+//!   connect [url, token]           CLIENT: join; events arrive as callbacks.
+//!                                  LiveKit: ws(s) url and join token; Mumble:
+//!                                  mumble://identity@host:port/room[?echo]
+//!                                  and the server's password
 //!   talk    [on]                   open / close the microphone
 //!   subscribe [identity, on]       receive that speaker or not (auto-subscribe
 //!                                  is off: nobody is received until asked)
@@ -28,6 +31,12 @@
 
 #[cfg(feature = "client")]
 pub mod audio;
+#[cfg(feature = "client")]
+pub mod codec;
+#[cfg(feature = "client")]
+pub mod livekit;
+#[cfg(feature = "client")]
+pub mod mumble;
 #[cfg(feature = "client")]
 pub mod session;
 pub mod token;
@@ -166,8 +175,10 @@ mod client {
     /// Goes up with every `device`: a reopen overtaken by a newer one drops
     /// what it opened.
     static REOPEN: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-    /// Whether a room was ever joined this process: then libwebrtc's and the
-    /// runtime's threads exist, and the process's end must not unwind them.
+    /// Whether a room was ever joined this process: then the runtime's and
+    /// the audio threads exist, and the process's end must not unwind them
+    /// (libwebrtc is gone since 2026-11-01; the guard stays until shown
+    /// unneeded, README "The process's end").
     pub static EVER_CONNECTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
     /// Every callback goes through this one task, which owns the context.
@@ -192,6 +203,9 @@ mod client {
 
     fn runtime() -> &'static Runtime {
         RUNTIME.get_or_init(|| {
+            // before the first thread of ours exists (crate::exit::pin)
+            #[cfg(windows)]
+            crate::exit::pin();
             tokio::runtime::Builder::new_multi_thread()
                 .worker_threads(2)
                 .enable_all()
@@ -381,6 +395,13 @@ mod client {
 /// DLLs' detach. A stopgap: the clean way is to shut the runtime and
 /// libwebrtc down at the mission's end, while their threads still live
 /// (extensions/jmsb_voice README, "The process's end").
+///
+/// PINNED (2026-11-01): Arma unloads the DLL (FreeLibrary) as the game
+/// closes, before the process ends, while the runtime's and the audio
+/// threads still run - they then ran into the unmapped code ("BEX64 ...
+/// jmsb_voice_x64.dll_unloaded ... c0000005", on quit, three times
+/// 2026-10-31 / 11-01). `pin` keeps the DLL mapped until the process ends:
+/// FreeLibrary is then a no-op and the only detach left is the process's.
 #[cfg(all(windows, feature = "client"))]
 mod exit {
     use std::sync::atomic::Ordering;
@@ -389,9 +410,25 @@ mod exit {
     unsafe extern "system" {
         fn GetCurrentProcess() -> isize;
         fn TerminateProcess(process: isize, code: u32) -> i32;
+        fn GetModuleHandleExW(flags: u32, name: *const u16, module: *mut isize) -> i32;
     }
 
     const DLL_PROCESS_DETACH: u32 = 0;
+    const GET_MODULE_HANDLE_EX_FLAG_PIN: u32 = 0x1;
+    const GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS: u32 = 0x4;
+
+    /// Keeps this DLL loaded until the process ends, whatever FreeLibrary is
+    /// called. Called once, before the first thread of ours starts.
+    pub fn pin() {
+        let mut module = 0isize;
+        let here = pin as *const () as *const u16;
+        let ok = unsafe {
+            GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_PIN | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, here, &mut module)
+        };
+        if ok == 0 {
+            log::warn!("could not pin the DLL: an unload while voice runs may crash the game");
+        }
+    }
 
     #[unsafe(no_mangle)]
     #[allow(non_snake_case)]

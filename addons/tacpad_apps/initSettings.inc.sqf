@@ -137,13 +137,3 @@
     [CALL_CAM_VIEW_AHEAD - CALL_CAM_NUDGE, CALL_CAM_VIEW_AHEAD + CALL_CAM_NUDGE, CALL_CAM_VIEW_AHEAD, 2],
     false
 ] call CBA_fnc_addSetting;
-
-// DANGER CLOSE (user, 2026-10-30): a distance, server-forced. Who is near is
-// the BFT picture's business (jmfsb_bft_fnc_friendlies), never a setting's.
-[
-    QGVAR(dangerClose), "SLIDER",
-    ["Danger close distance (m)", "Before CONFIRM TASKING sends an artillery or CAS task, friendlies inside this distance of the target point are named and the request waits for YES or NO. 0 turns the check off."],
-    ["JMSB - Tablet & Map", "TAC//SUPPORT"],
-    [0, 2000, 600, 0],
-    true
-] call CBA_fnc_addSetting;

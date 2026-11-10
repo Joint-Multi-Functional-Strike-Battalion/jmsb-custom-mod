@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether a man may make, people and remove RTO nets, as a client can tell:
  * he holds the RTO job (FUNC(isRto)) or jmfsb_common has flagged his unit a
  * logged-in admin. This decides what the RADIO app draws and what

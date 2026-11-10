@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: who sent the remote-executed call now running (review S1-S7,
  * recommendation R1). The machine is the engine's remoteExecutedOwner, never
  * anything the call's arguments say; the unit is the player that machine

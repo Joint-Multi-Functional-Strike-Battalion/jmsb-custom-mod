@@ -84,6 +84,8 @@ class CfgVehicles {
             description[] = {
                 "Placing this module turns on qrf. Without it, the system is off.",
                 "",
+                "Without ALiVE: only jmfsb_qrf area markers are watched, the mission's enemy answers, and its squads walk in live. No artillery is asked - there are no commander's guns.",
+                "",
                 "Hold Time (sec) - How long players must hold an objective, uncontested, before it counts as taken",
                 "Players Needed - How many players inside before a hold counts at all",
                 "Squads Min - Fewest squads the third wave sends",

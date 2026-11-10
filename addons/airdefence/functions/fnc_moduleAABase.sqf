@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the AA Base module and builds the base it describes - a radar, SAM
  * launchers round it and AA guns close in, inside the module's own area.
  *

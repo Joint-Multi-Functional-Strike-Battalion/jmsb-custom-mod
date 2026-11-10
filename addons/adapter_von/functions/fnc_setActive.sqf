@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "setActive", client: makes a net's channel the current VON
  * channel (setCurrentChannel). The game's push-to-talk key sends on the
  * current channel, so this is what makes the PTT talk on the active net.

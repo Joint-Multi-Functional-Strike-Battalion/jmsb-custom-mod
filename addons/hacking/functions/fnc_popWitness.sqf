@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a hack started on an internet pop, checked for witnesses. A pop is
  * public furniture in a settlement: any civilian close enough with eyes on
  * the hacker remembers it, and the settlement's hostility toward the
@@ -53,7 +53,8 @@ if (_owner > 0) then {
 };
 
 private _pos = getPosATL _pop;
-if (isNil QEFUNC(adapter_alive,bumpHostility)) exitWith {
+// Not with ALiVE loaded but no commanders (user, 2026-11-02: "same as not loaded").
+if (isNil QEFUNC(adapter_alive,bumpHostility) || {!([] call EFUNC(common,aliveLoaded))}) exitWith {
     INFO_2("pop hack witnessed at %1 by a civilian hostile to %2",mapGridPosition _pos,_sideStr);
 };
 

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One vehicle's or animal's box for this frame: round its bounding box
  * (FUNC(boxRect)), in the colour of whoever crews it (FUNC(targetColour) -
  * yellow when nobody does, faded with range), with its AiTR label.

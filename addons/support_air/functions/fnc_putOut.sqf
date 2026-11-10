@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An AI passenger out of a transport, on the machine that owns him:
  * unassignVehicle and moveOut only take there, and a player's AI squadmates
  * live on his client. The server decides (FUNC(transportStep)) and sends it

@@ -91,7 +91,7 @@
 // the adapter, which is the only addon allowed to know ALiVE exists.
 [
     QGVAR(aliveReports), "CHECKBOX",
-    ["Post reports to ALiVE", "A template marked reportable - CONTACTREP and SITREP - is also filed with ALiVE's C2ISTAR as a spotrep or sitrep, with a companion map marker. Silently does nothing when ALiVE is absent."],
+    ["Post reports to ALiVE", "A template marked reportable - CONTACTREP and SITREP - is also filed with ALiVE's C2ISTAR as a spotrep or sitrep, with a companion map marker. Needs ALiVE - without it nothing is posted, said once in the server RPT."],
     ["JMSB - Tablet & Map", "Messaging"],
     true,
     true

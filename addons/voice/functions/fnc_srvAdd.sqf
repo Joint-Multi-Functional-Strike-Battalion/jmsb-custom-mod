@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the call's OWNER - who started it - adds people. They ring until
  * they accept. Anyone else is refused with REASON_NOT_OWNER (user,
  * 2026-10-20: the channel owner invites, not the RTO).

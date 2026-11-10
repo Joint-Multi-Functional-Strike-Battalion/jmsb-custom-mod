@@ -15,6 +15,10 @@ Description:
     columns lists squads only. With no VON rows, and for the TEAM net ("sr"),
     the answer is the squad's (FUNC(netPlanSquad)).
 
+    A sixth column, optional, is a lowest Arma rank (user, 2026-11-07: "a
+    range control net for all NCOs"): "CORPORAL" puts every corporal and up on
+    the row - the rank PAC sets from his PAC rank (FUNC(applyRank)).
+
 Parameters:
     0: Unit <OBJECT>
     1: Kind "sr" | "lr" | "a2g" <STRING> (optional, default "sr")
@@ -46,6 +50,7 @@ if (count _role > _suffix && {(_role select [count _role - _suffix]) isEqualTo R
     _role = _role select [0, count _role - _suffix];
 };
 private _skills = (_unit getVariable [QGVAR(skillIds), []]) apply {toLower _x};
+private _rankAt = ARMA_RANK_INDEX(rank _unit);
 
 private _fnc_names = {
     params ["_row", "_col", "_fold"];
@@ -58,6 +63,11 @@ private _at = _von findIf {
         _squad in ([_x, VON_COL_SQUADS, {toUpper trim _this}] call _fnc_names)
         || {_role isNotEqualTo "" && {_role in ([_x, VON_COL_ROLES, {toLower trim _this}] call _fnc_names)}}
         || {(([_x, VON_COL_SKILLS, {toLower trim _this}] call _fnc_names) findIf {_x in _skills}) >= 0}
+        || {
+            private _rowRank = _x param [VON_COL_RANK, "", [""]];
+            private _min = ARMA_RANK_INDEX(_rowRank);
+            _min >= 0 && _rankAt >= _min
+        }
     }
 };
 if (_at < 0) exitWith {""};

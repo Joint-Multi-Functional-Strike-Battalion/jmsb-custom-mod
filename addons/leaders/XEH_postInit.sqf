@@ -32,6 +32,8 @@ if (!isServer) exitWith {};
 GVAR(leaders) = [];
 GVAR(houses) = [];
 GVAR(asymSide) = sideUnknown;
+// The insurgents' faction when ALiVE is not loaded to name it (FUNC(start)).
+GVAR(asymFaction) = "";
 // leader index -> the house his intel currently points at. Set BEFORE he
 // moves, so intel found in the old house points where he is going.
 GVAR(nextHouse) = createHashMap;

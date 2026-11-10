@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One word for the screens about where the mic is: PTT (push to talk, the
  * active net on the key), or under voice activation CALL, NET or LOCAL - held
  * keys included, so the word follows the finger.

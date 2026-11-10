@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: (re)registers one base station in RF with the fill as the plan has
  * it now - every net id of FUNC(netPlan), plus DATA and the default plan's C2
  * (BASE_EXTRA_NETS; a net RF does not have is simply not meshed) - each under

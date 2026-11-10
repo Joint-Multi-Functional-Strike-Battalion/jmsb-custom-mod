@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Every AA piece ALiVE is running, as a hunt pool (new.md section 1.1 -
  * jmfsb spawns none of this).
  *

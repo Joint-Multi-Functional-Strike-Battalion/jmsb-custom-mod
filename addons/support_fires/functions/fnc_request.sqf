@@ -1,13 +1,15 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The server side of an accepted order, reached by remoteExec from
  * FUNC(task). It takes the requester from the sending machine
  * (FUNC(requester)) and runs FUNC(check) again for him - side, availability
  * (a second caller may have got there first), target, range - building the
  * options from the parameter array here rather than taking the client's
  * (review S6). Then it opens a new mission (FUNC(openMission)) and hands it
- * to the asset's own fire code, which acknowledges it to the requester.
+ * to the asset's own fire code, which acknowledges it to the requester. The
+ * next call on an adjust mission the battery holds for the requester goes on
+ * that mission instead (FUNC(adjustFor), FUNC(adjustNext)).
  *
  * Arguments:
  * 0: The module logic <OBJECT>
@@ -36,6 +38,13 @@ private _assetId = format ["%1:%2", SUPPORT_KIND, _logic getVariable [QGVAR(id),
 if (!_ok) exitWith {
     INFO_2("request: refused for %1 - %2",_requester,_why);
     [_assetId, false, _why, _requester] call EFUNC(support,ack);
+};
+
+// ADJUST FIRE (2026-11-01): the observer's next call on the mission the
+// battery holds for him goes on that mission, not a new one.
+([_logic, _requester, _prm] call FUNC(adjustFor)) params ["_held", "", "_call"];
+if (_held isEqualTo ADJ_STATE_HELD) exitWith {
+    [_logic, _at, _opts, _call, _requester, _assetId] call FUNC(adjustNext);
 };
 
 private _token = [_logic] call FUNC(openMission);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LOAD THE FILL: programs this player's TFAR sets from nets, never from
  * numbers. Every short-range set he carries gets the short-range fill, his
  * long-range backpack and the rack of the crew seat he is in get the

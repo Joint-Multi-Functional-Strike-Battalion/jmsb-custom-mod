@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Once a minute (XEH_postInit), while Log tick timings is on: one RPT line
  * per timed tick (FUNC(perfAdd)) - runs, average and worst ms, the budget and
  * how many runs went over it - then starts the next minute afresh (R9).

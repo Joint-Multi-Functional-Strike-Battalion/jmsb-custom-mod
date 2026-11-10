@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * How long a hack of this kind runs - each kind on its own clock. One answer
  * for the tablet that runs the bar (FUNC(tabletAction)) and the server that
  * checks the hack really ran its course (FUNC(srvHackComplete), review S7).

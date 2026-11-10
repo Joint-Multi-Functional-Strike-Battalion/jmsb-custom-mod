@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: makes objects and groups editable for every curator. Reached by
  * remoteExec from a curator's machine when he places something, and from
  * each client for its own player at start; the server's own calls go

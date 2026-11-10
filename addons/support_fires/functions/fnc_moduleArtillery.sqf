@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one RETIRED JMSB - Artillery Battery module and runs it as a virtual
  * battery (user, 2026-10-20: "arty should be virtual"). The class stays so
  * the missions that placed it still load and still get their battery; it is
@@ -93,10 +93,24 @@ private _stock = _order apply {
         if (_name isEqualTo "") then {_name = getText (_cfgMags >> _cls >> "displayName")};
     };
     if (_name isEqualTo "") then {_name = _cls};
-    [toUpper _name, _byClass get (toLower _cls), _ammo, toLower _cls]
+    // The kind a card's shell tick asks for, from the ammo (2026-11-05: the
+    // class name stood here, and every ticked shell was refused NO STORES).
+    [toUpper _name, _byClass get (toLower _cls), _ammo, [_ammo] call FUNC(ammoKind), toLower _cls]
 } select {
     isClass (_cfgAmmo >> (_x select 2))
 };
+// The kind names one stock entry (FUNC(virtualShot) spends by it): the first
+// round of a kind answers its tick, a second of the same kind keeps its class.
+private _kindsTaken = [];
+{
+    private _kind = _x select 3;
+    if (_kind in _kindsTaken) then {
+        _x set [3, _x select 4];
+    } else {
+        _kindsTaken pushBack _kind;
+    };
+    _x resize 4;
+} forEach _stock;
 
 // The muzzle velocity from the first round fed by a magazine.
 private _mv = VA_DEF_MV;

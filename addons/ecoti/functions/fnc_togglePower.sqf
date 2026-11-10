@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The power key. Flips the clip-on on or off and says which.
  *
  * Arguments:

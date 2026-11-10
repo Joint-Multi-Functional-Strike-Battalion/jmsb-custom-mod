@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: registers code to run when a virtual barrage is fired here
  * (FUNC(fireBarrage)) - the enemy's counter-battery radar reports it
  * (jmfsb_reaction_fnc_cbVirtual).

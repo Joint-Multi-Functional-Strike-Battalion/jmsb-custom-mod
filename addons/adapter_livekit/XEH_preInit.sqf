@@ -24,6 +24,7 @@ GVAR(echoPfh) = -1;
 // machine's place in it: the state, when it entered it, the mix tick.
 GVAR(state) = ROOM_NONE;
 GVAR(since) = 0;
+GVAR(waitS) = ROOM_ANSWER_S;
 GVAR(pfh) = -1;
 // Per speaker (his UID): the unit and the net he keyed (hook "keyed"), the
 // quality the voice core gave him per net ("uid|net", hook "quality"), the
@@ -59,7 +60,9 @@ GVAR(toldNoServer) = false;
 // and every reader has it before the settings are in. Membership (join /
 // leave) needs nothing: one room holds everyone, and who hears whom is the
 // mix (FUNC(gainOf)). No channel count to run out of: every RTO net is
-// granted. The game VON's Global channel does not exist here.
+// granted, and the calls have no limit (user, 2026-11-01: the voice core
+// makes a CALL slot more whenever all are taken, jmfsb_voice_fnc_srvSlot).
+// The game VON's Global channel does not exist here.
 [ADAPTER_ID, createHashMapFromArray [
     ["join", {}],
     ["leave", {}],
@@ -70,7 +73,11 @@ GVAR(toldNoServer) = false;
     ["block", {_this call FUNC(block)}],
     ["ptt", {[] call FUNC(ptt)}],
     ["keyed", {_this call FUNC(keyed)}],
+    ["selfTest", {[] call FUNC(selfTest)}],
     ["reserve", {true}],
+    // the server: a voice server address is set (2026-11-05), else the
+    // voice core runs the game VON for the mission
+    ["serverReady", {([] call FUNC(srvServerKind)) isNotEqualTo SERVER_NONE}],
     ["channelUse", {[]}],
     ["global", {false}]
 ]] call EFUNC(voice,registerAdapter);

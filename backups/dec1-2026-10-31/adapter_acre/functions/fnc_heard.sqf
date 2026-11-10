@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, on ACRE's acre_remoteStartedSpeaking / acre_remoteStoppedSpeaking:
  * another player started or stopped talking. A radio transmission is kept,
  * with the net of the radio he talks on (fnc_radioNet), until he stops;

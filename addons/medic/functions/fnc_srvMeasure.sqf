@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a medic's hand check (FUNC(recordCheck), by remoteExec). The medic
  * is the sender himself and must be alive and within CHECK_RANGE of the
  * patient; then the reading is taken on the patient's machine

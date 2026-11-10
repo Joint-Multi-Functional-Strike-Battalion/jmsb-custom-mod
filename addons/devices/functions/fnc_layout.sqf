@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where one device and its screen land on this monitor.
  *
  * THE DEVICE FILLS THE SCREEN, NOT THE TEXTURE. A frame texture is a square

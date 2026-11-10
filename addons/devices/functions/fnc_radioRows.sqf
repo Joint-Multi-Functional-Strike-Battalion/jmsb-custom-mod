@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What the small devices' RADIO app shows on its open tab, and what its soft
  * keys say (docs/DESIGN_VOICE.md, "Phone and side RADIO app"). Pure read of
  * the voice API: FUNC(radioDraw) draws it and FUNC(radioKey) acts on it, so
@@ -118,7 +118,9 @@ switch (GVAR(radioTab)) do {
             _header = "LEADERS, RTO AND ADMIN ONLY";
             _keys = [["", false], ["", false], ["", false], ["BACK", true]];
         };
-        _header = "NOT BUILT: ADD / REMOVE / REKEY";
+        // No header: what MANAGE cannot do here is the README's to say, not
+        // the screen's (tablet review 2026-11-01, 2.1).
+        _header = "";
         _heads = [["NET", 0], ["KIND", 0.45], ["STATE", 0.7]];
         {
             _x params [["_netId", "", [""]], ["_name", "", [""]], ["_kind", "", [""]], "", "", "", ["_reach", false, [false]]];

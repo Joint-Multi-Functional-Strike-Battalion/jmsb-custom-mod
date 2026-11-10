@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A delivery receipt arriving on this machine (FUNC(ack)): runs the hooks
  * registered with FUNC(onAck). Called on this machine, or sent by the server
  * by remoteExec - a remote call from anyone else is dropped (review R1).

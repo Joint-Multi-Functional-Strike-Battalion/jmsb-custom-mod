@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The EW app's EP tab (DESIGN_EW "EP"): his own sets, one row each - the
  * profile, how far it is heard (FUNC(exposure)) and EMCON 0-3. A press sets
  * the level in RF (jmfsb_rf_fnc_setState "emcon") and asks the server for a

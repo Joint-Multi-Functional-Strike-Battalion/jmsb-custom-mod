@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What an air asset says, server side: the requester gets it as the support
  * core's acknowledgement (EFUNC(support,ack) - the verdict row and the notify
  * rail of TAC//SUPPORT), everyone else on the side as a notification

@@ -172,34 +172,16 @@ if (isServer) then {
     }) joinString "  |  "
 }, true] call EFUNC(common,addDebugCommand);
 
-// THE HAND-HELD SCANNER, its stopwatch, and the alarm dial. The device was
-// removed once and asked back: a thing you hold up while walking is not the
-// same as a screen you stop and open. All three gate on GVAR(scannerVariable),
-// which is wider than the terminal on purpose - reading warning lamps is
-// passive, so the terminal counts as a scanner but not the other way round.
+// THE ALARM KEYS. The hand-held scanner screen, its toggle key, its stopwatch
+// and its ACE menu are gone (user, 2026-11-08: "the old signal scanner needs to
+// be removed"); the alarms stay - the tacpad TIMER arms the same list - and
+// these keys still dial and clear them. They gate on GVAR(scannerVariable).
 if (hasInterface) then {
-    ["1st Joint Multi-Functional Strike Battalion", QGVAR(scannerKey), ["Toggle Signal Scanner", "Shows or hides the hand-held scanner."],
-    {
-        [player] call FUNC(scannerToggle);
-        true
-    }, {false}, [0x16, [false, true, false]]] call CBA_fnc_addKeybind;   // Ctrl+U, rebindable
-    // Off the H cluster: ACE medical lives there.
-
-    // One key does all three jobs - press to start, press to stop, press again
-    // to clear - so it can be worked without looking at the screen.
-    ["1st Joint Multi-Functional Strike Battalion", QGVAR(timerKey),
-    ["Scanner Stopwatch", "Start, stop, then clear the scanner's stopwatch. Needs the scanner on you; it keeps counting whether or not the screen is up."],
-    {
-        if !([player] call FUNC(hasScanner)) exitWith { false };
-        call FUNC(scannerTimer);
-        true
-    }, {false}, [0x16, [false, true, true]]] call CBA_fnc_addKeybind;   // Ctrl+Shift+U, rebindable
-
     // The alarm: press to add 5 minutes, stop pressing to arm, press to shut
     // it up when it rings. Server-wide by design - one person sets it and
-    // every scanner in the mission goes off.
+    // every player in the mission hears it.
     ["1st Joint Multi-Functional Strike Battalion", QGVAR(alarmKey),
-    ["Scanner Alarm", "Each press adds 5 minutes; it arms itself when you stop pressing. When it goes off, EVERY scanner on the server beeps. Press while ringing to silence yours. Needs the scanner on you."],
+    ["Alarm", "Each press adds 5 minutes; it arms itself when you stop pressing. When it goes off, everyone on the server hears it. Press while ringing to silence yours."],
     {
         if !([player] call FUNC(hasScanner)) exitWith { false };
         call FUNC(scannerAlarm);
@@ -209,7 +191,7 @@ if (hasInterface) then {
     // Unbound on purpose: wiping every alarm on the net is not something to
     // sit next to the key that sets one.
     ["1st Joint Multi-Functional Strike Battalion", QGVAR(alarmClearKey),
-    ["Clear Scanner Alarms", "Cancels every armed scanner alarm, server-wide. Unbound by default."],
+    ["Clear Alarms", "Cancels every armed alarm, server-wide. Unbound by default."],
     {
         if !([player] call FUNC(hasScanner)) exitWith { false };
         GVAR(alarmRingUntil) = -1;
@@ -218,53 +200,6 @@ if (hasInterface) then {
         ["Alarm", "All alarms cleared.", [0.914, 0.651, 0.235, 1]] call EFUNC(notify,notify);
         true
     }, {false}, [0, [false, false, false]]] call CBA_fnc_addKeybind;
-
-    // The handset in the equipment menu, for anyone who would rather point
-    // than remember three chords. Every entry is the same code path as its
-    // keybind - the menu is another way in, never another behaviour.
-    private _scanner = [QGVAR(scannerMenu), "Signal Scanner", QPATHTOF(data\hackphone_icon.paa),
-        {[_player] call FUNC(scannerToggle)}, { [_player] call FUNC(hasScanner) }] call ace_interact_menu_fnc_createAction;
-    [player, 1, ["ACE_SelfActions", "ACE_Equipment"], _scanner] call ace_interact_menu_fnc_addActionToObject;
-
-    private _menuPath = ["ACE_SelfActions", "ACE_Equipment", QGVAR(scannerMenu)];
-
-    private _watch = [QGVAR(scannerStopwatch), "Stopwatch: Start / Stop / Clear", "",
-        { call FUNC(scannerTimer) }, {true}] call ace_interact_menu_fnc_createAction;
-    [player, 1, _menuPath, _watch] call ace_interact_menu_fnc_addActionToObject;
-
-    // Only offered while a ring is actually going, so the menu never shows a
-    // button that would do nothing.
-    private _silence = [QGVAR(scannerSilence), "Silence Alarm", "",
-        { GVAR(alarmRingUntil) = -1 }, { time < GVAR(alarmRingUntil) }] call ace_interact_menu_fnc_createAction;
-    [player, 1, _menuPath, _silence] call ace_interact_menu_fnc_addActionToObject;
-
-    // Presets rather than the keybind's +5 dial: a menu that has to be
-    // reopened for every press can't dial, but it can hold a row of buttons.
-    private _setAlarm = [QGVAR(scannerAlarmMenu), "Set Alarm (all scanners)", "",
-        {}, {true}] call ace_interact_menu_fnc_createAction;
-    [player, 1, _menuPath, _setAlarm] call ace_interact_menu_fnc_addActionToObject;
-
-    {
-        private _preset = [format [QGVAR(alarmPreset%1), _x], format ["%1 minutes", _x], "",
-        {
-            params ["", "", "_min"];
-            [_min * 60] remoteExecCall [QFUNC(srvAlarmAdd), SERVER_OWNER];
-            ["Alarm", format ["Alarm armed: %1 min, all scanners.", _min],
-                [0.914, 0.651, 0.235, 1]] call EFUNC(notify,notify);
-        }, {true}, {}, _x] call ace_interact_menu_fnc_createAction;
-        [player, 1, _menuPath + [QGVAR(scannerAlarmMenu)], _preset] call ace_interact_menu_fnc_addActionToObject;
-    } forEach [5, 10, 15, 30, 60];
-
-    // NO MOVE ACTION HERE ANY MORE. It drove jmfsb's own drag-and-save, which
-    // meant the handset was moved by a jmfsb-specific gesture that knew nothing
-    // about where the player had put the rest of their screen. It is registered
-    // as an IGUI grid now - see CfgUIGrids.hpp - so it is dragged in
-    // Options > Game > Layout alongside the HUD slots and the stamina bar.
-
-    // NOTHING LISTENS FOR A MOVE. The Layout editor raises no event, so a
-    // position changed there is picked up the next time the handset is opened -
-    // FUNC(scannerLayout) reads the grid every time it runs. One toggle, not a
-    // guess at an event the engine does not send.
 };
 
 // Worth having precisely because the draw is meant to be opaque to the mission
@@ -289,7 +224,7 @@ if (hasInterface) then {
 ["hack.taor", "which commander holds the ground you are on, and what it will offer", {
     params ["_args", "_caller"];
 
-    if (isNil "jmfsb_adapter_alive_fnc_commanders") exitWith {"no ALiVE adapter - no commanders, so no products"};
+    if (isNil QEFUNC(adapter_alive,commanders) || {!([] call EFUNC(common,aliveLoaded))}) exitWith {"ALiVE not loaded (or loaded with no commanders) - nothing is scoped out: every product the mission has is offered"};
 
     private _at = getPosATL _caller;
     private _type = [_at] call FUNC(taorType);
@@ -300,12 +235,12 @@ if (hasInterface) then {
 
     {
         _x params ["_side", "_ctype"];
-        ([_side] call jmfsb_adapter_alive_fnc_taorFor) params [["_taor", []], ["_black", []]];
+        ([_side] call EFUNC(adapter_alive,taorFor)) params [["_taor", []], ["_black", []]];
         [format ["  %1 %2 - taor [%3] blacklist [%4]", _side, _ctype,
             [_taor joinString " ", "whole map"] select (_taor isEqualTo []),
             [_black joinString " ", "none"] select (_black isEqualTo [])
         ], _caller] call EFUNC(common,debugReply);
-    } forEach (call jmfsb_adapter_alive_fnc_commanders);
+    } forEach (call EFUNC(adapter_alive,commanders));
 
     nil
 }, true] call EFUNC(common,addDebugCommand);
@@ -366,13 +301,24 @@ if (isServer) then {
     GVAR(sideControl) = createHashMap;
     // Once the adapter is ready, once only - not the ready CBA event any
     // client could raise again (review R1).
-    if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {};
+    //
+    // WITHOUT ALiVE (user, 2026-11-02: "works with or without") no side has a
+    // kind of war, so every body carries documents by docChance
+    // (FUNC(onBodyKilled)), and the tally is not kept past the mission. The
+    // same when ALiVE is loaded with no commanders (user, 2026-11-02: "same as
+    // not loaded"): the adapter's fallback, once it gives up.
+    private _without = {
+        ["Body intel", "documents by chance on every side, tally not persisted"] call EFUNC(common,aliveLoaded);
+    };
+    if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+        call _without;
+    };
     [{
-        if (isNil "jmfsb_adapter_alive_fnc_commanders") exitWith {};
+        if (isNil QEFUNC(adapter_alive,commanders)) exitWith {};
         {
             _x params ["_side", "_ctype"];
             GVAR(sideControl) set [str _side, _ctype];
-        } forEach (call jmfsb_adapter_alive_fnc_commanders);
+        } forEach (call EFUNC(adapter_alive,commanders));
         INFO_1("body intel by side: %1",GVAR(sideControl));
 
         // THE TALLY IS WAR STATE. Banked items, the hint tier and the ids
@@ -380,24 +326,24 @@ if (isServer) then {
         // objectives they point at, so a campaign that reloads its war does
         // not reload it with the intel economy reset to zero. Loaded once
         // here; written wherever they change.
-        if (!isNil "jmfsb_adapter_alive_fnc_getData") then {
-            private _banked = [QGVAR(banked)] call jmfsb_adapter_alive_fnc_getData;
+        if (!isNil QEFUNC(adapter_alive,getData)) then {
+            private _banked = [QGVAR(banked)] call EFUNC(adapter_alive,getData);
             if (!isNil "_banked") then {
                 if (_banked isEqualType 0) then {
                     localNamespace setVariable [QGVAR(banked), _banked];
                     missionNamespace setVariable [QGVAR(banked), _banked, true];
                 };
             };
-            private _tier = [QGVAR(hintTier)] call jmfsb_adapter_alive_fnc_getData;
+            private _tier = [QGVAR(hintTier)] call EFUNC(adapter_alive,getData);
             if (!isNil "_tier") then { if (_tier isEqualType 0) then { localNamespace setVariable [QGVAR(hintTier), _tier] } };
-            private _hinted = [QGVAR(hintedIds)] call jmfsb_adapter_alive_fnc_getData;
+            private _hinted = [QGVAR(hintedIds)] call EFUNC(adapter_alive,getData);
             if (!isNil "_hinted") then { if (_hinted isEqualType []) then { localNamespace setVariable [QGVAR(hintedIds), _hinted] } };
             private _b = localNamespace getVariable [QGVAR(banked), 0];
             private _t = localNamespace getVariable [QGVAR(hintTier), 0];
             private _n = count (localNamespace getVariable [QGVAR(hintedIds), []]);
             INFO_3("intel tally restored: banked %1, tier %2, %3 hinted",_b,_t,_n);
         };
-    }] call EFUNC(adapter_alive,whenReady);
+    }, [], _without] call EFUNC(adapter_alive,whenReady);
 
     // A deposit is banked by FUNC(srvDeposit), reached by remoteExec: the
     // server counts the man's own intel (review S7).

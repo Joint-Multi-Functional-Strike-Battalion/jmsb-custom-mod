@@ -1,6 +1,6 @@
 #include "..\script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Drops a vehicle from the AD units, on its Deleted or Killed event. Dead
  * units another machine owns (whose Killed does not fire here) are skipped by
  * every alive check and dropped the same way when they are deleted.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The range rings on the walking view's map: 25 m and 50 m round the player,
  * each labelled with its radius at its top. Drawn every frame on the map's
  * Draw event, after FUNC(overlayFollow) has centred it, so they stay on him.

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Makes a control clickable.
  *
  * CONTROLS ON THE MAP DISPLAY DO TAKE INPUT. An earlier build was written

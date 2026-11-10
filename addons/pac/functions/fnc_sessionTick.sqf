@@ -41,9 +41,11 @@ if !(GVAR(storeReady)) exitWith {0};
 private _now = [] call FUNC(stamp);
 private _touched = 0;
 // open rows by uid, one pass - not a walk of every session per player
+// (this server's rows only - another server's are ticked by that server)
 private _open = createHashMap;
+private _server = GVAR(settings) getOrDefault ["serverId", PAC_SERVER_DEV];
 {
-    if ((_x # 4) isEqualTo "") then {
+    if ((_x # 4) isEqualTo "" && {(_x param [PAC_ROW_SERVER, _server]) isEqualTo _server}) then {
         private _rows = _open getOrDefault [_x # 0, []];
         _rows pushBack _x;
         _open set [_x # 0, _rows];

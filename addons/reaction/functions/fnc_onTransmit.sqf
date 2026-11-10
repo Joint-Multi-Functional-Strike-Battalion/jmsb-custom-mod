@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A key-up on this client. Filtered here, locally, so only a DETECTABLE
  * transmission costs the server an event.
  *

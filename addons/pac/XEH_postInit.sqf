@@ -6,9 +6,9 @@
 // reading it for itself is cheaper than the server sending it.
 [] call FUNC(loadStructure);
 
-// The "opord" and "mettc" message templates, unless the mission's deck has
-// them. Every machine, because messaging renders from a registry that must
-// be the same everywhere.
+// The "opord" and "mettc" message templates, cards the mod carries - they
+// win over a deck's (2026-11-02). Every machine, because messaging renders
+// from a registry that must be the same everywhere.
 [] call FUNC(registerTemplates);
 
 // THE APP, on anything with a screen. Registered with the tacpad the way every
@@ -161,7 +161,7 @@ addMissionEventHandler ["ExtensionCallback", {
 addMissionEventHandler ["Ended", {
     // nothing real to write or dump if the boot never loaded the store
     if !(GVAR(storeReady)) exitWith {WARNING("mission ended before the store was loaded - nothing written")};
-    [true, true] call FUNC(storeSave);
+    [true, true, true] call FUNC(storeSave);
     ["mission end"] call FUNC(backupDump);
     INFO("mission ended - store written to profile and database (play-time commit)");
 }];

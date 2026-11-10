@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One launcher charge kills one incoming round: the round is deleted, a
  * flash goes off where it died, and the charge is spent and reported.
  *

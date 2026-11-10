@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the call now running came from the server or from this machine
  * itself. For work a client does on the server's word (review S7, R1): the
  * server checks the sender, then forwards by remoteExec, and the receiving

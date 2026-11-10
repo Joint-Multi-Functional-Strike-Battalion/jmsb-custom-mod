@@ -137,13 +137,14 @@ if (hasInterface) then {
     params ["_args", "_caller"];
     private _grid = mapGridPosition _caller;
 
+    // The 9-LINE CASEVAC's keys (2026-11-09, ATP 4-02.2).
     [_caller, format ["test:%1:%2", diag_frameNo, floor random 1e6], "casevac", [
         ["Line1.A", getPosATL _caller],
-        ["Line2.A", 2],
         ["Line3.A", 1],
-        ["Line4.B", true],
-        ["Line5.A", "SMOKE"],
-        ["Line5.B", format ["Green, 200m east of %1", _grid]]
+        ["Line3.C", 1],
+        ["Line6.B", true],
+        ["Line7.A", "SMOKE"],
+        ["Remarks.A", format ["200m east of %1", _grid]]
     ], [format ["P:%1", getPlayerUID _caller]], "", "", "DOC RILEY"] call FUNC(srvSubmit);
     "FLASH CASEVAC filed - accent row, chip, card and alert all come off this one"
 }] call EFUNC(common,addDebugCommand);

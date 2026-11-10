@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Feeder for the Eden class picker (jmfsb_ClassPick_*): every class of a kind,
  * as display rows the picker can filter by side and faction.
  *
@@ -11,9 +11,10 @@
  *
  * Arguments:
  * 0: Kind <STRING> - "vehicle" | "uav" | "static" | "ammo" | "aircraft" (planes and
- *    helicopters, crewed or drone) | "heli_transport" (crewed helicopters with
- *    passenger seats) | "air_transport" (crewed planes and helicopters with
- *    passenger seats)
+ *    helicopters, crewed or drone) | "heli_transport" (crewed helicopters and
+ *    VTOLs with passenger seats) | "air_transport" (crewed planes and helicopters with
+ *    passenger seats) | "uav_plane" / "uav_heli" (fixed-wing / rotary drones,
+ *    the support modules' escorts)
  *
  * NOT EVERYTHING IN CONFIG IS THE UNIT'S (user, 2026-10-19). The Aegis and
  * Atlas classes that QAV and the faction ports bring in are hidden though the
@@ -87,8 +88,14 @@ private _filter = switch (_kind) do {
     // AIRCRAFT ONLY for the support modules: a parachute is a Helicopter in
     // config and a quad bike is not an aircraft, and both were in their lists.
     case "aircraft": {"getNumber (_x >> 'scope') == 2 && {((configName _x) isKindOf 'Plane') || {(configName _x) isKindOf 'Helicopter'}} && {!((configName _x) isKindOf 'ParachuteBase')}"};
-    case "heli_transport": {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'Helicopter'} && {!((configName _x) isKindOf 'ParachuteBase')} && {getNumber (_x >> 'isUav') == 0} && {getNumber (_x >> 'transportSoldier') > 0}"};
+    // A VTOL lands and hovers like one, so it is a transport too (user,
+    // 2026-11-08: "vtol are not in the transport list").
+    case "heli_transport": {"getNumber (_x >> 'scope') == 2 && {((configName _x) isKindOf 'Helicopter') || {(configName _x) isKindOf 'VTOL_Base_F'}} && {!((configName _x) isKindOf 'ParachuteBase')} && {getNumber (_x >> 'isUav') == 0} && {getNumber (_x >> 'transportSoldier') > 0}"};
     case "air_transport": {"getNumber (_x >> 'scope') == 2 && {((configName _x) isKindOf 'Plane') || {(configName _x) isKindOf 'Helicopter'}} && {!((configName _x) isKindOf 'ParachuteBase')} && {getNumber (_x >> 'isUav') == 0} && {getNumber (_x >> 'transportSoldier') > 0}"};
+    // The support modules' drone escorts (user, 2026-11-01): a fixed-wing
+    // drone for a fixed-wing lead, a rotary one for a helicopter.
+    case "uav_plane": {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'Plane'} && {getNumber (_x >> 'isUav') > 0}"};
+    case "uav_heli": {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'Helicopter'} && {!((configName _x) isKindOf 'ParachuteBase')} && {getNumber (_x >> 'isUav') > 0}"};
     default {"getNumber (_x >> 'scope') == 2 && {(configName _x) isKindOf 'LandVehicle' || {(configName _x) isKindOf 'Air'} || {(configName _x) isKindOf 'Ship'} || {(configName _x) isKindOf 'StaticWeapon'}}"};
 };
 {
@@ -104,7 +111,9 @@ private _filter = switch (_kind) do {
         case "uav": {["ground", "air"] select (_cn isKindOf "Air")};
         case "aircraft";
         case "heli_transport";
-        case "air_transport": {["heli", "plane"] select (_cn isKindOf "Plane")};
+        case "air_transport";
+        case "uav_plane";
+        case "uav_heli": {["heli", "plane"] select (_cn isKindOf "Plane")};
         case "static": {"static"};
         default {
             switch (true) do {

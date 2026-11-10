@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Drops a personal waypoint on whatever the Vector is looking at.
  *
  * PERSONAL MEANS LOCAL, AND THAT IS THE WHOLE POINT OF IT BESIDE THE TARGET

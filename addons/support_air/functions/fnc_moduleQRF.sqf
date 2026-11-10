@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads one JMSB - QRF Insertion module and puts the squad it describes on
  * TAC//SUPPORT, with the insertions the module allows.
  *
@@ -35,9 +35,9 @@ if ((call EFUNC(common,playerSides)) isEqualTo []) exitWith {
     [{(call EFUNC(common,playerSides)) isNotEqualTo []}, FUNC(moduleQRF), _this] call CBA_fnc_waitUntilAndExecute;
 };
 
-private _squads = round (_logic getVariable ["squads", 2]);
-_logic setVariable [QGVAR(left), [_squads, -1] select (_squads <= 0), true];
-_logic setVariable [QGVAR(stock), _squads max 0, true];
+// SQUADS ARE RETIRED (user, 2026-11-02: "make sure there is a respawn count
+// for each support, default no respawns"): one airframe carries one squad and
+// goes home after the insertion, so Respawns is the count (FUNC(register)).
 _logic setVariable [QGVAR(groupClass), _logic getVariable ["groupClass", ""], true];
 _logic setVariable [QGVAR(unitClasses), _logic getVariable ["unitClasses", ""], true];
 _logic setVariable [QGVAR(onLanding), _logic getVariable ["onLanding", 0], true];
@@ -47,7 +47,7 @@ _logic setVariable [QGVAR(staticAlt), 120 max (_logic getVariable ["staticAlt", 
 if !([_logic, KIND_QRF, "REACH", "Air", false] call FUNC(register)) exitWith {};
 
 private _callsign = _logic getVariable [QGVAR(callsign), ""];
-private _heli = (_logic getVariable [QGVAR(cls), ""]) isKindOf "Helicopter";
+private _heli = [_logic getVariable [QGVAR(cls), ""]] call EFUNC(support,isRotary);
 private _allowed = [];
 {
     _x params ["_attr", "_token", ["_needsHeli", false]];
@@ -69,3 +69,5 @@ _logic setVariable [QGVAR(hasSquad), _hasSquad, true];
 if (!_hasSquad) then {
     WARNING_1("QRF '%1' names no soldier class that exists - it will refuse every request",_callsign);
 };
+// VIRTUAL UNTIL TASKED (user, 2026-11-02): the airframe and its squad are
+// made over the module at the request (FUNC(qrfLaunch)).

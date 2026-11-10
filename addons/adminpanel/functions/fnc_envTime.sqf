@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server side of SET TIME, by remoteExec from FUNC(envApply): the clock to the
  * given hour and minute, today, and the speed of time. setDate and
  * setTimeMultiplier run on the server and the engine carries them to every

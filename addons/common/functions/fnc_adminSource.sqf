@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: sets one source of the server's admin list - the mod's list, TAC//PAC's
  * admins, the grants made in this mission - and rebuilds the list (review S1/S2,
  * R2). The list lives in localNamespace, which is not networked, so no client can

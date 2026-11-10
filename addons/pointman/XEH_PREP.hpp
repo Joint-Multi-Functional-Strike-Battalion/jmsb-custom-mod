@@ -22,4 +22,5 @@ PREP(app);
 PREP(tile);
 PREP(cell);
 PREP(navText);
+PREP(legText);
 PREP(say);

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Remembers what a live screen just built, so its tick can change the words
  * and colours in place instead of building it again (FUNC(liveApply); code
  * review R8). Called at the end of the full draw with the screen's shape -

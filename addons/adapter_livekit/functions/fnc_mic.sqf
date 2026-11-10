@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens or closes the mic on the voice server from what is held
  * (FUNC(hold)): a PTT key opens it when the key's net (jmfsb_voice_fnc_pttNet)
  * is one the player is on and the voice core's cut-off level allows the net

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
-    Author: JMSB
+    Author: YonV
 
     Description:
         Switches the role screen to one platoon tab: repaints the row so the

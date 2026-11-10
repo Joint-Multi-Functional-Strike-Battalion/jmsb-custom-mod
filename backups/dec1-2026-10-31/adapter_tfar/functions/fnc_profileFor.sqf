@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * TFAR radio class -> RF profile: the profile the class names in config
  * (jmfsb_rf_profile, read by jmfsb_rf_fnc_itemProfile - the MPU5 handheld,
  * the TW-950 legacy), else a handheld for a short range set and a manpack

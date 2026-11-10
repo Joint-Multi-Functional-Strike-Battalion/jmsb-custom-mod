@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An RGBA array as the hex the design writes its tokens in - #F3F2F2.
  *
  * The settings screen shows the three tokens a scheme is made of, and a colour

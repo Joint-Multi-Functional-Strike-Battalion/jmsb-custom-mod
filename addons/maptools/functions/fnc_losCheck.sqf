@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * LINE OF SIGHT between two points on the map: from a man's eyes at the
  * first (VS_EYE over the ground) to a man's chest at the second (VS_TARGET),
  * the viewshed's own heights. The ground is asked first

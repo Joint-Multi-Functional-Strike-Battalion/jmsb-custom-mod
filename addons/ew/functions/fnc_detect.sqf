@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: what one sensor hears of one emitter - the RF link budget run one
  * way, with RF's own band table, noise and terrain price:
  *

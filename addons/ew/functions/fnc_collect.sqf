@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: every emitter ES can hear this DF tick, in one shape, from four
  * places -
  *

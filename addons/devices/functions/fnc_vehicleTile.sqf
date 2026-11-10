@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The VEHICLE live tile, which opens VEHICLE STATUS - on the vehicle tablet
  * and nowhere else. A tile provider for jmfsb_tacpad_apps' band
  * (jmfsb_tacpad_apps_tileProviders, registered in XEH_preInit): it answers no

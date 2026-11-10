@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The asset types provider "fires" declares to the support core:
  *
  *   [type, label, one, many, order, tasks]

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The band's order of tile ids, off the player's layout (FUNC(tileLayout)):
  * a placed tile stands at its position, the AUTO tiles fill the positions
  * nobody placed in the default order given, a placed tile past the last AUTO

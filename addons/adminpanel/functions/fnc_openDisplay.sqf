@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens one of this addon's screens - the console, the message box, TIME /
  * WEATHER - where it belongs.
  *

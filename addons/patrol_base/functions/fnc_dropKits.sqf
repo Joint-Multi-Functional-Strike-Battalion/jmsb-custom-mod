@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the Zeus "Drop Patrol Base Kits" module's request
  * (FUNC(addZeusModule)), by remoteExec (review S7). Taken only from an admin
  * by the server's records or a player who holds a curator module. The number

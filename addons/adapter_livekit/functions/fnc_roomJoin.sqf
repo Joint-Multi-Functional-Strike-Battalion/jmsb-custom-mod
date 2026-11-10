@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Joins the mission's room on the voice server: asks the server for a token
  * (FUNC(srvRoomToken)); the extension connects when it comes
  * (FUNC(roomAnswer)), and the room is live on the extension's "connected"
@@ -27,6 +27,7 @@ if (GVAR(echo) in [ECHO_JOINING, ECHO_LIVE]) exitWith {false};
 
 GVAR(state) = ROOM_JOINING;
 GVAR(since) = CBA_missionTime;
+GVAR(waitS) = ROOM_ANSWER_S;
 GVAR(ask) = GVAR(ask) + 1;
 [player, GVAR(ask)] remoteExecCall [QFUNC(srvRoomToken), 2];
 TRACE_1("room join asked",GVAR(room));

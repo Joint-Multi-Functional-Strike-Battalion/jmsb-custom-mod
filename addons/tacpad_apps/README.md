@@ -30,8 +30,21 @@ dragged narrower says `+N` at its right edge rather than quietly losing one.
 **TIMER** is the archived cTab device's alarm page rebuilt, with a stopwatch
 under it. The roster is armed alarms, soonest first — each a *running* clock and
 not a rounded minute, numbered and named by whoever set them, red inside thirty
-seconds and amber inside two — with `+1 / +5 / +10 MIN` to arm and a `DEL #N` per
-row whose number is the number on the roster. It says RINGING while one is.
+seconds and amber inside two — with a `DEL #N` per row whose number is the
+number on the roster. It says RINGING while one is.
+
+**Arming** (user, 2026-11-01: the IN / AT rework of
+docs/DESIGN_TABLET_REVIEW.md 3.7 is reverted to the old timer, drawn cleaner).
+Three sections under headings: ARMED ALARMS, SET AN ALARM, STOPWATCH.
+
+- `ARM IN 1 / 2 / 3 / 5 / 10 MIN` arm on the press.
+- `CUSTOM` steps `-10 -1 +1 +10 +60` minutes; `ARM IN 15:00` arms it.
+- `ALARM AT` steps `-1H -10 -1 +1 +10 +1H`; `ARM AT 04:30 - IN 16:28` arms it
+  and says what that time costs in mission time on an accelerated mission.
+- Filled keys arm. Outlined keys only change a value.
+
+One label column and one control column down the page; values at the tile
+detail size or larger, never letter-tracked.
 
 **The alarms are `jmfsb_hacking`'s, not this addon's.** They ring through its
 handler, they are public so a section shares one roster, and the hand-held
@@ -107,6 +120,13 @@ forces is drawn read-only, LOCKED (`fnc_settingLocked`), and `fnc_setSetting`
 refuses it. `fnc_settingStep` and `fnc_settingCycle` are the minus / plus and
 previous / next presses for a slider and a list.
 
+**DISPLAY** carries three settings other addons own, each through the same
+setter: DISPLAY MODE (`jmfsb_tacpad_displayMode`, native / tablet - changing it
+takes the suite down and rebuilds it on the other host, so the screen closes),
+HUD READOUTS and HUD IN TABLET MODE (`jmfsb_hud_enabled`, `jmfsb_hud_showInTablet`)
+and NOTIFICATIONS CORNER (`jmfsb_notify_corner`). A row whose addon is not
+loaded is not offered. No new setting was added for any of them.
+
 Another addon adds sections to the rail through
 `jmfsb_tacpad_apps_settingsSections` (`[key, label, rows code]`, pushed in its
 preInit). `jmfsb_devices` adds **DEVICES** - the device in the GPS slot,
@@ -157,6 +177,27 @@ value sits right-aligned at the far edge unless the caller sets a value column
 (the optional seventh argument, a fraction of the row's width), in which case it
 is left-aligned from there.
 
+**Every key/value list is `fnc_kvRow`** (public; review 2026-11-01,
+docs/DESIGN_TABLET_REVIEW.md 2.4, decisions R1 and R2) — WEATHER, DRONES ›
+ENEMY and the EW jammer panel's TRANSMITTER / POWER SYSTEM blocks. One call
+draws the whole list:
+
+```sqf
+private _h = [_parent, [_x, _y, _w], [[label, value, hot], ...], columns, rowH] call jmfsb_tacpad_apps_fnc_kvRow;
+```
+
+- The label column is its own longest label, **measured** (`ctrlTextWidth`),
+  plus a 10 px gap, at most 0.6 of a column; every label is right-aligned
+  against it and the value starts right after, so no value is further than the
+  gap from its label's end. The old fixed value column (`WX_VALUE_AT`) put the
+  value 600 px from a short label on a wide page.
+- `columns` 0 lets the width decide — one column per 0.3 of the host, up to 3 —
+  instead of stretching a list across a wide app. Columns fill down, then
+  across, so the caller orders the pairs the way they are read.
+- `hot` is `true` for the accent, or an RGBA taken from the theme.
+- Labels and values are drawn at the tile band's detail size (`KV_TEXT`), never
+  smaller (R1); a row is `KV_ROW_H` at the least. Returns the height drawn.
+
 ## Map tools are jmfsb_maptools'
 
 The strip is a front end. CENTRE, RULER, PROTRACTOR, ROUTE, MARK, GRID,
@@ -168,6 +209,21 @@ behind it any more - PLP Map Tools Remastered is gone - and a build without
 `jmfsb_maptools` has no strip and no MAP TOOLS settings section, rather than a
 strip of dead buttons.
 
+**MARK places a real map marker** (2026-11-01): a press opens the player's
+**Map marker system** (Built-in card, ACE or ALiVE) at that point, the same as
+a double-click on the tablet's map; a press on a marker of your own deletes
+it. See jmfsb_maptools' README, "Map markers".
+
+**The full grid, always.** The review's R5 folded the strip to one row of
+short marks until a tool was opened; the user saw it and reversed it
+(2026-11-01: "like the old buttons better"). The GO TO GRID box is outlined
+like its neighbours and reads GRID REF until something is typed.
+
+**The squad rail on the tablet** is at least a full squad tall (8 rows, legend
+and REFRESH; user, 2026-11-01) and grows a row per man, never past its fixed
+place; nothing is drawn past its foot, so it never scrolls. On the vanilla map
+it keeps its placed height.
+
 ## Hue is the data, once
 
 Squad health is the one place in the system allowed to break the near-mono rule:
@@ -176,12 +232,32 @@ rail is looking for the row that is not green, and colour answers that in a
 glance where a number does not. Everything else is ink on ground with the accent
 reserved for selection, FLASH traffic and alert states.
 
+A live tile on **alert** is the inverted accent block - the accent fills the
+tile and its words are the ground (review 2026-11-01, R4); amber warn and
+green ok keep their fixed swatches. A tile's kicker keeps room for six glyphs
+(DRONES whole); a qualifier badge squeezed by it sets its word smaller rather
+than wrapping.
+
+**No SUPPORT tile, and no PAC tile on the tablet** (user, 2026-11-01).
+Support is called from TAC//MSG, by a message to the asset; there is no
+support app (see "TAC//SUPPORT — REMOVED" below). On the tablet PAC is a
+button on the device bar between MENU and ESC CLOSES (jmfsb_devices); the
+map's band (Display mode Native) keeps the PAC tile, as that host has no bar.
+The MENU lists PAC.
+
 ## Reading beside the map, sending in the app
 
 Clicking a thread in the reader opens it **in the rail**, not over the map.
 Reading a report and looking at the ground it is about are the same act — a
 MEDEVAC grid means nothing without the map under it — so the thread and the map
 sit side by side and `< BACK TO LIST` returns.
+
+The rail's net chips are names, so never letter-tracked: each is as wide as its
+word, at the body size, with a pad of air round it (user, 2026-11-01: "kind of
+squished"). Traffic entries (`fnc_readerRow`) keep the panel's row rhythm
+(`ROW_H_SCREEN`) with a pad above and below; times and reply counts are values,
+untracked, at the body size. A quiet net reads "No traffic on <net>" as the
+full reader does.
 
 Nothing in the rail can send. `REPLY` and `NEW` open the full TAC//MSG reader
 with its right pane in compose — see the tacpad README. That split is
@@ -208,6 +284,34 @@ press.
 The squad app's **FILE CASEVAC FOR** *name* opens the CASEVAC card with the
 pick-up site already set to that man's position: the one location in the suite
 filled in for you, because the button names the man it is filling it in for.
+
+**Each roster row starts with the man's BFT mark** (`fnc_squadIcon`): the map's
+member outline and body in his fire team's colour with his number in it -
+`jmfsb_bft_fnc_memberNumber`, asked softly; without `jmfsb_bft` a team-coloured
+square and his place in the group. **LINK** is his reach on DATA
+(`fnc_squadLink`, off `jmfsb_voice_fnc_linkQuality` - the number the RADIO
+app's CONTACTS reads REACH / NO ROUTE off): a swatch in the quality bands and a
+figure, NONE for no route, `-` for an AI, yourself, or no RF.
+
+**Selecting a man opens his MEMBER page** down the right rail, in STRENGTH's
+place (`fnc_appSquadMember`); BACK clears the selection. STATE as his row
+words it; WOUNDS and BLOOD off the MEDIC app's reads
+(`jmfsb_medic_fnc_patientState`, `readBody`, `readStatus` - open wounds per
+part, tourniquets, blood volume as a share of 6 L), NO ACE MEDICAL without it; AMMO
+(`fnc_ammoState`); RADIO (his published active net); LINK; DIST with bearing.
+**SHOW ON MAP** is `jmfsb_medic_fnc_showOnMap` (it also marks the MEDIC app to
+keep its patient page, as its own SHOW ON MAP does); **CALL** rings him through
+`fnc_radioDial` and moved here from the table foot - one CALL on the screen.
+A button whose addon is missing, or a CALL to an AI, a dead man or yourself,
+is drawn dead.
+
+**WEATHER > FORECAST** is the engine's forecast and nothing more:
+`overcastForecast`, `fogForecast` and `nextWeatherChange` - "BY 14:20", cloud
+and fog now > then, and the NOW verdict rules (`WX_AIR_*`, `WX_THERMAL_*`)
+applied to them as ROTARY / CAS and THERMAL / DRONES. Arma has no rain or wind
+forecast, so the verdicts take those as they are now and the page says NOT
+FORECAST. A change further out than 8 h reads PAST 8 H; none pending reads
+NONE SCHEDULED. No hourly table is drawn.
 
 A man's own **A/C/E letters are published the moment he presses them**, not when
 anything is sent: the roster table draws that column off the same variable, so
@@ -267,56 +371,27 @@ Without `jmfsb_ew` SPOOF stays dead.
 loaded): the false fix when spoofed; with no fix it is refused and the card,
 where a grid is typed, is the way.
 
-## TAC//SUPPORT
+## TAC//SUPPORT — REMOVED
 
-The support board (`fnc_appSupport`, app `support`) fronts the support core
-(`jmfsb_support`) and names no provider. Design: `docs/DESIGN_SUPPORT.md`,
-"The screen".
+The TAC//SUPPORT app is gone (user, 2026-11-01, docs/DESIGN_SUPPORT_MESSAGING.md
+step 9: "no support interface. The support system stays. The JTAC requests
+support by sending a message to the asset"). CAS, artillery, transport,
+CASEVAC, airdrop, logistics and QRF are all called by a message to the
+asset's box in TAC//MSG (`B:SUPPORT:<assetId>`, the TO picker's SUPPORT
+group); the asset answers in the thread. See the support README, "Threads",
+and each provider's README.
 
-- **Tabs, one per support type that has a row** — the types are the providers'
-  declarations merged by `jmfsb_support_fnc_types`, filtered to those with at
-  least one asset, so a tab never leads nowhere. Each tab is counted
-  (`CAS · 2`). The last tab pressed is remembered for the session
-  (`jmfsb_tacpad_apps_supportTabPref`) and reopened when it has rows again.
-- **The form, left of the map**: the verdict row, UNIT, TASK (two to a line
-  when a unit offers more than five), then LOCATION - the task's point, named
-  by the task (`TARGET`, `LZ`, `PICKUP`, `DROP POINT`, `DROP ZONE`, `HOVER
-  POINT`: task declaration field 6), then one row per further point the task
-  declares (field 7: INGRESS, EGRESS, VIA - each click adds a leg - LZ, SET
-  DOWN) - then PARAMETERS, the steppers the task declares, and PASSENGERS for
-  a transport. Map click or MKR fills the armed point row
-  (`fnc_supportPointSet`, `fnc_supportPointVars`). The form scrolls when it
-  outgrows the column and keeps its scroll across redraws.
-- **READY and CONFIRM TASKING**, alone at the foot of the form: one checklist
-  line per thing the order needs (UNIT, TASK, the point, every required
-  declared point), each done (an ink square) or missing (an accent outline,
-  the value in accent-700), then the provider's VERDICT (`jmfsb_support_fnc_preview`
-  - an ETA, OUT OF RANGE) once the rest is set. CONFIRM is the accent cell only
-  when nothing is missing; pressed early it sends nothing and names the first
-  missing line in the verdict row. It sends `fnc_supportRequestParams`, the
-  same array the verdict was asked with.
-- **The map, in both hosts** (`fnc_supportMapDraw`, `fnc_supportMapLive`):
-  every asset out and the plan it flies (row field 8) as task markers joined
-  by a line, the picked asset's provider shapes (`jmfsb_support_fnc_overlay` -
-  range rings), and the request live - point, declared points and their legs,
-  effect radius, approach bearing, danger-close ring.
-- **SITREP** for every type, batteries included.
-- **ORDER UNIT RTB and CLOSE**, under the map. RTB still double-confirms.
+Removed with it: the app and every helper it had (the map-first board, the
+type screens - CAS, ARTY, TRANSPORT, LOGISTICS - and their map layer), its
+request dialog on the vanilla map, the app id
+`support` (its MENU row, the device soft key and walking-view button), the
+board's FLOT markers (`jmfsb_flot*`) and the **Danger close distance**
+setting (`jmfsb_tacpad_apps_dangerClose`) - a request card's own
+`dangerClose` option is the threshold now (`jmfsb_support_fnc_dangerClose`).
 
-**Two hosts.** On the vanilla map (native mode) the board is the
-`jmfsb_tacpad_apps_supportDlg` dialog and its map is the dialog's own control,
-laid into the board's map hole each draw. On the **tablet** it opens no dialog:
-it is the open app on the device dialog, drawn inside the app area with the
-device bar, tiles and net row round it, and its map hole is a hole over the
-tablet's own map (idc 51). The board claims that map while it is open
-(`jmfsb_tacpad_appMapClaim`), so a click there sets the armed point instead of
-closing the app. Rows, tabs, steppers and MKR are control hits; SITREP, RTB,
-CONFIRM and CLOSE are dispatched from the display's press handler; ESC closes
-the board, not the tablet. The ack listener redraws it in either host.
-
-There is no Simplex dependency (user, 2026-10-20). The Simplex provider and
-the Simplex request window are gone; every row on the board comes from our
-own providers.
+Kept here: the support core's delivery receipt (`jmfsb_support_fnc_onAck`),
+a SUPPORT line on the notify rail. The support core and every provider stay
+(`jmfsb_support` README).
 
 ## RADIO: game voice
 
@@ -334,13 +409,27 @@ Numpad 6 opens it on the tablet, 7 / 8 step its tabs (`jmfsb_devices`' keys).
   those), its VON channel (`fnc_radioVon`), link (RF's quality for the net
   when RF knows it, else the talkers', else reach; NO ROUTE never hidden), the
   ear as L / B / R segments, MUTE, the state and who is talking. A net's name
-  makes it active. SOUNDS and KEYS (`fnc_appRadioSounds`): the voice addon's
-  sound settings (`RADIO_SOUNDS`; NOT BUILT for one it does not declare), and
-  the numpad as the player has it bound (`CBA_fnc_getKeybind`).
+  makes it active. On no net it says why and what to do: no set carried, on
+  no net of the plan, or the set still joining. SOUNDS, KEYS and BUTTONS
+  (`fnc_appRadioSounds`), three sub-tabs of the right column: the voice addon's
+  sound settings (`RADIO_SOUNDS`; one no loaded addon declares is not drawn),
+  the numpad as the player has it bound (`CBA_fnc_getKeybind`), and the
+  twelve net buttons of the device net rows (`fnc_appRadioButtons`, user
+  2026-11-07): QUICK 1-4, PAGE 2 1-4, PAGE 3 1-4, each AUTO or one of his
+  nets (a press steps it; not DIRECT, not a call's net), with the net on it
+  now - stored by `jmfsb_devices_fnc_netAssign` in his profile. TIC or
+  PTT 1 with no key is a warning line at the top of the tab.
 - **CALLS** (`fnc_appRadioCalls`): + MY TEAM / + SQUAD LEADERS / + RTOs /
   + MEDICS / + HQ (`fnc_radioGroup` - in reach only, stops at 8), NEXT:
-  FLASH for RTOs and admins, and FIND by name or callsign; VON CHANNEL SLOTS
-  (C2, A2G, CALL 1-8 from `jmfsb_voice_fnc_callSlots`); CONTACTS
+  FLASH for RTOs and admins, and FIND by name or callsign; under game VON
+  CALL SLOTS (CALL 1-8 from `jmfsb_voice_fnc_callSlots`, C2 and A2G named
+  apart as the fixed nets on custom 1 and 2; tab note "8 CALLS AT ONCE, UP
+  TO 8 PEOPLE EACH"); on the voice server (Mumble or LiveKit) **no limit to
+  the number of calls** (user, 2026-11-01): ALL CALLS
+  (`fnc_appRadioCallList`) lists every call there is - CALL n, LIVE or
+  RINGING, its members - in a list that scrolls and keeps its place across
+  redraws, headed "n CALLS" ("1 CALL"); tab note "ANY NUMBER OF CALLS, UP TO
+  8 PEOPLE EACH" (8 a call is a design rule, DESIGN_VOICE.md "Calls"); CONTACTS
   (`fnc_appRadioContacts`) with ON CALL / + ADD / CALL / CALL BACK; LIVE CALL
   (`fnc_appRadioLive`) - an incoming ring with ACCEPT / DECLINE, the call's
   slot, clock, people, priority and size, RECENT contacts (`fnc_radioQuick`,
@@ -391,6 +480,17 @@ your side, someone else has it, no DATA link). A fleet row's task reads
 the seat. Out of the seat: the drone's action menu or the tablet key. Not run
 in game.
 
+**The fleet is every live UAV-crewed vehicle of the side** (`allUnitsUAV`):
+placed drones and the air-defence turrets (NASAMS, Skynex, the Sentinel). The
+review's R6 filtered it to aircraft outside `jmfsb_adsite`; the user saw it
+and reversed it (2026-11-01). With no drone in DATA link range the list says so once
+and drops its link columns; the picked row is the ink fill; a dead CONNECT's
+reason sits on a line under the buttons; CONTROL NEEDS DATA LINK is the FEED
+header's alone. **ENEMY** is a bearing scope (decision R7): the player in the
+centre, rings at the receiver's 1 and 2 km, the contact at its bearing and
+range with its airframe, and the `fnc_kvRow` list beside it, its grid at the
+player's `jmfsb_devices_gridDigits`. Built, not seen in game.
+
 **Orders (2026-10-20).** On the drone he has linked, while the DATA link
 holds, the FEED's ORBIT, GO TO, LASE and RTB are live, and each asks the gate
 again at the press. They are the devices' (`jmfsb_devices_fnc_uavOrder`), which
@@ -399,7 +499,7 @@ launcher's client for a hand-thrown drone - so waypoints, `lockCameraTo` and
 the designator (`BIS_fnc_fire`) run where they are local.
 
 - **GO TO** closes the app and claims the host's map
-  (`jmfsb_tacpad_appMapClaim`, as TAC//SUPPORT does) - the vanilla map or the
+  (`jmfsb_tacpad_appMapClaim`) - the vanilla map or the
   tablet's screen. A left click sends the drone there as a MOVE at its current
   height, then a LOITER circle; a right click cancels. The claim lets go by
   itself after 30 s, when another app opens, when the map or the tablet closes,
@@ -422,6 +522,13 @@ the designator (`BIS_fnc_fire`) run where they are local.
 Not run in game.
 
 ## Not built yet
+
+- **SQUAD**: MEDIC TO HIM - nothing in the mod sends a medic to a man (the
+  CASEVAC card is an air lift; a message cannot be opened pre-tagged MEDICS),
+  so the button is left out. The roster's flags column (TX / VOX / buddy):
+  talking is live and this table does not tick, and there is no buddy system;
+  wounded and no-link are the STATUS and LINK columns. The MEMBER page has no
+  blood bar - BLOOD is a figure.
 
 - **RADIO** (said in words on the board, never drawn as buttons): per-net
   beep volume (the voice API has one beep volume); MAKE FLASH on a call already
@@ -457,7 +564,7 @@ Not run in game.
 
 ## Ships
 
-106 functions.
+99 functions.
 
 ## CBA settings
 
@@ -480,7 +587,7 @@ Not run in game.
 
 ## Functions
 
-<details><summary>106</summary>
+<details><summary>99</summary>
 
 - `jmfsb_tacpad_apps_fnc_alarmAtDelay`
 - `jmfsb_tacpad_apps_fnc_ammoState`
@@ -503,12 +610,15 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_appHackTrack`
 - `jmfsb_tacpad_apps_fnc_appIntel`
 - `jmfsb_tacpad_apps_fnc_appJamming`
+- `jmfsb_tacpad_apps_fnc_appLog`
 - `jmfsb_tacpad_apps_fnc_appMenu`
 - `jmfsb_tacpad_apps_fnc_appPageBar`
 - `jmfsb_tacpad_apps_fnc_appPageButton`
 - `jmfsb_tacpad_apps_fnc_appPagePanel`
 - `jmfsb_tacpad_apps_fnc_appPageTabs`
 - `jmfsb_tacpad_apps_fnc_appRadio`
+- `jmfsb_tacpad_apps_fnc_appRadioButtons`
+- `jmfsb_tacpad_apps_fnc_appRadioCallList`
 - `jmfsb_tacpad_apps_fnc_appRadioCalls`
 - `jmfsb_tacpad_apps_fnc_appRadioContacts`
 - `jmfsb_tacpad_apps_fnc_appRadioKey`
@@ -519,7 +629,7 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_appScanner`
 - `jmfsb_tacpad_apps_fnc_appSettings`
 - `jmfsb_tacpad_apps_fnc_appSquad`
-- `jmfsb_tacpad_apps_fnc_appSupport`
+- `jmfsb_tacpad_apps_fnc_appSquadMember`
 - `jmfsb_tacpad_apps_fnc_appTimer`
 - `jmfsb_tacpad_apps_fnc_appWeather`
 - `jmfsb_tacpad_apps_fnc_artyGun`
@@ -527,6 +637,7 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_callCamFlip`
 - `jmfsb_tacpad_apps_fnc_callFeed`
 - `jmfsb_tacpad_apps_fnc_callFeedUnit`
+- `jmfsb_tacpad_apps_fnc_kvRow`
 - `jmfsb_tacpad_apps_fnc_missionSchemes`
 - `jmfsb_tacpad_apps_fnc_openLog`
 - `jmfsb_tacpad_apps_fnc_panelHide`
@@ -562,19 +673,8 @@ Not run in game.
 - `jmfsb_tacpad_apps_fnc_settingCycle`
 - `jmfsb_tacpad_apps_fnc_settingLocked`
 - `jmfsb_tacpad_apps_fnc_settingStep`
-- `jmfsb_tacpad_apps_fnc_supportCell`
-- `jmfsb_tacpad_apps_fnc_supportConfirm`
-- `jmfsb_tacpad_apps_fnc_supportDangerClose`
-- `jmfsb_tacpad_apps_fnc_supportGroup`
-- `jmfsb_tacpad_apps_fnc_supportHover`
-- `jmfsb_tacpad_apps_fnc_supportMapDraw`
-- `jmfsb_tacpad_apps_fnc_supportMapLive`
-- `jmfsb_tacpad_apps_fnc_supportPassengers`
-- `jmfsb_tacpad_apps_fnc_supportPointSet`
-- `jmfsb_tacpad_apps_fnc_supportPointVars`
-- `jmfsb_tacpad_apps_fnc_supportRequestParams`
-- `jmfsb_tacpad_apps_fnc_supportStepper`
-- `jmfsb_tacpad_apps_fnc_supportTint`
+- `jmfsb_tacpad_apps_fnc_squadIcon`
+- `jmfsb_tacpad_apps_fnc_squadLink`
 - `jmfsb_tacpad_apps_fnc_ticSend`
 - `jmfsb_tacpad_apps_fnc_tileChoices`
 - `jmfsb_tacpad_apps_fnc_tileData`

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Whether the local player could hear a speaker soon, so his audio is
  * received at all (the extension's auto-subscribe is off: nobody is
  * downloaded and decoded unless asked - not the other side's men, not a net

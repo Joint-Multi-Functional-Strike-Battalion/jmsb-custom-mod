@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Steps a LIST CBA setting to the next or previous of its values, wrapping at
  * either end - the settings app's previous / next pair.
  *

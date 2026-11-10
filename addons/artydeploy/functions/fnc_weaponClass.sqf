@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The gun a carrier sets up: the first class in its GVAR(weapons)[] that this
  * mod set has - the Western Sahara Hunter-SP launcher on the M-ATVs, falling
  * back to the Mk6 mortar without the CDLC.

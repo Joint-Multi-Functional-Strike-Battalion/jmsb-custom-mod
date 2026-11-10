@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: a callback request from one player to another, held by the server
  * (fnc_srvCallbacks). One per pair, and at most the "Callbacks per player"
  * setting pending for either of them. Both are told, by remoteExec

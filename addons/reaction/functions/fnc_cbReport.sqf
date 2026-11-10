@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the counter-battery radar's report of enemy artillery to the
  * players' artillery teams (user, 2026-10-25: "the arty notification for enemy
  * arty fire so the team can counter-battery it can just be a message in the

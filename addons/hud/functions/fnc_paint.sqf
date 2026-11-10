@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts a list of draw ops on a slot: builds the controls once, and after that
  * only changes their text, colour and size.
  *

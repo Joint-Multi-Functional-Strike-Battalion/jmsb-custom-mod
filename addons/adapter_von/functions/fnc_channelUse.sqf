@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The custom channels in use, as the server last counted them
  * (FUNC(countChannels)) - the voice API's "channelUse" hook.
  *

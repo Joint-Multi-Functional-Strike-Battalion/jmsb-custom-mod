@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Runs on a timer. Closes threads nobody has touched, drops the bodies of
  * ephemeral threads that have fallen out of every mailbox, and forgets old
  * draft nonces.

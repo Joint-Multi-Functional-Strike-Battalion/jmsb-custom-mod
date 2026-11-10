@@ -8,11 +8,11 @@ A dependency in **bold** is an external mod.
 | Addon | Name | units | weapons | fns | Requires |
 |---|---|--:|--:|--:|---|
 | `cba_settings` | CBA Settings |  |  |  | **cba_settings**, **ace_hearing** |
-| `common` | Common |  |  | 71 | - |
+| `common` | Common |  |  | 76 | - |
 | `compatibility` | Compatibility |  |  |  | A3_Data_F_Decade_Loadorder |
 | `main` | Main |  |  |  | **cba_main**, A3_Weapons_F |
 | `media` | Media |  |  |  | - |
-| `modules` | Modules | 4 |  | 7 | jmfsb_common |
+| `modules` | Modules | 5 |  | 8 | jmfsb_common |
 
 ## Gear - worn
 
@@ -63,7 +63,7 @@ A dependency in **bold** is an external mod.
 | `chat` | Chat |  |  | 1 | jmfsb_common, jmfsb_notify |
 | `curator` | Curator |  |  | 8 | jmfsb_common |
 | `evac` | Evac |  |  | 4 | jmfsb_common, jmfsb_notify, **ace_interact_menu**, **ace_common**, **ace_medical**, **ace_medical_treatment** |
-| `hacking` | Hacking | 2 | 4 | 75 | **ace_interact_menu**, **ace_common**, jmfsb_notify, jmfsb_common, **cba_xeh** |
+| `hacking` | Hacking | 2 | 4 | 70 | **ace_interact_menu**, **ace_common**, jmfsb_notify, jmfsb_common, **cba_xeh** |
 | `insurgents` | Insurgents | 3 |  | 2 | jmfsb_common |
 | `killtracker` | Killtracker |  |  | 1 | - |
 | `patrol_base` | Patrol Base | 2 | 2 | 13 | jmfsb_common, jmfsb_notify |
@@ -113,22 +113,23 @@ A dependency in **bold** is an external mod.
 |---|---|--:|--:|--:|---|
 | `aceax_ammo` | ACEAX Ammo |  |  | 11 | **ace_arsenal**, **cba_settings** |
 | `aceax_attachments` | ACEAX Attachments |  |  |  | **aceax_gearinfo** |
-| `adapter_alive` | ALiVE Adapter |  |  | 43 | jmfsb_common, **cba_xeh**, jmfsb_notify, jmfsb_support, **ALiVE_main**, **ALiVE_x_lib** |
-| `adapter_livekit` | LiveKit Adapter |  |  | 25 | jmfsb_common, jmfsb_voice, jmfsb_notify, **cba_main**, **cba_xeh** |
+| `adapter_alive` | ALiVE Adapter |  |  | 40 | jmfsb_common, **cba_xeh**, jmfsb_notify, **ALiVE_main**, **ALiVE_x_lib** |
+| `adapter_livekit` | LiveKit Adapter |  |  | 27 | jmfsb_common, jmfsb_voice, jmfsb_notify, **cba_main**, **cba_xeh** |
 | `adapter_von` | VON Adapter |  |  | 35 | jmfsb_common, jmfsb_voice, jmfsb_notify, **cba_main**, **cba_xeh**, **cba_settings** ... |
 | `adminpanel` | Admin Panel |  |  | 37 | jmfsb_common, jmfsb_notify, jmfsb_tacpad, **cba_xeh** |
 | `ambience` | Ambience | 2 |  | 5 | jmfsb_common, **cba_xeh** |
 | `antiship` | AntiShip | 6 |  | 8 | jmfsb_common, **cba_xeh** |
 | `aps` | APS | 1 |  | 25 | jmfsb_common, jmfsb_notify, **cba_xeh**, **cba_settings** |
 | `artydeploy` | Artillery Carriers | 40 |  | 10 | jmfsb_common, jmfsb_notify, jmfsb_faction_us_jtf_des, jmfsb_faction_us_jtf_ocp, jmfsb_faction_us_jtf_tna, jmfsb_faction_us_jtf_wdl ... |
-| `bft` | BFT |  |  | 23 | jmfsb_common, **ace_interact_menu**, **ace_common**, **cba_xeh** |
+| `bft` | BFT |  |  | 26 | jmfsb_common, **ace_interact_menu**, **ace_common**, **cba_xeh** |
 | `boarding` | Boarding | 1 |  | 4 | jmfsb_common, jmfsb_notify, **ace_interact_menu**, **cba_xeh** |
-| `cas` | CAS | 1 |  | 23 | jmfsb_common, jmfsb_support |
-| `devices` | Devices |  | 4 | 84 | jmfsb_common, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** |
+| `c2` | C2 |  |  | 14 | jmfsb_common, jmfsb_notify, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_settings** |
+| `cas` | CAS | 1 |  | 48 | jmfsb_common, jmfsb_support |
+| `devices` | Devices |  | 4 | 96 | jmfsb_common, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** |
 | `diag` | Diag |  |  | 5 | jmfsb_common, **cba_xeh** |
 | `documents` | Documents |  |  | 2 | jmfsb_diag, **cba_xeh** |
 | `drone40` | Drone40 | 9 |  | 7 | jmfsb_common, jmfsb_rf, **cba_xeh**, **gx_drones_uav_drone40** |
-| `ecoti` | ECOTI |  |  | 20 | **cba_main**, **cba_xeh** |
+| `ecoti` | ECOTI | 1 |  | 31 | jmfsb_common, **cba_main**, **cba_xeh** |
 | `ew` | EW | 1 | 1 | 52 | jmfsb_common, jmfsb_notify, jmfsb_rf, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** ... |
 | `fa_adf` | Future Ammunition - ADF Re-Cut |  |  |  | **cba_main**, **ace_ballistics**, jmfsb_fa_ammo, jmfsb_fa_tiers, **adf_ef88**, **adf_hk416** ... |
 | `fa_aegis` | Future Ammunition - Aegis |  |  |  | **cba_main**, **ace_ballistics**, jmfsb_fa_ammo, jmfsb_weapons |
@@ -205,35 +206,39 @@ A dependency in **bold** is an external mod.
 | `init` | Init |  |  | 20 | jmfsb_common, jmfsb_diag, **cba_xeh** |
 | `jamming` | Jamming | 2 |  | 28 | jmfsb_common, jmfsb_notify, jmfsb_rf, **cba_xeh** |
 | `jca_rails` | JCA Rails |  |  |  | **cba_jr**, **Weapons_F_JCA_IA** |
-| `jumpmaster` | Jumpmaster |  |  | 26 | jmfsb_common, jmfsb_tacpad, jmfsb_tacpad_apps, jmfsb_maptools, jmfsb_support_air, jmfsb_messaging ... |
+| `jumpmaster` | Jumpmaster | 1 |  | 47 | jmfsb_common, jmfsb_support, jmfsb_tacpad_apps, jmfsb_support_air, jmfsb_messaging, jmfsb_devices ... |
 | `leaders` | Leaders | 1 |  | 16 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `logistics` | Logistics |  |  | 12 | jmfsb_common, jmfsb_diag, **cba_xeh** |
-| `maptools` | Map Tools |  |  | 25 | jmfsb_common, jmfsb_tacpad, **cba_xeh** |
-| `medic` | Medic |  |  | 17 | jmfsb_common, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** |
-| `messaging` | Messaging |  |  | 53 | jmfsb_common, jmfsb_notify, **cba_xeh** |
+| `maptools` | Map Tools |  |  | 41 | jmfsb_common, jmfsb_tacpad, **cba_xeh** |
+| `medic` | Medic |  |  | 23 | jmfsb_common, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_xeh** |
+| `messaging` | Messaging |  |  | 61 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `mission` | Mission |  |  | 11 | jmfsb_common, jmfsb_diag, **cba_xeh**, **cba_settings** |
 | `naval` | Naval | 1 |  | 1 | jmfsb_common, **cba_xeh** |
-| `pac` | TAC//PAC |  |  | 203 | jmfsb_common, jmfsb_adminpanel, jmfsb_tacpad, jmfsb_notify, jmfsb_loading |
+| `pac` | TAC//PAC |  |  | 207 | jmfsb_common, jmfsb_adminpanel, jmfsb_tacpad, jmfsb_notify, jmfsb_loading |
 | `players` | Players |  |  | 12 | jmfsb_common, jmfsb_diag, **cba_xeh** |
-| `pointman` | Point Man |  |  | 20 | jmfsb_tacpad, jmfsb_tacpad_apps, jmfsb_maptools, jmfsb_devices, jmfsb_messaging, **cba_xeh** |
+| `pointman` | Point Man |  |  | 21 | jmfsb_tacpad, jmfsb_tacpad_apps, jmfsb_maptools, jmfsb_devices, jmfsb_messaging, **cba_xeh** |
 | `qrf` | QRF | 1 |  | 9 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `radios` | Radios | 3 | 3 |  | jmfsb_backpack, **cba_common** |
+| `range` | Range | 1 |  | 14 | jmfsb_common, jmfsb_notify, A3_Data_F_Decade_Loadorder |
 | `reaction` | Reaction | 1 |  | 12 | jmfsb_common, jmfsb_notify, **cba_xeh** |
 | `repair` | Repair | 1 |  | 3 | jmfsb_common, **cba_xeh** |
 | `rf` | RF |  |  | 46 | **cba_main**, **cba_xeh**, **cba_settings** |
 | `satcom` | SatCom | 1 | 1 | 4 | **ace_interact_menu**, **cba_xeh** |
-| `support` | Support |  |  | 14 | jmfsb_common, jmfsb_messaging, **cba_xeh** |
-| `support_air` | Support Air | 4 |  | 65 | jmfsb_common, jmfsb_messaging, jmfsb_support, jmfsb_cas, **cba_xeh** |
-| `support_fires` | Support Fires | 4 |  | 53 | jmfsb_common, jmfsb_support |
+| `support` | Support |  |  | 92 | jmfsb_common, jmfsb_messaging, **cba_xeh** |
+| `support_air` | Support Air | 3 |  | 116 | jmfsb_common, jmfsb_messaging, jmfsb_support, jmfsb_cas, **cba_xeh** |
+| `support_fires` | Support Fires | 4 |  | 84 | jmfsb_common, jmfsb_support |
+| `support_logistics` | Support Logistics | 3 |  | 46 | jmfsb_common, jmfsb_messaging, jmfsb_support, jmfsb_support_air, jmfsb_cas, **cba_xeh** |
 | `systems` | Systems |  |  | 22 | jmfsb_common, jmfsb_diag, jmfsb_notify, **cba_xeh** |
-| `tacpad` | Tacpad |  |  | 76 | jmfsb_common, **cba_xeh** |
-| `tacpad_apps` | Tacpad Apps |  |  | 106 | jmfsb_common, jmfsb_tacpad, jmfsb_support, **cba_xeh** |
+| `tacpad` | Tacpad |  |  | 123 | jmfsb_common, **cba_xeh** |
+| `tacpad_apps` | Tacpad Apps |  |  | 99 | jmfsb_common, jmfsb_tacpad, jmfsb_support, **cba_xeh** |
 | `teleport` | Teleport |  |  | 13 | jmfsb_common, jmfsb_notify, **cba_settings**, **cba_xeh** |
+| `training` | Training | 4 |  | 39 | jmfsb_common, jmfsb_notify, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_ai** |
 | `uas` | UAS | 4 |  | 21 | jmfsb_common, **cba_xeh** |
 | `uniform_pla` | uniform_pla | 114 | 54 |  | A3_Characters_F, A3_Characters_F_Exp, A3_Characters_F_Enoch, A3_Characters_F_Tank |
 | `uniform_ru` | Russian Uniforms | 173 | 57 | 1 | A3_Characters_F, A3_Characters_F_Enoch_Vests, A3_Characters_F_Exp_Vests, A3_Data_F_Decade_Loadorder, A3_Weapons_F, A3_Weapons_F_Machineguns_M200 ... |
 | `vehicle` | Vehicle | 242 | 10 | 29 | jmfsb_weapons, A3_Data_F_Decade_Loadorder, jmfsb_diag, jmfsb_notify, **cba_xeh** |
-| `voice` | Voice |  |  | 100 | jmfsb_common, jmfsb_rf, jmfsb_notify, **cba_main**, **cba_xeh**, **cba_settings** |
+| `voice` | Voice |  |  | 101 | jmfsb_common, jmfsb_rf, jmfsb_notify, **cba_main**, **cba_xeh**, **cba_settings** |
+| `watch` | Watch |  |  | 44 | jmfsb_common, jmfsb_notify, jmfsb_tacpad, jmfsb_tacpad_apps, **cba_settings**, **cba_keybinding** |
 | `zenmodules` | Zenmodules |  |  | 15 | jmfsb_common, jmfsb_diag, jmfsb_notify, **cba_xeh** |
 
 ## Optionals

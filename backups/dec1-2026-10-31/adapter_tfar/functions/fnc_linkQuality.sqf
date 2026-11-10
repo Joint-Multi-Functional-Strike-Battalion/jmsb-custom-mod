@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "linkQuality", client: how well this player hears a net, 0..1 -
  * RF's quality on that net from the node of the set that hears it
  * (jmfsb_rf_fnc_quality: the best path to any peer on the net, from his

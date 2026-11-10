@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: an AI group's radio - the man carrying its best set and that set's
  * RF profile (jmfsb_rf_fnc_carriedSets: his radio-slot item, his radio bag).
  * A set that can DF beats one that cannot, and the tighter DF class wins

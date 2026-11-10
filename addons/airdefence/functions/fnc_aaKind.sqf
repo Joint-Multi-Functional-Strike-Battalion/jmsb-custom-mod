@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * What kind of air defence this static is - none, gun or missile.
  *
  * Asked of the config rather than a class list, because a class list is a

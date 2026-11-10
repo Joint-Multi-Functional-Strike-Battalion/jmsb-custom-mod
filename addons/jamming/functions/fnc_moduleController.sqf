@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the module and arms jamming. PLACING THE MODULE IS THE ENABLE - with no
  * module this system does nothing at all.
  *
@@ -91,11 +91,19 @@ missionNamespace setVariable [
 // objectives, so they wait for the adapter. Both paths are covered: a module is
 // normally placed long before ALiVE finishes initialising, but one armed
 // afterwards would otherwise wait forever on an event that has already fired.
-if (!isNil QEFUNC(adapter_alive,objectivesFor)) then {
-    // Now when the adapter is ready already, and once only - not the ready
-    // CBA event any client could raise again (review R1).
-    [{
-        private _n = [] call FUNC(spawnObjectiveJammers);
-        INFO_1("%1 objective jammer site(s) queued",_n);
-    }] call EFUNC(adapter_alive,whenReady);
+// Without ALiVE (user, 2026-11-02: "works with or without") only that half is
+// off: Jammer Site modules jam exactly as they do with it.
+// The same when ALiVE is loaded with no commanders (user, 2026-11-02: "same as
+// not loaded"): the adapter's fallback, once it gives up.
+private _without = {
+    ["Objective jammers", "off - Jammer Site modules only"] call EFUNC(common,aliveLoaded);
 };
+if (isNil QEFUNC(adapter_alive,whenReady)) exitWith {
+    call _without;
+};
+// Now when the adapter is ready already, and once only - not the ready CBA
+// event any client could raise again (review R1).
+[{
+    private _n = [] call FUNC(spawnObjectiveJammers);
+    INFO_1("%1 objective jammer site(s) queued",_n);
+}, [], _without] call EFUNC(adapter_alive,whenReady);

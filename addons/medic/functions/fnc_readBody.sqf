@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The patient page's body table: per body part, open and bandaged wounds,
  * whether it is bleeding, a tourniquet, a fracture or splint, and the IVs
  * running into it.

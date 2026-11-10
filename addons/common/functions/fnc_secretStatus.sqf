@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server, by remoteExec from the SECRETS dialog (and after FUNC(secretSet)):
  * sends the sender, if he is the logged-in admin or the host, which secrets
  * are set - [name, set, last four characters] each, never the value - to his

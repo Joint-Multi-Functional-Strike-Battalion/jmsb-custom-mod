@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client: sets who is on one of the RTO nets - both lists replaced
  * (FUNC(srvNetMembers) on the server). Refused here only for what a client
  * can tell; the server answers the rest through FUNC(netFailed) or the

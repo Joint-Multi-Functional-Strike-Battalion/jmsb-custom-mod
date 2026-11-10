@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Voice hook "setEar", client: the ear the radio on that net plays in - its
  * ACRE spatial zone (acre_api_fnc_setRadioSpatial: LEFT, CENTER, RIGHT).
  *

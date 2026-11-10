@@ -56,7 +56,7 @@
 [
     QGVAR(showVirtual),
     "CHECKBOX",
-    ["Show virtual friendlies", "Friendly groups ALiVE is simulating off-map are drawn faded, from the commander's own picture. Nothing about them is secret to their side."],
+    ["Show virtual friendlies", "Friendly groups ALiVE is simulating off-map are drawn faded, from the commander's own picture. Nothing about them is secret to their side. Needs ALiVE - without it nobody is simulated off-map and nothing is drawn."],
     ["JMSB - Tablet & Map", "BFT"],
     true,
     0

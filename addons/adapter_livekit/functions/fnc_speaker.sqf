@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Sends a speaker's gain and ear (FUNC(gainOf)) to the extension, when the
  * gain moved by GAIN_EPS or the ear by PAN_EPS since the last sent - the
  * extension mixes him with it until told otherwise, and keeps it while his

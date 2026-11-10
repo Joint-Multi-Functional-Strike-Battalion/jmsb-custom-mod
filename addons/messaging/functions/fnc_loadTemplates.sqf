@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Reads the mission's report deck out of config and registers every template.
  *
  * THE DECK IS MISSION DATA NOW. It was templates.inc.sqf - 590 lines of nested
@@ -69,6 +69,11 @@ private _made = 0;
     {
         if (isArray (_tCfg >> _x)) then {_options pushBack [_x, getArray (_tCfg >> _x)]};
     } forEach ["replyableWith", "allowedFrom"];
+
+    // dangerClose = 600; - metres (user, 2026-11-01, D8).
+    {
+        if (isNumber (_tCfg >> _x)) then {_options pushBack [_x, getNumber (_tCfg >> _x)]};
+    } forEach ["dangerClose"];
 
     private _lines = [];
 

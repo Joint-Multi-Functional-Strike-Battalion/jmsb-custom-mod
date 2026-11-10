@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * APS: the active protection on the vehicle you are in - the system's name,
  * its charges by side as two bars, the RF emitter's state, and the last
  * thing it did. Reads the variables jmfsb_aps publishes on the vehicle, by

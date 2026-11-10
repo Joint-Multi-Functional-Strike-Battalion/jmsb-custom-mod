@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, every CHANNELS_TICK_S: who may TALK on which VON channel
  * (enableChannel, voice only - text chat is left as the mission set it):
  * - Global: logged-in admins (and the host), and a C2 member (TL, ATL, HHC) who

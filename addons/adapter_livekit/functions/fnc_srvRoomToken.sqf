@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: signs a player into the mission's room (GVAR(room)) and sends the
  * voice server's address and the token to him alone (FUNC(roomAnswer)). The
  * address is this addon's CBA setting; the key and secret its settings when
@@ -8,6 +8,9 @@
  * read by the extension - the secret should never be a CBA setting, which
  * every client receives). The identity is his
  * UID, which is how every client names him in the mix (FUNC(speaker)).
+ * With the voice system Mumble (jmfsb_voice_defaultSystem) nothing is signed: the
+ * answer is the Mumble address with his UID and the room in it
+ * (MUMBLE_URL_FORMAT), and the Mumble server's password as the token.
  * THE SENDER MUST BE THE UNIT'S MACHINE: nobody asks for another man's token.
  * One token per machine per TOKEN_MIN_S: more are dropped. The ask's number
  * goes back with the answer, so the client uses only its last ask's.
@@ -37,14 +40,21 @@ if (CBA_missionTime - (GVAR(tokenAt) getOrDefault [_at, -TOKEN_MIN_S]) < TOKEN_M
     TRACE_1("room token: asked too soon",_to);
 };
 GVAR(tokenAt) set [_at, CBA_missionTime];
+private _uid = getPlayerUID _unit;
+
+// MUMBLE (2026-11-01): nothing to sign. The address names him (his UID) and
+// the room; the token is the Mumble server's password.
+if (([] call FUNC(srvServerKind)) isNotEqualTo SERVER_LIVEKIT) exitWith {
+    if (GVAR(mumbleAddress) isEqualTo "") exitWith {
+        [false, NO_MUMBLE_TEXT, "", _ask] remoteExecCall [QFUNC(roomAnswer), _to];
+    };
+    private _mumble = format [MUMBLE_URL_FORMAT, _uid, GVAR(mumbleAddress), GVAR(room)];
+    [true, _mumble, GVAR(mumblePassword), _ask] remoteExecCall [QFUNC(roomAnswer), _to];
+};
 
 if (GVAR(url) isEqualTo "") exitWith {
     [false, NO_URL_TEXT, "", _ask] remoteExecCall [QFUNC(roomAnswer), _to];
 };
-
-// the key and secret as set, possibly empty: the extension then reads the
-// server's environment (JMSB_LIVEKIT_KEY / JMSB_LIVEKIT_SECRET)
-private _uid = getPlayerUID _unit;
 // The key and secret: the setting, else what an admin entered in game (kept in
 // the server's profile, review R4), else "" - the extension then reads the
 // server's environment (JMSB_LIVEKIT_KEY / JMSB_LIVEKIT_SECRET).

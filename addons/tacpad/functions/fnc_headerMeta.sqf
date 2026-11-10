@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Writes a panel's header readout - the right-aligned line the design puts
  * opposite every title. "13 / 16" on the squad rail, "3 NETS MONITORED" on the
  * reader.

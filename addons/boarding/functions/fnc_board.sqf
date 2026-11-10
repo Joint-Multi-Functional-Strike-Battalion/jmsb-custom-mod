@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Loads every player near a boarding point into cargo. SERVER SIDE.
  *
  * Reached by remoteExec from the button's ACE action (review R1: it was a CBA

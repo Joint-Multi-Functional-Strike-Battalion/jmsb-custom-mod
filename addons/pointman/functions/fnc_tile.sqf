@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The POINT MAN tile for jmfsb_tacpad_apps' band (a provider registered in
  * XEH_preInit, ungated: a route is anyone's). Walking: the next waypoint's
  * number over its distance, the bearing and its grid under; warn with no

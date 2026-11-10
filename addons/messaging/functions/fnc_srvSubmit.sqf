@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Accepts or refuses a submitted message. This is the only function that writes
  * a message into the store, so every rule about who may say what runs here or
  * in srvThreadFor, and nowhere else. The client validated first as a courtesy
@@ -23,6 +23,7 @@
  * 7: File it under another call sign, "" to use the sender's <STRING>
  * 8: Audience tags <ARRAY> of <STRING>
  * 9: Map pin, [x, y, z] for a thread that should mark the map, [] for none <ARRAY>
+ * 10: Priority, "" for the template's own - the server's own call only <STRING> (optional, default "")
  *
  * THE CALL SIGN OVERRIDE IS FOR TESTING ALONE, and it is here rather than in a
  * second write path because a test that files messages through code the live
@@ -52,7 +53,8 @@ params [
     ["_parentId", "", [""]],
     ["_asCallsign", "", [""]],
     ["_tags", [], [[]]],
-    ["_pin", [], [[]]]
+    ["_pin", [], [[]]],
+    ["_priorityOverride", "", [""]]
 ];
 
 if (!isServer) exitWith {};
@@ -102,7 +104,49 @@ if (_isRoot && {_addressees isEqualTo []}) exitWith {
     ["no addressee"] call _fnc_refuse
 };
 
+// A FRAGO (docs/DESIGN_MESSAGE_TEMPLATES.md, 2026-11-09) changes the thread's
+// current order (FUNC(currentOrder)): the card it names must be that order,
+// something must change, and the order with the changes laid over it must
+// pass that card's own checks. The old values are the server's, not the
+// client's: each changed key's FRAGO_WAS is written here.
+if (_templateId isEqualTo FRAGO_ID) then {
+    private _bodies = (_thread get "messages") apply {GVAR(messages) getOrDefault [_x, createHashMap]};
+    ([_bodies] call FUNC(currentOrder)) params ["_orderId", "_orderPayload"];
+    private _frago = createHashMapFromArray _payload;
+    private _named = _frago getOrDefault [FRAGO_CARD_KEY, ""];
+    if (_orderId isEqualTo "") exitWith {_threadWhy = FRAGO_NO_ORDER};
+    if (_named isNotEqualTo _orderId) exitWith {_threadWhy = format [FRAGO_WRONG_ORDER, _named]};
+    private _was = createHashMapFromArray _orderPayload;
+    private _merged = +_was;
+    private _changes = createHashMap;
+    {
+        if (_x in [FRAGO_CARD_KEY, FRAGO_REASON_KEY] || {(_x find FRAGO_WAS) >= 0}) then {continue};
+        if (_y isEqualTo (_was getOrDefault [_x, ""])) then {continue};
+        _changes set [_x, _y];
+        if (_y in ["", false]) then {_merged deleteAt _x} else {_merged set [_x, _y]};
+    } forEach _frago;
+    if (count _changes isEqualTo 0) exitWith {_threadWhy = FRAGO_NOTHING};
+    ([_orderId, _merged toArray false] call FUNC(validate)) params ["_mergedOk", "_mergedWhy"];
+    if (!_mergedOk) exitWith {_threadWhy = format ["FRAGO - %1", _mergedWhy]};
+    private _clean = [[FRAGO_CARD_KEY, _orderId]];
+    private _reason = _frago getOrDefault [FRAGO_REASON_KEY, ""];
+    if (_reason isNotEqualTo "") then {_clean pushBack [FRAGO_REASON_KEY, _reason]};
+    {
+        _clean pushBack [_x, _y];
+        _clean pushBack [_x + FRAGO_WAS, _was getOrDefault [_x, ""]];
+    } forEach _changes;
+    _payload = _clean;
+};
+if (_threadWhy != "") exitWith {[_threadWhy] call _fnc_refuse};
+
 private _priority = _template get "priority";
+// A PRIORITY OF THE SERVER'S OWN (2026-11-01, DESIGN_SUPPORT_MESSAGING 5.4): a
+// support asset's `prompt` is FLASH only while it waits to release or is about
+// to leave - one card, two urgencies. Only the server's own call sets it; from
+// a client it is dropped.
+if (_priorityOverride in PRIORITY_OVERRIDES && !isRemoteExecuted) then {
+    _priority = _priorityOverride;
+};
 private _transition = _template get "transitionsTo";
 private _messageId = ["M"] call FUNC(srvNextId);
 
@@ -157,6 +201,12 @@ if (_priority == "high") then {
 
 // A root template's transition is the thread's opening state and was applied
 // when the thread was made; a reply's transition moves it.
+// A STARTER FILED INTO AN OPEN THREAD (2026-11-09) - the asset's next tasking,
+// or a support request filed in a TIC, SALUTE or MIST - makes it a task
+// thread: the thread's kind is what says a task is in it.
+if (!_isRoot && _transition != "" && {(_template get "kind") in [KIND_ROOT, KIND_BOTH]}) then {
+    _thread set ["kind", "task"];
+};
 if (!_isRoot && _transition != "") then {
     _thread set ["status", _transition];
     if (_transition in ["CLOSED", "ABORTED"]) then {
@@ -172,3 +222,14 @@ if ((_template get "reportable") != "") then {
 if ((_template get "broadcast") == "tic") then {
     [_unit, _thread, _payload] call FUNC(srvTic);
 };
+
+// THE FILED HOOKS (FUNC(onFiled), user 2026-11-01) - the support core answers
+// a thread filed to an asset's box from one of these. Last, after the message
+// is stored, boxed and pushed, and each in the next frame on its own: a hook
+// that errors cannot take the filing with it, and it runs outside this
+// client's remoteExecCall, so a reply it files is the server's. The box list
+// is a copy; the thread and message are the store's own records.
+private _boxIds = +(_thread get "boxes");
+{
+    [_x, [_thread, _message, _boxIds]] call CBA_fnc_execNextFrame;
+} forEach (localNamespace getVariable [QGVAR(filedHooks), []]);

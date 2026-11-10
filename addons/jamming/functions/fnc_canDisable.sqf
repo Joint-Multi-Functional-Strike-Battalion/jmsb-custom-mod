@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * May this player pull the plug on this jammer by hand? A live jammer, and -
  * unless the setting says anyone - an engineer, an explosives specialist
  * (the unit traits ACE and the mission set) or an ISR operator.

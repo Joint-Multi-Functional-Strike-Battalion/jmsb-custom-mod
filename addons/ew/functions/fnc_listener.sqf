@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RF's transmission listener (jmfsb_rf_fnc_addListener), server, once per RF
  * tick: keeps the latest list of emitting nodes for the DF tick, and the
  * last time each one carried traffic - the "decoy?" rule and the beacon

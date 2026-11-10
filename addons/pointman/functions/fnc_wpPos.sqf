@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Where a waypoint is now. A fixed one is where it was put; one that FOLLOWS
  * a man (FUNC(follow)) is wherever he is, and the place he was last seen is
  * written back into it - so if he dies or drops out the waypoint stands

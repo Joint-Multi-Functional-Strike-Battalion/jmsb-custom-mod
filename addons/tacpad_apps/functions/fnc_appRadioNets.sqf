@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * RADIO - NETS, the MY NETS panel (docs/DESIGN_VOICE.md, "Tablet RADIO app"):
  * one row per net the player is on - only those (VEH inside a vehicle, CALL
  * while a call is live or ringing; a captured key's net is not built) - with
@@ -44,8 +44,32 @@ private _tint = ["accentTint"] call EFUNC(tacpad,theme);
 
 private _pad = PAD * HOST_W;
 
+// ON NO NET: WHY, AND WHAT TO DO (tablet review 2026-11-01, 3.8). The voice
+// addon's own reasons, in the order they decide it - no voice addon at all,
+// and no game voice on this machine, are said by FUNC(appRadio) before any
+// tab: no set carried - jmfsb_voice_fnc_radios, what RF recognises on him
+// plus a crew seat's set, is what his nets ride on; no net of the plan for
+// him - his TEAM, C2-kind and A2G-kind nets and the RTO nets that name him;
+// else his sets are still being filled by the server.
 if (_netsOn isEqualTo []) exitWith {
-    [_body, [_left + _pad, _top + _rowH * 0.5, _w - 2 * _pad, _rowH], "You are on no voice net.", _dim, TEXT_TITLE] call EFUNC(tacpad,drawText);
+    private _me = call CBA_fnc_currentUnit;
+    private _why = call {
+        if (([_me] call EFUNC(voice,radios)) isEqualTo []) exitWith {[
+            "You carry no radio set.",
+            "Put a radio in your radio slot or wear a radio pack, or take a crew seat in a vehicle with a set."
+        ]};
+        private _plan = ([[_me] call EFUNC(voice,teamNet), [_me] call EFUNC(voice,c2Net), [_me] call EFUNC(voice,a2gNet)] select {_x isNotEqualTo ""}) + ([_me] call EFUNC(voice,customNets));
+        if (_plan isEqualTo []) exitWith {[
+            "You are on no net of the signal plan.",
+            "Ask your RTO or an admin to put your squad or you on a net."
+        ]};
+        [
+            "Your set is joining its nets.",
+            "It takes a few seconds after you spawn, change squad or pick up a set."
+        ]
+    };
+    [_body, [_left + _pad, _top + _rowH * 0.5, _w - 2 * _pad, _rowH], _why select 0, _ink, TEXT_TITLE] call EFUNC(tacpad,drawText);
+    [_body, [_left + _pad, _top + _rowH * 1.7, _w - 2 * _pad, _rowH], _why select 1, _dim, TEXT_BODY] call EFUNC(tacpad,drawText);
 };
 
 // Column starts as shares of the panel.
@@ -156,7 +180,7 @@ if (_level >= 0) then {
     private _spares = count ([] call EFUNC(voice,batterySpares));
     private _low = _level <= RADIO_BATTERY_LOW;
     [_body, [_left + _pad, _footY, (_cx select 4) - _left - _pad, _rowH], format ["BATTERY %1%2%3", round (_level * PERCENT), "%", ["", " - LOW"] select _low], [_ink, _accent] select _low, TEXT_BODY, true] call EFUNC(tacpad,drawText);
-    [_body, [_cx select 4, _footY, (_cx select 7) - (_cx select 4) - _pad * 0.5, _rowH], format ["SWAP BATTERY (%1 SPARE)", _spares], ["line", "alarm"] select _low, {
+    [_body, [_cx select 4, _footY, (_cx select 7) - (_cx select 4) - _pad * 0.5, _rowH], format ["SWAP BATTERY (%1 %2)", _spares, ["SPARES", "SPARE"] select (_spares isEqualTo 1)], ["line", "alarm"] select _low, {
         [] call EFUNC(voice,batterySwap);
         {["radio"] call EFUNC(tacpad,openApp)} call CBA_fnc_execNextFrame;
     }, ""] call FUNC(appPageButton);
@@ -166,7 +190,7 @@ if (_level >= 0) then {
 {
     [_body, [_left + _pad, _footY + _forEachIndex * _rowH, _w - 2 * _pad, _rowH], _x, _muted, TEXT_LABEL] call EFUNC(tacpad,drawText);
 } forEach [
-    "Only nets you are on are shown. Press a net's name, or numpad 0 / . anywhere, to pick the active net.",
+    "Only nets you are on are shown. Press a net's name, or its net key (Configure Addons), to pick the active net.",
     "VEH appears in a vehicle, CALL while a call is live or ringing. The ear pans the beeps and static, not the voice (VON).",
     "PTT 1 (Caps Lock) is the active net. PTT 2-4 talk on the net you give them here; bind each key in Configure Addons and under Arma's Push To Talk too."
 ];

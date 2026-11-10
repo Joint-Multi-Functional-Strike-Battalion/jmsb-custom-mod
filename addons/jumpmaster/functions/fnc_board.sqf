@@ -1,8 +1,9 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * One man put aboard the jump aircraft, on the machine he is local to: in a
- * cargo seat, or standing in the bay fixed to the hull (setting "stand": two
+ * cargo seat, or standing in the bay fixed to the hull ("stand", the jump
+ * aircraft's module or the setting for a side's own, 2026-11-02: two
  * files either side of the centreline, by his place in the stick). JUMP goes
  * in his action menu, open from the red light on (QGVAR(mayJump), set by
  * FUNC(light)), whichever exit the leader picked.

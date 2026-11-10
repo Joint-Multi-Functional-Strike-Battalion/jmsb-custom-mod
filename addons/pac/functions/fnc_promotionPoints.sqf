@@ -39,7 +39,8 @@ Description:
                    + trainingHours*trainingHour)
 
     A "special" window counts for nothing, and neither does time on the
-    server with no window open.
+    server with no window open. Operation hours come from the ops server
+    only; time on the dev server counts for nothing (PAC_SERVERS).
 
     The NEXT rank is the lowest rank_<id> threshold strictly above the
     player's current rank's threshold (0 when the current rank has none);
@@ -101,6 +102,10 @@ private _trainingMinutes = 0;
     if (_sUid isNotEqualTo _uid) then {continue};
     private _kind = _kindOf getOrDefault [_x param [5, ""], ""];
     if !(_kind in ["operation", "training"]) then {continue};
+    // only ops time is operation time; dev time is nothing (pre-id rows are ops)
+    private _server = _x param [PAC_ROW_SERVER, PAC_SERVER_OPS];
+    if (_server isEqualTo PAC_SERVER_DEV) then {continue};
+    if (_kind isEqualTo "operation" && _server isNotEqualTo PAC_SERVER_OPS) then {continue};
     private _end = [_left, _seen] select (_left isEqualTo "");
     private _m = ((([_end] call FUNC(stampMinutes)) # 0) - (([_joined] call FUNC(stampMinutes)) # 0)) max 0;
     if (_kind isEqualTo "operation") then {_minutes = _minutes + _m} else {_trainingMinutes = _trainingMinutes + _m};

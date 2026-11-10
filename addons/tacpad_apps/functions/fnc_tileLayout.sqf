@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The player's live-tile layout, off his own setting (QGVAR(tileLayout)):
  * "drones:1,jam:off,pac:2" - a tile id to its slot number, or off. A tile
  * with no entry is AUTO: shown, in the default order after the placed ones

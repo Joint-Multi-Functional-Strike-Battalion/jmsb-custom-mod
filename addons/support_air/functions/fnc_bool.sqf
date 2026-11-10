@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * An Eden checkbox value as a BOOL. Eden hands a checkbox over as a BOOL, a
  * NUMBER or a STRING depending on where it was saved from; every one of
  * them means the same thing to a module.

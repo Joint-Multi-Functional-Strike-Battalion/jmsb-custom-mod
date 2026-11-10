@@ -19,10 +19,14 @@
 // DIK_NUMPAD9 and friends: JMSB's macro header does not pull the key codes in.
 #include "\a3\ui_f\hpp\definedikcodes.inc"
 
+// F10 BY DEFAULT since the F-row layout (user, 2026-11-08); numpad - in the
+// numpad layout. The device's key layout names it (jmfsb_devices_fnc_keyDefault).
+private _ticKey = [DIK_SUBTRACT, [false, false, false]];
+if (!isNil QEFUNC(devices,keyDefault)) then {_ticKey = [QGVAR(ticKey), _ticKey] call EFUNC(devices,keyDefault)};
 [
     "1st Joint Multi-Functional Strike Battalion",
     QGVAR(ticKey),
-    ["Troops In Contact", "Files a contact report from where you stand: marks the map, alerts your side and files the thread on the command net. The same button that is under the reader on the map screen. While a call is ringing you, it answers the call instead. Numpad - by default."],
+    ["Troops In Contact", "Files a contact report from where you stand: marks the map, alerts your side and files the thread on the command net. The same button that is under the reader on the map screen. While a call is ringing you, it answers the call instead. F10 by default (numpad layout: Numpad -)."],
     {
         // A RINGING CALL FIRST (user, 2026-10-24: "press ... 9 on the key pad to
         // answer"): the devices addon answers it when one rings; otherwise TIC.
@@ -31,5 +35,5 @@
         true
     },
     {false},
-    [DIK_SUBTRACT, [false, false, false]]
+    _ticKey
 ] call CBA_fnc_addKeybind;

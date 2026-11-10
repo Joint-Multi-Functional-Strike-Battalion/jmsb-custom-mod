@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The name a voice net is shown by: a TEAM net by its group's callsign, every
  * other net by its id.
  *

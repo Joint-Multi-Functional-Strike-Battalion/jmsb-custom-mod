@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Client, on the client tick: says when the handheld's battery crosses one
  * of BATTERY_WARN_LEVELS on the way down - once per level, with how many
  * spares he carries - and when it is flat. A swap or a charge above the

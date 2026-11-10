@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Pending callbacks the local player is part of, either end - both people
  * see them. "held" = waiting out EMCON 3.
  *

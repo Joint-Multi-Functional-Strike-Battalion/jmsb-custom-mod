@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the drop case down in front of the player, standing on the ground it
  * is actually on rather than floating at map height.
  *

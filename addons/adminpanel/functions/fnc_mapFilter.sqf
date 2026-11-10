@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Chooses what the console's map puts trackers on.
  *
  * The panel tracked players and only players. That is the right default and it

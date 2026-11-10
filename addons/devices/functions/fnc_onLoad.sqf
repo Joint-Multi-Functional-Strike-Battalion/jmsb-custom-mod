@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The tablet dialog has opened. Dresses it in the frame FUNC(open) chose, sizes
  * the map to the screen, hands the dialog to the shell as its host and has the
  * shell build the suite into it.
@@ -56,6 +56,17 @@ private _map = _display displayCtrl IDC_TABLET_MAP;
 _map ctrlMapSetPosition _host;
 _map ctrlMapAnimAdd [0, MAP_SCALE_OPEN, getPos (call CBA_fnc_currentUnit)];
 ctrlMapAnimCommit _map;
+
+// YOU AND YOUR TEAM ON THE TABLET'S MAP (user, 2026-11-05: "on the tablet bft
+// i do not see my self, i should see myself and my team"). BFT hangs its
+// member icons on the vanilla map only (and the phone's); this map got them
+// only after a medic SHOW ON MAP. And the engine draws no own-position icon
+// on a dialog's map, so BFT is told to draw you here too (drawSelf).
+if (!isNil QEFUNC(bft,drawMembers) && {!(_map getVariable [QEGVAR(bft,memberDraw), false])}) then {
+    _map setVariable [QEGVAR(bft,memberDraw), true];
+    _map setVariable [QEGVAR(bft,drawSelf), true];
+    _map ctrlAddEventHandler ["Draw", {_this call EFUNC(bft,drawMembers)}];
+};
 
 // VEHICLE STATUS IS THE VEHICLE TABLET'S. Registered with the shell for as
 // long as this dialog wears the vehicle frame, and out of the registry on any

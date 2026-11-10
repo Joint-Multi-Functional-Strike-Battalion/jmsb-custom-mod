@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Registers a Zeus (ZEN) custom module that drops a set of Patrol Base Kit items
  * at the placement position, so a player can build a base there.
  * No-op if Zeus Enhanced isn't loaded.

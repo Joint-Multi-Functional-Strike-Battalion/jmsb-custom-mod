@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * A drone's electronics are cooked (runs where the drone is local): engine
  * dead, fuel gone, its AI stopped so it cannot recover, and the airframe
  * falls. UNTESTED PER AIRFRAME (spec blocker B1): a quadcopter, a fixed

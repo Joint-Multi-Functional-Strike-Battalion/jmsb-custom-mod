@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Draws the tracked members on the map: a circle in his fire team's colour
  * with a pointer that turns with his heading, his member number inside it,
  * a dark outline under it, his name beside it, and a ring round it while he
@@ -34,7 +34,15 @@ params [["_map", controlNull, [controlNull]]];
 
 if (!GVAR(enabled) || GVAR(memberMarkers) isEqualTo 0) exitWith {};
 private _members = GVAR(memberUnits);
-if (isNil "_members" || {_members isEqualTo []}) exitWith {};
+if (isNil "_members") exitWith {};
+// A MAP THE ENGINE DRAWS NO "YOU" ON (the tablet's, user 2026-11-05: "i
+// should see myself and my team"): FUNC(draw) leaves you out where the engine
+// already shows you, so a map flagged drawSelf puts you back.
+if (_map getVariable [QGVAR(drawSelf), false] && {alive ACE_player} && {!(ACE_player in _members)}) then {
+    _members = +_members; // a copy: the shared list stays as FUNC(draw) left it
+    _members pushBack ACE_player;
+};
+if (_members isEqualTo []) exitWith {};
 // NO FIX, NO MEMBER ICONS - on the map and on the devices' maps alike (user,
 // 2026-10-24); the admin's god view keeps them. Same flag as FUNC(draw).
 if ((missionNamespace getVariable [QEGVAR(jamming,gpsDenied), false])
@@ -50,6 +58,7 @@ private _teams = createHashMapFromArray [
 ];
 private _voice = missionNamespace getVariable [QGVAR(memberVoice), createHashMap];
 private _ew = !isNil QEFUNC(ew,gpsOf);
+private _buddy = [ACE_player] call FUNC(buddyOf);
 
 {
     if (isNull _x || {!alive _x}) then {continue};
@@ -92,4 +101,14 @@ private _ew = !isNil QEFUNC(ew,gpsOf);
         str ([_x] call FUNC(memberNumber)),
         0, MEMBER_NUMBER_TEXT_SIZE, "RobotoCondensedBold", "center"
     ];
+
+    // 5. your buddy's star, over the circle's upper left - a fixed pixel
+    // offset at every zoom, so it is placed on the screen and turned back
+    // into a map position.
+    if (_x isEqualTo _buddy) then {
+        private _px = MEMBER_SIZE * BUDDY_OFFSET;
+        private _screen = _map ctrlMapWorldToScreen _pos;
+        private _starPos = _map ctrlMapScreenToWorld [(_screen select 0) - _px * pixelW, (_screen select 1) - _px * pixelH];
+        _map drawIcon [BUDDY_STAR, BUDDY_RGBA, _starPos, MEMBER_SIZE * BUDDY_SIZE, MEMBER_SIZE * BUDDY_SIZE, 0, "", 0];
+    };
 } forEach _members;

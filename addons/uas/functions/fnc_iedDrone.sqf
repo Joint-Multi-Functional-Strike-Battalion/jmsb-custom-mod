@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Arms an IED Pelican: a cargo quad with a charge where the crate was.
  *
  * TWO TRIGGERS, ONE BANG. Drongo's Drone Tweaks flies the thing - it is

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Allocates the next id for a record kind. Ids are sequential and padded so a
  * log sorts the way it was written; they are never reused, because a reused id
  * means an old reply lands in a new thread.

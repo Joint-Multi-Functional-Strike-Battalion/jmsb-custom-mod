@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Server: the door check of every CAS order and recall (review S6). The
  * client's FUNC(task) already refused what it could, but it runs on the
  * client, so the server asks again of the machine that really sent the call:

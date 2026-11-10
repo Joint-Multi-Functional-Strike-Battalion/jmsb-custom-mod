@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Puts the local player's active voice net where everyone else's squad table
  * and target card can read it: the name (QGVAR(radio)), on the unit he
  * controls (CBA_fnc_currentUnit).

@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * The reader's right pane, in compose. Header, addressing, the message or the
  * inserted template's card, and SEND at the foot.
  *
@@ -57,6 +57,17 @@ private _template = if (_templateId isEqualTo "") then {
     [_templateId] call EFUNC(messaging,template)
 };
 
+// A SUPPORT REQUEST FILED IN A REPORT (2026-11-09, FUNC(starterInReport)): a
+// reply that still needs a TO line - the asset it pulls into the thread.
+private _hosted = false;
+if (_reply && (_template getOrDefault ["kind", ""]) isEqualTo QUICK_KIND_ROOT) then {
+    private _host = ((missionNamespace getVariable [QEGVAR(messaging,cache), createHashMap]) getOrDefault [_threadId, []]) param [0, createHashMap];
+    private _hostAsset = ((_host getOrDefault ["boxes", []]) findIf {
+        _x isEqualType "" && {(toUpper (_x select [0, count SUPPORT_BOX_PREFIX])) isEqualTo SUPPORT_BOX_PREFIX}
+    }) >= 0;
+    _hosted = !_hostAsset && (_host getOrDefault ["rootTemplateId", ""]) in REPORT_HOSTS;
+};
+
 // Where it is going, by default the net the reader is on. ALL is a view rather
 // than a net and cannot be addressed, so FUNC(netBox) falls it back to the first
 // mailbox the mission named.
@@ -70,9 +81,14 @@ if (GVAR(composeTo) isEqualTo "") then {
 // says what is actually in the TO line, and a press in the rail moves both.
 private _toLabel = [GVAR(composeTo)] call FUNC(netLabel);
 
-// A person is not a net, and "SEND ON SGT DOE NET" is not a sentence.
+// A person is not a net, and "SEND ON SGT DOE NET" is not a sentence. Nor is a
+// support asset's mailbox (2026-11-01): it is SEND TO HOG.
 private _addressed = ((GVAR(composeTo) splitString ",") apply {trim _x}) select {_x isNotEqualTo ""};
-private _onNet = (_addressed findIf {(_x select [0, 2]) isEqualTo "P:"}) < 0;
+private _asset = false;
+if (!isNil QEFUNC(support,boxName)) then {
+    _asset = (_addressed findIf {([_x] call EFUNC(support,boxName)) isNotEqualTo ""}) >= 0;
+};
+private _onNet = !_asset && (_addressed findIf {(_x select [0, 2]) isEqualTo "P:"}) < 0;
 
 // ---------------------------------------------------------------- header ---
 private _y = _padY * 2;
@@ -106,7 +122,7 @@ private _cancelX = _dx + _dw - 2 * _cancelW - 2 * _pad;
 _y = _y + _rowH * 1.25;
 
 private _sendLine = if (_reply) then {
-    format ["IN THREAD %1", _threadId]
+    [format ["IN THREAD %1", _threadId], format ["IN THREAD %1 - TO %2", _threadId, _toLabel]] select _hosted
 } else {
     [format ["SEND TO %1", _toLabel], format ["SEND ON %1 NET", _toLabel]] select _onNet
 };
@@ -139,7 +155,7 @@ private _labW = _dw * 0.08;
 private _fieldX = _dx + _pad + _dw * 0.09;
 private _fieldW = _dw - _dw * 0.09 - _cancelW - 4 * _pad;
 
-if (!_reply) then {
+if (!_reply || _hosted) then {
     // ONE LINE, NOT A GRID OF CHIPS. Every net, every squad and every player on
     // side was a pressable chip across the top of the pane - fourteen of them and
     // counting, two rows deep - and they ate the space the message is written in.
@@ -163,6 +179,9 @@ if (!_reply) then {
     [_root, [_changeX, _y, _changeW, _btnH], {
         [] call FUNC(composeHarvest);
         GVAR(composeToPick) = true;
+        // The SUPPORT group's rows and its gate are asked afresh on every
+        // opening (FUNC(composeToSupport)).
+        GVAR(toSupport) = [];
         GVAR(composeMarker) = "";
 
         GVAR(composePin) = [];
@@ -197,7 +216,7 @@ if (!_reply) then {
     _cc ctrlSetTextColor _ink;
     _cc ctrlSetFontHeight _fontH;
     _cc ctrlSetText GVAR(composeCc);
-    _cc ctrlSetTooltip "Type @ for a list of nets, squads and players. Everybody named here is addressed on the thread as well - separate them with commas.";
+    _cc ctrlSetTooltip "Type @ for a list of support assets, nets, squads and players. Everybody named here is addressed on the thread as well - separate them with commas. A support asset goes on the TO line and opens its request card.";
     _cc setVariable [QGVAR(ccField), true];
 
     // Where the completions drop, in this group's own coordinates, and how tall
@@ -217,6 +236,10 @@ if (!_reply) then {
     ] call FUNC(drawText);
 
     _y = _y + _btnH + _padY * 0.5;
+
+    // AN @ MENTION THAT WOULD DROP TYPED TEXT asks first (2026-11-01): the
+    // asset's card has no line for what is filled - SWITCH or KEEP.
+    _y = [[_dx, _dw, _y]] call FUNC(composeMentionAsk);
 };
 
 // ------------------------------------------------------------------ tags ---
@@ -277,7 +300,9 @@ if (_tagSet isNotEqualTo []) then {
         private _sx = _dx + _pad + _forEachIndex * (_chipW + _pad);
 
         // The one chip primitive (notes, 2026-10-30): picked is the accent filled.
-        [_root, [_sx, _y], _chipH, _x, [CHIP_OUTLINE, CHIP_ACCENT_FILL] select _on, _chipW] call FUNC(drawChip);
+        // A tag is a call sign or a job - a name, untracked (tablet review
+        // 2026-11-01, 2.3).
+        [_root, [_sx, _y], _chipH, _x, [CHIP_OUTLINE, CHIP_ACCENT_FILL] select _on, _chipW, TEXT_LABEL, false] call FUNC(drawChip);
 
         private _hit = [_root, [_sx, _y, _chipW, _chipH], {
             params ["_ctrl"];
@@ -330,6 +355,7 @@ if (_templateId isNotEqualTo "") then {
     [_root, [_dropX, _y, _dropW, _btnH], {
         [] call FUNC(composeHarvest);
         GVAR(composeTemplate) = "";
+        GVAR(composeFrago) = [];
         GVAR(composeMarker) = "";
 
         GVAR(composePin) = [];
@@ -455,6 +481,10 @@ if (_templateId isEqualTo "") then {
     _edit ctrlSetFontHeight _fontH;
     _edit ctrlSetText (GVAR(composeValues) getOrDefault [_key, ""]);
     _edit setVariable [QGVAR(fieldKey), _key];
+    // HARVESTED LIKE A CARD'S BOX (2026-11-01). Without the flag
+    // FUNC(composeHarvest) passed it over, and the sentence was gone on the
+    // next redraw - an @ mention's card switch is one.
+    _edit setVariable [QGVAR(fieldEdit), true];
     _edit ctrlCommit 0;
 } else {
     [[_dx, _dw, _y, _contentH]] call FUNC(composeCard);
@@ -505,13 +535,34 @@ private _hint = "";
 if (_link > 0) then {
     _hint = ["LINK DEGRADED - SENDS TRANSMIT LATE", "LINK NONET - POSITION JAMMED"] select (_link > 1);
 };
+// What an @ mention could not do - the deck has no card for the asset's type
+// (FUNC(composeMention)).
+if (GVAR(composeNote) isNotEqualTo "") then {
+    _hint = GVAR(composeNote);
+};
 if (GVAR(composeError) isNotEqualTo "") then {
     _hint = toUpper GVAR(composeError);
 };
+private _alert = GVAR(composeError) isNotEqualTo "" || GVAR(composeNote) isNotEqualTo "" || _link > 0;
 
-[
+// A SUPPORT CARD'S VERDICT (user, 2026-11-02; FUNC(composeFire)) where nothing
+// above stands: a call for fire to a battery reads in range or CANTCO, danger
+// close, the time of flight - in the accent when the battery would refuse it.
+// Asked on every draw, so the footprint on the map follows the card; a
+// keystroke rewrites this line in place.
+private _fire = [] call FUNC(composeFire);
+private _fireHint = _hint isEqualTo "";
+if (_fireHint) then {
+    _fire params [["_fireOk", true, [true]], ["_fireLine", "", [""]]];
+    _hint = _fireLine;
+    _alert = !_fireOk;
+};
+
+private _hintCtrl = [
     _root, [_dx + _sendW + _pad * 3, _sendY, _dw - _sendW - _pad * 4, _btnH],
     _hint,
-    ([_mute, _accent] select (GVAR(composeError) isNotEqualTo "" || _link > 0)),
+    [_mute, _accent] select _alert,
     TEXT_LABEL, true, "right", true
 ] call FUNC(drawText);
+_hintCtrl setVariable [QGVAR(fireHint), _fireHint];
+uiNamespace setVariable [QGVAR(composeHint), _hintCtrl];

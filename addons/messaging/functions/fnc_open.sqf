@@ -1,6 +1,6 @@
 #include "script_component.hpp"
 /*
- * Author: JMSB
+ * Author: YonV
  * Opens a thread: fetches its messages from the server if they are not cached,
  * marks them read, and hands the rendered thread to the callback. With no UI
  * yet the default callback prints it, which is how a thread is read today.
